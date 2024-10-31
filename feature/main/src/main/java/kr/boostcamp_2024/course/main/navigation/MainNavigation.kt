@@ -13,22 +13,23 @@ data object MainRoute
 @Serializable
 data object NotificationRoute
 
-fun NavController.navigationMain() {
+fun NavController.navigateMain() {
     navigate(MainRoute)
 }
 
-fun NavController.navigationNotification() {
+fun NavController.navigateNotification() {
     navigate(NotificationRoute)
 }
 
 fun NavGraphBuilder.mainNavGraph(
     onNavigationButtonClick: () -> Unit,
+    onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyClick: () -> Unit,
 ) {
     composable<MainRoute> {
         MainScreen(
-            onNotificationButtonClick = onNavigationButtonClick,
+            onNotificationButtonClick = onNotificationButtonClick,
             onCreateStudyButtonClick = onCreateStudyButtonClick,
             onStudyClick = onStudyClick,
         )

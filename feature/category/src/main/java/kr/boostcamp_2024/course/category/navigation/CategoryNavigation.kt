@@ -13,11 +13,11 @@ data object CategoryRoute
 @Serializable
 data object CreateCategoryRoute
 
-fun NavController.navigationCategory() {
+fun NavController.navigateCategory() {
     navigate(CategoryRoute)
 }
 
-fun NavController.navigationCreateCategory() {
+fun NavController.navigateCreateCategory() {
     navigate(CreateCategoryRoute)
 }
 

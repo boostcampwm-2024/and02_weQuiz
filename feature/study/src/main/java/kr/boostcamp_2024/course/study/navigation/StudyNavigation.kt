@@ -13,11 +13,11 @@ data object CreateStudyRoute
 @Serializable
 data object StudyRoute
 
-fun NavController.navigationCreateStudy() {
+fun NavController.navigateCreateStudy() {
     navigate(CreateStudyRoute)
 }
 
-fun NavController.navigationStudy() {
+fun NavController.navigateStudy() {
     navigate(StudyRoute)
 }
 
