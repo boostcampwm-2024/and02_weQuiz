@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CategoryScreen(
-    onNavigationIconClick: () -> Unit,
+    onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: () -> Unit,
     onQuizClick: () -> Unit,
 ) {
@@ -22,7 +22,7 @@ fun CategoryScreen(
     ) {
         Button(
             modifier = Modifier.align(Alignment.TopStart),
-            onClick = onNavigationIconClick
+            onClick = onNavigationButtonClick
         ) {
             Text(text = "뒤로가기 버튼")
         }
@@ -65,8 +65,8 @@ fun CategoryScreen(
 @Composable
 fun CategoryScreenPreview() {
     CategoryScreen(
-        onNavigationIconClick = {},
+        onNavigationButtonClick = {},
         onCreateQuestionButtonClick = {},
-        onQuizClick = {}
+        onQuizClick = {},
     )
 }
