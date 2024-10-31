@@ -1,7 +1,8 @@
-package kr.boostcamp_2024.course.quiz.presentation.question
+package kr.boostcamp_2024.course.study.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -11,9 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun QuestionScreen(
+fun StudyScreen(
     onNavigationButtonClick: () -> Unit,
-    onQuizFinished: () -> Unit,
+    onCreateCategoryButtonClick: () -> Unit,
+    onCategoryClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -29,21 +31,30 @@ fun QuestionScreen(
             modifier = Modifier.align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "퀴즈 진행 화면")
-            Button(onClick = onQuizFinished) {
-                Text(text = "퀴즈 끝났어요")
+            Button(onClick = onCreateCategoryButtonClick) {
+                Text(text = "카테고리 생성")
+            }
+            Text(text = "스터디 화면")
+            Button(onClick = onCategoryClick) {
+                Text(text = "카테고리")
+            }
+            Button(onClick = onCategoryClick) {
+                Text(text = "카테고리")
+            }
+            Button(onClick = onCategoryClick) {
+                Text(text = "카테고리")
             }
         }
 
-        Column(
+        Row(
             modifier = Modifier.align(Alignment.BottomCenter),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Button(onClick = { /*TODO*/ }) {
-                Text(text = "다음 문제")
+                Text(text = "카테고리")
             }
             Button(onClick = { /*TODO*/ }) {
-                Text(text = "이전 문제")
+                Text(text = "그룹원")
             }
         }
     }
@@ -51,9 +62,10 @@ fun QuestionScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun QuestionScreenPreview() {
-    QuestionScreen(
+fun StudyScreenPreview() {
+    StudyScreen(
         onNavigationButtonClick = {},
-        onQuizFinished = {},
+        onCreateCategoryButtonClick = {},
+        onCategoryClick = {},
     )
 }
