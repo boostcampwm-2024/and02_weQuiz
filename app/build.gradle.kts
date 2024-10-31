@@ -46,6 +46,8 @@ dependencies {
     implementation(project(":feature:category"))
     implementation(project(":feature:quiz"))
 
+    implementation(project(":core:data"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
