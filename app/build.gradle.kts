@@ -47,6 +47,7 @@ dependencies {
     implementation(project(":feature:quiz"))
 
     implementation(project(":core:data"))
+    implementation(project(":core:domain"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
