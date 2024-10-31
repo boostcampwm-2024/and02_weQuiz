@@ -21,3 +21,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "wequiz"
 include(":app")
+include(":feature:login")
+include(":feature:main")
+include(":feature:study")
+include(":feature:category")
+include(":feature:quiz")
+include(":core:data")
+include(":core:domain")
+include(":core:designsystem")
