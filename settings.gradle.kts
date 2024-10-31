@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "wequiz"
 include(":app")
 include(":feature:login")
+include(":feature:main")
