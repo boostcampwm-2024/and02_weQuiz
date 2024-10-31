@@ -36,7 +36,10 @@ fun WeQuizNavHost(
         startDestination = startDestination,
     ) {
         loginNavGraph(
-            onLoginSuccess = navController::navigateMain
+            onLoginSuccess = {
+                navController.popBackStack()    // 일단 이렇게
+                navController.navigateMain()
+            }
         )
 
         mainNavGraph(
