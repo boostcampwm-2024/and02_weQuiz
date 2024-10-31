@@ -42,6 +42,7 @@ android {
 dependencies {
     implementation(project(":feature:login"))
     implementation(project(":feature:main"))
+    implementation(project(":feature:study"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

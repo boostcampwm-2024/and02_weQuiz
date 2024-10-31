@@ -23,3 +23,4 @@ rootProject.name = "wequiz"
 include(":app")
 include(":feature:login")
 include(":feature:main")
+include(":feature:study")
