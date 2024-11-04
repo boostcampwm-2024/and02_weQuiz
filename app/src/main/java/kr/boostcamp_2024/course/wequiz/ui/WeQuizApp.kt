@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.wequiz
+package kr.boostcamp_2024.course.wequiz.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
