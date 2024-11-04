@@ -21,7 +21,6 @@ firebaseAuth = "23.1.0"
 firebaseFirestore = "25.1.1"
 ksp = "2.0.21-1.0.25"
 ui = "1.7.5"
-composeCompiler = "1.5.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
