@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.wequiz
+package kr.boostcamp_2024.course.wequiz.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

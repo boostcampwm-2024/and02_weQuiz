@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.wequiz
+package kr.boostcamp_2024.course.wequiz.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
