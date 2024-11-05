@@ -11,7 +11,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 internal fun Project.configureKotlinAndroid() {
     with(pluginManager) {
         apply("org.jetbrains.kotlin.android")
-        apply("com.android.library")
     }
 
     androidExtension.apply {
