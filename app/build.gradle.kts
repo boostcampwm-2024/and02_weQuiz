@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.firebase.auth)
+    val firebaseBom = platform(libs.firebase.bom)
+    implementation(firebaseBom)
     implementation(libs.firebase.firestore)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
