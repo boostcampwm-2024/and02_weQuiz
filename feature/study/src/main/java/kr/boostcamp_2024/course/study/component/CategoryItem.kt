@@ -20,8 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun CategoryItem(
@@ -45,16 +47,25 @@ fun CategoryItem(
                     .fillMaxSize()
                     .clip(RoundedCornerShape(16))
             )
-            Box(modifier = Modifier
-                .padding(top = 8.dp, end = 8.dp)
-                .align(Alignment.TopEnd)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 8.dp, end = 8.dp)
+                    .align(Alignment.TopEnd)
+            ) {
                 Box(
                     modifier = Modifier
-                        .size(16.dp)
+                        .size(24.dp)
                         .clip(CircleShape)
-                        .background(Color.Red)
+                        .background(Color.Red),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(modifier = Modifier.align(Alignment.Center), text = quizCount.toString())
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = quizCount.toString(),
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
