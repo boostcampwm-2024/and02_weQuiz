@@ -2,8 +2,6 @@ package kr.boostcamp_2024.course.designsystem.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-
-
 val primaryLight = Color(0xFF136B55)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFA3F2D7)
