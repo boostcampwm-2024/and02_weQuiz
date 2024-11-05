@@ -6,7 +6,6 @@ import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import kr.boostcamp_2024.course.study.presentation.CreateStudyScreen
 import kr.boostcamp_2024.course.study.presentation.DetailStudyScreen
-import kr.boostcamp_2024.course.study.presentation.StudyScreen
 
 @Serializable
 data object CreateStudyRoute
