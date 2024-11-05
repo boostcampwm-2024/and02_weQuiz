@@ -6,7 +6,7 @@ import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 
 internal fun Project.configureComposeAndroid() {
-    with(plugins) {
+    with(pluginManager) {
         apply("org.jetbrains.kotlin.plugin.compose")
     }
 
@@ -22,6 +22,7 @@ internal fun Project.configureComposeAndroid() {
             add("implementation", libs.findLibrary("androidx.material3").get())
             add("implementation", libs.findLibrary("androidx.ui").get())
             add("implementation", libs.findLibrary("androidx.ui.tooling.preview").get())
+            add("implementation", libs.findLibrary("androidx.ui.graphics").get())
             add("androidTestImplementation", libs.findLibrary("androidx.espresso.core").get())
             add("debugImplementation", libs.findLibrary("androidx.ui.test.manifest").get())
             add("debugImplementation", libs.findLibrary("androidx.ui.tooling").get())
