@@ -1,54 +1,46 @@
 package kr.boostcamp_2024.course.main.presentation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyClick: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Button(
-            modifier = Modifier.align(Alignment.TopEnd),
-            onClick = onNotificationButtonClick
-        ) {
-            Text(text = "알림")
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize(),
+        topBar = {
+            LargeTopAppBar(
+                title = {},
+                actions = {
+                    IconButton(onClick = onNotificationButtonClick) {
+                        Icon(imageVector = Icons.Outlined.Notifications, contentDescription = null)
+                    }
+                },
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = Color.Transparent
+                )
+            )
         }
+    ) { innerPadding ->
 
-        Column(
-            modifier = Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = "메인 화면")
-            Button(onClick = onStudyClick) {
-                Text(text = "스터디")
-            }
-            Button(onClick = onStudyClick) {
-                Text(text = "스터디")
-            }
-            Button(onClick = onStudyClick) {
-                Text(text = "스터디")
-            }
-        }
-
-        Button(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = onCreateStudyButtonClick
-        ) {
-            Text(text = "스터디 생성")
-        }
     }
+
 }
 
 @Preview(showBackground = true)
