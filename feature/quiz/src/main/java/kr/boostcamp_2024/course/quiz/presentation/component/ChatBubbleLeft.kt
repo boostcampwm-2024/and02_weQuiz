@@ -20,7 +20,6 @@ fun ChatBubbleLeft(
 ) {
     Surface(
         modifier = modifier
-            .padding(4.dp)
             .clip(
                 RoundedCornerShape(
                     topStart = 20.dp,
