@@ -7,16 +7,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
 fun CustomPropertyTab(
     onClicked: () -> Unit,
-    icon: Painter,
+    imageVector: ImageVector,
     description: String? = null,
     title: String
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(text = title, style = MaterialTheme.typography.titleLarge)
-        CustomIconButton(onClicked = onClicked, icon = icon, description = description)
+        CustomIconButton(onClicked = onClicked, imageVector = imageVector, description = description)
     }
 }

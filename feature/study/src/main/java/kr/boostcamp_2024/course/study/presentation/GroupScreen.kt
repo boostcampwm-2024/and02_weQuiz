@@ -6,9 +6,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.study.R
@@ -24,7 +28,7 @@ fun GroupScreen() {
     ) {
         CustomPropertyTab(
             onClicked = { Log.d("detail", "그룹 클릭됨") },
-            icon = painterResource(R.drawable.baseline_add_circle_outline_24),
+            imageVector = Icons.Outlined.AddCircle,
             title = "그룹원"
         )
         GroupLazyColumn()

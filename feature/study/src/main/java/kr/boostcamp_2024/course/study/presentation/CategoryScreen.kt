@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,7 +25,7 @@ fun CategoryScreen() {
             .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp, top = 8.dp)
     ) {
-        CustomPropertyTab(onClicked = {}, icon = painterResource(R.drawable.baseline_add_circle_outline_24), title = "카테고리")
+        CustomPropertyTab(onClicked = {}, imageVector = Icons.Outlined.AddCircle, title = "카테고리")
         CategoryLazyColumn()
     }
 }
