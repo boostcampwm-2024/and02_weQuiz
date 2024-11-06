@@ -3,6 +3,7 @@ package kr.boostcamp_2024.course.quiz.presentation.quiz
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -94,6 +95,38 @@ fun CreateQuizScreen(
                                 imageVector = Icons.Outlined.Cancel,
                                 contentDescription = null
                             )
+                        }
+                    }
+                )
+
+                var quizDescription by remember { mutableStateOf("") }
+
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = quizDescription,
+                    onValueChange = { quizDescription = it },
+                    label = {
+                        Text(text = "설명")
+                    },
+                    placeholder = {
+                        Text(text = "퀴즈 설명을 입력하세요.")
+                    },
+                    minLines = 6,
+                    maxLines = 6,
+                    trailingIcon = {
+                        Column(
+                            modifier = Modifier.fillMaxHeight(),
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            IconButton(
+                                modifier = Modifier.fillMaxHeight(),
+                                onClick = { quizDescription = "" }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Cancel,
+                                    contentDescription = null
+                                )
+                            }
                         }
                     }
                 )
