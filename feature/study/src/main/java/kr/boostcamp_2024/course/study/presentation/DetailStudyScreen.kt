@@ -76,10 +76,10 @@ fun DetailStudyScreen(
             startDestination = DetailScreenRoute
         ) {
             composable<DetailScreenRoute> {
-                CategoryScreen()
+                CategoryListScreen()
             }
             composable<GroupScreenRoute> {
-                GroupScreen()
+                GroupListScreen()
             }
         }
     }
