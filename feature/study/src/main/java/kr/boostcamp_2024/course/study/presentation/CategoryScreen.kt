@@ -33,12 +33,12 @@ fun CategoryLazyColumn() {
         items(10) { index ->
             CategoryItem(
                 onClicked = { Log.d("detail", "lazy column 아이템 클릭됨") },
-                categoryImg = null,
                 title = "스레드",
                 content = "카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요.",
-                profileImg = null,
                 author = "내가 퀴즈 낸 사람이다.",
-                quizCount = 3
+                quizCount = 3,
+                categoryImgUrl = null,
+                profileImgUrl = null
             )
 
             if (index < 9) {

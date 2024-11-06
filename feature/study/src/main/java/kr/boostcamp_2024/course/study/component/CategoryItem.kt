@@ -1,8 +1,6 @@
 package kr.boostcamp_2024.course.study.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,14 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -28,48 +26,48 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CategoryItem(
     onClicked: () -> Unit,
-    categoryImg: String? = null,
     title: String,
     content: String,
-    profileImg: String? = null,
     author: String,
-    quizCount: Int
+    quizCount: Int,
+    categoryImgUrl: String? = null,
+    profileImgUrl: String? = null,
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
-            .clickable(onClick = onClicked)
+            .fillMaxWidth().padding(vertical = 8.dp)
+            .clickable(onClick = onClicked),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(modifier = Modifier.size(120.dp)) {
-            CustomRoundImg(
-                categoryImg, modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(16))
-            )
-            Box(
-                modifier = Modifier
-                    .padding(top = 8.dp, end = 8.dp)
-                    .align(Alignment.TopEnd)
+        QuizCountBadge(categoryImgUrl, quizCount)
+        DetailStudyDescription(title, content, profileImgUrl, author)
+    }
+}
+
+
+@Composable
+fun QuizCountBadge(categoryImg: String?, quizCount: Int) {
+    BadgedBox(
+        modifier = Modifier.size(120.dp),
+        badge = {
+            Badge(
+                modifier = Modifier.size(24.dp),
+                containerColor = MaterialTheme.colorScheme.error
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(Color.Red),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = quizCount.toString(),
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                Text(
+                    text = quizCount.toString(),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
-        DetailStudyDescription(title, content, profileImg, author)
+    ) {
+        CustomRoundImg(
+            categoryImg, modifier = Modifier
+                .fillMaxSize()
+                .clip(MaterialTheme.shapes.large)
+        )
     }
 }
 
@@ -82,8 +80,7 @@ fun DetailStudyDescription(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxHeight()
-            .padding(start = 16.dp)
+            .fillMaxHeight().padding(16.dp)
     ) {
         Text(modifier = Modifier.padding(bottom = 4.dp), text = title, style = MaterialTheme.typography.titleLarge)
         Text(
