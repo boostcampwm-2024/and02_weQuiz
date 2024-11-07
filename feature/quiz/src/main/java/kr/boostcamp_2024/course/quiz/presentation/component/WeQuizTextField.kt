@@ -19,13 +19,14 @@ import kr.boostcamp_2024.course.quiz.R
 @Composable
 fun WeQuizTextField(
     label: String,
+    text: String,
+    onTextChanged: (String) -> Unit,
     placeholder: String,
     minLine: Int = 1
 ) {
-    var text by remember { mutableStateOf("") }
     TextField(
         value = text,
-        onValueChange = { text = it },
+        onValueChange = { onTextChanged(it) },
         modifier = Modifier.fillMaxWidth(),
         textStyle = MaterialTheme.typography.bodyLarge,
         label = { Text(label) },
@@ -33,7 +34,7 @@ fun WeQuizTextField(
         minLines = minLine,
         trailingIcon = {
             IconButton(
-                onClick = { text = "" }
+                onClick = { onTextChanged("") }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.outline_cancel_on_surface_variant),

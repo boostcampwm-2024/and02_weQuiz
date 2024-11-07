@@ -1,9 +1,7 @@
 package kr.boostcamp_2024.course.quiz.presentation.question
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -27,11 +24,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -39,10 +34,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.quiz.CreateQuestionViewModel
 import kr.boostcamp_2024.course.quiz.R
@@ -54,8 +49,11 @@ import kr.boostcamp_2024.course.quiz.presentation.component.WeQuizTextField
 fun CreateQuestionScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionSuccess: () -> Unit,
-    viewModel: CreateQuestionViewModel = hiltViewModel()
+    viewModel: CreateQuestionViewModel = hiltViewModel<CreateQuestionViewModel>()
 ) {
+    val createQuestionState by viewModel.createQuestionState.collectAsStateWithLifecycle()
+    val isCreateQuestionValid by viewModel.isCreateQuestionValid.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -89,15 +87,26 @@ fun CreateQuestionScreen(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
             CreateQuestionContent(
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
+                title = createQuestionState.title,
+                description = createQuestionState.description,
+                solution = createQuestionState.solution,
+                onTitleChanged = viewModel::onTitleChanged,
+                onDescriptionChanged = viewModel::onDescriptionChanged,
+                onSolutionChanged = viewModel::onSolutionChanged
             )
             CreateChoiceItems(
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
+                choices = createQuestionState.choices,
+                selectedChoiceNum = createQuestionState.answer,
+                updateChoiceText = viewModel::onChoiceTextChanged,
+                updateSelectedChoiceNum = viewModel::onSelectedChoiceNumChanged
             )
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
+                enabled = isCreateQuestionValid,
                 onClick = {
                     // todo: 문제 출제 처리
                     onCreateQuestionSuccess()
@@ -147,7 +156,13 @@ fun CreateQuestionGuideContent(
 
 @Composable
 fun CreateQuestionContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: String,
+    description: String,
+    solution: String? = null,
+    onTitleChanged: (String) -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onSolutionChanged: (String) -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -155,15 +170,21 @@ fun CreateQuestionContent(
     ) {
         WeQuizTextField(
             label = stringResource(id = R.string.txt_question_title_label),
+            text = title,
+            onTextChanged = onTitleChanged,
             placeholder = stringResource(id = R.string.txt_question_title_placeholder)
         )
         WeQuizTextField(
             label = stringResource(id = R.string.txt_question_content_label),
+            text = description,
+            onTextChanged = onDescriptionChanged,
             placeholder = stringResource(id = R.string.txt_question_content_placeholder),
             minLine = 6
         )
         WeQuizTextField(
             label = stringResource(id = R.string.txt_question_description_label),
+            text = solution ?: "",
+            onTextChanged = onSolutionChanged,
             placeholder = stringResource(id = R.string.txt_question_description_placeholder),
             minLine = 6
         )
@@ -172,14 +193,12 @@ fun CreateQuestionContent(
 
 @Composable
 fun CreateChoiceItems(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    choices: List<String>,
+    selectedChoiceNum: Int,
+    updateChoiceText: (Int, String) -> Unit,
+    updateSelectedChoiceNum: (Int) -> Unit
 ) {
-    var choice1Text by remember { mutableStateOf("") }
-    var choice2Text by remember { mutableStateOf("") }
-    var choice3Text by remember { mutableStateOf("") }
-    var choice4Text by remember { mutableStateOf("") }
-    var selectedChoiceNum by remember { mutableIntStateOf(0) }
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -187,28 +206,12 @@ fun CreateChoiceItems(
             .padding(vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        for (i in 1..4) {
+        for ((index, choiceText) in choices.withIndex()) {
             ChoiceItem(
-                text = when (i) {
-                    1 -> choice1Text
-                    2 -> choice2Text
-                    3 -> choice3Text
-                    else -> choice4Text
-                },
-                onTextChanged = {
-                    when (i) {
-                        1 -> choice1Text = it
-                        2 -> choice2Text = it
-                        3 -> choice3Text = it
-                        else -> choice4Text = it
-                    }
-                },
-                isSelected = selectedChoiceNum == i,
-                onSelected = { isSelected ->
-                    if (isSelected) {
-                        selectedChoiceNum = i
-                    }
-                }
+                text = choiceText,
+                onTextChanged = { updateChoiceText(index, it) },
+                isSelected = selectedChoiceNum == index,
+                onSelected = { updateSelectedChoiceNum(index) }
             )
         }
     }
