@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="top_app_bar_create_question">문제 출제</string>
+    <string name="txt_create_question_guide1">문제를 출제하시군요!👍</string>
+    <string name="txt_create_question_guide2">어떤 문제를 낼 건가요?\n설명을 추가해주세요!</string>
+    <string name="txt_question_title_label">제목</string>
+    <string name="txt_question_title_placeholder">제목을 입력해주세요.</string>
+    <string name="txt_question_content_label">내용</string>
+    <string name="txt_question_content_placeholder">내용을 입력해주세요.</string>
+    <string name="txt_question_description_label">해설</string>
+    <string name="txt_question_description_placeholder">해설을 입력해주세요.</string>
+    <string name="txt_question_choice_placeholder">객관식 내용을 입력해주세요.</string>
+    <string name="btn_create_question">문제 출제</string>
+    <!-- content description  -->
+    <string name="des_btn_back">뒤로가기</string>
+    <string name="des_clear_text">텍스트 지우기</string>
+</resources>
