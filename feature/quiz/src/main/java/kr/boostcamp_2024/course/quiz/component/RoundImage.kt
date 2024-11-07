@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.quiz.R
 
@@ -22,7 +23,7 @@ fun RoundImage(modifier: Modifier) {
     ) {
         Image(
             painter = painterResource(id = R.drawable.quiz_system_profile),
-            contentDescription = "System Profile Image",
+            contentDescription = stringResource(R.string.des_image_question),
             modifier = Modifier.align(Alignment.Center),
             contentScale = ContentScale.Crop
         )

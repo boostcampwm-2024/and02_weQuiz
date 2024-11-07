@@ -6,13 +6,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 fun QuestionTitleAndDetail(title: String, detail: String, modifier: Modifier) {
     Column {
         Text(
-            "제목",
+            stringResource(R.string.txt_question_title),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -20,7 +22,7 @@ fun QuestionTitleAndDetail(title: String, detail: String, modifier: Modifier) {
         )
         QuestionTextBox(text = title, modifier = modifier)
         Text(
-            "설명",
+            stringResource(R.string.txt_question_description),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

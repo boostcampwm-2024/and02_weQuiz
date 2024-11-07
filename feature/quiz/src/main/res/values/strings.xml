@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_question_title">제목</string>
+    <string name="txt_question_description">설명</string>
+    <string name="top_app_bar_question_title">퀴즈 제목</string>
+    <string name="des_btn_back_question">뒤로가기</string>
+    <string name="des_image_question">System Profile Image</string>
+    <string name="txt_question_done">완료</string>
+    <string name="txt_question_next_question">다음 문제</string>
+    <string name="txt_question_submit">제출</string>
+    <string name="txt_question_exit">나가기</string>
+    <string name="txt_question_cancel">취소</string>
+    <string name="dialog_submit_script">최종 제출하시나요?\n제출 후 답을 수정할 수 없습니다.</string>
+    <string name="dialog_exit_script">정말 나가시겠습니까?\n진행 상황이 저장되지 않을 수 있습니다.</string>
+</resources>

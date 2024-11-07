@@ -22,10 +22,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.Question
+import kr.boostcamp_2024.course.quiz.component.QuestionChatBubbleRight
 import kr.boostcamp_2024.course.quiz.component.QuestionDialog
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
@@ -107,7 +110,11 @@ fun QuestionScreen(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = if (currentPage == pagerState.pageCount - 1) "완료" else "다음 문제")
+                Text(
+                    text = if (currentPage == pagerState.pageCount - 1) stringResource(R.string.txt_question_done) else stringResource(
+                        R.string.txt_question_next_question
+                    )
+                )
             }
             Button(
                 onClick = {
@@ -132,11 +139,13 @@ fun QuestionScreen(
     if (showDialog) {
         QuestionDialog(
             title = if (currentPage == pagerState.pageCount - 1)
-                "최종 제출하시나요?\n제출 후 답을 수정할 수 없습니다."
+                stringResource(R.string.dialog_submit_script)
             else
-                "정말 나가시겠습니까?\n진행 상황이 저장되지 않을 수 있습니다.",
-            yesTitle = if (currentPage == pagerState.pageCount - 1) "제출" else "나가기",
-            noTitle = if (currentPage == pagerState.pageCount - 1) "취소" else "취소",
+                stringResource(R.string.dialog_exit_script),
+            yesTitle = if (currentPage == pagerState.pageCount - 1) stringResource(R.string.txt_question_submit) else stringResource(
+                R.string.txt_question_exit
+            ),
+            noTitle = stringResource(R.string.txt_question_cancel),
             onConfirm = {
                 showDialog = false
                 if (currentPage == pagerState.pageCount - 1) {
