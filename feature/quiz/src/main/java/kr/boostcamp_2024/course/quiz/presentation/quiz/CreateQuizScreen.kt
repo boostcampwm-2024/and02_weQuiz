@@ -54,7 +54,7 @@ fun CreateQuizScreen(
                     IconButton(onClick = onNavigationButtonClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = null
+                            contentDescription = stringResource(R.string.btn_navigation)
                         )
                     }
                 }
@@ -92,16 +92,14 @@ fun CreateQuizScreen(
                 var quizTitle by remember { mutableStateOf("") }
                 QuizTitleTextField(
                     quizTitle = quizTitle,
-                    onValueChange = { quizTitle = it },
-                    onClearClick = { quizTitle = "" }
+                    onValueChange = { quizTitle = it }
                 )
 
                 //Description
                 var quizDescription by remember { mutableStateOf("") }
                 QuizDescriptionTextField(
                     quizDescription = quizDescription,
-                    onValueChange = { quizDescription = it },
-                    onClearClick = { quizDescription = "" }
+                    onValueChange = { quizDescription = it }
                 )
 
                 // StartTime

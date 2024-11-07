@@ -17,7 +17,6 @@ import kr.boostcamp_2024.course.quiz.R
 fun QuizDescriptionTextField(
     quizDescription: String,
     onValueChange: (String) -> Unit,
-    onClearClick: () -> Unit
 ) {
     TextField(
         modifier = Modifier.fillMaxWidth(),
@@ -32,7 +31,7 @@ fun QuizDescriptionTextField(
         minLines = 6,
         maxLines = 6,
         trailingIcon = {
-            IconButton(onClick = onClearClick) {
+            IconButton(onClick = { onValueChange("") }) {
                 Icon(
                     imageVector = Icons.Outlined.Cancel,
                     contentDescription = null
@@ -48,6 +47,5 @@ fun QuizDescriptionTextFieldPreview() {
     QuizDescriptionTextField(
         quizDescription = "",
         onValueChange = {},
-        onClearClick = {},
     )
 }
