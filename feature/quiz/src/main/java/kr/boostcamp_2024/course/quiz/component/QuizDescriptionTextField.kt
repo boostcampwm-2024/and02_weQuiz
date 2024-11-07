@@ -9,7 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 fun QuizDescriptionTextField(
@@ -22,10 +24,10 @@ fun QuizDescriptionTextField(
         value = quizDescription,
         onValueChange = { onValueChange(it) },
         label = {
-            Text(text = "설명")
+            Text(text = stringResource(R.string.txt_quiz_description))
         },
         placeholder = {
-            Text(text = "퀴즈 설명을 입력하세요.")
+            Text(text = stringResource(R.string.txt_quiz_desctiption_placeholder))
         },
         minLines = 6,
         maxLines = 6,

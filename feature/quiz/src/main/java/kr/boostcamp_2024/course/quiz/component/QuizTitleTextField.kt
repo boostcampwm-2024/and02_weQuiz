@@ -9,7 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 fun QuizTitleTextField(
@@ -22,17 +24,17 @@ fun QuizTitleTextField(
         value = quizTitle,
         onValueChange = { onValueChange(it) },
         label = {
-            Text(text = "제목")
+            Text(text = stringResource(R.string.txt_quiz_title))
         },
         placeholder = {
-            Text(text = "퀴즈 제목을 입력하세요.")
+            Text(text = stringResource(R.string.txt_quiz_title_placeholder))
         },
         maxLines = 1,
         trailingIcon = {
             IconButton(onClick = onClearClick) {
                 Icon(
                     imageVector = Icons.Outlined.Cancel,
-                    contentDescription = null
+                    contentDescription = stringResource(R.string.btn_clear_text)
                 )
             }
         }

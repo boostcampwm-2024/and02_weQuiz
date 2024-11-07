@@ -25,10 +25,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.ChatBubbleLeft
-import kr.boostcamp_2024.course.quiz.component.ProfileCircleImage
+import kr.boostcamp_2024.course.quiz.component.CircleImage
 import kr.boostcamp_2024.course.quiz.component.QuizDatePickerTextField
 import kr.boostcamp_2024.course.quiz.component.QuizDescriptionTextField
 import kr.boostcamp_2024.course.quiz.component.QuizSolveTimeSlider
@@ -44,7 +47,7 @@ fun CreateQuizScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(text = "퀴즈 생성")
+                    Text(text = stringResource(R.string.top_app_bar_create_quiz))
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigationButtonClick) {
@@ -71,8 +74,12 @@ fun CreateQuizScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                ProfileCircleImage(modifier = Modifier.size(120.dp))
-                ChatBubbleLeft(text = "추가할 퀴즈에 대한\n정보를 입력해주세요!")
+                CircleImage(
+                    modifier = Modifier.size(120.dp),
+                    imagePainter = painterResource(R.drawable.sample_profile),
+                    contentDescription = null
+                )
+                ChatBubbleLeft(text = stringResource(R.string.txt_create_quiz_guide))
             }
 
             // QuizInfo
@@ -97,14 +104,14 @@ fun CreateQuizScreen(
                 )
 
                 // StartTime
-                Text(text = "퀴즈 시작 시간")
+                Text(text = stringResource(R.string.txt_quiz_start_time))
                 var quizDate by remember { mutableStateOf("") }
                 QuizDatePickerTextField(
                     onDateSelected = { quizDate = it }
                 )
 
                 // SolveTime
-                Text(text = "풀이 시간 (단위: 분)")
+                Text(text = stringResource(R.string.txt_quiz_solve_time))
                 var quizSolveTime by remember { mutableStateOf("") }
                 QuizSolveTimeSlider(
                     onValueChange = { quizSolveTime = it }
@@ -115,7 +122,7 @@ fun CreateQuizScreen(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onCreateQuizSuccess    // TODO: 퀴즈 생성
                 ) {
-                    Text(text = "퀴즈 생성")
+                    Text(text = stringResource(R.string.btn_create_quiz))
                 }
             }
         }

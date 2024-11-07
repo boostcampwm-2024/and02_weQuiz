@@ -19,7 +19,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import kr.boostcamp_2024.course.quiz.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -38,14 +40,14 @@ fun QuizDatePickerTextField(
             value = selectedDate,
             onValueChange = { onDateSelected(it) },
             label = {
-                Text(text = "시작 날짜")
+                Text(text = stringResource(R.string.txt_quiz_date_picker))
             },
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { showDatePicker = true }) {
                     Icon(
                         imageVector = Icons.Default.Today,
-                        contentDescription = null
+                        contentDescription = stringResource(R.string.btn_show_date_picker)
                     )
                 }
             }
@@ -75,12 +77,12 @@ private fun DatePickerModal(
                 onDateSelected(datePickerState.selectedDateMillis)
                 onDismiss()
             }) {
-                Text("OK")
+                Text(text = stringResource(R.string.txt_dialog_confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(text = stringResource(R.string.txt_dialog_dismiss))
             }
         }
     ) {
