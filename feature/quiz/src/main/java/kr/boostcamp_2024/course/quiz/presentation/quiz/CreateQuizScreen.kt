@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -112,8 +113,12 @@ fun CreateQuizScreen(
 
                 // SolveTime
                 Text(text = stringResource(R.string.txt_quiz_solve_time))
-                var quizSolveTime by remember { mutableStateOf("") }
+                var quizSolveTime by remember { mutableFloatStateOf(0f) }
+
                 QuizSolveTimeSlider(
+                    value = quizSolveTime,
+                    steps = 8,
+                    valueRange = 10f..100f,
                     onValueChange = { quizSolveTime = it }
                 )
 
