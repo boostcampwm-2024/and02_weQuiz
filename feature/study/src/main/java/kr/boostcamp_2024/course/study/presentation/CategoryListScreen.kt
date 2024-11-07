@@ -16,7 +16,7 @@ import kr.boostcamp_2024.course.study.component.CategoryItem
 import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 
 @Composable
-fun CategoryScreen() {
+fun CategoryListScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
