@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.login
+package kr.boostcamp_2024.course.login.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,10 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
+
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -32,7 +34,9 @@ fun LoginScreen(
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(
-        onLoginSuccess = {},
-    )
+    WeQuizTheme {
+        LoginScreen(
+            onLoginSuccess = {},
+        )
+    }
 }
