@@ -13,19 +13,20 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.CategoryItem
 import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 
 @Composable
-fun CategoryScreen() {
+fun CategoryListScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp, top = 8.dp)
     ) {
-        CustomPropertyTab(onClicked = {}, imageVector = Icons.Outlined.AddCircle, title = "카테고리")
+        CustomPropertyTab(onClicked = {}, imageVector = Icons.Outlined.AddCircle, title = R.string.property_tab_category_text)
         CategoryLazyColumn()
     }
 }
@@ -36,12 +37,12 @@ fun CategoryLazyColumn() {
         items(10) { index ->
             CategoryItem(
                 onClicked = { Log.d("detail", "lazy column 아이템 클릭됨") },
-                categoryImg = null,
                 title = "스레드",
                 content = "카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요.",
-                profileImg = null,
                 author = "내가 퀴즈 낸 사람이다.",
-                quizCount = 3
+                quizCount = 3,
+                categoryImgUrl = null,
+                profileImgUrl = null
             )
 
             if (index < 9) {

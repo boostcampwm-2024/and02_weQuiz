@@ -14,13 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 import kr.boostcamp_2024.course.study.component.GroupItem
 
 @Composable
-fun GroupScreen() {
+fun GroupListScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -29,7 +30,7 @@ fun GroupScreen() {
         CustomPropertyTab(
             onClicked = { Log.d("detail", "그룹 클릭됨") },
             imageVector = Icons.Outlined.AddCircle,
-            title = "그룹원"
+            title = R.string.property_tab_group_text
         )
         GroupLazyColumn()
     }

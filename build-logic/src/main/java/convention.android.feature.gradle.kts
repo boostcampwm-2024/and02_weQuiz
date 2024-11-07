@@ -16,7 +16,7 @@ androidExtension.apply {
         add("implementation", project(":core:designsystem"))
         add("implementation", libs.findLibrary("androidx.navigation.compose").get())
         add("implementation", libs.findLibrary("kotlinx.serialization.json").get())
-        add("implementation","io.coil-kt.coil3:coil-compose:3.0.0")
+        add("implementation",libs.findLibrary("coil").get())
     }
 }
 

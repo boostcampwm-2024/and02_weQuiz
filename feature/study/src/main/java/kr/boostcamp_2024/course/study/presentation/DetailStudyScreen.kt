@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -57,7 +58,7 @@ fun DetailStudyScreen(
                                 restoreState = true
                             }
                         },
-                        label = { Text(text = nav.title) },
+                        label = { Text(text = stringResource(nav.title)) },
                         icon = {
                             Icon(
                                 painter = painterResource(id = nav.iconId),
@@ -77,10 +78,10 @@ fun DetailStudyScreen(
             startDestination = DetailScreenRoute
         ) {
             composable<DetailScreenRoute> {
-                CategoryScreen()
+                CategoryListScreen()
             }
             composable<GroupScreenRoute> {
-                GroupScreen()
+                GroupListScreen()
             }
         }
     }
