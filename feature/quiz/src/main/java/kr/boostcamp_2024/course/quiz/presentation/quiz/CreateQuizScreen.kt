@@ -1,12 +1,8 @@
 package kr.boostcamp_2024.course.quiz.presentation.quiz
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,44 +11,34 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Today
-import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.quiz.component.QuizDatePickerTextField
+import kr.boostcamp_2024.course.quiz.component.QuizDescriptionTextField
+import kr.boostcamp_2024.course.quiz.component.QuizSolveTimeSlider
+import kr.boostcamp_2024.course.quiz.component.QuizTitleTextField
 import kr.boostcamp_2024.course.quiz.presentation.component.ChatBubbleLeft
 import kr.boostcamp_2024.course.quiz.presentation.component.ProfileCircleImage
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateQuizScreen(
     onNavigationButtonClick: () -> Unit,
+    onCreateQuizSuccess: () -> Unit,        // TODO: 퀴즈 생성
 ) {
     Scaffold(
         topBar = {
@@ -120,14 +106,14 @@ fun CreateQuizScreen(
                 // SolveTime
                 Text(text = "풀이 시간 (단위: 분)")
                 var quizSolveTime by remember { mutableStateOf("") }
-                QuizTimeSlider(
+                QuizSolveTimeSlider(
                     onValueChange = { quizSolveTime = it }
                 )
 
                 // CreateButton
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = {}
+                    onClick = {}    // TODO: 퀴즈 생성
                 ) {
                     Text(text = "퀴즈 생성")
                 }
@@ -136,175 +122,11 @@ fun CreateQuizScreen(
     }
 }
 
-@Composable
-fun QuizTitleTextField(
-    quizTitle: String,
-    onValueChange: (String) -> Unit,
-    onClearClick: () -> Unit
-) {
-    TextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = quizTitle,
-        onValueChange = { onValueChange(it) },
-        label = {
-            Text(text = "제목")
-        },
-        placeholder = {
-            Text(text = "퀴즈 제목을 입력하세요.")
-        },
-        maxLines = 1,
-        trailingIcon = {
-            IconButton(onClick = onClearClick) {
-                Icon(
-                    imageVector = Icons.Outlined.Cancel,
-                    contentDescription = null
-                )
-            }
-        }
-    )
-}
-
-@Composable
-fun QuizDescriptionTextField(
-    quizDescription: String,
-    onValueChange: (String) -> Unit,
-    onClearClick: () -> Unit
-) {
-    TextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = quizDescription,
-        onValueChange = { onValueChange(it) },
-        label = {
-            Text(text = "설명")
-        },
-        placeholder = {
-            Text(text = "퀴즈 설명을 입력하세요.")
-        },
-        minLines = 6,
-        maxLines = 6,
-        trailingIcon = {
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Top
-            ) {
-                IconButton(
-                    modifier = Modifier.fillMaxHeight(),
-                    onClick = onClearClick
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Cancel,
-                        contentDescription = null
-                    )
-                }
-            }
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun QuizDatePickerTextField(
-    onDateSelected: (String) -> Unit
-) {
-    var showDatePicker by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf("") }
-
-    Box {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = selectedDate,
-            onValueChange = { onDateSelected(it) },
-            label = {
-                Text(text = "시작 날짜")
-            },
-            readOnly = true,
-            trailingIcon = {
-                IconButton(onClick = { showDatePicker = true }) {
-                    Icon(
-                        imageVector = Icons.Default.Today,
-                        contentDescription = null
-                    )
-                }
-            }
-        )
-
-        if (showDatePicker) {
-            DatePickerModal(
-                onDateSelected = { selectedDate = it?.let { convertMillisToDate(it) } ?: "" },
-                onDismiss = { showDatePicker = false }
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerModal(
-    onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val datePickerState = rememberDatePickerState()
-
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
-                onDismiss()
-            }) {
-                Text("OK")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
-    ) {
-        DatePicker(state = datePickerState)
-    }
-}
-
-fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
-    return formatter.format(Date(millis))
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun QuizTimeSlider(
-    onValueChange: (String) -> Unit
-) {
-    var sliderPosition by remember { mutableFloatStateOf(0f) }
-
-    Slider(
-        modifier = Modifier.fillMaxWidth(),
-        value = sliderPosition,
-        onValueChange = { sliderPosition = it },
-        steps = 8,
-        valueRange = 10f..100f,
-        thumb = {
-            Box(
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 40.dp)
-                    .clip(MaterialTheme.shapes.large)
-                    .background(MaterialTheme.colorScheme.primary),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = (sliderPosition.toInt()).toString(),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
 fun CreateQuizScreenPreview() {
     CreateQuizScreen(
         onNavigationButtonClick = {},
+        onCreateQuizSuccess = {},
     )
 }
