@@ -3,7 +3,7 @@ agp = "8.7.1"
 androidDesugarJdkLibs = "2.1.2"
 
 # kotlin
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 kotlinxSerializationJson = "1.7.3"
 
 # androidx
