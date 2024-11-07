@@ -35,8 +35,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,12 +55,12 @@ fun QuizResultScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "Quiz Result") },
+                title = { Text(text = stringResource(R.string.top_app_bar_quiz_result)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigationButtonClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.btn_navigation)
                         )
                     }
                 }
@@ -70,17 +72,22 @@ fun QuizResultScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            QuizResultContent() // 캐릭터 & 점수
+            QuizResultContent( // 캐릭터 & 점수
+                totalQuestions = 10,
+                correctAnswers = 9
+            )
             QuestionResultListContent( // 문제 리스트
                 onQuestionClick = onQuestionClick
             )
         }
-
     }
 }
 
 @Composable
-fun QuizResultContent() {
+fun QuizResultContent(
+    totalQuestions: Int,
+    correctAnswers: Int
+) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp)
@@ -90,14 +97,22 @@ fun QuizResultContent() {
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            ChatBubbleRight(text = "퀴즈는 어땠나요?\n퀴즈 내용을 해설과 함께\n확인해보세요!")
-            ChatBubbleRight(text = "📝 점수: 9/10")
+            ChatBubbleRight(text = stringResource(R.string.txt_quiz_result_guide))
+            ChatBubbleRight(
+                text = stringResource(
+                    R.string.txt_quiz_result_score,
+                    correctAnswers,
+                    totalQuestions
+                )
+            )
         }
 
-        ProfileCircleImage(
+        CircleImage(
             modifier = Modifier
                 .size(120.dp)
-                .align(Alignment.CenterVertically)
+                .align(Alignment.CenterVertically),
+            imagePainter = painterResource(id = R.drawable.sample_profile),
+            contentDescription = null
         )
     }
 }
@@ -108,7 +123,7 @@ fun QuestionResultListContent(
 ) {
     Text(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        text = "문제 리스트"
+        text = stringResource(R.string.txt_quiz_question_list)
     )
 
     LazyColumn(
@@ -209,7 +224,7 @@ fun QuestionResultItem(
             ) {
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
-                    contentDescription = "Back"
+                    contentDescription = null
                 )
             }
         }
@@ -246,14 +261,16 @@ fun ChatBubbleRight(
 }
 
 @Composable
-fun ProfileCircleImage(
+fun CircleImage(
+    imagePainter: Painter,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
 ) {
     Image(
         modifier = modifier
             .clip(CircleShape),
-        painter = painterResource(id = R.drawable.sample_profile),
-        contentDescription = "Profile",
+        painter = imagePainter,
+        contentDescription = contentDescription,
         contentScale = ContentScale.Crop
     )
 }

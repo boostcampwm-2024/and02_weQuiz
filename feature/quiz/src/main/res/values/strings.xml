@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_quiz_result_guide">퀴즈는 어땠나요?\n퀴즈 내용을 해설과 함께\n확인해보세요!</string>
+    <string name="txt_quiz_result_score">📝 점수: %1$d/%2$d</string>
+    <string name="txt_quiz_question_list">문제 리스트</string>
+    <string name="top_app_bar_quiz_result">Quiz Result</string>
+    <string name="btn_navigation">뒤로 가기</string>
+</resources>
