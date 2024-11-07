@@ -3,11 +3,13 @@ package kr.boostcamp_2024.course.quiz
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -118,7 +121,8 @@ fun QuestionResultListContent(
                 isCorrect = true,
                 questionTitle = "아파트 아파트~",
                 questionImageUrl = "",
-                questionDescription = "채영이가 좋아하는 랜덤 게임"
+                questionDescription = "채영이가 좋아하는 랜덤 게임",
+                onQuestionClick = onQuestionClick
             )
         }
 
@@ -128,7 +132,8 @@ fun QuestionResultListContent(
                 isCorrect = false,
                 questionTitle = "거침없이 걸어가지",
                 questionImageUrl = "123",
-                questionDescription = "삐리뽕빠라빵"
+                questionDescription = "삐리뽕빠라빵",
+                onQuestionClick = onQuestionClick
             )
         }
 
@@ -138,7 +143,8 @@ fun QuestionResultListContent(
                 isCorrect = true,
                 questionTitle = "그런 일은 절대로 없을 거라",
                 questionImageUrl = "",
-                questionDescription = "그런 일은 절대로 없는 거죠, 나는 믿을게요 오늘은 안 돼요, 내 사랑이 이대로는 이별을 감당하긴 어려운걸요"
+                questionDescription = "그런 일은 절대로 없는 거죠, 나는 믿을게요 오늘은 안 돼요, 내 사랑이 이대로는 이별을 감당하긴 어려운걸요",
+                onQuestionClick = onQuestionClick
             )
         }
     }
@@ -150,12 +156,14 @@ fun QuestionResultItem(
     isCorrect: Boolean,
     questionTitle: String,
     questionImageUrl: String,
-    questionDescription: String
+    questionDescription: String,
+    onQuestionClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            .clickable(onClick = onQuestionClick)
             .padding(10.dp)
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
@@ -163,7 +171,7 @@ fun QuestionResultItem(
     ) {
         VerticalDivider(
             thickness = 4.dp,
-            color = if (isCorrect) Color(1, 165, 129) else Color(255, 106, 98)
+            color = if (isCorrect) Color(0xFF01A581) else Color(0xFFFF6A62)
         )
 
         // TODO QuestionImageComposable
@@ -192,6 +200,7 @@ fun QuestionResultItem(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
+            Spacer(modifier = Modifier.weight(1f))
             IconButton(
                 modifier = Modifier
                     .size(24.dp)
@@ -199,7 +208,7 @@ fun QuestionResultItem(
                 onClick = { }
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    imageVector = Icons.Default.PlayArrow,
                     contentDescription = "Back"
                 )
             }
