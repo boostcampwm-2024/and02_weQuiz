@@ -113,7 +113,7 @@ fun CreateQuizScreen(
                 // CreateButton
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = {}    // TODO: 퀴즈 생성
+                    onClick = onCreateQuizSuccess    // TODO: 퀴즈 생성
                 ) {
                     Text(text = "퀴즈 생성")
                 }
