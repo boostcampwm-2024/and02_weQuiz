@@ -12,12 +12,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import kr.boostcamp_2024.course.study.component.DetailStudyTopBar
 import kr.boostcamp_2024.course.study.navigation.DetailScreenRoute
 import kr.boostcamp_2024.course.study.navigation.GroupScreenRoute
 
@@ -30,6 +32,7 @@ fun DetailStudyScreen(
     val bottomNavController = rememberNavController()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        topBar = { DetailStudyTopBar() },
         bottomBar = {
             val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
@@ -55,7 +58,7 @@ fun DetailStudyScreen(
                                 restoreState = true
                             }
                         },
-                        label = { Text(text = nav.title) },
+                        label = { Text(text = stringResource(nav.title)) },
                         icon = {
                             Icon(
                                 painter = painterResource(id = nav.iconId),

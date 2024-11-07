@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bottom_nav_btn_category">카테고리</string>
+    <string name="bottom_nav_btn_group">그룹원</string>
+    <string name="property_tab_category_text">카테고리</string>
+    <string name="bottom_nav_icon_category">카테고리</string>
+    <string name="bottom_nav_icon_group">그룹원</string>
+</resources>
