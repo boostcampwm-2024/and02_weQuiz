@@ -24,10 +24,10 @@ fun QuizDescriptionTextField(
         value = quizDescription,
         onValueChange = { onValueChange(it) },
         label = {
-            Text(text = stringResource(R.string.txt_quiz_description))
+            Text(text = stringResource(R.string.txt_quiz_description_label))
         },
         placeholder = {
-            Text(text = stringResource(R.string.txt_quiz_desctiption_placeholder))
+            Text(text = stringResource(R.string.txt_quiz_description_placeholder))
         },
         minLines = 6,
         maxLines = 6,

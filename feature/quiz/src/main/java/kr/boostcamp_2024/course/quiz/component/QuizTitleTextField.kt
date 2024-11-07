@@ -24,7 +24,7 @@ fun QuizTitleTextField(
         value = quizTitle,
         onValueChange = { onValueChange(it) },
         label = {
-            Text(text = stringResource(R.string.txt_quiz_title))
+            Text(text = stringResource(R.string.txt_quiz_title_label))
         },
         placeholder = {
             Text(text = stringResource(R.string.txt_quiz_title_placeholder))
