@@ -27,12 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.quiz.component.ChatBubbleLeft
+import kr.boostcamp_2024.course.quiz.component.ProfileCircleImage
 import kr.boostcamp_2024.course.quiz.component.QuizDatePickerTextField
 import kr.boostcamp_2024.course.quiz.component.QuizDescriptionTextField
 import kr.boostcamp_2024.course.quiz.component.QuizSolveTimeSlider
 import kr.boostcamp_2024.course.quiz.component.QuizTitleTextField
-import kr.boostcamp_2024.course.quiz.presentation.component.ChatBubbleLeft
-import kr.boostcamp_2024.course.quiz.presentation.component.ProfileCircleImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

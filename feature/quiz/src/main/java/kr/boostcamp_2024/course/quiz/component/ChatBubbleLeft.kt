@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.quiz.presentation.component
+package kr.boostcamp_2024.course.quiz.component
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape

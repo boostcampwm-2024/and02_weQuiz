@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.quiz.presentation.component
+package kr.boostcamp_2024.course.quiz.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.CircleShape
