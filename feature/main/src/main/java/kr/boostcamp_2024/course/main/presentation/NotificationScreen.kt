@@ -1,38 +1,48 @@
 package kr.boostcamp_2024.course.main.presentation
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import kr.boostcamp_2024.course.main.component.CreateStudyTopAppBar
+import kr.boostcamp_2024.course.main.component.Notification
+import kr.boostcamp_2024.course.main.component.NotificationItem
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationScreen(
-    onNavigationButtonClick: () -> Unit,
-) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Button(
-            modifier = Modifier.align(Alignment.TopStart),
-            onClick = onNavigationButtonClick
+fun NotificationScreen(onNavigationButtonClick: () -> Unit) {
+    val notifications = remember { generateDummyNotifications() } //뷰모델로 바꿔주기
+
+    Scaffold(topBar = {
+        CreateStudyTopAppBar(onNavigationButtonClick = onNavigationButtonClick)
+    }) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
-            Text(text = "뒤로가기")
+            items(generateDummyNotifications().size) { index ->
+                NotificationItem(notifications[index], onRejectClick = {}, onAcceptClick = {}) //API 통신 시 바꿔주기
+            }
         }
-        Text(
-            modifier = Modifier.align(Alignment.Center),
-            text = "알림 화면"
-        )
     }
 }
 
-@Preview(showBackground = true)
+
+/* 임시 활용 data 생성 함수*/
+fun generateDummyNotifications(): List<Notification> {
+    return List(10) {
+        Notification(groupId = 1111)
+    }
+}
+
+@Preview
 @Composable
-fun NotificationScreenPreview() {
-    NotificationScreen(
-        onNavigationButtonClick = {},
-    )
+private fun NotificationScreenPreview() {
+    NotificationScreen {}
 }
