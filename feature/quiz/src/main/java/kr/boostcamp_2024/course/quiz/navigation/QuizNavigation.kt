@@ -4,10 +4,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
+import kr.boostcamp_2024.course.quiz.QuizResultScreen
 import kr.boostcamp_2024.course.quiz.presentation.question.CreateQuestionScreen
 import kr.boostcamp_2024.course.quiz.presentation.question.QuestionDetailScreen
 import kr.boostcamp_2024.course.quiz.presentation.question.QuestionScreen
-import kr.boostcamp_2024.course.quiz.presentation.quiz.QuizResultScreen
 import kr.boostcamp_2024.course.quiz.presentation.quiz.QuizScreen
 
 @Serializable
