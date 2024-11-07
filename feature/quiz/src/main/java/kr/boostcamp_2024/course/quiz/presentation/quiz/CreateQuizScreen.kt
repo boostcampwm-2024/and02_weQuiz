@@ -89,127 +89,42 @@ fun CreateQuizScreen(
                 ChatBubbleLeft(text = "추가할 퀴즈에 대한\n정보를 입력해주세요!")
             }
 
-            // QuizTtitle
+            // QuizInfo
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                // Title
                 var quizTitle by remember { mutableStateOf("") }
-
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = quizTitle,
+                QuizTitleTextField(
+                    quizTitle = quizTitle,
                     onValueChange = { quizTitle = it },
-                    label = {
-                        Text(text = "제목")
-                    },
-                    placeholder = {
-                        Text(text = "퀴즈 제목을 입력하세요.")
-                    },
-                    trailingIcon = {
-                        IconButton(onClick = { quizTitle = "" }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Cancel,
-                                contentDescription = null
-                            )
-                        }
-                    }
+                    onClearClick = { quizTitle = "" }
                 )
 
+                //Description
                 var quizDescription by remember { mutableStateOf("") }
-
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = quizDescription,
+                QuizDescriptionTextField(
+                    quizDescription = quizDescription,
                     onValueChange = { quizDescription = it },
-                    label = {
-                        Text(text = "설명")
-                    },
-                    placeholder = {
-                        Text(text = "퀴즈 설명을 입력하세요.")
-                    },
-                    minLines = 6,
-                    maxLines = 6,
-                    trailingIcon = {
-                        Column(
-                            modifier = Modifier.fillMaxHeight(),
-                            verticalArrangement = Arrangement.Top
-                        ) {
-                            IconButton(
-                                modifier = Modifier.fillMaxHeight(),
-                                onClick = { quizDescription = "" }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Cancel,
-                                    contentDescription = null
-                                )
-                            }
-                        }
-                    }
+                    onClearClick = { quizDescription = "" }
                 )
 
+                // StartTime
                 Text(text = "퀴즈 시작 시간")
-
-                var showDatePicker by remember { mutableStateOf(false) }
-                val datePickerState = rememberDatePickerState()
-                val selectedDate = datePickerState.selectedDateMillis?.let {
-                    convertMillisToDate(it)
-                } ?: ""
-
-                Box {
-                    TextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = selectedDate,
-                        onValueChange = { },
-                        label = {
-                            Text(text = "시작 날짜")
-                        },
-                        readOnly = true,
-                        trailingIcon = {
-                            IconButton(onClick = { showDatePicker = true }) {
-                                Icon(
-                                    imageVector = Icons.Default.Today,
-                                    contentDescription = null
-                                )
-                            }
-                        }
-                    )
-
-                    if (showDatePicker) {
-                        DatePickerModal(
-                            onDateSelected = { datePickerState.selectedDateMillis = it },
-                            onDismiss = { showDatePicker = false }
-                        )
-                    }
-                }
-
-                Text(text = "풀이 시간 (단위: 분)")
-
-                var sliderPosition by remember { mutableFloatStateOf(0f) }
-
-                Slider(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = sliderPosition,
-                    onValueChange = { sliderPosition = it },
-                    steps = 8,
-                    valueRange = 10f..100f,
-                    thumb = {
-                        Box(
-                            modifier = Modifier
-                                .defaultMinSize(minWidth = 40.dp)
-                                .clip(MaterialTheme.shapes.large)
-                                .background(MaterialTheme.colorScheme.primary),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = (sliderPosition.toInt()).toString(),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
+                var quizDate by remember { mutableStateOf("") }
+                QuizDatePickerTextField(
+                    onDateSelected = { quizDate = it }
                 )
 
+                // SolveTime
+                Text(text = "풀이 시간 (단위: 분)")
+                var quizSolveTime by remember { mutableStateOf("") }
+                QuizTimeSlider(
+                    onValueChange = { quizSolveTime = it }
+                )
+
+                // CreateButton
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {}
@@ -217,6 +132,107 @@ fun CreateQuizScreen(
                     Text(text = "퀴즈 생성")
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun QuizTitleTextField(
+    quizTitle: String,
+    onValueChange: (String) -> Unit,
+    onClearClick: () -> Unit
+) {
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = quizTitle,
+        onValueChange = { onValueChange(it) },
+        label = {
+            Text(text = "제목")
+        },
+        placeholder = {
+            Text(text = "퀴즈 제목을 입력하세요.")
+        },
+        maxLines = 1,
+        trailingIcon = {
+            IconButton(onClick = onClearClick) {
+                Icon(
+                    imageVector = Icons.Outlined.Cancel,
+                    contentDescription = null
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun QuizDescriptionTextField(
+    quizDescription: String,
+    onValueChange: (String) -> Unit,
+    onClearClick: () -> Unit
+) {
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = quizDescription,
+        onValueChange = { onValueChange(it) },
+        label = {
+            Text(text = "설명")
+        },
+        placeholder = {
+            Text(text = "퀴즈 설명을 입력하세요.")
+        },
+        minLines = 6,
+        maxLines = 6,
+        trailingIcon = {
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.Top
+            ) {
+                IconButton(
+                    modifier = Modifier.fillMaxHeight(),
+                    onClick = onClearClick
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Cancel,
+                        contentDescription = null
+                    )
+                }
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun QuizDatePickerTextField(
+    onDateSelected: (String) -> Unit
+) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    var selectedDate by remember { mutableStateOf("") }
+
+    Box {
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = selectedDate,
+            onValueChange = { onDateSelected(it) },
+            label = {
+                Text(text = "시작 날짜")
+            },
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = { showDatePicker = true }) {
+                    Icon(
+                        imageVector = Icons.Default.Today,
+                        contentDescription = null
+                    )
+                }
+            }
+        )
+
+        if (showDatePicker) {
+            DatePickerModal(
+                onDateSelected = { selectedDate = it?.let { convertMillisToDate(it) } ?: "" },
+                onDismiss = { showDatePicker = false }
+            )
         }
     }
 }
@@ -252,6 +268,37 @@ fun DatePickerModal(
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
     return formatter.format(Date(millis))
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun QuizTimeSlider(
+    onValueChange: (String) -> Unit
+) {
+    var sliderPosition by remember { mutableFloatStateOf(0f) }
+
+    Slider(
+        modifier = Modifier.fillMaxWidth(),
+        value = sliderPosition,
+        onValueChange = { sliderPosition = it },
+        steps = 8,
+        valueRange = 10f..100f,
+        thumb = {
+            Box(
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 40.dp)
+                    .clip(MaterialTheme.shapes.large)
+                    .background(MaterialTheme.colorScheme.primary),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = (sliderPosition.toInt()).toString(),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true)
