@@ -19,8 +19,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.main.R
 
 @Composable
 fun StudyItem(
@@ -43,7 +46,8 @@ fun StudyItem(
                     .size(56.dp)
                     .clip(MaterialTheme.shapes.large)
                     .background(MaterialTheme.colorScheme.outlineVariant),
-                imageVector = Icons.Outlined.Star, contentDescription = null
+                imageVector = Icons.Outlined.Star,
+                contentDescription = stringResource(R.string.des_img_study_image)
             )
 
             Column(
@@ -65,9 +69,11 @@ fun StudyItem(
                 }
 
                 Text(
-                    text = "인원: ${studyMember}명",
+                    text = stringResource(R.string.text_study_user_count, studyMember),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
@@ -75,7 +81,10 @@ fun StudyItem(
                 modifier = Modifier.size(24.dp),
                 onClick = { /* TODO : ex) 스터디 나가기 */ }
             ) {
-                Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = stringResource(R.string.des_btn_study_menu)
+                )
             }
         }
 

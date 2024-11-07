@@ -26,7 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,7 +59,12 @@ fun MainScreen(
                 title = {},
                 actions = {
                     IconButton(onClick = onNotificationButtonClick) {
-                        Icon(imageVector = Icons.Outlined.Notifications, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Outlined.Notifications,
+                            contentDescription = stringResource(
+                                R.string.des_btn_notification
+                            )
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
@@ -68,7 +74,10 @@ fun MainScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onCreateStudyButtonClick) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.des_fab_create_study)
+                )
             }
         }
     ) { innerPadding ->
@@ -128,8 +137,11 @@ fun UserStudyContent(
     onStudyClick: () -> Unit,
 ) {
 
-    var state by remember { mutableStateOf(0) }
-    val titles = listOf("참여 스터디", "보관함")
+    var state by remember { mutableIntStateOf(0) }
+    val titles = listOf(
+        stringResource(R.string.tab_participating_study),
+        stringResource(R.string.tab_storage)
+    )
 
     PrimaryTabRow(selectedTabIndex = state) {
         titles.forEachIndexed { index, title ->
