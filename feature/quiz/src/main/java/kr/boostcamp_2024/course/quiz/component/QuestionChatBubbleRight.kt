@@ -21,7 +21,7 @@ import kotlinx.coroutines.delay
 import kr.boostcamp_2024.course.quiz.utils.formatTime
 
 @Composable
-private fun QuestionChatBubbleRight(solveTime: Int, modifier: Modifier) {
+fun QuestionChatBubbleRight(solveTime: Int, modifier: Modifier) {
     var countDownTime by remember { mutableIntStateOf(solveTime * 60) }
 
     LaunchedEffect(Unit) {
