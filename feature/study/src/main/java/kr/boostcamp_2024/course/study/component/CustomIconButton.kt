@@ -4,14 +4,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
 fun CustomIconButton(
     onClicked: () -> Unit,
-    icon: Painter,
+    imageVector: ImageVector,
     description: String? = null
 ) {
     IconButton(onClick = onClicked) {
-        Icon(painter = icon, contentDescription = description)
+        Icon(imageVector = imageVector, contentDescription = description)
     }
 }

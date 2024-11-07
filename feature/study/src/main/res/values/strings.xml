@@ -5,4 +5,6 @@
     <string name="property_tab_category_text">카테고리</string>
     <string name="bottom_nav_icon_category">카테고리</string>
     <string name="bottom_nav_icon_group">그룹원</string>
+    <string name="btn_remove_group">제거</string>
+    <string name="property_tab_group_text">그룹원</string>
 </resources>

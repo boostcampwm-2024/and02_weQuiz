@@ -84,7 +84,6 @@ fun DetailStudyDescription(
     ) {
         Text(modifier = Modifier.padding(bottom = 4.dp), text = title, style = MaterialTheme.typography.titleLarge)
         Text(
-            modifier = Modifier.padding(bottom = 12.dp),
             text = content,
             style = MaterialTheme.typography.bodyMedium,
             maxLines = 2,
@@ -100,7 +99,7 @@ fun AuthorComponent(
     profileImg: String? = null,
     author: String
 ) {
-    Row(modifier = Modifier.padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         CustomRoundImg(
             profileImg, modifier = Modifier
                 .clip(CircleShape)

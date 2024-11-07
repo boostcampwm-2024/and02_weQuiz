@@ -62,8 +62,7 @@ fun DetailStudyScreen(
                         icon = {
                             Icon(
                                 painter = painterResource(id = nav.iconId),
-                                tint = if (selected) Color.Yellow else Color.White,
-                                contentDescription = null
+                                contentDescription = "Bottom Navigation Icon"
                             )
                         }
                     )

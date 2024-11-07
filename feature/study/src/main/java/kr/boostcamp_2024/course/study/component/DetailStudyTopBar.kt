@@ -12,6 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -50,13 +55,13 @@ fun DetailStudyTopBar() {
         ) {
             CustomIconButton(
                 onClicked = { /* 뒤로 가기 동작 */ },
-                icon = painterResource(R.drawable.baseline_arrow_back_24),
+                imageVector =  Icons.AutoMirrored.Filled.ArrowBack,
                 description = "뒤로 가기 아이콘 버튼"
             )
 
             CustomIconButton(
                 onClicked = { Log.d("detail", "설정 클릭됨") },
-                icon = painterResource(R.drawable.baseline_settings_24),
+                imageVector = Icons.Filled.Settings,
                 description = "설정 아이콘 버튼"
             )
         }
@@ -68,14 +73,17 @@ fun DetailStudyTopBar() {
         ) {
             Text(text = "OS 스터디", style = MaterialTheme.typography.displayMedium, fontWeight = FontWeight.SemiBold)
             Text(text = "os 와압!!!", style = MaterialTheme.typography.bodySmall)
-            Button(onClick = {}, shape = RoundedCornerShape(8.dp)) {
-                Icon(
-                    modifier = Modifier.size(18.dp),
-                    painter = painterResource(R.drawable.baseline_account_circle_24),
-                    contentDescription = "그룹원 수 버튼"
-                )
-                Text(modifier = Modifier.padding(start = 8.dp), text = "10명 / 50명", style = MaterialTheme.typography.labelLarge)
-            }
+            AssistChip(
+                onClick = {},
+                label = {Text(modifier = Modifier.padding(start = 8.dp), text = "10명 / 50명", style = MaterialTheme.typography.labelLarge)},
+                leadingIcon = {
+                    Icon(
+                        modifier = Modifier.size(18.dp),
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = "그룹원 수 버튼"
+                    )
+                }
+            )
         }
     }
 }
