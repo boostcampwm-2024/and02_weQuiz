@@ -46,6 +46,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.quiz.CreateQuestionViewModel
 import kr.boostcamp_2024.course.quiz.R
+import kr.boostcamp_2024.course.quiz.presentation.component.ChatBubble
+import kr.boostcamp_2024.course.quiz.presentation.component.WeQuizTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -164,62 +166,6 @@ fun CreateQuestionContent(
             label = stringResource(id = R.string.txt_question_description_label),
             placeholder = stringResource(id = R.string.txt_question_description_placeholder),
             minLine = 6
-        )
-    }
-}
-
-@Composable
-fun WeQuizTextField(
-    label: String,
-    placeholder: String,
-    minLine: Int = 1
-) {
-    var text by remember { mutableStateOf("") }
-    TextField(
-        value = text,
-        onValueChange = { text = it },
-        modifier = Modifier.fillMaxWidth(),
-        textStyle = MaterialTheme.typography.bodyLarge,
-        label = { Text(label) },
-        placeholder = { Text(placeholder) },
-        minLines = minLine,
-        trailingIcon = {
-            IconButton(
-                onClick = { text = "" }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.outline_cancel_on_surface_variant),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    contentDescription = stringResource(id = R.string.des_clear_text)
-                )
-            }
-        }
-    )
-}
-
-@Composable
-fun ChatBubble(
-    modifier: Modifier = Modifier,
-    text: String
-) {
-    Box(
-        modifier = modifier
-            .background(
-                color = MaterialTheme.colorScheme.secondaryContainer,
-                shape = RoundedCornerShape(
-                    topStart = 20.dp,
-                    topEnd = 20.dp,
-                    bottomStart = 8.dp,
-                    bottomEnd = 20.dp
-                )
-            )
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text = text,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold
         )
     }
 }
