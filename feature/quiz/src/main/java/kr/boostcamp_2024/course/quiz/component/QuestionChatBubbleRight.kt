@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import kr.boostcamp_2024.course.quiz.utils.formatTime
 
 @Composable
 private fun QuestionChatBubbleRight(solveTime: Int, modifier: Modifier) {
