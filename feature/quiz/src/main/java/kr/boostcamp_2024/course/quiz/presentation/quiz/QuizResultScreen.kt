@@ -220,7 +220,7 @@ fun QuestionResultItem(
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.End),
-                onClick = { }
+                onClick = { }   // 상위 컴포저블에서 해결. 불필요
             ) {
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
