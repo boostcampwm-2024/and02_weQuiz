@@ -186,7 +186,7 @@ fun QuestionResultItem(
     ) {
         VerticalDivider(
             thickness = 4.dp,
-            color = if (isCorrect) Color(0xFF01A581) else Color(0xFFFF6A62)
+            color = if (isCorrect) MaterialTheme.colorScheme.surfaceTint else MaterialTheme.colorScheme.error
         )
 
         // TODO QuestionImageComposable
