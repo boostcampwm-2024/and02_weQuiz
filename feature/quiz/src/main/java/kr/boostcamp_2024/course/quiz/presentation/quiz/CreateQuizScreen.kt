@@ -44,6 +44,12 @@ fun CreateQuizScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuizSuccess: () -> Unit,        // TODO: 퀴즈 생성
 ) {
+
+    var quizTitle by remember { mutableStateOf("") }
+    var quizDescription by remember { mutableStateOf("") }
+    var quizDate by remember { mutableStateOf("") }
+    var quizSolveTime by remember { mutableFloatStateOf(0f) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -89,14 +95,12 @@ fun CreateQuizScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 // Title
-                var quizTitle by remember { mutableStateOf("") }
                 QuizTitleTextField(
                     quizTitle = quizTitle,
                     onValueChange = { quizTitle = it }
                 )
 
                 //Description
-                var quizDescription by remember { mutableStateOf("") }
                 QuizDescriptionTextField(
                     quizDescription = quizDescription,
                     onValueChange = { quizDescription = it }
@@ -104,15 +108,12 @@ fun CreateQuizScreen(
 
                 // StartTime
                 Text(text = stringResource(R.string.txt_quiz_start_time))
-                var quizDate by remember { mutableStateOf("") }
                 QuizDatePickerTextField(
                     onDateSelected = { quizDate = it }
                 )
 
                 // SolveTime
                 Text(text = stringResource(R.string.txt_quiz_solve_time))
-                var quizSolveTime by remember { mutableFloatStateOf(0f) }
-
                 QuizSolveTimeSlider(
                     value = quizSolveTime,
                     steps = 8,
