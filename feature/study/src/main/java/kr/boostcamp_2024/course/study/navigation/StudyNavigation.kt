@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import kr.boostcamp_2024.course.study.presentation.CreateStudyScreen
-import kr.boostcamp_2024.course.study.presentation.StudyScreen
+import kr.boostcamp_2024.course.study.presentation.DetailStudyScreen
 
 @Serializable
 data object CreateStudyRoute
@@ -35,7 +35,7 @@ fun NavGraphBuilder.studyNavGraph(
     }
 
     composable<StudyRoute> {
-        StudyScreen(
+        DetailStudyScreen(
             onNavigationButtonClick = onNavigationButtonClick,
             onCreateCategoryButtonClick = onCreateCategoryButtonClick,
             onCategoryClick = onCategoryClick,
