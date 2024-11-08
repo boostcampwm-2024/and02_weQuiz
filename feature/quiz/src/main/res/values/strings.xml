@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="top_app_bar_create_quiz">퀴즈 생성</string>
+    <string name="txt_create_quiz_guide">추가할 퀴즈에 대한\n정보를 입력해주세요!</string>
+    <string name="txt_quiz_start_time">퀴즈 시작 시간</string>
+    <string name="txt_quiz_solve_time">풀이 시간 (단위: 분)</string>
+    <string name="btn_create_quiz">퀴즈 생성</string>
+    <string name="txt_dialog_confirm">OK</string>
+    <string name="txt_dialog_dismiss">Cancel</string>
+    <string name="txt_quiz_date_picker">시작 날짜</string>
+    <string name="txt_quiz_description_label">설명</string>
+    <string name="txt_quiz_description_placeholder">퀴즈 설명을 입력하세요.</string>
+    <string name="txt_quiz_title_label">제목</string>
+    <string name="txt_quiz_title_placeholder">퀴즈 제목을 입력하세요.</string>
+    <string name="btn_clear_text">텍스트 지우기</string>
+    <string name="btn_show_date_picker">날짜 선택 열기</string>
+    <string name="btn_navigation">뒤로 가기</string>
+</resources>
