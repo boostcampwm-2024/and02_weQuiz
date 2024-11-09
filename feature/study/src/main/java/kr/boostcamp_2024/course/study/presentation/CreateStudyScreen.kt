@@ -24,7 +24,7 @@ import kr.boostcamp_2024.course.study.component.StudyCreationGuide
 import kr.boostcamp_2024.course.study.component.TitleTextField
 
 
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateStudyScreen(
     onNavigationButtonClick: () -> Unit,

@@ -22,7 +22,6 @@ fun NavController.navigateStudy() {
     navigate(StudyRoute)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.studyNavGraph(
     onNavigationButtonClick: () -> Unit,
     onCreateStudySuccess: () -> Unit,

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @Composable
 fun QuestionDetailScreen(
@@ -33,7 +34,7 @@ fun QuestionDetailScreen(
 @Preview(showBackground = true)
 @Composable
 fun QuestionDetailScreenPreview() {
-    QuestionDetailScreen(
-        onNavigationButtonClick = {},
-    )
+        QuestionDetailScreen(
+            onNavigationButtonClick = {},
+        )
 }
