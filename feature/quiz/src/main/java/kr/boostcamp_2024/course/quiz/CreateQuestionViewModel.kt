@@ -60,9 +60,9 @@ class CreateQuestionViewModel @Inject constructor() : ViewModel() {
         checkCreateQuestionValid()
     }
 
-    fun checkCreateQuestionValid() {
+    private fun checkCreateQuestionValid() {
         val curCreateQuestionState = createQuestionState.value
         _isCreateQuestionValid.value =
-            curCreateQuestionState.title.isNotEmpty() && !curCreateQuestionState.solution.isNullOrEmpty() && curCreateQuestionState.choices.all { it.isNotEmpty() }
+            curCreateQuestionState.title.isNotBlank() && !curCreateQuestionState.solution.isNullOrBlank() && curCreateQuestionState.choices.all { it.isNotBlank() }
     }
 }
