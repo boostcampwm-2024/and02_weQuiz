@@ -9,6 +9,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import kr.boostcamp_2024.course.study.R
 
 @ExperimentalMaterial3Api
 @Composable
@@ -18,7 +20,7 @@ fun CreateStudyTopAppBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = "스터디 생성", style = MaterialTheme.typography.titleLarge
+                text = stringResource(R.string.txt_create_study_top_app_bar), style = MaterialTheme.typography.titleLarge
             )
         },
         navigationIcon = {

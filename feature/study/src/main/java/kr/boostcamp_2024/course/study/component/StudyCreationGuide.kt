@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.study.R
 
@@ -30,7 +31,7 @@ fun StudyCreationGuide(modifier: Modifier = Modifier) {
         ) {
             Image(
                 painter = painterResource(id = R.drawable.create_study_character),
-                contentDescription = "Profile",
+                contentDescription = stringResource(R.string.des_create_study_character),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
@@ -39,9 +40,9 @@ fun StudyCreationGuide(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier.padding(start = 10.dp)
         ) {
-            LeftChatBubble("스터디를 추가하시군요! \uD83D\uDC4F")
+            LeftChatBubble(stringResource(R.string.txt_create_study_chat_bubble_first))
             Spacer(modifier = Modifier.height(6.dp))
-            LeftChatBubble("추가할 스터디에 대한\n정보를 입력해주세요!")
+            LeftChatBubble(stringResource(R.string.txt_create_study_chat_bubble_second))
         }
     }
 }

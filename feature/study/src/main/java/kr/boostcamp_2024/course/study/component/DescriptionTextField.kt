@@ -11,6 +11,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun DescriptionTextField(
@@ -19,15 +21,15 @@ fun DescriptionTextField(
     onClearDescriptionText: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val placeholderText = "스터디 설명을 입력해주세요."
+
 
     Box(modifier = modifier.fillMaxWidth()) {
         TextField(
             value = descriptionText,
             onValueChange = onDescriptionTextChange,
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("설명") },
-            placeholder = { Text(placeholderText) },
+            label = { Text(stringResource(R.string.txt_create_study_description_label)) },
+            placeholder = { Text(stringResource(R.string.txt_create_study_description_placeholder)) },
             minLines = 6,
             maxLines = 6,
         )
@@ -37,7 +39,7 @@ fun DescriptionTextField(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Cancel,
-                contentDescription = null
+                contentDescription = stringResource(R.string.des_clear_text)
             )
         }
     }

@@ -7,8 +7,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun StudyCreationButton(onCreateStudySuccess: () -> Unit, modifier: Modifier = Modifier) {
@@ -19,7 +21,7 @@ fun StudyCreationButton(onCreateStudySuccess: () -> Unit, modifier: Modifier = M
             .padding(16.dp),
     ) {
         Text(
-            text = "스터디 생성", modifier = modifier, style = MaterialTheme.typography.bodyMedium.copy(
+            text = stringResource(R.string.txt_study_creation_button), modifier = modifier, style = MaterialTheme.typography.bodyMedium.copy(
                 fontWeight = FontWeight.Medium
             )
         )

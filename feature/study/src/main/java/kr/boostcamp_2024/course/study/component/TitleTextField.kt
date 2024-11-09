@@ -11,6 +11,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import kr.boostcamp_2024.course.study.R
 
 
 @Composable
@@ -25,8 +27,8 @@ fun TitleTextField(
             value = titleText,
             onValueChange = onTitleTextChange,
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("제목") },
-            placeholder = { Text("스터디 제목을 입력해주세요.") },
+            label = { Text(stringResource(R.string.txt_create_study_title_text_field_label)) },
+            placeholder = { Text(stringResource(R.string.txt_create_study_title_text_field_placeholder)) },
         )
         IconButton(
             onClick = onClearTitleText,
@@ -34,7 +36,7 @@ fun TitleTextField(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Cancel,
-                contentDescription = "작성한 글 삭제"
+                contentDescription = stringResource(R.string.des_clear_text)
             )
         }
     }

@@ -14,25 +14,31 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.study.R
 
 @ExperimentalMaterial3Api
 @Composable
 fun MembersDropDownMenu(modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("최대 인원은 몇 명인가요?") }
-    val options = listOf("1명", "2명", "3명", "4명", "5명", "6명", "7명", "8명", "9명", "10명")
+    val membersDropDownMenuText = stringResource(R.string.txt_members_drop_down_menu)
+    var selectedOption by remember { mutableStateOf(membersDropDownMenuText) }
+    val dropDownMenuOptions = stringArrayResource(R.array.drop_down_menu_options)
+
     ExposedDropdownMenuBox(
         expanded = expanded, onExpandedChange = { expanded = !expanded }, modifier = modifier
     ) {
-        TextField(value = selectedOption,
+        TextField(
+            value = selectedOption,
             onValueChange = {},
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .fillMaxWidth()
                 .menuAnchor(),
-            label = { Text("인원") })
+            label = { Text(stringResource(R.string.txt_members_drop_down_menu_label)) })
 
         ExposedDropdownMenu(
             expanded = expanded,
@@ -41,7 +47,7 @@ fun MembersDropDownMenu(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .heightIn(max = 130.dp)
         ) {
-            options.forEach { option ->
+            dropDownMenuOptions.forEach { option ->
                 DropdownMenuItem(text = { Text(option) }, onClick = {
                     selectedOption = option
                     expanded = false
