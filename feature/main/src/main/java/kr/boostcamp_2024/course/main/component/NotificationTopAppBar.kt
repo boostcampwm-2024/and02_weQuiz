@@ -14,24 +14,29 @@ import androidx.compose.ui.Modifier
 
 @ExperimentalMaterial3Api
 @Composable
-fun CreateStudyTopAppBar(
+fun NotificationTopAppBar(
     modifier: Modifier = Modifier,
     onNavigationButtonClick: () -> Unit
 ) {
-    CenterAlignedTopAppBar(modifier = modifier, title = {
-        Text(
-            text = "알림", modifier = Modifier, style = MaterialTheme.typography.titleLarge
-        )
-    }, navigationIcon = {
-        IconButton(onClick = onNavigationButtonClick, modifier = modifier) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                modifier = modifier,
+    CenterAlignedTopAppBar(modifier = modifier,
+        title = {
+            Text(
+                text = "알림",
+                modifier = Modifier
             )
-        }
-    }, colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.surface
-    )
+        }, navigationIcon = {
+            IconButton(
+                onClick = onNavigationButtonClick,
+                modifier = modifier
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    modifier = modifier,
+                )
+            }
+        }, colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     )
 }

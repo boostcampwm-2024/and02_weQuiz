@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 
 @Composable
@@ -43,7 +42,7 @@ fun NotificationItem(
                 .size(80.dp)
                 .clip(CircleShape)
                 .background(Color.LightGray)
-        ) // 이미지 넣어야 하는 곳
+        ) /* todo: 이미지 넣어야 하는 곳 */
 
         Column(
             modifier = Modifier
@@ -51,13 +50,12 @@ fun NotificationItem(
         ) {
             Text(
                 text = notification.groupId.toString(), // 그룹이름 받아오는것으로 수정
-                fontSize = 14.sp
+                style = MaterialTheme.typography.labelMedium
             )
             Text(
                 text = "그룹 초대가 왔어요! 그룹원이 회원님을 기다립니다.",
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 2,
-                fontSize = 16.sp,
             )
 
             Spacer(Modifier.height(10.dp))
@@ -68,9 +66,6 @@ fun NotificationItem(
                 Button(
                     onClick = onRejectClick,
                     modifier = Modifier.size(width = 53.dp, height = 24.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFB2CCC1)
-                    ),
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,
@@ -78,7 +73,10 @@ fun NotificationItem(
                         bottom = 4.dp
                     )
                 ) {
-                    Text(text = "거절", fontSize = 11.sp)
+                    Text(
+                        text = "거절",
+                        style = MaterialTheme.typography.labelSmall,
+                    )
                 }
 
                 Spacer(Modifier.width(10.dp))
@@ -86,9 +84,6 @@ fun NotificationItem(
                 Button(
                     onClick = onAcceptClick,
                     modifier = Modifier.size(width = 53.dp, height = 24.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF006A5D)
-                    ),
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,
@@ -96,7 +91,10 @@ fun NotificationItem(
                         bottom = 4.dp
                     )
                 ) {
-                    Text(text = "수락", fontSize = 11.sp)
+                    Text(
+                        text = "수락",
+                        style = MaterialTheme.typography.labelSmall
+                    )
                 }
 
             }
@@ -105,13 +103,7 @@ fun NotificationItem(
     }
     Spacer(modifier = modifier.width(12.dp))
 
-    Spacer(
-        modifier = modifier
-            .padding(horizontal = 16.dp)
-            .height(1.dp)
-            .fillMaxWidth()
-            .background(Color(0xFFBFC9C3))
-    )
+    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 }
 
 /* 임시 활용 data class */

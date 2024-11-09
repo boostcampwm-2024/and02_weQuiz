@@ -9,25 +9,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import kr.boostcamp_2024.course.main.component.CreateStudyTopAppBar
 import kr.boostcamp_2024.course.main.component.Notification
 import kr.boostcamp_2024.course.main.component.NotificationItem
+import kr.boostcamp_2024.course.main.component.NotificationTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationScreen(onNavigationButtonClick: () -> Unit) {
-    val notifications = remember { generateDummyNotifications() } //뷰모델로 바꿔주기
+    val notifications = remember { generateDummyNotifications() } /*Todo 뷰모델로 바꿔주기*/
 
     Scaffold(topBar = {
-        CreateStudyTopAppBar(onNavigationButtonClick = onNavigationButtonClick)
+        NotificationTopAppBar(onNavigationButtonClick = onNavigationButtonClick)
     }) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            items(generateDummyNotifications().size) { index ->
-                NotificationItem(notifications[index], onRejectClick = {}, onAcceptClick = {}) //API 통신 시 바꿔주기
+            items(notifications.size) { index ->
+                NotificationItem(
+                    notifications[index],
+                    onRejectClick = {},
+                    onAcceptClick = {}) //API 통신 시 바꿔주기
             }
         }
     }
