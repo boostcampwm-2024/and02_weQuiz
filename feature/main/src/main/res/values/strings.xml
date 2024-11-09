@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_notification_item_invite_message">그룹 초대가 왔어요! 그룹원이 회원님을 기다립니다.</string>
+    <string name="txt_notification_item_reject">거절</string>
+    <string name="txt_notification_item_message">수락</string>
+    <string name="txt_notification_top_app_bar_title">알림</string>
+    <string name="txt_notification_top_app_bar_navigation_icon">뒤로 가기</string>
+</resources>

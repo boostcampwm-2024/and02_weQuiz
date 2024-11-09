@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import kr.boostcamp_2024.course.main.R
 
 @ExperimentalMaterial3Api
 @Composable
@@ -21,7 +23,7 @@ fun NotificationTopAppBar(
     CenterAlignedTopAppBar(modifier = modifier,
         title = {
             Text(
-                text = "알림",
+                text = stringResource(R.string.txt_notification_top_app_bar_title),
                 modifier = Modifier
             )
         }, navigationIcon = {
@@ -31,7 +33,7 @@ fun NotificationTopAppBar(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.txt_notification_top_app_bar_navigation_icon),
                     modifier = modifier,
                 )
             }

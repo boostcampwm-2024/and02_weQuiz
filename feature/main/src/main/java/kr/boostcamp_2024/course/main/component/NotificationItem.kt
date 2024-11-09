@@ -21,7 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.main.R
 
 
 @Composable
@@ -53,7 +55,7 @@ fun NotificationItem(
                 style = MaterialTheme.typography.labelMedium
             )
             Text(
-                text = "그룹 초대가 왔어요! 그룹원이 회원님을 기다립니다.",
+                text = stringResource(R.string.txt_notification_item_invite_message),
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 2,
             )
@@ -74,7 +76,7 @@ fun NotificationItem(
                     )
                 ) {
                     Text(
-                        text = "거절",
+                        text = stringResource(R.string.txt_notification_item_reject),
                         style = MaterialTheme.typography.labelSmall,
                     )
                 }
@@ -92,7 +94,7 @@ fun NotificationItem(
                     )
                 ) {
                     Text(
-                        text = "수락",
+                        text = stringResource(R.string.txt_notification_item_message),
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
