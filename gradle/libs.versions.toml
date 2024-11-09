@@ -3,7 +3,7 @@ agp = "8.7.1"
 androidDesugarJdkLibs = "2.1.2"
 
 # kotlin
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 kotlinxSerializationJson = "1.7.3"
 
 # androidx
@@ -28,6 +28,7 @@ firebaseBom = "33.3.0"
 # hilt
 hiltAndroid = "2.51.1"
 hiltAndroidCompiler = "2.51.1"
+hiltNavigationCompose = "1.2.0"
 
 # test
 junit = "4.13.2"
@@ -68,6 +69,7 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose"}
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
