@@ -20,6 +20,11 @@
     <string name="txt_create_study_title_text_field_placeholder">스터디 제목을 입력해주세요.</string>
     <string name="des_clear_text">텍스트 지우기</string>
     <string name="txt_create_study_top_app_bar">스터디 생성</string>
+    <string name="dialog_create_group_title">그룹원의 이메일을 입력해주세요!\n초대 메일이 갑니다!</string>
+    <string name="btn_dialog_create_group_confirm">초대</string>
+    <string name="btn_dialog_create_group_dismiss">취소</string>
+    <string name="textfield_label_create_group">그룹원 이메일</string>
+    <string name="textfield_placeholder_create_group">그룹원 이메일을 입력주세요.</string>
     <string-array name="drop_down_menu_options">
         <item>1명</item>
         <item>2명</item>
