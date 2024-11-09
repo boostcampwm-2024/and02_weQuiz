@@ -1,6 +1,7 @@
 package kr.boostcamp_2024.course.study.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -47,27 +48,28 @@ fun CategoryItem(
 
 @Composable
 fun QuizCountBadge(categoryImg: String?, quizCount: Int) {
-    BadgedBox(
+    Box(
         modifier = Modifier.size(120.dp),
-        badge = {
-            Badge(
-                modifier = Modifier.size(24.dp),
-                containerColor = MaterialTheme.colorScheme.error
-            ) {
-                Text(
-                    text = quizCount.toString(),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
     ) {
         CustomRoundImg(
             categoryImg, modifier = Modifier
                 .fillMaxSize()
                 .clip(MaterialTheme.shapes.large)
         )
+        Badge(
+            modifier = Modifier
+                .padding(8.dp)
+                .size(24.dp)
+                .align(Alignment.TopEnd),
+            containerColor = MaterialTheme.colorScheme.error
+        ) {
+            Text(
+                text = quizCount.toString(),
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
