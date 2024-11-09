@@ -33,7 +33,7 @@ fun QuestionDetailScreen(
 @Preview(showBackground = true)
 @Composable
 fun QuestionDetailScreenPreview() {
-    QuestionDetailScreen(
-        onNavigationButtonClick = {},
-    )
+        QuestionDetailScreen(
+            onNavigationButtonClick = {},
+        )
 }
