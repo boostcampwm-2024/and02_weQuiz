@@ -23,3 +23,4 @@ androidExtension.apply {
 configureComposeAndroid()
 configureKotlinAndroid()
 configureHiltAndroid()
+configureFirebase()
