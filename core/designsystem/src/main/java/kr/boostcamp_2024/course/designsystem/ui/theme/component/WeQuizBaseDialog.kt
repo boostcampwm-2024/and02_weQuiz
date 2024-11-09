@@ -3,10 +3,10 @@ package kr.boostcamp_2024.course.designsystem.ui.theme.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -29,7 +29,8 @@ fun WeQuizBaseDialog(
     dismissTitle: String,
     onConfirm: () -> Unit,
     onDismissRequest: () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+    confirmButtonEnabled: Boolean
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -58,7 +59,18 @@ fun WeQuizBaseDialog(
             }
         },
         confirmButton = {
-            Button(onClick = onConfirm) {
+            Button(
+                onClick = onConfirm,
+                enabled = confirmButtonEnabled,
+                colors = if (confirmButtonEnabled) {
+                    ButtonDefaults.buttonColors()
+                } else {
+                    ButtonDefaults.buttonColors(
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            ) {
                 Text(confirmTitle)
             }
         }
@@ -76,6 +88,7 @@ private fun WeQuizBaseDialogPreview() {
             dismissTitle = "Cancel",
             onConfirm = {},
             onDismissRequest = {},
+            confirmButtonEnabled = false,
             content = {
                 TextField(
                     value = "",

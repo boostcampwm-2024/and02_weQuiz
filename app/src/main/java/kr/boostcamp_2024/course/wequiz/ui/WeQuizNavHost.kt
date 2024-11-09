@@ -19,8 +19,6 @@ import kr.boostcamp_2024.course.quiz.navigation.navigateQuestionScreen
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuiz
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuizResult
 import kr.boostcamp_2024.course.quiz.navigation.quizNavGraph
-import kr.boostcamp_2024.course.study.navigation.groupNavGraph
-import kr.boostcamp_2024.course.study.navigation.navigateCreateGroup
 import kr.boostcamp_2024.course.study.navigation.navigateCreateStudy
 import kr.boostcamp_2024.course.study.navigation.navigateStudy
 import kr.boostcamp_2024.course.study.navigation.studyNavGraph
@@ -55,7 +53,6 @@ fun WeQuizNavHost(
             onNavigationButtonClick = navController::navigateUp,
             onCreateStudySuccess = navController::navigateUp,
             onCreateCategoryButtonClick = navController::navigateCreateCategory,
-            onCreateGroupButtonClick = navController::navigateCreateGroup,
             onCategoryClick = navController::navigateCategory,
         )
 
@@ -73,11 +70,6 @@ fun WeQuizNavHost(
             onQuizStartButtonClick = navController::navigateQuestionScreen,
             onQuestionClick = navController::navigateQuestionDetail,
             onCreateQuizSuccess = navController::navigateUp,
-        )
-
-        groupNavGraph(
-            onConfirmButtonClick = navController::navigateUp,
-            onDismissButtonClick = navController::navigateUp,
         )
     }
 }

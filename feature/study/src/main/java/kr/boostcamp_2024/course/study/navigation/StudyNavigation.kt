@@ -25,7 +25,6 @@ fun NavGraphBuilder.studyNavGraph(
     onNavigationButtonClick: () -> Unit,
     onCreateStudySuccess: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
-    onCreateGroupButtonClick: () -> Unit,
     onCategoryClick: () -> Unit
 ) {
     composable<CreateStudyRoute> {
@@ -39,7 +38,6 @@ fun NavGraphBuilder.studyNavGraph(
         DetailStudyScreen(
             onNavigationButtonClick = onNavigationButtonClick,
             onCreateCategoryButtonClick = onCreateCategoryButtonClick,
-            onCreateGroupButtonClick = onCreateGroupButtonClick,
             onCategoryClick = onCategoryClick,
         )
     }

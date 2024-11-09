@@ -25,7 +25,6 @@ import kr.boostcamp_2024.course.study.navigation.GroupScreenRoute
 fun DetailStudyScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
-    onCreateGroupButtonClick: () -> Unit,
     onCategoryClick: () -> Unit,
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }
@@ -63,7 +62,7 @@ fun DetailStudyScreen(
         ) {
             when (selectedScreenIndex) {
                 0 -> CategoryListScreen(onCreateCategoryButtonClick, onCategoryClick)
-                1 -> GroupListScreen(onCreateGroupButtonClick)
+                1 -> GroupListScreen()
             }
         }
     }
