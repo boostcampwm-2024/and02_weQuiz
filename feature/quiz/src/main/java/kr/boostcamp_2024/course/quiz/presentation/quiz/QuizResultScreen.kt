@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.quiz
+package kr.boostcamp_2024.course.quiz.presentation.quiz
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -44,6 +44,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.quiz.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -111,7 +112,7 @@ fun QuizResultContent(
             modifier = Modifier
                 .size(120.dp)
                 .align(Alignment.CenterVertically),
-            imagePainter = painterResource(id = R.drawable.sample_profile),
+            imagePainter = painterResource(id = R.drawable.sample_profile1),
             contentDescription = null
         )
     }
