@@ -25,7 +25,8 @@ import kr.boostcamp_2024.course.study.navigation.GroupScreenRoute
 fun DetailStudyScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
-    onCategoryClick: () -> Unit
+    onCreateGroupButtonClick: () -> Unit,
+    onCategoryClick: () -> Unit,
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }
     val screenList = listOf(
@@ -33,7 +34,7 @@ fun DetailStudyScreen(
     )
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { DetailStudyTopBar() },
+        topBar = { DetailStudyTopBar(onNavigationButtonClick) },
         bottomBar = {
             NavigationBar {
                 screenList.forEachIndexed { index, screen ->
@@ -61,8 +62,8 @@ fun DetailStudyScreen(
                 .padding(innerPadding)
         ) {
             when (selectedScreenIndex) {
-                0 -> CategoryListScreen()
-                1 -> GroupListScreen()
+                0 -> CategoryListScreen(onCreateCategoryButtonClick, onCategoryClick)
+                1 -> GroupListScreen(onCreateGroupButtonClick)
             }
         }
     }

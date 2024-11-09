@@ -26,13 +26,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.study.R
 
-@Preview
 @Composable
-fun DetailStudyTopBar() {
+fun DetailStudyTopBar(navButtonClicked: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -53,8 +51,8 @@ fun DetailStudyTopBar() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             CustomIconButton(
-                onClicked = { /* 뒤로 가기 동작 */ },
-                imageVector =  Icons.AutoMirrored.Filled.ArrowBack,
+                onClicked = navButtonClicked,
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 description = stringResource(R.string.btn_detail_study_top_bar_back)
             )
 
@@ -74,7 +72,13 @@ fun DetailStudyTopBar() {
             Text(text = "os 와압!!!", style = MaterialTheme.typography.bodySmall)
             AssistChip(
                 onClick = {},
-                label = {Text(modifier = Modifier.padding(start = 8.dp), text = "10명 / 50명", style = MaterialTheme.typography.labelLarge)},
+                label = {
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = "10명 / 50명",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                },
                 leadingIcon = {
                     Icon(
                         modifier = Modifier.size(18.dp),
