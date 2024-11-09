@@ -56,7 +56,6 @@ fun CreateQuestionScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        style = MaterialTheme.typography.titleLarge,
                         text = stringResource(id = R.string.top_app_bar_create_question)
                     )
                 },
@@ -201,7 +200,7 @@ fun CreateChoiceItems(
             .padding(vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        for ((index, choiceText) in choices.withIndex()) {
+        choices.forEachIndexed { index, choiceText ->
             ChoiceItem(
                 text = choiceText,
                 onTextChanged = { updateChoiceText(index, it) },
