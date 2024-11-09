@@ -1,5 +1,6 @@
 plugins {
     id("convention.android.library")
+    id("convention.firebase")
     id("convention.android.hilt")
 }
 
