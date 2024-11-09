@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,7 +40,7 @@ fun DetailStudyTopBar() {
     ) {
         Image(
             painter = painterResource(R.drawable.waterfall),
-            contentDescription = "배경 이미지",
+            contentDescription = stringResource(R.string.top_bar_detail_study_image),
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
@@ -54,13 +55,13 @@ fun DetailStudyTopBar() {
             CustomIconButton(
                 onClicked = { /* 뒤로 가기 동작 */ },
                 imageVector =  Icons.AutoMirrored.Filled.ArrowBack,
-                description = "뒤로 가기 아이콘 버튼"
+                description = stringResource(R.string.btn_detail_study_top_bar_back)
             )
 
             CustomIconButton(
                 onClicked = { Log.d("detail", "설정 클릭됨") },
                 imageVector = Icons.Filled.Settings,
-                description = "설정 아이콘 버튼"
+                description = stringResource(R.string.btn_top_bar_detail_study_setting)
             )
         }
         Column(
@@ -78,7 +79,7 @@ fun DetailStudyTopBar() {
                     Icon(
                         modifier = Modifier.size(18.dp),
                         imageVector = Icons.Filled.AccountCircle,
-                        contentDescription = "그룹원 수 버튼"
+                        contentDescription = stringResource(R.string.assist_chip_top_bar_detail_study)
                     )
                 }
             )

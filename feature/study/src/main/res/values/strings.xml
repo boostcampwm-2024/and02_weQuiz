@@ -20,6 +20,11 @@
     <string name="txt_create_study_title_text_field_placeholder">스터디 제목을 입력해주세요.</string>
     <string name="des_clear_text">텍스트 지우기</string>
     <string name="txt_create_study_top_app_bar">스터디 생성</string>
+    <string name="top_bar_detail_study_image">배경 이미지</string>
+    <string name="btn_detail_study_top_bar_back">뒤로 가기 아이콘 버튼</string>
+    <string name="btn_top_bar_detail_study_setting">설정 아이콘 버튼</string>
+    <string name="assist_chip_top_bar_detail_study">그룹원 수 칩</string>
+    <string name="icon_bottm_nav_detail_study">Bottom Navigation Icon</string>
     <string-array name="drop_down_menu_options">
         <item>1명</item>
         <item>2명</item>

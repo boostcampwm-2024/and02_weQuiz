@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.DetailStudyTopBar
 import kr.boostcamp_2024.course.study.navigation.DetailScreenRoute
 import kr.boostcamp_2024.course.study.navigation.GroupScreenRoute
@@ -62,7 +63,7 @@ fun DetailStudyScreen(
                         icon = {
                             Icon(
                                 painter = painterResource(id = nav.iconId),
-                                contentDescription = "Bottom Navigation Icon"
+                                contentDescription = stringResource(R.string.icon_bottm_nav_detail_study)
                             )
                         }
                     )
