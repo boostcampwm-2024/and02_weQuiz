@@ -4,10 +4,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
-import kr.boostcamp_2024.course.quiz.QuizResultScreen
 import kr.boostcamp_2024.course.quiz.presentation.question.CreateQuestionScreen
 import kr.boostcamp_2024.course.quiz.presentation.question.QuestionDetailScreen
 import kr.boostcamp_2024.course.quiz.presentation.question.QuestionScreen
+import kr.boostcamp_2024.course.quiz.presentation.quiz.CreateQuizScreen
+import kr.boostcamp_2024.course.quiz.presentation.quiz.QuizResultScreen
 import kr.boostcamp_2024.course.quiz.presentation.quiz.QuizScreen
 
 @Serializable
@@ -24,6 +25,9 @@ data object QuizRoute
 
 @Serializable
 data object QuizResultRoute
+
+@Serializable
+data object CreateQuizRoute
 
 fun NavController.navigateCreateQuestion() {
     navigate(CreateQuestionRoute)
@@ -53,12 +57,17 @@ fun NavController.navigateQuizResult() {
     }
 }
 
+fun NavController.navigateCreateQuiz() {
+    navigate(CreateQuizRoute)
+}
+
 fun NavGraphBuilder.quizNavGraph(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionSuccess: () -> Unit,
     onQuizFinished: () -> Unit,
     onQuizStartButtonClick: () -> Unit,
     onQuestionClick: () -> Unit,
+    onCreateQuizSuccess: () -> Unit,
 ) {
     composable<CreateQuestionRoute> {
         CreateQuestionScreen(
@@ -87,6 +96,12 @@ fun NavGraphBuilder.quizNavGraph(
         QuizResultScreen(
             onNavigationButtonClick = onNavigationButtonClick,
             onQuestionClick = onQuestionClick,
+        )
+    }
+    composable<CreateQuizRoute> {
+        CreateQuizScreen(
+            onNavigationButtonClick = onNavigationButtonClick,
+            onCreateQuizSuccess = onCreateQuizSuccess,
         )
     }
 }
