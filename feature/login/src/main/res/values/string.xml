@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_introduce_app1">우리 같이 퀴즈 풀지 않을래??</string>
+    <string name="txt_introduce_app2">We Quiz~?🍦🍨</string>
+    <string name="txt_login_email_label">이메일</string>
+    <string name="txt_login_password_label">패스워드</string>
+    <string name="txt_login_email_placeholder">이메일을 입력해주세요.</string>
+    <string name="txt_login_password_placeholder">패스워드를 입력해주세요.</string>
+    <string name="btn_sign_in">로그인</string>
+    <string name="btn_sign_up">회원가입</string>
+    <string name="txt_experience">체험하기</string>
+    <!--  content description  -->
+    <string name="des_clear_text">텍스트 지우기</string>
+</resources>
