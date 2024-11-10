@@ -15,9 +15,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.utils.formatTime
 
 @Composable
@@ -38,10 +40,10 @@ fun QuestionChatBubbleRight(solveTime: Int, modifier: Modifier) {
                     topStart = 20.dp, topEnd = 20.dp, bottomStart = 20.dp, bottomEnd = 8.dp
                 )
             )
-            .background(Color(0xFFCEE9DD))
+            .background(MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Text(
-            text = "⏰$formattedTime",
+            text =  "${stringResource(R.string.txt_question_timer)}$formattedTime",
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,

@@ -6,12 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.quiz.R
@@ -48,46 +48,46 @@ fun QuestionScreen(
     var showDialog by remember { mutableStateOf(false) }
     var selectedIndexList by remember { mutableStateOf(List(10) { -1 }) }
     var isSubmitting by remember { mutableStateOf(false) }
-    val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .padding(bottom = 120.dp)
-        ) {
-            QuestionTopBar { showDialog = true }
-            LinearProgressIndicator(
-                progress = { (currentPage + 1) / pagerState.pageCount.toFloat() },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                //TODO (문제 풀이 시간 받아서 solveTime에 넣기)
-                QuestionChatBubbleRight(20, Modifier.align(Alignment.Center))
-                RoundImage(Modifier.align(Alignment.CenterEnd))
+        LazyColumn {
+            item {
+                QuestionTopBar { showDialog = true }
             }
-            HorizontalPager(
-                state = pagerState,
-                userScrollEnabled = false
-            ) {
-                Column {
-                    QuestionTitleAndDetail(
-                        //TODO (문제 제목, 설명 받아오기)
-                        "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
-                        "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
-                        modifier = Modifier.padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
-                    )
-                    Question(
-                        modifier = Modifier.padding(bottom = 10.dp, start = 10.dp, end = 10.dp),
-                        selectedIndex = selectedIndexList[currentPage],
-                        onOptionSelected = { newIndex ->
-                            selectedIndex = newIndex
-                            selectedIndexList = selectedIndexList.toMutableList().apply {
-                                this[currentPage] = newIndex
+            item {
+                LinearProgressIndicator(
+                    progress = {(currentPage + 1) / pagerState.pageCount.toFloat()},
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    QuestionChatBubbleRight(20, Modifier.align(Alignment.Center))
+                    RoundImage(Modifier.align(Alignment.CenterEnd))
+                }
+            }
+            item {
+                HorizontalPager(
+                    state = pagerState,
+                    userScrollEnabled = false
+                ) {
+                    Column {
+                        QuestionTitleAndDetail(
+                            // TODO (문제 제목, 설명 받아오기)
+                            title = "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음.",
+                            description = "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음."
+                        )
+                        Question(
+                            selectedIndex = selectedIndexList[currentPage],
+                            onOptionSelected = { newIndex ->
+                                selectedIndex = newIndex
+                                selectedIndexList = selectedIndexList.toMutableList().apply {
+                                    this[currentPage] = newIndex
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
@@ -95,7 +95,7 @@ fun QuestionScreen(
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .background(Color.White.copy(alpha = 0.8f))
+                .background(Color.Transparent)
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
@@ -104,16 +104,14 @@ fun QuestionScreen(
                     if (currentPage < pagerState.pageCount - 1) {
                         currentPage++
                     } else {
-                        //question dialog 띄우기
                         showDialog = true
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = if (currentPage == pagerState.pageCount - 1) stringResource(R.string.txt_question_done) else stringResource(
-                        R.string.txt_question_next_question
-                    )
+                    text = if (currentPage == pagerState.pageCount - 1) stringResource(R.string.txt_question_done)
+                    else stringResource(R.string.txt_question_next_question)
                 )
             }
             Button(
@@ -125,41 +123,42 @@ fun QuestionScreen(
                 enabled = currentPage > 0,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 5.dp)
+                    .padding(vertical = 5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                )
             ) {
                 Text(text = "이전 문제")
             }
-            Text(
-                text = "${currentPage + 1}/10",
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-            )
         }
     }
+
     if (showDialog) {
         QuestionDialog(
-            title = if (currentPage == pagerState.pageCount - 1)
-                stringResource(R.string.dialog_submit_script)
-            else
-                stringResource(R.string.dialog_exit_script),
-            yesTitle = if (currentPage == pagerState.pageCount - 1) stringResource(R.string.txt_question_submit) else stringResource(
-                R.string.txt_question_exit
-            ),
+            title = if (currentPage == pagerState.pageCount - 1) stringResource(R.string.dialog_submit_script)
+            else stringResource(R.string.dialog_exit_script),
+            yesTitle = if (currentPage == pagerState.pageCount - 1) stringResource(R.string.txt_question_submit)
+            else stringResource(R.string.txt_question_exit),
             noTitle = stringResource(R.string.txt_question_cancel),
             onConfirm = {
                 showDialog = false
                 if (currentPage == pagerState.pageCount - 1) {
                     isSubmitting = true
-                    //TODO (제출 버튼 눌렀을 때)
-                    //네트워크 통신 진행 - selectedIndexList 전달
-                    //통신 완료 후 onQuizFinished() 실행(isSubmitting = false로 변경)
-                    //백그라운드에서 실행시키고 dialog로 로딩 창 실행
+                    /*
+                    TODO (제출 버튼 눌렀을 때)
+                    네트워크 통신 진행 - selectedIndexList 전달
+                    통신 완료 후 onQuizFinished() 실행(isSubmitting = false로 변경)
+                    */
                 } else {
                     isSubmitting = true
-                    //TODO (나가기 버튼 눌렀을 때)
-                    //네트워크 통신 진행 - selectedIndexList 전달
-                    //통신 완료 후 onNavigationButtonClick() 실행(isSubmitting = false로 변경)
-                    //백그라운드에서 실행시키고 dialog로 로딩 창 실행
+                    /*
+                    TODO (나가기 버튼 눌렀을 때)
+                    네트워크 통신 진행 - selectedIndexList 전달
+                    통신 완료 후 onNavigationButtonClick() 실행(isSubmitting = false로 변경)
+                    */
                     onNavigationButtonClick()
                 }
             },

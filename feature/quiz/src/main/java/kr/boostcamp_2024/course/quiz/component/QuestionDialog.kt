@@ -15,7 +15,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun QuestionDialog(title: String, yesTitle: String, noTitle: String,  onConfirm: () -> Unit, onDismissRequest: () -> Unit) {
+fun QuestionDialog(
+    title: String,
+    yesTitle: String,
+    noTitle: String,
+    onConfirm: () -> Unit,
+    onDismissRequest: () -> Unit
+) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
