@@ -7,4 +7,29 @@
     <string name="bottom_nav_icon_group">그룹원</string>
     <string name="btn_remove_group">제거</string>
     <string name="property_tab_group_text">그룹원</string>
+    <string name="top_app_bar_create_study">스터디 생성</string>
+    <string name="txt_create_study_description_label">설명</string>
+    <string name="txt_create_study_description_placeholder">스터디 설명을 입력해주세요.</string>
+    <string name="txt_members_drop_down_menu">최대 인원은 몇 명인가요?</string>
+    <string name="txt_members_drop_down_menu_label">인원</string>
+    <string name="txt_study_creation_button">스터디 생성</string>
+    <string name="des_create_study_character">스터디 생성 설명 캐릭터</string>
+    <string name="txt_create_study_chat_bubble_first">스터디를 추가하시군요! 👏</string>
+    <string name="txt_create_study_chat_bubble_second">추가할 스터디에 대한\n정보를 입력해주세요!</string>
+    <string name="txt_create_study_title_text_field_label">제목</string>
+    <string name="txt_create_study_title_text_field_placeholder">스터디 제목을 입력해주세요.</string>
+    <string name="des_clear_text">텍스트 지우기</string>
+    <string name="txt_create_study_top_app_bar">스터디 생성</string>
+    <string-array name="drop_down_menu_options">
+        <item>1명</item>
+        <item>2명</item>
+        <item>3명</item>
+        <item>4명</item>
+        <item>5명</item>
+        <item>6명</item>
+        <item>7명</item>
+        <item>8명</item>
+        <item>9명</item>
+        <item>10명</item>
+    </string-array>
 </resources>

@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun CategoryScreen(
     onNavigationButtonClick: () -> Unit,
-    onCreateQuestionButtonClick: () -> Unit,
+    onCreateQuizButtonClick: () -> Unit,
     onQuizClick: () -> Unit,
 ) {
     Box(
@@ -28,10 +28,10 @@ fun CategoryScreen(
         }
 
         Button(
-            modifier = Modifier.align(Alignment.TopEnd),
-            onClick = onCreateQuestionButtonClick
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onClick = onCreateQuizButtonClick
         ) {
-            Text(text = "문제 생성")
+            Text(text = "퀴즈 생성")
         }
 
         Column(
@@ -66,7 +66,7 @@ fun CategoryScreen(
 fun CategoryScreenPreview() {
     CategoryScreen(
         onNavigationButtonClick = {},
-        onCreateQuestionButtonClick = {},
+        onCreateQuizButtonClick = {},
         onQuizClick = {},
     )
 }
