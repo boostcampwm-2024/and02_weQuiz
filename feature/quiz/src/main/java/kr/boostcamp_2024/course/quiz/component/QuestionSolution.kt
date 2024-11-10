@@ -22,11 +22,7 @@ import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 fun QuestionSolution(solution: String) {
-    Column(
-        modifier = Modifier.padding(
-            start = 16.dp, end = 16.dp, top = 0.dp, bottom = 10.dp
-        )
-    ) {
+    Column {
         Text(
             text = "해설", modifier = Modifier, style = MaterialTheme.typography.bodyMedium
         )

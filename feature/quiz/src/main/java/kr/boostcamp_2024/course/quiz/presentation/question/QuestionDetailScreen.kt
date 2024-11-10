@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.presentation.question
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -9,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.quiz.component.QuestionDescription
 import kr.boostcamp_2024.course.quiz.component.QuestionDetailTopAppBar
@@ -27,7 +29,9 @@ fun QuestionDetailScreen(onNavigationButtonClick: () -> Unit) {
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .verticalScroll(scrollState)
+                .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 10.dp)
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             QuestionTitle(question.title)
 

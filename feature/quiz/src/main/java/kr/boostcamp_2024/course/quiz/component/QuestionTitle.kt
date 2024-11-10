@@ -13,9 +13,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun QuestionTitle(title: String) {
     Column(
-        modifier = Modifier.padding(
-            start = 16.dp, end = 16.dp, top = 0.dp, bottom = 10.dp
-        )
+        modifier = Modifier
     ) {
         Text(text = "제목", modifier = Modifier, style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(10.dp))

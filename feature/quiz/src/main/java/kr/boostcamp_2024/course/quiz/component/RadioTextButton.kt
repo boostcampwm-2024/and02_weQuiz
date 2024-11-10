@@ -19,7 +19,6 @@ fun RadioTextButton(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 0.dp)
             .clickable(onClick = onclick)
     ) {
         RadioButton(

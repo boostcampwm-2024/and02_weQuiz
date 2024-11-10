@@ -17,22 +17,31 @@ import androidx.compose.ui.unit.dp
 @ExperimentalMaterial3Api
 @Composable
 fun QuestionDetailTopAppBar(
-    modifier: Modifier = Modifier, onNavigationButtonClick: () -> Unit
+    modifier: Modifier = Modifier,
+    onNavigationButtonClick: () -> Unit
 ) {
-    CenterAlignedTopAppBar(modifier = modifier.padding(bottom = 20.dp), title = {
-        Text(
-            text = "문제 상세 설명", modifier = Modifier, style = MaterialTheme.typography.titleLarge
-        )
-    }, navigationIcon = {
-        IconButton(onClick = onNavigationButtonClick, modifier = modifier) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                modifier = modifier,
+    CenterAlignedTopAppBar(
+        modifier = modifier.padding(bottom = 20.dp),
+        title = {
+            Text(
+                text = "문제 상세 설명",
+                modifier = Modifier,
+                style = MaterialTheme.typography.titleLarge
             )
-        }
-    }, colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.surface
-    )
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = onNavigationButtonClick,
+                modifier = Modifier
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    modifier = Modifier,
+                )
+            }
+        }, colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     )
 }

@@ -20,7 +20,7 @@ fun ChatBubble(text: String, modifier: Modifier = Modifier) {
             .clip(
                 RoundedCornerShape(10.dp)
             )
-            .background(Color(0xFFCEE9DD))
+            .background(MaterialTheme.colorScheme.secondaryContainer)
     ) {
 
         Text(
