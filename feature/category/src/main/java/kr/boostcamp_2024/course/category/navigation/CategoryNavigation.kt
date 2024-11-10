@@ -23,14 +23,14 @@ fun NavController.navigateCreateCategory() {
 
 fun NavGraphBuilder.categoryNavGraph(
     onNavigationButtonClick: () -> Unit,
-    onCreateQuestionButtonClick: () -> Unit,
+    onCreateQuizButtonClick: () -> Unit,
     onQuizClick: () -> Unit,
     onCreateCategorySuccess: () -> Unit,
 ) {
     composable<CategoryRoute> {
         CategoryScreen(
             onNavigationButtonClick = onNavigationButtonClick,
-            onCreateQuestionButtonClick = onCreateQuestionButtonClick,
+            onCreateQuizButtonClick = onCreateQuizButtonClick,
             onQuizClick = onQuizClick,
         )
     }

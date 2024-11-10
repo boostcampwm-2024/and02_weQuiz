@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_notification_item_invite_message">그룹 초대가 왔어요! 그룹원이 회원님을 기다립니다.</string>
+    <string name="txt_notification_item_reject">거절</string>
+    <string name="txt_notification_item_message">수락</string>
+    <string name="txt_notification_top_app_bar_title">알림</string>
+    <string name="txt_notification_top_app_bar_navigation_icon">뒤로 가기</string>
+    <string name="des_btn_notification">알림</string>
+    <string name="des_fab_create_study">스터디 생성</string>
+    <string name="des_img_study_image">스터디 이미지</string>
+    <string name="des_btn_study_menu">스터디 메뉴</string>
+    <string name="text_study_user_count">인원: %1$s명</string>
+    <string name="tab_participating_study">참여 스터디</string>
+    <string name="tab_storage">보관함</string>
+</resources>

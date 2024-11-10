@@ -70,8 +70,8 @@ private fun getQuestion(): Question {
 
 @Preview
 @Composable
-private fun QuestionDetailScreenPreview() {
-    WeQuizTheme {
-        QuestionDetailScreen {}
-    }
+fun QuestionDetailScreenPreview() {
+        QuestionDetailScreen(
+            onNavigationButtonClick = {},
+        )
 }

@@ -6,4 +6,37 @@
     <string name="txt_question_detail_solution">해설</string>
     <string name="des_question_detail_solution_profile">프로필 사진</string>
     <string name="txt_question_detail_title">제목</string>
+    <string name="txt_quiz_result_guide">퀴즈는 어땠나요?\n퀴즈 내용을 해설과 함께\n확인해보세요!</string>
+    <string name="txt_quiz_result_score">📝 점수: %1$d/%2$d</string>
+    <string name="txt_quiz_question_list">문제 리스트</string>
+    <string name="top_app_bar_quiz_result">Quiz Result</string>
+    <string name="top_app_bar_create_quiz">퀴즈 생성</string>
+    <string name="txt_create_quiz_guide">추가할 퀴즈에 대한\n정보를 입력해주세요!</string>
+    <string name="txt_quiz_start_time">퀴즈 시작 시간</string>
+    <string name="txt_quiz_solve_time">풀이 시간 (단위: 분)</string>
+    <string name="btn_create_quiz">퀴즈 생성</string>
+    <string name="txt_dialog_confirm">OK</string>
+    <string name="txt_dialog_dismiss">Cancel</string>
+    <string name="txt_quiz_date_picker">시작 날짜</string>
+    <string name="txt_quiz_description_label">설명</string>
+    <string name="txt_quiz_description_placeholder">퀴즈 설명을 입력하세요.</string>
+    <string name="txt_quiz_title_label">제목</string>
+    <string name="txt_quiz_title_placeholder">퀴즈 제목을 입력하세요.</string>
+    <string name="btn_clear_text">텍스트 지우기</string>
+    <string name="btn_show_date_picker">날짜 선택 열기</string>
+    <string name="btn_navigation">뒤로 가기</string>
+    <string name="top_app_bar_create_question">문제 출제</string>
+    <string name="txt_create_question_guide1">문제를 출제하시군요!👍</string>
+    <string name="txt_create_question_guide2">어떤 문제를 낼 건가요?\n설명을 추가해주세요!</string>
+    <string name="txt_question_title_label">제목</string>
+    <string name="txt_question_title_placeholder">제목을 입력해주세요.</string>
+    <string name="txt_question_content_label">내용</string>
+    <string name="txt_question_content_placeholder">내용을 입력해주세요.</string>
+    <string name="txt_question_description_label">해설</string>
+    <string name="txt_question_description_placeholder">해설을 입력해주세요.</string>
+    <string name="txt_question_choice_placeholder">객관식 내용을 입력해주세요.</string>
+    <string name="btn_create_question">문제 출제</string>
+    <!-- content description  -->
+    <string name="des_btn_back">뒤로가기</string>
+    <string name="des_clear_text">텍스트 지우기</string>
 </resources>
