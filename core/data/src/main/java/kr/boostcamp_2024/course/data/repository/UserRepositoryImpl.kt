@@ -13,16 +13,10 @@ class UserRepositoryImpl @Inject constructor(
     private val userCollectionRef = firestore.collection("User")
 
     override suspend fun getUser(userId: String): Result<UserResponseVO> {
-        return try {
+        return runCatching {
             val document = userCollectionRef.document(userId).get().await()
             val response = document.toObject(UserResponseDTO::class.java)
-            if (response != null) {
-                Result.success(response.toVO())
-            } else {
-                Result.failure(Exception("User not found"))
-            }
-        } catch (exception: Exception) {
-            Result.failure(exception)
+            requireNotNull(response).toVO()
         }
     }
 }
