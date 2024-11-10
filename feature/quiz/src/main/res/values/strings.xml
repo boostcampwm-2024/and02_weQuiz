@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_question_detail_description">설명</string>
+    <string name="txt_question_detail_top_app_bar_title">문제 상세 설명</string>
+    <string name="des_question_detail_top_app_bar_navigation_icon">뒤로 가기</string>
+    <string name="txt_question_detail_solution">해설</string>
+    <string name="des_question_detail_solution_profile">프로필 사진</string>
+    <string name="txt_question_detail_title">제목</string>
+</resources>

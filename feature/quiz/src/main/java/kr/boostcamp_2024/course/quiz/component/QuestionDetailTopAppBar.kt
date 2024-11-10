@@ -12,7 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.quiz.R
 
 @ExperimentalMaterial3Api
 @Composable
@@ -24,7 +26,7 @@ fun QuestionDetailTopAppBar(
         modifier = modifier.padding(bottom = 20.dp),
         title = {
             Text(
-                text = "문제 상세 설명",
+                text = stringResource(R.string.txt_question_detail_top_app_bar_title),
                 modifier = Modifier,
                 style = MaterialTheme.typography.titleLarge
             )
@@ -36,7 +38,7 @@ fun QuestionDetailTopAppBar(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.des_question_detail_top_app_bar_navigation_icon),
                     modifier = Modifier,
                 )
             }

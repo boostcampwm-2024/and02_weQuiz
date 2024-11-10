@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.quiz.R
 
@@ -24,7 +25,9 @@ import kr.boostcamp_2024.course.quiz.R
 fun QuestionSolution(solution: String) {
     Column {
         Text(
-            text = "해설", modifier = Modifier, style = MaterialTheme.typography.bodyMedium
+            text = stringResource(R.string.txt_question_detail_solution),
+            modifier = Modifier,
+            style = MaterialTheme.typography.bodyMedium
         )
         Spacer(modifier = Modifier.height(10.dp))
         Row(modifier = Modifier) {
@@ -43,7 +46,7 @@ fun QuestionSolution(solution: String) {
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.create_study_character),
-                    contentDescription = "Profile",
+                    contentDescription = stringResource(R.string.des_question_detail_solution_profile),
                     modifier = Modifier,
                     contentScale = ContentScale.Crop
                 )
