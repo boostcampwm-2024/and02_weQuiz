@@ -102,7 +102,7 @@ fun CreateCategoryScreen(
                     label = stringResource(R.string.txt_create_category_des_label),
                     text = state.categoryDescription,
                     maxLines = 99,
-                    minLines = 6,
+                    minLines = 1,
                     onTextChanged = { state = state.copy(categoryDescription = it) },
                     placeholder = stringResource(R.string.txt_create_category_des_placeholder),
                 )
@@ -131,4 +131,3 @@ fun CreateCategoryScreenPreview() {
         onCreateCategorySuccess = {},
     )
 }
-
