@@ -20,7 +20,7 @@ androidExtension.apply {
     }
 }
 
-configureFirebase()
 configureComposeAndroid()
 configureKotlinAndroid()
 configureHiltAndroid()
+configureFirebase()
