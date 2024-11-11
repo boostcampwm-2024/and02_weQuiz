@@ -36,7 +36,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,11 +68,29 @@ fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    MainScreen(
+        currentUser = uiState.currentUser,
+        studyGroups = uiState.studyGroups,
+        onNotificationButtonClick = onNotificationButtonClick,
+        onCreateStudyButtonClick = onCreateStudyButtonClick,
+        onStudyGroupClick = onStudyGroupClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainScreen(
+    currentUser: User? = null,
+    studyGroups: List<StudyGroup> = emptyList(),
+    onNotificationButtonClick: () -> Unit,
+    onCreateStudyButtonClick: () -> Unit,
+    onStudyGroupClick: () -> Unit
+) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         topBar = {
-            LargeTopAppBar(
+            LargeTopAppBar(     // TODO: 공통 컴포넌트 적용 시 수정 예정
                 title = {},
                 actions = {
                     IconButton(onClick = onNotificationButtonClick) {
@@ -109,9 +127,9 @@ fun MainScreen(
                     )
                 )
         ) {
-            UserContent(user = uiState.user)
+            UserContent(currentUser = currentUser)
             UserStudyContent(
-                studyGroups = uiState.studyGroups,
+                studyGroups = studyGroups,
                 onStudyGroupClick = onStudyGroupClick
             )
         }
@@ -120,7 +138,7 @@ fun MainScreen(
 
 @Composable
 fun UserContent(
-    user: User? = null
+    currentUser: User? = null
 ) {
     val configuration = LocalConfiguration.current
 
@@ -143,7 +161,7 @@ fun UserContent(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.BottomStart),
-            text = user?.name ?: "",
+            text = currentUser?.name ?: "",
             style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onPrimary,
@@ -160,7 +178,7 @@ fun UserStudyContent(
     onStudyGroupClick: () -> Unit,
 ) {
 
-    var state by remember { mutableIntStateOf(0) }
+    var state by rememberSaveable { mutableIntStateOf(0) }
     val titles = listOf(
         stringResource(R.string.tab_participating_study),
         stringResource(R.string.tab_storage)
@@ -185,7 +203,7 @@ fun UserStudyContent(
 
     when (state) {
         0 -> {
-            StudyTab(
+            StudyGroupTab(
                 studyGroups = studyGroups,
                 onStudyGroupClick = onStudyGroupClick
             )
@@ -198,14 +216,14 @@ fun UserStudyContent(
 }
 
 @Composable
-fun StudyTab(
+fun StudyGroupTab(
     studyGroups: List<StudyGroup>,
     onStudyGroupClick: () -> Unit,
 ) {
     LazyColumn {
-        items(items = studyGroups, key = { it.name }) {     // TODO key
+        items(items = studyGroups, key = { it.name }) { studyGroup ->   // TODO key
             StudyGroupItem(
-                studyGroup = it,
+                studyGroup = studyGroup,
                 onStudyGroupClick = onStudyGroupClick
             )
         }
@@ -280,8 +298,25 @@ fun StudyGroupItem(
 @Composable
 fun MainScreenPreview() {
     MainScreen(
+        currentUser = User(
+            email = "email@email.com",
+            name = "홍준표",
+            profileUrl = "testUrl",
+            studyGroups = listOf()
+        ),
+        studyGroups = listOf(
+            StudyGroup(
+                name = "일본어 스터디",
+                studyGroupImageUrl = null,
+                description = "일본어 스터디그룹 와압~!",
+                maxUserNum = 12,
+                ownerId = "test",
+                users = listOf("test"),
+                categories = emptyList()
+            )
+        ),
         onNotificationButtonClick = {},
         onCreateStudyButtonClick = {},
-        onStudyGroupClick = {},
+        onStudyGroupClick = {}
     )
 }
