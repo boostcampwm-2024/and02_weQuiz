@@ -2,10 +2,19 @@
 <resources>
     <string name="txt_question_detail_description">설명</string>
     <string name="txt_question_detail_top_app_bar_title">문제 상세 설명</string>
-    <string name="des_question_detail_top_app_bar_navigation_icon">뒤로 가기</string>
     <string name="txt_question_detail_solution">해설</string>
-    <string name="des_question_detail_solution_profile">프로필 사진</string>
     <string name="txt_question_detail_title">제목</string>
+    <string name="txt_question_title">제목</string>
+    <string name="txt_question_description">설명</string>
+    <string name="top_app_bar_question_title">퀴즈 제목</string>
+    <string name="txt_question_done">완료</string>
+    <string name="txt_question_next_question">다음 문제</string>
+    <string name="txt_question_submit">제출</string>
+    <string name="txt_question_exit">나가기</string>
+    <string name="txt_question_cancel">취소</string>
+    <string name="dialog_submit_script">최종 제출하시나요?\n제출 후 답을 수정할 수 없습니다.</string>
+    <string name="dialog_exit_script">정말 나가시겠습니까?\n진행 상황이 저장되지 않을 수 있습니다.</string>
+    <string name="txt_question_timer">⏰</string>
     <string name="txt_quiz_result_guide">퀴즈는 어땠나요?\n퀴즈 내용을 해설과 함께\n확인해보세요!</string>
     <string name="txt_quiz_result_score">📝 점수: %1$d/%2$d</string>
     <string name="txt_quiz_question_list">문제 리스트</string>
@@ -39,4 +48,8 @@
     <!-- content description  -->
     <string name="des_btn_back">뒤로가기</string>
     <string name="des_clear_text">텍스트 지우기</string>
+    <string name="des_btn_back_question">뒤로가기</string>
+    <string name="des_image_question">System Profile Image</string>
+    <string name="des_question_detail_solution_profile">프로필 사진</string>
+    <string name="des_question_detail_top_app_bar_navigation_icon">뒤로 가기</string>
 </resources>
