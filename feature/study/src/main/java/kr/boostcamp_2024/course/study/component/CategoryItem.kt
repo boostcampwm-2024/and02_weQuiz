@@ -18,10 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun CategoryItem(
@@ -54,7 +56,7 @@ fun QuizCountBadge(categoryImg: String?, quizCount: Int) {
         WeQuizAsyncImage(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(MaterialTheme.shapes.large),
+                .clip(MaterialTheme.shapes.extraLarge),
             imgUrl = categoryImg,
             contentDescription = null
         )
@@ -105,10 +107,12 @@ fun AuthorComponent(
     author: String
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        CustomRoundImg(
-            profileImg, modifier = Modifier
+        WeQuizAsyncImage(
+            modifier = Modifier
                 .clip(CircleShape)
-                .size(24.dp)
+                .size(24.dp),
+            imgUrl = profileImg,
+            contentDescription = stringResource(R.string.des_study_detail_category_item_profile),
         )
         Text(modifier = Modifier.padding(start = 4.dp), text = author, style = MaterialTheme.typography.bodySmall)
     }
