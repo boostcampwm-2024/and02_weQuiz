@@ -7,8 +7,14 @@ import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.FileInputStream
+import java.util.Properties
 
 internal fun Project.configureKotlinAndroid() {
+    val localProperties = Properties().apply {
+        load(FileInputStream(rootProject.file("local.properties")))
+    }
+
     with(pluginManager) {
         apply("org.jetbrains.kotlin.android")
     }
@@ -27,8 +33,21 @@ internal fun Project.configureKotlinAndroid() {
         }
 
         buildTypes {
+            getByName("debug") {
+                buildConfigField(
+                    "String",
+                    "DEFAULT_USER_KEY",
+                    localProperties.getProperty("DEFAULT_USER_KEY")
+                )
+            }
+
             getByName("release") {
                 isMinifyEnabled = false
+                buildConfigField(
+                    "String",
+                    "DEFAULT_USER_KEY",
+                    localProperties.getProperty("DEFAULT_USER_KEY")
+                )
                 proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
@@ -39,6 +58,9 @@ internal fun Project.configureKotlinAndroid() {
             unitTests {
                 isIncludeAndroidResources = true
             }
+        }
+        buildFeatures {
+            buildConfig = true
         }
     }
 
