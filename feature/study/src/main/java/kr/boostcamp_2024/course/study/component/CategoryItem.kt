@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 
 @Composable
 fun CategoryItem(
@@ -36,7 +35,8 @@ fun CategoryItem(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth().padding(vertical = 8.dp)
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
             .clickable(onClick = onClicked),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -51,10 +51,12 @@ fun QuizCountBadge(categoryImg: String?, quizCount: Int) {
     Box(
         modifier = Modifier.size(120.dp),
     ) {
-        CustomRoundImg(
-            categoryImg, modifier = Modifier
+        WeQuizAsyncImage(
+            modifier = Modifier
                 .fillMaxSize()
-                .clip(MaterialTheme.shapes.large)
+                .clip(MaterialTheme.shapes.large),
+            imgUrl = categoryImg,
+            contentDescription = null
         )
         Badge(
             modifier = Modifier
@@ -66,7 +68,7 @@ fun QuizCountBadge(categoryImg: String?, quizCount: Int) {
             Text(
                 text = quizCount.toString(),
                 color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 12.sp,
+                style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -82,7 +84,8 @@ fun DetailStudyDescription(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxHeight().padding(16.dp)
+            .fillMaxHeight()
+            .padding(16.dp)
     ) {
         Text(modifier = Modifier.padding(bottom = 4.dp), text = title, style = MaterialTheme.typography.titleLarge)
         Text(
