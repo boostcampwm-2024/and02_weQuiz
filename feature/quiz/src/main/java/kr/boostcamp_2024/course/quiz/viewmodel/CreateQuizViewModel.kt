@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,6 +42,7 @@ class CreateQuizViewModel @Inject constructor(
     }
 
     fun createQuiz() {
+        Log.d("CreateQuizViewModel", uiState.value.toString())
         _uiState.update { it.copy(isCreateQuizSuccess = true) }
     }
 }
