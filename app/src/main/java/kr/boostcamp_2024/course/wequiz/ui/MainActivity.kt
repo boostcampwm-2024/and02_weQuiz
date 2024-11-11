@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
-import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
