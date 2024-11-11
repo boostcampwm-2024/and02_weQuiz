@@ -1,5 +1,6 @@
 plugins {
     id("convention.android.library")
+    id("convention.firebase")
     id("convention.android.hilt")
 }
 
@@ -8,6 +9,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
