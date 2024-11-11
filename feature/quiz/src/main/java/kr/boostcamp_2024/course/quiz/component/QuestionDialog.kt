@@ -16,35 +16,35 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun QuestionDialog(
-    title: String,
-    yesTitle: String,
-    noTitle: String,
-    onConfirm: () -> Unit,
-    onDismissRequest: () -> Unit
+	title: String,
+	yesTitle: String,
+	noTitle: String,
+	onConfirm: () -> Unit,
+	onDismissRequest: () -> Unit,
 ) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                RoundImage(modifier = Modifier.size(120.dp))
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 16.dp)
-                )
-            }
-        },
-        confirmButton = {
-            Button(onClick = onDismissRequest) {
-                Text(noTitle)
-            }
-            Button(onClick = onConfirm) {
-                Text(yesTitle)
-            }
-        }
-    )
+	AlertDialog(
+		onDismissRequest = onDismissRequest,
+		title = {
+			Column(
+				horizontalAlignment = Alignment.CenterHorizontally,
+				modifier = Modifier.fillMaxWidth(),
+			) {
+				RoundImage(modifier = Modifier.size(120.dp))
+				Text(
+					text = title,
+					style = MaterialTheme.typography.bodyLarge,
+					textAlign = TextAlign.Center,
+					modifier = Modifier.padding(top = 16.dp),
+				)
+			}
+		},
+		confirmButton = {
+			Button(onClick = onDismissRequest) {
+				Text(noTitle)
+			}
+			Button(onClick = onConfirm) {
+				Text(yesTitle)
+			}
+		},
+	)
 }

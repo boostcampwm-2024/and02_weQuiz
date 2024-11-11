@@ -17,28 +17,31 @@ import kr.boostcamp_2024.course.main.R
 @ExperimentalMaterial3Api
 @Composable
 fun NotificationTopAppBar(
-    modifier: Modifier = Modifier,
-    onNavigationButtonClick: () -> Unit
+	modifier: Modifier = Modifier,
+	onNavigationButtonClick: () -> Unit,
 ) {
-    CenterAlignedTopAppBar(modifier = modifier,
-        title = {
-            Text(
-                text = stringResource(R.string.txt_notification_top_app_bar_title),
-                modifier = Modifier
-            )
-        }, navigationIcon = {
-            IconButton(
-                onClick = onNavigationButtonClick,
-                modifier = modifier
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.txt_notification_top_app_bar_navigation_icon),
-                    modifier = modifier,
-                )
-            }
-        }, colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    )
+	CenterAlignedTopAppBar(
+		modifier = modifier,
+		title = {
+			Text(
+				text = stringResource(R.string.txt_notification_top_app_bar_title),
+				modifier = Modifier,
+			)
+		},
+		navigationIcon = {
+			IconButton(
+				onClick = onNavigationButtonClick,
+				modifier = modifier,
+			) {
+				Icon(
+					imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+					contentDescription = stringResource(R.string.txt_notification_top_app_bar_navigation_icon),
+					modifier = modifier,
+				)
+			}
+		},
+		colors = TopAppBarDefaults.topAppBarColors(
+			containerColor = MaterialTheme.colorScheme.surface,
+		),
+	)
 }

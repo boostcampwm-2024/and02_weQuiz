@@ -22,38 +22,38 @@ import kr.boostcamp_2024.course.domain.repository.UserRepository
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
-    @Binds
-    abstract fun provideCategoryRepository(
-        categoryRepositoryImpl: CategoryRepositoryImpl
-    ): CategoryRepository
+	@Binds
+	abstract fun provideCategoryRepository(
+		categoryRepositoryImpl: CategoryRepositoryImpl,
+	): CategoryRepository
 
-    @Binds
-    abstract fun provideNotificationRepository(
-        notificationRepositoryImpl: NotificationRepositoryImpl
-    ): NotificationRepository
+	@Binds
+	abstract fun provideNotificationRepository(
+		notificationRepositoryImpl: NotificationRepositoryImpl,
+	): NotificationRepository
 
-    @Binds
-    abstract fun provideQuestionRepository(
-        questionRepositoryImpl: QuestionRepositoryImpl
-    ): QuestionRepository
+	@Binds
+	abstract fun provideQuestionRepository(
+		questionRepositoryImpl: QuestionRepositoryImpl,
+	): QuestionRepository
 
-    @Binds
-    abstract fun provideQuizRepository(
-        quizRepositoryImpl: QuizRepositoryImpl
-    ): QuizRepository
+	@Binds
+	abstract fun provideQuizRepository(
+		quizRepositoryImpl: QuizRepositoryImpl,
+	): QuizRepository
 
-    @Binds
-    abstract fun provideStudyGroupRepository(
-        studyGroupRepositoryImpl: StudyGroupRepositoryImpl
-    ): StudyGroupRepository
+	@Binds
+	abstract fun provideStudyGroupRepository(
+		studyGroupRepositoryImpl: StudyGroupRepositoryImpl,
+	): StudyGroupRepository
 
-    @Binds
-    abstract fun provideUserOmrRepository(
-        userOmrRepositoryImpl: UserOmrRepositoryImpl
-    ): UserOmrRepository
+	@Binds
+	abstract fun provideUserOmrRepository(
+		userOmrRepositoryImpl: UserOmrRepositoryImpl,
+	): UserOmrRepository
 
-    @Binds
-    abstract fun provideUserRepository(
-        userRepositoryImpl: UserRepositoryImpl
-    ): UserRepository
+	@Binds
+	abstract fun provideUserRepository(
+		userRepositoryImpl: UserRepositoryImpl,
+	): UserRepository
 }

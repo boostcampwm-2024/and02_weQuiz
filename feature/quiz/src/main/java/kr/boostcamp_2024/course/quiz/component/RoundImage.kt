@@ -16,16 +16,16 @@ import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 fun RoundImage(modifier: Modifier) {
-    Box(
-        modifier = modifier
-            .size(120.dp)
-            .clip(CircleShape)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.quiz_system_profile),
-            contentDescription = stringResource(R.string.des_image_question),
-            modifier = Modifier.align(Alignment.Center),
-            contentScale = ContentScale.Crop
-        )
-    }
+	Box(
+		modifier = modifier
+			.size(120.dp)
+			.clip(CircleShape),
+	) {
+		Image(
+			painter = painterResource(id = R.drawable.quiz_system_profile),
+			contentDescription = stringResource(R.string.des_image_question),
+			modifier = Modifier.align(Alignment.Center),
+			contentScale = ContentScale.Crop,
+		)
+	}
 }

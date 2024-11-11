@@ -22,37 +22,40 @@ import kr.boostcamp_2024.course.study.R
 @ExperimentalMaterial3Api
 @Composable
 fun MembersDropDownMenu(modifier: Modifier = Modifier) {
-    var expanded by remember { mutableStateOf(false) }
-    val membersDropDownMenuText = stringResource(R.string.txt_members_drop_down_menu)
-    var selectedOption by remember { mutableStateOf(membersDropDownMenuText) }
-    val dropDownMenuOptions = stringArrayResource(R.array.drop_down_menu_options)
+	var expanded by remember { mutableStateOf(false) }
+	val membersDropDownMenuText = stringResource(R.string.txt_members_drop_down_menu)
+	var selectedOption by remember { mutableStateOf(membersDropDownMenuText) }
+	val dropDownMenuOptions = stringArrayResource(R.array.drop_down_menu_options)
 
-    ExposedDropdownMenuBox(
-        expanded = expanded, onExpandedChange = { expanded = !expanded }, modifier = modifier
-    ) {
-        TextField(
-            value = selectedOption,
-            onValueChange = {},
-            readOnly = true,
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor(),
-            label = { Text(stringResource(R.string.txt_members_drop_down_menu_label)) })
+	ExposedDropdownMenuBox(
+		expanded = expanded,
+		onExpandedChange = { expanded = !expanded },
+		modifier = modifier,
+	) {
+		TextField(
+			value = selectedOption,
+			onValueChange = {},
+			readOnly = true,
+			trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+			modifier = Modifier
+				.fillMaxWidth()
+				.menuAnchor(),
+			label = { Text(stringResource(R.string.txt_members_drop_down_menu_label)) },
+		)
 
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 130.dp)
-        ) {
-            dropDownMenuOptions.forEach { option ->
-                DropdownMenuItem(text = { Text(option) }, onClick = {
-                    selectedOption = option
-                    expanded = false
-                })
-            }
-        }
-    }
+		ExposedDropdownMenu(
+			expanded = expanded,
+			onDismissRequest = { expanded = false },
+			modifier = Modifier
+				.fillMaxWidth()
+				.heightIn(max = 130.dp),
+		) {
+			dropDownMenuOptions.forEach { option ->
+				DropdownMenuItem(text = { Text(option) }, onClick = {
+					selectedOption = option
+					expanded = false
+				})
+			}
+		}
+	}
 }

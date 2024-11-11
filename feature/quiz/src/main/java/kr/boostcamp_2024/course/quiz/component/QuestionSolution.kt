@@ -23,34 +23,33 @@ import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 fun QuestionSolution(solution: String) {
-    Column {
-        Text(
-            text = stringResource(R.string.txt_question_detail_solution),
-            modifier = Modifier,
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(modifier = Modifier) {
-            ChatBubble(
-                solution,
-                modifier = Modifier.weight(1f)
-            )
+	Column {
+		Text(
+			text = stringResource(R.string.txt_question_detail_solution),
+			modifier = Modifier,
+			style = MaterialTheme.typography.bodyMedium,
+		)
+		Spacer(modifier = Modifier.height(10.dp))
+		Row(modifier = Modifier) {
+			ChatBubble(
+				solution,
+				modifier = Modifier.weight(1f),
+			)
 
-            Box(
-                modifier = Modifier
-                    .padding(start = 10.dp)
-                    .align(Alignment.CenterVertically)
-                    .size(120.dp)
-                    .clip(CircleShape)
-
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.create_study_character),
-                    contentDescription = stringResource(R.string.des_question_detail_solution_profile),
-                    modifier = Modifier,
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
-    }
+			Box(
+				modifier = Modifier
+					.padding(start = 10.dp)
+					.align(Alignment.CenterVertically)
+					.size(120.dp)
+					.clip(CircleShape),
+			) {
+				Image(
+					painter = painterResource(id = R.drawable.create_study_character),
+					contentDescription = stringResource(R.string.des_question_detail_solution_profile),
+					modifier = Modifier,
+					contentScale = ContentScale.Crop,
+				)
+			}
+		}
+	}
 }

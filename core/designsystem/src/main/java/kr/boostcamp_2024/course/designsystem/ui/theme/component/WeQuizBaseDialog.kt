@@ -22,73 +22,73 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @Composable
 fun WeQuizBaseDialog(
-    title: String,
-    dialogImage: Painter,
-    confirmTitle: String,
-    dismissTitle: String,
-    onConfirm: () -> Unit,
-    onDismissRequest: () -> Unit,
-    content: @Composable () -> Unit,
-    confirmButtonEnabled: Boolean = true
+	title: String,
+	dialogImage: Painter,
+	confirmTitle: String,
+	dismissTitle: String,
+	onConfirm: () -> Unit,
+	onDismissRequest: () -> Unit,
+	content: @Composable () -> Unit,
+	confirmButtonEnabled: Boolean = true,
 ) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                WeQuizLocalRoundedImage(
-                    modifier = Modifier.size(120.dp),
-                    imagePainter = dialogImage,
-                    contentDescription = null
-                )
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
-                )
-                content()
-            }
-        },
-        dismissButton = {
-            Button(onClick = onDismissRequest) {
-                Text(dismissTitle)
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = onConfirm,
-                enabled = confirmButtonEnabled,
-            ) {
-                Text(confirmTitle)
-            }
-        }
-    )
+	AlertDialog(
+		onDismissRequest = onDismissRequest,
+		title = {
+			Column(
+				horizontalAlignment = Alignment.CenterHorizontally,
+				verticalArrangement = Arrangement.spacedBy(8.dp),
+				modifier = Modifier.fillMaxWidth(),
+			) {
+				WeQuizLocalRoundedImage(
+					modifier = Modifier.size(120.dp),
+					imagePainter = dialogImage,
+					contentDescription = null,
+				)
+				Text(
+					text = title,
+					style = MaterialTheme.typography.bodyLarge,
+					textAlign = TextAlign.Center,
+				)
+				content()
+			}
+		},
+		dismissButton = {
+			Button(onClick = onDismissRequest) {
+				Text(dismissTitle)
+			}
+		},
+		confirmButton = {
+			Button(
+				onClick = onConfirm,
+				enabled = confirmButtonEnabled,
+			) {
+				Text(confirmTitle)
+			}
+		},
+	)
 }
 
 @Preview
 @Composable
 private fun WeQuizBaseDialogPreview() {
-    WeQuizTheme {
-        WeQuizBaseDialog(
-            title = "Are you sure you want to delete this question?",
-            dialogImage = painterResource(id = R.drawable.img_error),
-            confirmTitle = "Delete",
-            dismissTitle = "Cancel",
-            onConfirm = {},
-            onDismissRequest = {},
-            confirmButtonEnabled = false,
-            content = {
-                TextField(
-                    value = "",
-                    onValueChange = {},
-                    label = { Text("Password") },
-                    placeholder = { Text("Enter your password") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        )
-    }
+	WeQuizTheme {
+		WeQuizBaseDialog(
+			title = "Are you sure you want to delete this question?",
+			dialogImage = painterResource(id = R.drawable.img_error),
+			confirmTitle = "Delete",
+			dismissTitle = "Cancel",
+			onConfirm = {},
+			onDismissRequest = {},
+			confirmButtonEnabled = false,
+			content = {
+				TextField(
+					value = "",
+					onValueChange = {},
+					label = { Text("Password") },
+					placeholder = { Text("Enter your password") },
+					modifier = Modifier.fillMaxWidth(),
+				)
+			},
+		)
+	}
 }

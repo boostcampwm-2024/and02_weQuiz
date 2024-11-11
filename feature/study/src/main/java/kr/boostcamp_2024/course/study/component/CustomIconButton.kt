@@ -7,11 +7,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
 fun CustomIconButton(
-    onClicked: () -> Unit,
-    imageVector: ImageVector,
-    description: String? = null
+	onClicked: () -> Unit,
+	imageVector: ImageVector,
+	description: String? = null,
 ) {
-    IconButton(onClick = onClicked) {
-        Icon(imageVector = imageVector, contentDescription = description)
-    }
+	IconButton(onClick = onClicked) {
+		Icon(imageVector = imageVector, contentDescription = description)
+	}
 }

@@ -16,31 +16,30 @@ import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun DescriptionTextField(
-    descriptionText: String,
-    onDescriptionTextChange: (String) -> Unit,
-    onClearDescriptionText: () -> Unit,
-    modifier: Modifier = Modifier
+	descriptionText: String,
+	onDescriptionTextChange: (String) -> Unit,
+	onClearDescriptionText: () -> Unit,
+	modifier: Modifier = Modifier,
 ) {
 
-
-    Box(modifier = modifier.fillMaxWidth()) {
-        TextField(
-            value = descriptionText,
-            onValueChange = onDescriptionTextChange,
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text(stringResource(R.string.txt_create_study_description_label)) },
-            placeholder = { Text(stringResource(R.string.txt_create_study_description_placeholder)) },
-            minLines = 6,
-            maxLines = 6,
-        )
-        IconButton(
-            onClick = onClearDescriptionText,
-            modifier = Modifier.align(Alignment.TopEnd),
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Cancel,
-                contentDescription = stringResource(R.string.des_clear_text)
-            )
-        }
-    }
+	Box(modifier = modifier.fillMaxWidth()) {
+		TextField(
+			value = descriptionText,
+			onValueChange = onDescriptionTextChange,
+			modifier = Modifier.fillMaxWidth(),
+			label = { Text(stringResource(R.string.txt_create_study_description_label)) },
+			placeholder = { Text(stringResource(R.string.txt_create_study_description_placeholder)) },
+			minLines = 6,
+			maxLines = 6,
+		)
+		IconButton(
+			onClick = onClearDescriptionText,
+			modifier = Modifier.align(Alignment.TopEnd),
+		) {
+			Icon(
+				imageVector = Icons.Outlined.Cancel,
+				contentDescription = stringResource(R.string.des_clear_text),
+			)
+		}
+	}
 }

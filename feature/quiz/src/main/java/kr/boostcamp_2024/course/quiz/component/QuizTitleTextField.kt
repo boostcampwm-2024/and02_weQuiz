@@ -15,36 +15,36 @@ import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 fun QuizTitleTextField(
-    quizTitle: String,
-    onValueChange: (String) -> Unit,
+	quizTitle: String,
+	onValueChange: (String) -> Unit,
 ) {
-    TextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = quizTitle,
-        onValueChange = { onValueChange(it) },
-        label = {
-            Text(text = stringResource(R.string.txt_quiz_title_label))
-        },
-        placeholder = {
-            Text(text = stringResource(R.string.txt_quiz_title_placeholder))
-        },
-        maxLines = 1,
-        trailingIcon = {
-            IconButton(onClick = { onValueChange("") }) {
-                Icon(
-                    imageVector = Icons.Outlined.Cancel,
-                    contentDescription = stringResource(R.string.btn_clear_text)
-                )
-            }
-        }
-    )
+	TextField(
+		modifier = Modifier.fillMaxWidth(),
+		value = quizTitle,
+		onValueChange = { onValueChange(it) },
+		label = {
+			Text(text = stringResource(R.string.txt_quiz_title_label))
+		},
+		placeholder = {
+			Text(text = stringResource(R.string.txt_quiz_title_placeholder))
+		},
+		maxLines = 1,
+		trailingIcon = {
+			IconButton(onClick = { onValueChange("") }) {
+				Icon(
+					imageVector = Icons.Outlined.Cancel,
+					contentDescription = stringResource(R.string.btn_clear_text),
+				)
+			}
+		},
+	)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun QuizTitleTextFieldPreview() {
-    QuizTitleTextField(
-        quizTitle = "",
-        onValueChange = {},
-    )
+	QuizTitleTextField(
+		quizTitle = "",
+		onValueChange = {},
+	)
 }

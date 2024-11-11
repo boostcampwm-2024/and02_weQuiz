@@ -1,15 +1,15 @@
 plugins {
-    id("convention.android.feature")
+	id("convention.android.feature")
 }
 
 android {
-    namespace = "kr.boostcamp_2024.course.category"
+	namespace = "kr.boostcamp_2024.course.category"
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
+	implementation(libs.androidx.core.ktx)
+	implementation(libs.androidx.appcompat)
+	implementation(libs.material)
+	testImplementation(libs.junit)
+	androidTestImplementation(libs.androidx.junit)
 }

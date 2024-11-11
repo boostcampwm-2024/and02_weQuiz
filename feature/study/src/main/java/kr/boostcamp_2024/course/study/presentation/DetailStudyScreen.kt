@@ -35,67 +35,72 @@ import kr.boostcamp_2024.course.study.navigation.GroupScreenRoute
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailStudyScreen(
-    onNavigationButtonClick: () -> Unit,
-    onCreateCategoryButtonClick: () -> Unit,
-    onCategoryClick: () -> Unit,
+	onNavigationButtonClick: () -> Unit,
+	onCreateCategoryButtonClick: () -> Unit,
+	onCategoryClick: () -> Unit,
 ) {
-    var selectedScreenIndex by remember { mutableIntStateOf(0) }
-    val screenList = listOf(
-        DetailScreenRoute, GroupScreenRoute
-    )
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            WeQuizImageLargeTopAppBar(
-                scrollBehavior = scrollBehavior,
-                title = {
-                    Text(
-                        text = "OS 스터디", style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.SemiBold
-                    )
-                },
-                topAppBarImageUrl = "https://avatars.githubusercontent.com/u/147039081?v=4",
-                navigationIcon = {
-                    CustomIconButton(
-                        onClicked = onNavigationButtonClick,
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        description = stringResource(R.string.btn_detail_study_top_bar_back)
-                    )
-                },
-                actions = {
-                    CustomIconButton(
-                        onClicked = { Log.d("detail", "설정 클릭됨") },
-                        imageVector = Icons.Filled.Settings,
-                        description = stringResource(R.string.btn_top_bar_detail_study_setting)
-                    )
-                }
-            )
-        }, bottomBar = {
-            NavigationBar {
-                screenList.forEachIndexed { index, screen ->
-                    val selected = selectedScreenIndex == index
-                    NavigationBarItem(selected = selected, onClick = {
-                        selectedScreenIndex = index
-                    }, label = { Text(text = stringResource(screen.title)) }, icon = {
-                        Icon(
-                            painter = painterResource(id = screen.iconId),
-                            contentDescription = stringResource(R.string.des_icon_bottom_nav_detail_study)
-                        )
-                    })
-                }
-            }
-        }) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            when (selectedScreenIndex) {
-                0 -> CategoryListScreen(onCreateCategoryButtonClick, onCategoryClick)
-                1 -> GroupListScreen()
-            }
-        }
-    }
+	var selectedScreenIndex by remember { mutableIntStateOf(0) }
+	val screenList = listOf(
+		DetailScreenRoute,
+		GroupScreenRoute,
+	)
+	val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+	Scaffold(
+		modifier = Modifier
+			.fillMaxSize()
+			.nestedScroll(scrollBehavior.nestedScrollConnection),
+		topBar = {
+			WeQuizImageLargeTopAppBar(
+				scrollBehavior = scrollBehavior,
+				title = {
+					Text(
+						text = "OS 스터디",
+						style = MaterialTheme.typography.displaySmall,
+						fontWeight = FontWeight.SemiBold,
+					)
+				},
+				topAppBarImageUrl = "https://avatars.githubusercontent.com/u/147039081?v=4",
+				navigationIcon = {
+					CustomIconButton(
+						onClicked = onNavigationButtonClick,
+						imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+						description = stringResource(R.string.btn_detail_study_top_bar_back),
+					)
+				},
+				actions = {
+					CustomIconButton(
+						onClicked = { Log.d("detail", "설정 클릭됨") },
+						imageVector = Icons.Filled.Settings,
+						description = stringResource(R.string.btn_top_bar_detail_study_setting),
+					)
+				},
+			)
+		},
+		bottomBar = {
+			NavigationBar {
+				screenList.forEachIndexed { index, screen ->
+					val selected = selectedScreenIndex == index
+					NavigationBarItem(selected = selected, onClick = {
+						selectedScreenIndex = index
+					}, label = { Text(text = stringResource(screen.title)) }, icon = {
+						Icon(
+							painter = painterResource(id = screen.iconId),
+							contentDescription = stringResource(R.string.des_icon_bottom_nav_detail_study),
+						)
+					})
+				}
+			}
+		},
+	) { innerPadding ->
+		Box(
+			modifier = Modifier
+				.fillMaxSize()
+				.padding(innerPadding),
+		) {
+			when (selectedScreenIndex) {
+				0 -> CategoryListScreen(onCreateCategoryButtonClick, onCategoryClick)
+				1 -> GroupListScreen()
+			}
+		}
+	}
 }

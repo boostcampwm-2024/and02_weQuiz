@@ -13,12 +13,12 @@ import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 fun QuestionDescription(description: String) {
-    Column(
-        modifier = Modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Text(text = stringResource(R.string.txt_question_detail_description), modifier = Modifier, style = MaterialTheme.typography.bodyMedium)
-        ChatBubble(description)
-    }
-    HorizontalDivider(modifier = Modifier)
+	Column(
+		modifier = Modifier,
+		verticalArrangement = Arrangement.spacedBy(10.dp),
+	) {
+		Text(text = stringResource(R.string.txt_question_detail_description), modifier = Modifier, style = MaterialTheme.typography.bodyMedium)
+		ChatBubble(description)
+	}
+	HorizontalDivider(modifier = Modifier)
 }

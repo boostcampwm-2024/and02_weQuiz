@@ -14,17 +14,17 @@ import kr.boostcamp_2024.course.quiz.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestionTopBar(
-    onShowDialog: () -> Unit
+	onShowDialog: () -> Unit,
 ) {
-    CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(R.string.top_app_bar_question_title)) },
-        navigationIcon = {
-            IconButton(onClick = onShowDialog) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = stringResource(R.string.des_btn_back_question)
-                )
-            }
-        }
-    )
+	CenterAlignedTopAppBar(
+		title = { Text(text = stringResource(R.string.top_app_bar_question_title)) },
+		navigationIcon = {
+			IconButton(onClick = onShowDialog) {
+				Icon(
+					imageVector = Icons.Default.Close,
+					contentDescription = stringResource(R.string.des_btn_back_question),
+				)
+			}
+		},
+	)
 }

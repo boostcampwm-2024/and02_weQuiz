@@ -14,22 +14,22 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ChatBubble(text: String, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .clip(
-                RoundedCornerShape(10.dp)
-            )
-            .background(MaterialTheme.colorScheme.secondaryContainer)
-    ) {
+	Box(
+		modifier = modifier
+			.clip(
+				RoundedCornerShape(10.dp),
+			)
+			.background(MaterialTheme.colorScheme.secondaryContainer),
+	) {
 
-        Text(
-            text = text,
-            modifier = Modifier.padding(
-                10.dp
-            ),
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+		Text(
+			text = text,
+			modifier = Modifier.padding(
+				10.dp,
+			),
+			style = MaterialTheme.typography.bodyLarge,
+			fontWeight = FontWeight.Bold,
+			color = MaterialTheme.colorScheme.onSurfaceVariant,
+		)
+	}
 }

@@ -16,91 +16,90 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @Composable
 fun WeQuizChatBubble(
-    text: String,
-    backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
-    modifier: Modifier = Modifier,
-    shape: RoundedCornerShape = RoundedCornerShape(10.dp)
+	text: String,
+	backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+	modifier: Modifier = Modifier,
+	shape: RoundedCornerShape = RoundedCornerShape(10.dp),
 ) {
-    Surface(
-        modifier = modifier.clip(shape),
-        color = backgroundColor
-    ) {
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            text = text,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold
-        )
-    }
+	Surface(
+		modifier = modifier.clip(shape),
+		color = backgroundColor,
+	) {
+		Text(
+			modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+			text = text,
+			color = MaterialTheme.colorScheme.onSurfaceVariant,
+			style = MaterialTheme.typography.bodyLarge,
+			fontWeight = FontWeight.Bold,
+		)
+	}
 }
 
 @Composable
 fun WeQuizRightChatBubble(
-    modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
-    text: String
+	modifier: Modifier = Modifier,
+	backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+	text: String,
 ) {
-    WeQuizChatBubble(
-        modifier = modifier,
-        text = text,
-        backgroundColor = backgroundColor,
-        shape = RoundedCornerShape(
-            topStart = 20.dp,
-            topEnd = 20.dp,
-            bottomStart = 20.dp,
-            bottomEnd = 8.dp
-        ),
-    )
+	WeQuizChatBubble(
+		modifier = modifier,
+		text = text,
+		backgroundColor = backgroundColor,
+		shape = RoundedCornerShape(
+			topStart = 20.dp,
+			topEnd = 20.dp,
+			bottomStart = 20.dp,
+			bottomEnd = 8.dp,
+		),
+	)
 }
 
 @Composable
 fun WeQuizLeftChatBubble(
-    modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
-    text: String
+	modifier: Modifier = Modifier,
+	backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+	text: String,
 ) {
-    WeQuizChatBubble(
-        modifier = modifier,
-        text = text,
-        backgroundColor = backgroundColor,
-        shape = RoundedCornerShape(
-            topStart = 20.dp,
-            topEnd = 20.dp,
-            bottomStart = 8.dp,
-            bottomEnd = 20.dp
-        ),
-    )
+	WeQuizChatBubble(
+		modifier = modifier,
+		text = text,
+		backgroundColor = backgroundColor,
+		shape = RoundedCornerShape(
+			topStart = 20.dp,
+			topEnd = 20.dp,
+			bottomStart = 8.dp,
+			bottomEnd = 20.dp,
+		),
+	)
 }
-
 
 @Preview
 @Composable
 fun WeQuizChatBubblePreview() {
-    WeQuizTheme {
-        WeQuizChatBubble(
-            text = "Hello, World!",
-            shape = RoundedCornerShape(16.dp)
-        )
-    }
+	WeQuizTheme {
+		WeQuizChatBubble(
+			text = "Hello, World!",
+			shape = RoundedCornerShape(16.dp),
+		)
+	}
 }
 
 @Preview
 @Composable
 fun ChatBubbleRightPreview() {
-    WeQuizTheme {
-        WeQuizRightChatBubble(
-            text = "Hello, World!"
-        )
-    }
+	WeQuizTheme {
+		WeQuizRightChatBubble(
+			text = "Hello, World!",
+		)
+	}
 }
 
 @Preview
 @Composable
 fun WeQuizLeftChatBubblePreview() {
-    WeQuizTheme {
-        WeQuizLeftChatBubble(
-            text = "Hello, World!"
-        )
-    }
+	WeQuizTheme {
+		WeQuizLeftChatBubble(
+			text = "Hello, World!",
+		)
+	}
 }

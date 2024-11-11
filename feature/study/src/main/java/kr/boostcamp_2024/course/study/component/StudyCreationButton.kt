@@ -14,16 +14,18 @@ import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun StudyCreationButton(onCreateStudySuccess: () -> Unit, modifier: Modifier = Modifier) {
-    Button(
-        onClick = onCreateStudySuccess,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-    ) {
-        Text(
-            text = stringResource(R.string.txt_study_creation_button), modifier = modifier, style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Medium
-            )
-        )
-    }
+	Button(
+		onClick = onCreateStudySuccess,
+		modifier = modifier
+			.fillMaxWidth()
+			.padding(16.dp),
+	) {
+		Text(
+			text = stringResource(R.string.txt_study_creation_button),
+			modifier = modifier,
+			style = MaterialTheme.typography.bodyMedium.copy(
+				fontWeight = FontWeight.Medium,
+			),
+		)
+	}
 }

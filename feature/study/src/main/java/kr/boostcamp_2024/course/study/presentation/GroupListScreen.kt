@@ -22,44 +22,44 @@ import kr.boostcamp_2024.course.study.component.GroupItem
 
 @Composable
 fun GroupListScreen() {
-    var showDialog by remember { mutableStateOf(false) }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp)
-    ) {
-        CustomPropertyTab(
-            onClicked = { showDialog = true },
-            imageVector = Icons.Outlined.AddCircle,
-            title = R.string.property_tab_group_text
-        )
-        if (showDialog) {
-            CreateGroupScreen(
-                onDismissButtonClick = { showDialog = false },
-                onConfirmButtonClick = { showDialog = false }
-            )
-        }
-        GroupLazyColumn()
-    }
+	var showDialog by remember { mutableStateOf(false) }
+	Column(
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(start = 16.dp, end = 16.dp, top = 8.dp),
+	) {
+		CustomPropertyTab(
+			onClicked = { showDialog = true },
+			imageVector = Icons.Outlined.AddCircle,
+			title = R.string.property_tab_group_text,
+		)
+		if (showDialog) {
+			CreateGroupScreen(
+				onDismissButtonClick = { showDialog = false },
+				onConfirmButtonClick = { showDialog = false },
+			)
+		}
+		GroupLazyColumn()
+	}
 }
 
 @Composable
 fun GroupLazyColumn() {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding()
-    ) {
-        items(10) { index ->
-            GroupItem(
-                removeButtonClick = { Log.d("Group Screen", "제거됨") },
-                profileImg = null,
-                name = "홍길동"
-            )
+	LazyColumn(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(),
+	) {
+		items(10) { index ->
+			GroupItem(
+				removeButtonClick = { Log.d("Group Screen", "제거됨") },
+				profileImg = null,
+				name = "홍길동",
+			)
 
-            if (index < 9) {
-                HorizontalDivider()
-            }
-        }
-    }
+			if (index < 9) {
+				HorizontalDivider()
+			}
+		}
+	}
 }

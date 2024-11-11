@@ -14,29 +14,29 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ChatBubbleLeft(
-    text: String,
-    backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
-    modifier: Modifier = Modifier,
+	text: String,
+	backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+	modifier: Modifier = Modifier,
 ) {
-    Surface(
-        modifier = modifier
-            .clip(
-                RoundedCornerShape(
-                    topStart = 20.dp,
-                    topEnd = 20.dp,
-                    bottomStart = 8.dp,
-                    bottomEnd = 20.dp
-                )
-            ),
-        color = backgroundColor
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+	Surface(
+		modifier = modifier
+			.clip(
+				RoundedCornerShape(
+					topStart = 20.dp,
+					topEnd = 20.dp,
+					bottomStart = 8.dp,
+					bottomEnd = 20.dp,
+				),
+			),
+		color = backgroundColor,
+	) {
+		Text(
+			modifier = Modifier
+				.padding(horizontal = 16.dp, vertical = 8.dp),
+			text = text,
+			style = MaterialTheme.typography.bodyLarge,
+			fontWeight = FontWeight.Bold,
+			color = MaterialTheme.colorScheme.onSurfaceVariant,
+		)
+	}
 }

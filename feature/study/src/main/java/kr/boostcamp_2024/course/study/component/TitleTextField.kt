@@ -14,30 +14,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import kr.boostcamp_2024.course.study.R
 
-
 @Composable
 fun TitleTextField(
-    titleText: String,
-    onTitleTextChange: (String) -> Unit,
-    onClearTitleText: () -> Unit,
-    modifier: Modifier = Modifier
+	titleText: String,
+	onTitleTextChange: (String) -> Unit,
+	onClearTitleText: () -> Unit,
+	modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier.fillMaxWidth()) {
-        TextField(
-            value = titleText,
-            onValueChange = onTitleTextChange,
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text(stringResource(R.string.txt_create_study_title_text_field_label)) },
-            placeholder = { Text(stringResource(R.string.txt_create_study_title_text_field_placeholder)) },
-        )
-        IconButton(
-            onClick = onClearTitleText,
-            modifier = Modifier.align(Alignment.CenterEnd),
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Cancel,
-                contentDescription = stringResource(R.string.des_clear_text)
-            )
-        }
-    }
+	Box(modifier = modifier.fillMaxWidth()) {
+		TextField(
+			value = titleText,
+			onValueChange = onTitleTextChange,
+			modifier = Modifier.fillMaxWidth(),
+			label = { Text(stringResource(R.string.txt_create_study_title_text_field_label)) },
+			placeholder = { Text(stringResource(R.string.txt_create_study_title_text_field_placeholder)) },
+		)
+		IconButton(
+			onClick = onClearTitleText,
+			modifier = Modifier.align(Alignment.CenterEnd),
+		) {
+			Icon(
+				imageVector = Icons.Outlined.Cancel,
+				contentDescription = stringResource(R.string.des_clear_text),
+			)
+		}
+	}
 }

@@ -14,31 +14,30 @@ data object CategoryRoute
 data object CreateCategoryRoute
 
 fun NavController.navigateCategory() {
-    navigate(CategoryRoute)
+	navigate(CategoryRoute)
 }
 
 fun NavController.navigateCreateCategory() {
-    navigate(CreateCategoryRoute)
+	navigate(CreateCategoryRoute)
 }
 
 fun NavGraphBuilder.categoryNavGraph(
-    onNavigationButtonClick: () -> Unit,
-    onCreateQuizButtonClick: () -> Unit,
-    onQuizClick: () -> Unit,
-    onCreateCategorySuccess: () -> Unit,
+	onNavigationButtonClick: () -> Unit,
+	onCreateQuizButtonClick: () -> Unit,
+	onQuizClick: () -> Unit,
+	onCreateCategorySuccess: () -> Unit,
 ) {
-    composable<CategoryRoute> {
-        CategoryScreen(
-            onNavigationButtonClick = onNavigationButtonClick,
-            onCreateQuizButtonClick = onCreateQuizButtonClick,
-            onQuizClick = onQuizClick,
-        )
-    }
-    composable<CreateCategoryRoute> {
-        CreateCategoryScreen(
-            onNavigationButtonClick = onNavigationButtonClick,
-            onCreateCategorySuccess = onCreateCategorySuccess,
-        )
-    }
+	composable<CategoryRoute> {
+		CategoryScreen(
+			onNavigationButtonClick = onNavigationButtonClick,
+			onCreateQuizButtonClick = onCreateQuizButtonClick,
+			onQuizClick = onQuizClick,
+		)
+	}
+	composable<CreateCategoryRoute> {
+		CreateCategoryScreen(
+			onNavigationButtonClick = onNavigationButtonClick,
+			onCreateCategorySuccess = onCreateCategorySuccess,
+		)
+	}
 }
-

@@ -12,37 +12,36 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CreateCategoryScreen(
-    onNavigationButtonClick: () -> Unit,
-    onCreateCategorySuccess: () -> Unit,
+	onNavigationButtonClick: () -> Unit,
+	onCreateCategorySuccess: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Button(
-            modifier = Modifier.align(Alignment.TopStart),
-            onClick = onNavigationButtonClick
-        ) {
-            Text(text = "뒤로가기 버튼")
-        }
+	Box(
+		modifier = Modifier.fillMaxSize(),
+	) {
+		Button(
+			modifier = Modifier.align(Alignment.TopStart),
+			onClick = onNavigationButtonClick,
+		) {
+			Text(text = "뒤로가기 버튼")
+		}
 
-        Column(
-            modifier = Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(text = "카테고리 생성 화면")
-            Button(onClick = onCreateCategorySuccess) {
-                Text(text = "카테고리 생성")
-            }
-        }
-    }
+		Column(
+			modifier = Modifier.align(Alignment.Center),
+			horizontalAlignment = Alignment.CenterHorizontally,
+		) {
+			Text(text = "카테고리 생성 화면")
+			Button(onClick = onCreateCategorySuccess) {
+				Text(text = "카테고리 생성")
+			}
+		}
+	}
 }
 
 @Preview(showBackground = true)
 @Composable
 fun CreateCategoryScreenPreview() {
-    CreateCategoryScreen(
-        onNavigationButtonClick = {},
-        onCreateCategorySuccess = {},
-    )
+	CreateCategoryScreen(
+		onNavigationButtonClick = {},
+		onCreateCategorySuccess = {},
+	)
 }
-
