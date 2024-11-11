@@ -9,9 +9,9 @@ data class UserResponseDTO(
     val studyGroups: List<String>? = null
 ) {
     fun toVO(): UserResponseVO = UserResponseVO(
-        email = email ?: "unknown",
-        name = name ?: "unknown",
+        email = requireNotNull(email),
+        name = requireNotNull(name),
         profileUrl = profileUrl,
-        studyGroups = studyGroups ?: throw Exception("Study groups not found")
+        studyGroups = requireNotNull(studyGroups)
     )
 }
