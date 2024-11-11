@@ -3,8 +3,10 @@ package kr.boostcamp_2024.course.quiz.presentation.quiz
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -34,11 +36,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLeftChatBubble
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuizDatePickerTextField
-import kr.boostcamp_2024.course.quiz.component.QuizDescriptionTextField
 import kr.boostcamp_2024.course.quiz.component.QuizSolveTimeSlider
-import kr.boostcamp_2024.course.quiz.component.QuizTitleTextField
 import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuizViewModel
 
 @Composable
@@ -52,6 +53,7 @@ fun CreateQuizScreen(
     CreateQuizScreen(
         quizTitle = uiState.quizTitle,
         quizDescription = uiState.quizDescription,
+        quizDate = uiState.quizDate,
         quizSolveTime = uiState.quizSolveTime,
         onQuizTitleChange = viewModel::setQuizTitle,
         onQuizDescriptionChange = viewModel::setQuizDescription,
@@ -74,6 +76,7 @@ fun CreateQuizScreen(
 fun CreateQuizScreen(
     quizTitle: String,
     quizDescription: String,
+    quizDate: String,
     quizSolveTime: Float,
     onQuizTitleChange: (String) -> Unit,
     onQuizDescriptionChange: (String) -> Unit,
@@ -104,14 +107,13 @@ fun CreateQuizScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp, vertical = 10.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             // Character Guide
-
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -127,45 +129,48 @@ fun CreateQuizScreen(
                 )
             }
 
+            Spacer(modifier = Modifier.height(10.dp))
+
             // QuizInfo
-            Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+            // Title
+            WeQuizTextField(
+                text = quizTitle,
+                onTextChanged = onQuizTitleChange,
+                label = stringResource(R.string.txt_quiz_title_label),
+                placeholder = stringResource(R.string.txt_quiz_title_placeholder),
+            )
+
+            //Description
+            WeQuizTextField(
+                text = quizDescription,
+                onTextChanged = onQuizDescriptionChange,
+                label = stringResource(R.string.txt_quiz_description_label),
+                placeholder = stringResource(R.string.txt_quiz_description_placeholder),
+                maxLines = 6
+            )
+
+            // StartTime
+            Text(text = stringResource(R.string.txt_quiz_start_time))
+            QuizDatePickerTextField(
+                quizDate = quizDate,
+                onDateSelected = { onQuizDateChange(it) }
+            )
+
+            // SolveTime
+            Text(text = stringResource(R.string.txt_quiz_solve_time))
+            QuizSolveTimeSlider(
+                value = quizSolveTime,
+                steps = 8,
+                valueRange = 10f..100f,
+                onValueChange = { onQuizSolveTimeChange(it) }
+            )
+
+            // CreateButton
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onCreateQuizButtonClick
             ) {
-                // Title
-                QuizTitleTextField(
-                    quizTitle = quizTitle,
-                    onValueChange = { onQuizTitleChange(it) }
-                )
-
-                //Description
-                QuizDescriptionTextField(
-                    quizDescription = quizDescription,
-                    onValueChange = { onQuizDescriptionChange(it) }
-                )
-
-                // StartTime
-                Text(text = stringResource(R.string.txt_quiz_start_time))
-                QuizDatePickerTextField(
-                    onDateSelected = { onQuizDateChange(it) }
-                )
-
-                // SolveTime
-                Text(text = stringResource(R.string.txt_quiz_solve_time))
-                QuizSolveTimeSlider(
-                    value = quizSolveTime,
-                    steps = 8,
-                    valueRange = 10f..100f,
-                    onValueChange = { onQuizSolveTimeChange(it) }
-                )
-
-                // CreateButton
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = onCreateQuizButtonClick
-                ) {
-                    Text(text = stringResource(R.string.btn_create_quiz))
-                }
+                Text(text = stringResource(R.string.btn_create_quiz))
             }
         }
     }
@@ -178,6 +183,7 @@ fun CreateQuizScreenPreview() {
         CreateQuizScreen(
             quizTitle = "",
             quizDescription = "",
+            quizDate = "",
             quizSolveTime = 0f,
             onQuizTitleChange = {},
             onQuizDescriptionChange = {},
