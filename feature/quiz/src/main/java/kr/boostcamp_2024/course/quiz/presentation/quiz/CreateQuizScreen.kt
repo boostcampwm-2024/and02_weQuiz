@@ -65,7 +65,7 @@ fun CreateQuizScreen(
 
     if (uiState.isCreateQuizSuccess) {
         LaunchedEffect(Unit) {
-            onCreateQuizSuccess()
+            onCreateQuizSuccess()   // TODO: argument to CategoryScreen
         }
     }
 }
