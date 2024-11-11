@@ -168,7 +168,7 @@ fun QuizStartScreen(
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onStartQuizButtonClick() },
-                    enabled = (canCreateQuestion.not() || quizQuestionCount == 0)
+                    enabled = (canCreateQuestion || quizQuestionCount == 0).not()
                 ) {
                     when (canCreateQuestion.not() && quizQuestionCount == 0) {
                         true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
