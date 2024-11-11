@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.main.R
@@ -93,16 +94,18 @@ fun StudyGroupItem(
 @Preview(showBackground = true)
 @Composable
 fun StudyGroupItemPreview() {
-    StudyGroupItem(
-        studyGroup = StudyGroup(
-            name = "일본어 스터디",
-            studyGroupImageUrl = null,
-            description = "일본어 스터디그룹 와압~!",
-            maxUserNum = 12,
-            ownerId = "test",
-            users = listOf("test"),
-            categories = emptyList()
-        ),
-        onStudyGroupClick = {},
-    )
+    WeQuizTheme {
+        StudyGroupItem(
+            studyGroup = StudyGroup(
+                name = "일본어 스터디",
+                studyGroupImageUrl = null,
+                description = "일본어 스터디 그룹 와압~!",
+                maxUserNum = 12,
+                ownerId = "test",
+                users = listOf("test"),
+                categories = emptyList()
+            ),
+            onStudyGroupClick = {},
+        )
+    }
 }
