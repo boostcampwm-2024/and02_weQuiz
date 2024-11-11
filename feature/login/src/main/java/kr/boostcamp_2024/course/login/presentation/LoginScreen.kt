@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.login.R
 import kr.boostcamp_2024.course.login.presentation.component.ChatBubble
@@ -40,7 +43,15 @@ import kr.boostcamp_2024.course.login.presentation.component.WeQuizTextField
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
+    val loginUiState by loginViewModel.loginUiState.collectAsStateWithLifecycle()
+    LaunchedEffect(loginUiState) {
+        if (loginUiState is LoginUiState.Success) {
+            onLoginSuccess()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -50,7 +61,7 @@ fun LoginScreen(
     ) {
         LoginGuideImageAndText()
         LoginContent()
-        LoginButtons(onLoginSuccess)
+        LoginButtons(onLoginSuccess = loginViewModel::loginForExperience)
     }
 }
 
@@ -145,10 +156,7 @@ fun LoginButtons(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = {
-                /* todo: 로그인 처리 */
-                onLoginSuccess()
-            },
+            onClick = { /* todo: 로그인 처리 */ },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = stringResource(R.string.btn_sign_in))
@@ -163,7 +171,7 @@ fun LoginButtons(
             text = stringResource(R.string.txt_experience),
             modifier = Modifier.clickable(
                 enabled = true,
-                onClick = { /* todo: 체험하기 처리*/ }
+                onClick = onLoginSuccess
             ),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.primary,
