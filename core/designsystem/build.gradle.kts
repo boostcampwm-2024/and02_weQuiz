@@ -14,5 +14,4 @@ dependencies {
     implementation(libs.coil)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    implementation(libs.coil.network.okhttp)
 }
