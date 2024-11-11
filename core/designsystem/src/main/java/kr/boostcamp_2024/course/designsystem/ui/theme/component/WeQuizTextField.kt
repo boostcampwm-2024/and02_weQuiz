@@ -15,43 +15,43 @@ import kr.boostcamp_2024.course.designsystem.R
 
 @Composable
 fun WeQuizTextField(
-	label: String,
-	text: String,
-	onTextChanged: (String) -> Unit,
-	placeholder: String,
-	minLines: Int = 1,
-	maxLines: Int = 1,
+    label: String,
+    text: String,
+    onTextChanged: (String) -> Unit,
+    placeholder: String,
+    minLines: Int = 1,
+    maxLines: Int = 1,
 ) {
-	TextField(
-		value = text,
-		onValueChange = { onTextChanged(it) },
-		modifier = Modifier.fillMaxWidth(),
-		textStyle = MaterialTheme.typography.bodyLarge,
-		label = { Text(label) },
-		placeholder = { Text(placeholder) },
-		minLines = minLines,
-		maxLines = maxLines,
-		trailingIcon = {
-			IconButton(
-				onClick = { onTextChanged("") },
-			) {
-				Icon(
-					painter = painterResource(R.drawable.outline_cancel_24),
-					tint = MaterialTheme.colorScheme.onSurfaceVariant,
-					contentDescription = stringResource(id = R.string.des_clear_text),
-				)
-			}
-		},
-	)
+    TextField(
+        value = text,
+        onValueChange = { onTextChanged(it) },
+        modifier = Modifier.fillMaxWidth(),
+        textStyle = MaterialTheme.typography.bodyLarge,
+        label = { Text(label) },
+        placeholder = { Text(placeholder) },
+        minLines = minLines,
+        maxLines = maxLines,
+        trailingIcon = {
+            IconButton(
+                onClick = { onTextChanged("") },
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.outline_cancel_24),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentDescription = stringResource(id = R.string.des_clear_text),
+                )
+            }
+        },
+    )
 }
 
 @Preview
 @Composable
 fun WeQuizTextFieldPreview() {
-	WeQuizTextField(
-		label = "Label",
-		text = "Text",
-		onTextChanged = {},
-		placeholder = "Placeholder",
-	)
+    WeQuizTextField(
+        label = "Label",
+        text = "Text",
+        onTextChanged = {},
+        placeholder = "Placeholder",
+    )
 }

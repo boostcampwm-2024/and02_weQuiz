@@ -6,8 +6,8 @@ import kr.boostcamp_2024.course.study.R
 
 @Serializable
 sealed class DetailMainScreenRouter(
-	val iconId: Int,
-	@StringRes val title: Int,
+    val iconId: Int,
+    @StringRes val title: Int,
 )
 
 @Serializable
@@ -15,6 +15,6 @@ data object DetailScreenRoute : DetailMainScreenRouter(R.drawable.baseline_dehaz
 
 @Serializable
 data object GroupScreenRoute : DetailMainScreenRouter(
-	R.drawable.rounded_directions_walk_24,
-	R.string.bottom_nav_icon_group,
+    R.drawable.rounded_directions_walk_24,
+    R.string.bottom_nav_icon_group,
 )

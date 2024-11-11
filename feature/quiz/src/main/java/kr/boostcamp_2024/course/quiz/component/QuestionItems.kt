@@ -10,14 +10,14 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun QuestionItems(choice: List<String>, answer: Int, onClick: () -> Unit) {
-	Column(modifier = Modifier.selectableGroup()) {
-		val selectedType by remember { mutableIntStateOf(answer) }
-		choice.forEachIndexed { idx, it ->
-			RadioTextButton(
-				text = it,
-				selected = selectedType == idx,
-				onclick = onClick,
-			)
-		}
-	}
+    Column(modifier = Modifier.selectableGroup()) {
+        val selectedType by remember { mutableIntStateOf(answer) }
+        choice.forEachIndexed { idx, it ->
+            RadioTextButton(
+                text = it,
+                selected = selectedType == idx,
+                onclick = onClick,
+            )
+        }
+    }
 }

@@ -13,59 +13,59 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun StudyScreen(
-	onNavigationButtonClick: () -> Unit,
-	onCreateCategoryButtonClick: () -> Unit,
-	onCategoryClick: () -> Unit,
+    onNavigationButtonClick: () -> Unit,
+    onCreateCategoryButtonClick: () -> Unit,
+    onCategoryClick: () -> Unit,
 ) {
-	Box(
-		modifier = Modifier.fillMaxSize(),
-	) {
-		Button(
-			modifier = Modifier.align(Alignment.TopStart),
-			onClick = onNavigationButtonClick,
-		) {
-			Text(text = "뒤로가기")
-		}
+    Box(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        Button(
+            modifier = Modifier.align(Alignment.TopStart),
+            onClick = onNavigationButtonClick,
+        ) {
+            Text(text = "뒤로가기")
+        }
 
-		Column(
-			modifier = Modifier.align(Alignment.Center),
-			horizontalAlignment = Alignment.CenterHorizontally,
-		) {
-			Button(onClick = onCreateCategoryButtonClick) {
-				Text(text = "카테고리 생성")
-			}
-			Text(text = "스터디 화면")
-			Button(onClick = onCategoryClick) {
-				Text(text = "카테고리")
-			}
-			Button(onClick = onCategoryClick) {
-				Text(text = "카테고리")
-			}
-			Button(onClick = onCategoryClick) {
-				Text(text = "카테고리")
-			}
-		}
+        Column(
+            modifier = Modifier.align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Button(onClick = onCreateCategoryButtonClick) {
+                Text(text = "카테고리 생성")
+            }
+            Text(text = "스터디 화면")
+            Button(onClick = onCategoryClick) {
+                Text(text = "카테고리")
+            }
+            Button(onClick = onCategoryClick) {
+                Text(text = "카테고리")
+            }
+            Button(onClick = onCategoryClick) {
+                Text(text = "카테고리")
+            }
+        }
 
-		Row(
-			modifier = Modifier.align(Alignment.BottomCenter),
-			verticalAlignment = Alignment.CenterVertically,
-		) {
-			Button(onClick = { /*TODO*/ }) {
-				Text(text = "카테고리")
-			}
-			Button(onClick = { /*TODO*/ }) {
-				Text(text = "그룹원")
-			}
-		}
-	}
+        Row(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Button(onClick = { /*TODO*/ }) {
+                Text(text = "카테고리")
+            }
+            Button(onClick = { /*TODO*/ }) {
+                Text(text = "그룹원")
+            }
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun StudyScreenPreview() {
-	StudyScreen(
-		onNavigationButtonClick = {},
-		onCreateCategoryButtonClick = {},
-		onCategoryClick = {},
-	)
+    StudyScreen(
+        onNavigationButtonClick = {},
+        onCreateCategoryButtonClick = {},
+        onCategoryClick = {},
+    )
 }

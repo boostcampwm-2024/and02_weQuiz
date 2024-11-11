@@ -5,7 +5,7 @@ import kr.boostcamp_2024.course.domain.repository.NotificationRepository
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
-	firestore: FirebaseFirestore,
+    firestore: FirebaseFirestore,
 ) : NotificationRepository {
-	private val notificationCollectionRef = firestore.collection("Notification")
+    private val notificationCollectionRef = firestore.collection("Notification")
 }

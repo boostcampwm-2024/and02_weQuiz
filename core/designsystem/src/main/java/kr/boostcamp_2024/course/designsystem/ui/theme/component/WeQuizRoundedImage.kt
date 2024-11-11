@@ -16,37 +16,37 @@ import kr.boostcamp_2024.course.designsystem.R
 
 @Composable
 fun WeQuizLocalRoundedImage(
-	modifier: Modifier = Modifier,
-	imagePainter: Painter,
-	contentDescription: String?,
+    modifier: Modifier = Modifier,
+    imagePainter: Painter,
+    contentDescription: String?,
 ) {
-	Image(
-		modifier = modifier.clip(CircleShape),
-		painter = imagePainter,
-		contentDescription = contentDescription,
-		contentScale = ContentScale.Crop,
-	)
+    Image(
+        modifier = modifier.clip(CircleShape),
+        painter = imagePainter,
+        contentDescription = contentDescription,
+        contentScale = ContentScale.Crop,
+    )
 }
 
 @Composable
 fun WeQuizAsyncImage(
-	modifier: Modifier = Modifier,
-	imgUrl: String?,
-	placeholder: Painter = painterResource(id = R.drawable.img_error),
-	error: Painter = painterResource(id = R.drawable.img_error),
-	contentDescription: String?,
-	fallback: Painter = painterResource(id = R.drawable.img_error),
+    modifier: Modifier = Modifier,
+    imgUrl: String?,
+    placeholder: Painter = painterResource(id = R.drawable.img_error),
+    error: Painter = painterResource(id = R.drawable.img_error),
+    contentDescription: String?,
+    fallback: Painter = painterResource(id = R.drawable.img_error),
 ) {
-	AsyncImage(
-		model = ImageRequest.Builder(LocalContext.current)
-			.data(imgUrl)
-			.crossfade(true)
-			.build(),
-		modifier = modifier,
-		placeholder = placeholder,
-		error = error,
-		contentDescription = contentDescription,
-		contentScale = ContentScale.Crop,
-		fallback = fallback,
-	)
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(imgUrl)
+            .crossfade(true)
+            .build(),
+        modifier = modifier,
+        placeholder = placeholder,
+        error = error,
+        contentDescription = contentDescription,
+        contentScale = ContentScale.Crop,
+        fallback = fallback,
+    )
 }

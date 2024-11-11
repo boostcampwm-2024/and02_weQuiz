@@ -7,9 +7,9 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @Composable
 fun WeQuizApp() {
-	WeQuizTheme {
-		WeQuizNavHost(
-			modifier = Modifier.fillMaxSize(),
-		)
-	}
+    WeQuizTheme {
+        WeQuizNavHost(
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
 }

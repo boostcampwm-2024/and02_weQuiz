@@ -16,33 +16,33 @@ import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 fun QuestionTitleAndDetail(title: String, description: String) {
-	Column(
-		verticalArrangement = Arrangement.spacedBy(10.dp),
-		modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 10.dp),
-	) {
-		Text(
-			stringResource(R.string.txt_question_title),
-			style = MaterialTheme.typography.bodyLarge,
-			fontWeight = FontWeight.Bold,
-			color = MaterialTheme.colorScheme.onSurfaceVariant,
-		)
-		QuestionTextBox(text = title)
-		Text(
-			stringResource(R.string.txt_question_description),
-			style = MaterialTheme.typography.bodyLarge,
-			fontWeight = FontWeight.Bold,
-			color = MaterialTheme.colorScheme.onSurfaceVariant,
-		)
-		QuestionTextBox(text = description)
-		HorizontalDivider()
-	}
+    Column(
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 10.dp),
+    ) {
+        Text(
+            stringResource(R.string.txt_question_title),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        QuestionTextBox(text = title)
+        Text(
+            stringResource(R.string.txt_question_description),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        QuestionTextBox(text = description)
+        HorizontalDivider()
+    }
 }
 
 @Preview
 @Composable
 private fun QuestionTitleAndDetailPreview() {
-	QuestionTitleAndDetail(
-		"제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
-		"제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
-	)
+    QuestionTitleAndDetail(
+        "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
+        "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
+    )
 }

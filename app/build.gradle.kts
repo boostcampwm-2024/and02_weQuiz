@@ -1,35 +1,35 @@
 plugins {
-	id("convention.android.application")
+    id("convention.android.application")
 }
 
 android {
-	namespace = "kr.boostcamp_2024.course.wequiz"
+    namespace = "kr.boostcamp_2024.course.wequiz"
 
-	defaultConfig {
-		applicationId = "kr.boostcamp_2024.course.wequiz"
-		targetSdk = 34
-		versionCode = 1
-		versionName = "1.0"
+    defaultConfig {
+        applicationId = "kr.boostcamp_2024.course.wequiz"
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
 
-		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-	}
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 }
 
 dependencies {
-	implementation(project(":feature:login"))
-	implementation(project(":feature:main"))
-	implementation(project(":feature:study"))
-	implementation(project(":feature:category"))
-	implementation(project(":feature:quiz"))
+    implementation(project(":feature:login"))
+    implementation(project(":feature:main"))
+    implementation(project(":feature:study"))
+    implementation(project(":feature:category"))
+    implementation(project(":feature:quiz"))
 
-	implementation(project(":core:data"))
-	implementation(project(":core:domain"))
-	implementation(project(":core:designsystem"))
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:designsystem"))
 
-	implementation(libs.androidx.core.ktx)
-	implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
-	testImplementation(libs.junit)
-	androidTestImplementation(libs.androidx.junit)
-	androidTestImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 }

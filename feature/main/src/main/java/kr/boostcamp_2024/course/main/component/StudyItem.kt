@@ -27,79 +27,79 @@ import kr.boostcamp_2024.course.main.R
 
 @Composable
 fun StudyItem(
-	studyUrl: String,
-	studyTitle: String,
-	studyDescription: String,
-	studyMember: Int,
-	onStudyClick: () -> Unit,
+    studyUrl: String,
+    studyTitle: String,
+    studyDescription: String,
+    studyMember: Int,
+    onStudyClick: () -> Unit,
 ) {
 
-	Column {
-		Row(
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp, vertical = 12.dp),
-			horizontalArrangement = Arrangement.spacedBy(16.dp),
-		) {
-			Icon(
-				modifier = Modifier
-					.size(56.dp)
-					.clip(MaterialTheme.shapes.large)
-					.background(MaterialTheme.colorScheme.outlineVariant),
-				imageVector = Icons.Outlined.Star,
-				contentDescription = stringResource(R.string.des_img_study_image),
-			)
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(MaterialTheme.shapes.large)
+                    .background(MaterialTheme.colorScheme.outlineVariant),
+                imageVector = Icons.Outlined.Star,
+                contentDescription = stringResource(R.string.des_img_study_image),
+            )
 
-			Column(
-				modifier = Modifier
-					.weight(1f)
-					.clickable(onClick = onStudyClick),
-			) {
-				Text(
-					text = studyTitle,
-					style = MaterialTheme.typography.bodyLarge,
-				)
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(onClick = onStudyClick),
+            ) {
+                Text(
+                    text = studyTitle,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
 
-				if (studyDescription.isNotEmpty()) {
-					Text(
-						text = studyDescription,
-						style = MaterialTheme.typography.bodyMedium,
-						color = MaterialTheme.colorScheme.onSurfaceVariant,
-					)
-				}
+                if (studyDescription.isNotEmpty()) {
+                    Text(
+                        text = studyDescription,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
 
-				Text(
-					text = stringResource(R.string.text_study_user_count, studyMember),
-					style = MaterialTheme.typography.bodyMedium,
-					color = MaterialTheme.colorScheme.onSurfaceVariant,
-					maxLines = 2,
-					overflow = TextOverflow.Ellipsis,
-				)
-			}
+                Text(
+                    text = stringResource(R.string.text_study_user_count, studyMember),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
 
-			IconButton(
-				modifier = Modifier.size(24.dp),
-				onClick = { /* TODO : ex) 스터디 나가기 */ },
-			) {
-				Icon(
-					imageVector = Icons.Default.MoreVert,
-					contentDescription = stringResource(R.string.des_btn_study_menu),
-				)
-			}
-		}
+            IconButton(
+                modifier = Modifier.size(24.dp),
+                onClick = { /* TODO : ex) 스터디 나가기 */ },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = stringResource(R.string.des_btn_study_menu),
+                )
+            }
+        }
 
-		HorizontalDivider(thickness = 1.dp)
-	}
+        HorizontalDivider(thickness = 1.dp)
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun StudyItemPreview() {
-	StudyItem(
-		studyUrl = "",
-		studyTitle = "안드로이드 개발자",
-		studyDescription = "안드로이드 개발자를 위한 스터디입니다.",
-		studyMember = 3,
-		onStudyClick = {},
-	)
+    StudyItem(
+        studyUrl = "",
+        studyTitle = "안드로이드 개발자",
+        studyDescription = "안드로이드 개발자를 위한 스터디입니다.",
+        studyMember = 3,
+        onStudyClick = {},
+    )
 }

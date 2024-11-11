@@ -15,21 +15,21 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun QuestionTextBox(text: String, modifier: Modifier = Modifier) {
-	Box(
-		modifier = modifier
-			.clip(RoundedCornerShape(20.dp))
-			.background(Color(0xFFCEE9DD)),
-	) {
-		Text(
-			text = text,
-			modifier = Modifier.padding(
-				horizontal = 16.dp,
-				vertical = 10.dp,
-			),
-			style = MaterialTheme.typography.bodyLarge,
-			fontWeight = FontWeight.Bold,
-			color = MaterialTheme.colorScheme.onSurfaceVariant,
-		)
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(Color(0xFFCEE9DD)),
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(
+                horizontal = 16.dp,
+                vertical = 10.dp,
+            ),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
 
-	}
+    }
 }

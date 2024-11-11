@@ -19,32 +19,32 @@ import kr.boostcamp_2024.course.quiz.R
 @ExperimentalMaterial3Api
 @Composable
 fun QuestionDetailTopAppBar(
-	modifier: Modifier = Modifier,
-	onNavigationButtonClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    onNavigationButtonClick: () -> Unit,
 ) {
-	CenterAlignedTopAppBar(
-		modifier = modifier.padding(bottom = 20.dp),
-		title = {
-			Text(
-				text = stringResource(R.string.txt_question_detail_top_app_bar_title),
-				modifier = Modifier,
-				style = MaterialTheme.typography.titleLarge,
-			)
-		},
-		navigationIcon = {
-			IconButton(
-				onClick = onNavigationButtonClick,
-				modifier = Modifier,
-			) {
-				Icon(
-					imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-					contentDescription = stringResource(R.string.des_question_detail_top_app_bar_navigation_icon),
-					modifier = Modifier,
-				)
-			}
-		},
-		colors = TopAppBarDefaults.topAppBarColors(
-			containerColor = MaterialTheme.colorScheme.surface,
-		),
-	)
+    CenterAlignedTopAppBar(
+        modifier = modifier.padding(bottom = 20.dp),
+        title = {
+            Text(
+                text = stringResource(R.string.txt_question_detail_top_app_bar_title),
+                modifier = Modifier,
+                style = MaterialTheme.typography.titleLarge,
+            )
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = onNavigationButtonClick,
+                modifier = Modifier,
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.des_question_detail_top_app_bar_navigation_icon),
+                    modifier = Modifier,
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+    )
 }

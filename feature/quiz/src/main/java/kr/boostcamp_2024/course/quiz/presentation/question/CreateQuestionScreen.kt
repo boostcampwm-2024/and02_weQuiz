@@ -44,218 +44,218 @@ import kr.boostcamp_2024.course.quiz.presentation.component.WeQuizTextField
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateQuestionScreen(
-	onNavigationButtonClick: () -> Unit,
-	onCreateQuestionSuccess: () -> Unit,
-	viewModel: CreateQuestionViewModel = hiltViewModel<CreateQuestionViewModel>(),
+    onNavigationButtonClick: () -> Unit,
+    onCreateQuestionSuccess: () -> Unit,
+    viewModel: CreateQuestionViewModel = hiltViewModel<CreateQuestionViewModel>(),
 ) {
-	val createQuestionState by viewModel.createQuestionState.collectAsStateWithLifecycle()
-	val isCreateQuestionValid by viewModel.isCreateQuestionValid.collectAsStateWithLifecycle()
+    val createQuestionState by viewModel.createQuestionState.collectAsStateWithLifecycle()
+    val isCreateQuestionValid by viewModel.isCreateQuestionValid.collectAsStateWithLifecycle()
 
-	Scaffold(
-		topBar = {
-			CenterAlignedTopAppBar(
-				title = {
-					Text(
-						text = stringResource(id = R.string.top_app_bar_create_question),
-					)
-				},
-				navigationIcon = {
-					IconButton(
-						onClick = onNavigationButtonClick,
-					) {
-						Icon(
-							imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-							contentDescription = stringResource(id = R.string.des_btn_back),
-						)
-					}
-				},
-			)
-		},
-	) { innerPadding ->
-		val scrollState = rememberScrollState()
-		Column(
-			modifier = Modifier
-				.padding(innerPadding)
-				.fillMaxSize()
-				.verticalScroll(scrollState),
-		) {
-			CreateQuestionGuideContent(
-				modifier = Modifier.padding(horizontal = 16.dp),
-			)
-			CreateQuestionContent(
-				modifier = Modifier.padding(horizontal = 16.dp),
-				title = createQuestionState.title,
-				description = createQuestionState.description,
-				solution = createQuestionState.solution,
-				onTitleChanged = viewModel::onTitleChanged,
-				onDescriptionChanged = viewModel::onDescriptionChanged,
-				onSolutionChanged = viewModel::onSolutionChanged,
-			)
-			CreateChoiceItems(
-				modifier = Modifier.padding(horizontal = 16.dp),
-				choices = createQuestionState.choices,
-				selectedChoiceNum = createQuestionState.answer,
-				updateChoiceText = viewModel::onChoiceTextChanged,
-				updateSelectedChoiceNum = viewModel::onSelectedChoiceNumChanged,
-			)
-			Button(
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(horizontal = 16.dp),
-				enabled = isCreateQuestionValid,
-				onClick = {
-					// todo: 문제 출제 처리
-					onCreateQuestionSuccess()
-				},
-			) {
-				Text(
-					text = stringResource(id = R.string.btn_create_question),
-				)
-			}
-		}
-	}
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.top_app_bar_create_question),
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = onNavigationButtonClick,
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.des_btn_back),
+                        )
+                    }
+                },
+            )
+        },
+    ) { innerPadding ->
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .verticalScroll(scrollState),
+        ) {
+            CreateQuestionGuideContent(
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+            CreateQuestionContent(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                title = createQuestionState.title,
+                description = createQuestionState.description,
+                solution = createQuestionState.solution,
+                onTitleChanged = viewModel::onTitleChanged,
+                onDescriptionChanged = viewModel::onDescriptionChanged,
+                onSolutionChanged = viewModel::onSolutionChanged,
+            )
+            CreateChoiceItems(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                choices = createQuestionState.choices,
+                selectedChoiceNum = createQuestionState.answer,
+                updateChoiceText = viewModel::onChoiceTextChanged,
+                updateSelectedChoiceNum = viewModel::onSelectedChoiceNumChanged,
+            )
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                enabled = isCreateQuestionValid,
+                onClick = {
+                    // todo: 문제 출제 처리
+                    onCreateQuestionSuccess()
+                },
+            ) {
+                Text(
+                    text = stringResource(id = R.string.btn_create_question),
+                )
+            }
+        }
+    }
 }
 
 @Composable
 fun CreateQuestionGuideContent(
-	modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
 ) {
-	Row(
-		modifier = modifier
-			.fillMaxWidth()
-			.padding(vertical = 10.dp),
-		horizontalArrangement = Arrangement.spacedBy(10.dp),
-	) {
-		Image(
-			painter = painterResource(id = R.drawable.img_clock_character),
-			contentDescription = null,
-			modifier = Modifier
-				.size(120.dp)
-				.clip(CircleShape),
-			contentScale = ContentScale.Crop,
-		)
-		Column(
-			modifier = Modifier.weight(1f),
-			verticalArrangement = Arrangement.spacedBy(6.dp),
-		) {
-			ChatBubble(
-				text = stringResource(id = R.string.txt_create_question_guide1),
-			)
-			ChatBubble(
-				text = stringResource(id = R.string.txt_create_question_guide2),
-			)
-		}
-	}
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.img_clock_character),
+            contentDescription = null,
+            modifier = Modifier
+                .size(120.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop,
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            ChatBubble(
+                text = stringResource(id = R.string.txt_create_question_guide1),
+            )
+            ChatBubble(
+                text = stringResource(id = R.string.txt_create_question_guide2),
+            )
+        }
+    }
 }
 
 @Composable
 fun CreateQuestionContent(
-	modifier: Modifier = Modifier,
-	title: String,
-	description: String,
-	solution: String? = null,
-	onTitleChanged: (String) -> Unit,
-	onDescriptionChanged: (String) -> Unit,
-	onSolutionChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    title: String,
+    description: String,
+    solution: String? = null,
+    onTitleChanged: (String) -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onSolutionChanged: (String) -> Unit,
 ) {
-	Column(
-		modifier = modifier.fillMaxWidth(),
-		verticalArrangement = Arrangement.spacedBy(10.dp),
-	) {
-		WeQuizTextField(
-			label = stringResource(id = R.string.txt_question_title_label),
-			text = title,
-			onTextChanged = onTitleChanged,
-			placeholder = stringResource(id = R.string.txt_question_title_placeholder),
-		)
-		WeQuizTextField(
-			label = stringResource(id = R.string.txt_question_content_label),
-			text = description,
-			onTextChanged = onDescriptionChanged,
-			placeholder = stringResource(id = R.string.txt_question_content_placeholder),
-			minLine = 6,
-		)
-		WeQuizTextField(
-			label = stringResource(id = R.string.txt_question_description_label),
-			text = solution ?: "",
-			onTextChanged = onSolutionChanged,
-			placeholder = stringResource(id = R.string.txt_question_description_placeholder),
-			minLine = 6,
-		)
-	}
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        WeQuizTextField(
+            label = stringResource(id = R.string.txt_question_title_label),
+            text = title,
+            onTextChanged = onTitleChanged,
+            placeholder = stringResource(id = R.string.txt_question_title_placeholder),
+        )
+        WeQuizTextField(
+            label = stringResource(id = R.string.txt_question_content_label),
+            text = description,
+            onTextChanged = onDescriptionChanged,
+            placeholder = stringResource(id = R.string.txt_question_content_placeholder),
+            minLine = 6,
+        )
+        WeQuizTextField(
+            label = stringResource(id = R.string.txt_question_description_label),
+            text = solution ?: "",
+            onTextChanged = onSolutionChanged,
+            placeholder = stringResource(id = R.string.txt_question_description_placeholder),
+            minLine = 6,
+        )
+    }
 }
 
 @Composable
 fun CreateChoiceItems(
-	modifier: Modifier = Modifier,
-	choices: List<String>,
-	selectedChoiceNum: Int,
-	updateChoiceText: (Int, String) -> Unit,
-	updateSelectedChoiceNum: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    choices: List<String>,
+    selectedChoiceNum: Int,
+    updateChoiceText: (Int, String) -> Unit,
+    updateSelectedChoiceNum: (Int) -> Unit,
 ) {
-	Column(
-		modifier = modifier
-			.fillMaxWidth()
-			.wrapContentHeight()
-			.padding(vertical = 20.dp),
-		verticalArrangement = Arrangement.spacedBy(10.dp),
-	) {
-		choices.forEachIndexed { index, choiceText ->
-			ChoiceItem(
-				text = choiceText,
-				onTextChanged = { updateChoiceText(index, it) },
-				isSelected = selectedChoiceNum == index,
-				onSelected = { updateSelectedChoiceNum(index) },
-			)
-		}
-	}
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        choices.forEachIndexed { index, choiceText ->
+            ChoiceItem(
+                text = choiceText,
+                onTextChanged = { updateChoiceText(index, it) },
+                isSelected = selectedChoiceNum == index,
+                onSelected = { updateSelectedChoiceNum(index) },
+            )
+        }
+    }
 }
 
 @Composable
 fun ChoiceItem(
-	modifier: Modifier = Modifier,
-	text: String,
-	onTextChanged: (String) -> Unit,
-	isSelected: Boolean,
-	onSelected: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    text: String,
+    onTextChanged: (String) -> Unit,
+    isSelected: Boolean,
+    onSelected: (Boolean) -> Unit,
 ) {
-	Row(
-		modifier = modifier.fillMaxWidth(),
-	) {
-		RadioButton(
-			selected = isSelected,
-			onClick = {
-				onSelected(!isSelected)
-			},
-		)
-		OutlinedTextField(
-			value = text,
-			onValueChange = { onTextChanged(it) },
-			modifier = Modifier.weight(1f),
-			textStyle = MaterialTheme.typography.bodyLarge,
-			trailingIcon = {
-				IconButton(
-					onClick = { onTextChanged("") },
-				) {
-					Icon(
-						painter = painterResource(R.drawable.outline_cancel_on_surface_variant),
-						tint = MaterialTheme.colorScheme.onSurfaceVariant,
-						contentDescription = stringResource(id = R.string.des_clear_text),
-					)
-				}
-			},
-			placeholder = { Text(stringResource(id = R.string.txt_question_choice_placeholder)) },
-		)
-	}
+    Row(
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        RadioButton(
+            selected = isSelected,
+            onClick = {
+                onSelected(!isSelected)
+            },
+        )
+        OutlinedTextField(
+            value = text,
+            onValueChange = { onTextChanged(it) },
+            modifier = Modifier.weight(1f),
+            textStyle = MaterialTheme.typography.bodyLarge,
+            trailingIcon = {
+                IconButton(
+                    onClick = { onTextChanged("") },
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.outline_cancel_on_surface_variant),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        contentDescription = stringResource(id = R.string.des_clear_text),
+                    )
+                }
+            },
+            placeholder = { Text(stringResource(id = R.string.txt_question_choice_placeholder)) },
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun CreateQuestionScreenPreview() {
-	WeQuizTheme {
-		CreateQuestionScreen(
-			onNavigationButtonClick = {},
-			onCreateQuestionSuccess = {},
-		)
-	}
+    WeQuizTheme {
+        CreateQuestionScreen(
+            onNavigationButtonClick = {},
+            onCreateQuestionSuccess = {},
+        )
+    }
 }

@@ -26,50 +26,50 @@ import kotlin.reflect.KClass
 
 @Composable
 fun WeQuizNavHost(
-	modifier: Modifier = Modifier,
-	navController: NavHostController = rememberNavController(),
-	startDestination: KClass<*> = LoginRoute::class,
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController(),
+    startDestination: KClass<*> = LoginRoute::class,
 ) {
-	NavHost(
-		modifier = modifier,
-		navController = navController,
-		startDestination = startDestination,
-	) {
-		loginNavGraph(
-			onLoginSuccess = {
-				navController.popBackStack() // 로그인 시 로그인 화면 제거, 추후 수정 필요
-				navController.navigateMain()
-			},
-		)
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = startDestination,
+    ) {
+        loginNavGraph(
+            onLoginSuccess = {
+                navController.popBackStack() // 로그인 시 로그인 화면 제거, 추후 수정 필요
+                navController.navigateMain()
+            },
+        )
 
-		mainNavGraph(
-			onNavigationButtonClick = navController::navigateUp,
-			onNotificationButtonClick = navController::navigateNotification,
-			onCreateStudyButtonClick = navController::navigateCreateStudy,
-			onStudyClick = navController::navigateStudy,
-		)
+        mainNavGraph(
+            onNavigationButtonClick = navController::navigateUp,
+            onNotificationButtonClick = navController::navigateNotification,
+            onCreateStudyButtonClick = navController::navigateCreateStudy,
+            onStudyClick = navController::navigateStudy,
+        )
 
-		studyNavGraph(
-			onNavigationButtonClick = navController::navigateUp,
-			onCreateStudySuccess = navController::navigateUp,
-			onCreateCategoryButtonClick = navController::navigateCreateCategory,
-			onCategoryClick = navController::navigateCategory,
-		)
+        studyNavGraph(
+            onNavigationButtonClick = navController::navigateUp,
+            onCreateStudySuccess = navController::navigateUp,
+            onCreateCategoryButtonClick = navController::navigateCreateCategory,
+            onCategoryClick = navController::navigateCategory,
+        )
 
-		categoryNavGraph(
-			onNavigationButtonClick = navController::navigateUp,
-			onCreateQuizButtonClick = navController::navigateCreateQuiz,
-			onQuizClick = navController::navigateQuiz,
-			onCreateCategorySuccess = navController::navigateUp,
-		)
+        categoryNavGraph(
+            onNavigationButtonClick = navController::navigateUp,
+            onCreateQuizButtonClick = navController::navigateCreateQuiz,
+            onQuizClick = navController::navigateQuiz,
+            onCreateCategorySuccess = navController::navigateUp,
+        )
 
-		quizNavGraph(
-			onNavigationButtonClick = navController::navigateUp,
-			onCreateQuestionSuccess = navController::navigateUp,
-			onQuizFinished = navController::navigateQuizResult,
-			onQuizStartButtonClick = navController::navigateQuestionScreen,
-			onQuestionClick = navController::navigateQuestionDetail,
-			onCreateQuizSuccess = navController::navigateUp,
-		)
-	}
+        quizNavGraph(
+            onNavigationButtonClick = navController::navigateUp,
+            onCreateQuestionSuccess = navController::navigateUp,
+            onQuizFinished = navController::navigateQuizResult,
+            onQuizStartButtonClick = navController::navigateQuestionScreen,
+            onQuestionClick = navController::navigateQuestionDetail,
+            onCreateQuizSuccess = navController::navigateUp,
+        )
+    }
 }

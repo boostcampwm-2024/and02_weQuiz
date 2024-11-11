@@ -26,55 +26,55 @@ import kr.boostcamp_2024.course.study.component.TitleTextField
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateStudyScreen(
-	onNavigationButtonClick: () -> Unit,
-	onCreateStudySuccess: () -> Unit,
+    onNavigationButtonClick: () -> Unit,
+    onCreateStudySuccess: () -> Unit,
 ) {
-	val scrollState = rememberScrollState()
-	var titleText by remember { mutableStateOf("") }
-	var descriptionText by remember { mutableStateOf("") }
+    val scrollState = rememberScrollState()
+    var titleText by remember { mutableStateOf("") }
+    var descriptionText by remember { mutableStateOf("") }
 
-	Scaffold(topBar = {
-		CreateStudyTopAppBar(onNavigationButtonClick = onNavigationButtonClick)
-	}) { paddingValues ->
-		Column(
-			modifier = Modifier
-				.fillMaxSize()
-				.padding(paddingValues)
-				.verticalScroll(scrollState),
-		) {
-			StudyCreationGuide()
+    Scaffold(topBar = {
+        CreateStudyTopAppBar(onNavigationButtonClick = onNavigationButtonClick)
+    }) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(scrollState),
+        ) {
+            StudyCreationGuide()
 
-			Column(
-				modifier = Modifier.padding(horizontal = 16.dp),
-				verticalArrangement = Arrangement.spacedBy(16.dp),
-			) {
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
 
-				TitleTextField(
-					titleText = titleText,
-					onTitleTextChange = { titleText = it },
-					onClearTitleText = { titleText = "" },
-				)
+                TitleTextField(
+                    titleText = titleText,
+                    onTitleTextChange = { titleText = it },
+                    onClearTitleText = { titleText = "" },
+                )
 
-				DescriptionTextField(
-					descriptionText = descriptionText,
-					onDescriptionTextChange = { descriptionText = it },
-					onClearDescriptionText = { descriptionText = "" },
-				)
+                DescriptionTextField(
+                    descriptionText = descriptionText,
+                    onDescriptionTextChange = { descriptionText = it },
+                    onClearDescriptionText = { descriptionText = "" },
+                )
 
-				MembersDropDownMenu()
+                MembersDropDownMenu()
 
-			}
-			StudyCreationButton(onCreateStudySuccess = onCreateStudySuccess)
-		}
-	}
+            }
+            StudyCreationButton(onCreateStudySuccess = onCreateStudySuccess)
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun CreateStudyScreenPreview() {
-	CreateStudyScreen(
-		onNavigationButtonClick = {},
-		onCreateStudySuccess = {},
-	)
+    CreateStudyScreen(
+        onNavigationButtonClick = {},
+        onCreateStudySuccess = {},
+    )
 }

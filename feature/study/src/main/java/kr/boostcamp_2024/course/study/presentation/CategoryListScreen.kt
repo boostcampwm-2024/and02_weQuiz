@@ -17,37 +17,37 @@ import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 
 @Composable
 fun CategoryListScreen(createCategoryClick: () -> Unit, categoryItemClick: () -> Unit) {
-	Column(
-		modifier = Modifier
-			.fillMaxSize()
-			.padding(start = 16.dp, end = 16.dp, top = 8.dp),
-	) {
-		CustomPropertyTab(
-			onClicked = createCategoryClick,
-			imageVector = Icons.Outlined.AddCircle,
-			title = R.string.property_tab_category_text,
-		)
-		CategoryLazyColumn(categoryItemClick)
-	}
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp),
+    ) {
+        CustomPropertyTab(
+            onClicked = createCategoryClick,
+            imageVector = Icons.Outlined.AddCircle,
+            title = R.string.property_tab_category_text,
+        )
+        CategoryLazyColumn(categoryItemClick)
+    }
 }
 
 @Composable
 fun CategoryLazyColumn(categoryItemClick: () -> Unit) {
-	LazyColumn(modifier = Modifier.fillMaxWidth()) {
-		items(10) { index ->
-			CategoryItem(
-				onClicked = categoryItemClick,
-				title = "스레드",
-				content = "카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요.",
-				author = "내가 퀴즈 낸 사람이다.",
-				quizCount = 3,
-				categoryImgUrl = null,
-				profileImgUrl = null,
-			)
+    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+        items(10) { index ->
+            CategoryItem(
+                onClicked = categoryItemClick,
+                title = "스레드",
+                content = "카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요. 카테고리 소개를 적어주세요.",
+                author = "내가 퀴즈 낸 사람이다.",
+                quizCount = 3,
+                categoryImgUrl = null,
+                profileImgUrl = null,
+            )
 
-			if (index < 9) {
-				HorizontalDivider()
-			}
-		}
-	}
+            if (index < 9) {
+                HorizontalDivider()
+            }
+        }
+    }
 }

@@ -14,29 +14,29 @@ data object MainRoute
 data object NotificationRoute
 
 fun NavController.navigateMain() {
-	navigate(MainRoute)
+    navigate(MainRoute)
 }
 
 fun NavController.navigateNotification() {
-	navigate(NotificationRoute)
+    navigate(NotificationRoute)
 }
 
 fun NavGraphBuilder.mainNavGraph(
-	onNavigationButtonClick: () -> Unit,
-	onNotificationButtonClick: () -> Unit,
-	onCreateStudyButtonClick: () -> Unit,
-	onStudyClick: () -> Unit,
+    onNavigationButtonClick: () -> Unit,
+    onNotificationButtonClick: () -> Unit,
+    onCreateStudyButtonClick: () -> Unit,
+    onStudyClick: () -> Unit,
 ) {
-	composable<MainRoute> {
-		MainScreen(
-			onNotificationButtonClick = onNotificationButtonClick,
-			onCreateStudyButtonClick = onCreateStudyButtonClick,
-			onStudyClick = onStudyClick,
-		)
-	}
-	composable<NotificationRoute> {
-		NotificationScreen(
-			onNavigationButtonClick = onNavigationButtonClick,
-		)
-	}
+    composable<MainRoute> {
+        MainScreen(
+            onNotificationButtonClick = onNotificationButtonClick,
+            onCreateStudyButtonClick = onCreateStudyButtonClick,
+            onStudyClick = onStudyClick,
+        )
+    }
+    composable<NotificationRoute> {
+        NotificationScreen(
+            onNavigationButtonClick = onNavigationButtonClick,
+        )
+    }
 }

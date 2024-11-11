@@ -21,39 +21,39 @@ import androidx.compose.ui.platform.LocalDensity
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeQuizImageLargeTopAppBar(
-	topAppBarImageUrl: String?,
-	scrollBehavior: TopAppBarScrollBehavior,
-	title: @Composable (() -> Unit) = {},
-	navigationIcon: @Composable (() -> Unit) = {},
-	actions: @Composable (RowScope.() -> Unit) = {},
+    topAppBarImageUrl: String?,
+    scrollBehavior: TopAppBarScrollBehavior,
+    title: @Composable (() -> Unit) = {},
+    navigationIcon: @Composable (() -> Unit) = {},
+    actions: @Composable (RowScope.() -> Unit) = {},
 ) {
 
-	Box(
-		modifier = Modifier.fillMaxWidth(),
-	) {
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
 
-		var imageHeight by remember { mutableIntStateOf(0) }
+        var imageHeight by remember { mutableIntStateOf(0) }
 
-		WeQuizAsyncImage(
-			modifier = Modifier
-				.fillMaxWidth()
-				.height(with(LocalDensity.current) { imageHeight.toDp() }),
-			imgUrl = topAppBarImageUrl,
-			contentDescription = null,
-		)
+        WeQuizAsyncImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(with(LocalDensity.current) { imageHeight.toDp() }),
+            imgUrl = topAppBarImageUrl,
+            contentDescription = null,
+        )
 
-		LargeTopAppBar(
-			modifier = Modifier.onSizeChanged { size ->
-				imageHeight = size.height
-			},
-			title = title,
-			navigationIcon = navigationIcon,
-			actions = actions,
-			colors = TopAppBarDefaults.largeTopAppBarColors(
-				containerColor = Color.Transparent,
-				scrolledContainerColor = Color.Transparent,
-			),
-			scrollBehavior = scrollBehavior,
-		)
-	}
+        LargeTopAppBar(
+            modifier = Modifier.onSizeChanged { size ->
+                imageHeight = size.height
+            },
+            title = title,
+            navigationIcon = navigationIcon,
+            actions = actions,
+            colors = TopAppBarDefaults.largeTopAppBarColors(
+                containerColor = Color.Transparent,
+                scrolledContainerColor = Color.Transparent,
+            ),
+            scrollBehavior = scrollBehavior,
+        )
+    }
 }

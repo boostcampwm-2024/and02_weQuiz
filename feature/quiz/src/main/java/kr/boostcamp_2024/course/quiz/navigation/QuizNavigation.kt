@@ -30,78 +30,78 @@ data object QuizResultRoute
 data object CreateQuizRoute
 
 fun NavController.navigateCreateQuestion() {
-	navigate(CreateQuestionRoute)
+    navigate(CreateQuestionRoute)
 }
 
 fun NavController.navigateQuestionDetail() {
-	navigate(QuestionDetailRoute)
+    navigate(QuestionDetailRoute)
 }
 
 fun NavController.navigateQuestionScreen() {
-	navigate(QuestionScreenRoute) {
-		popUpTo(QuizRoute) {
-			inclusive = true
-		}
-	}
+    navigate(QuestionScreenRoute) {
+        popUpTo(QuizRoute) {
+            inclusive = true
+        }
+    }
 }
 
 fun NavController.navigateQuiz() {
-	navigate(QuizRoute)
+    navigate(QuizRoute)
 }
 
 fun NavController.navigateQuizResult() {
-	navigate(QuizResultRoute) {
-		popUpTo(QuestionScreenRoute) {
-			inclusive = true
-		}
-	}
+    navigate(QuizResultRoute) {
+        popUpTo(QuestionScreenRoute) {
+            inclusive = true
+        }
+    }
 }
 
 fun NavController.navigateCreateQuiz() {
-	navigate(CreateQuizRoute)
+    navigate(CreateQuizRoute)
 }
 
 fun NavGraphBuilder.quizNavGraph(
-	onNavigationButtonClick: () -> Unit,
-	onCreateQuestionSuccess: () -> Unit,
-	onQuizFinished: () -> Unit,
-	onQuizStartButtonClick: () -> Unit,
-	onQuestionClick: () -> Unit,
-	onCreateQuizSuccess: () -> Unit,
+    onNavigationButtonClick: () -> Unit,
+    onCreateQuestionSuccess: () -> Unit,
+    onQuizFinished: () -> Unit,
+    onQuizStartButtonClick: () -> Unit,
+    onQuestionClick: () -> Unit,
+    onCreateQuizSuccess: () -> Unit,
 ) {
-	composable<CreateQuestionRoute> {
-		CreateQuestionScreen(
-			onNavigationButtonClick = onNavigationButtonClick,
-			onCreateQuestionSuccess = onCreateQuestionSuccess,
-		)
-	}
-	composable<QuestionDetailRoute> {
-		QuestionDetailScreen(
-			onNavigationButtonClick = onNavigationButtonClick,
-		)
-	}
-	composable<QuestionScreenRoute> {
-		QuestionScreen(
-			onNavigationButtonClick = onNavigationButtonClick,
-			onQuizFinished = onQuizFinished,
-		)
-	}
-	composable<QuizRoute> {
-		QuizScreen(
-			onNavigationButtonClick = onNavigationButtonClick,
-			onQuizStartButtonClick = onQuizStartButtonClick,
-		)
-	}
-	composable<QuizResultRoute> {
-		QuizResultScreen(
-			onNavigationButtonClick = onNavigationButtonClick,
-			onQuestionClick = onQuestionClick,
-		)
-	}
-	composable<CreateQuizRoute> {
-		CreateQuizScreen(
-			onNavigationButtonClick = onNavigationButtonClick,
-			onCreateQuizSuccess = onCreateQuizSuccess,
-		)
-	}
+    composable<CreateQuestionRoute> {
+        CreateQuestionScreen(
+            onNavigationButtonClick = onNavigationButtonClick,
+            onCreateQuestionSuccess = onCreateQuestionSuccess,
+        )
+    }
+    composable<QuestionDetailRoute> {
+        QuestionDetailScreen(
+            onNavigationButtonClick = onNavigationButtonClick,
+        )
+    }
+    composable<QuestionScreenRoute> {
+        QuestionScreen(
+            onNavigationButtonClick = onNavigationButtonClick,
+            onQuizFinished = onQuizFinished,
+        )
+    }
+    composable<QuizRoute> {
+        QuizScreen(
+            onNavigationButtonClick = onNavigationButtonClick,
+            onQuizStartButtonClick = onQuizStartButtonClick,
+        )
+    }
+    composable<QuizResultRoute> {
+        QuizResultScreen(
+            onNavigationButtonClick = onNavigationButtonClick,
+            onQuestionClick = onQuestionClick,
+        )
+    }
+    composable<CreateQuizRoute> {
+        CreateQuizScreen(
+            onNavigationButtonClick = onNavigationButtonClick,
+            onCreateQuizSuccess = onCreateQuizSuccess,
+        )
+    }
 }

@@ -13,11 +13,11 @@ data object LoginRoute
 //}
 
 fun NavGraphBuilder.loginNavGraph(
-	onLoginSuccess: () -> Unit,
+    onLoginSuccess: () -> Unit,
 ) {
-	composable<LoginRoute> {
-		LoginScreen(
-			onLoginSuccess = onLoginSuccess,
-		)
-	}
+    composable<LoginRoute> {
+        LoginScreen(
+            onLoginSuccess = onLoginSuccess,
+        )
+    }
 }

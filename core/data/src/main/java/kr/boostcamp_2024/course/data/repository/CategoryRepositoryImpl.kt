@@ -5,7 +5,7 @@ import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(
-	firestore: FirebaseFirestore,
+    firestore: FirebaseFirestore,
 ) : CategoryRepository {
-	private val categoryCollectionRef = firestore.collection("Category")
+    private val categoryCollectionRef = firestore.collection("Category")
 }

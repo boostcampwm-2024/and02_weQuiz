@@ -13,11 +13,11 @@ import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 fun QuestionTitle(title: String) {
-	Column(
-		modifier = Modifier,
-	) {
-		Text(text = stringResource(R.string.txt_question_detail_title), modifier = Modifier, style = MaterialTheme.typography.bodyMedium)
-		Spacer(modifier = Modifier.height(10.dp))
-		ChatBubble(title)
-	}
+    Column(
+        modifier = Modifier,
+    ) {
+        Text(text = stringResource(R.string.txt_question_detail_title), modifier = Modifier, style = MaterialTheme.typography.bodyMedium)
+        Spacer(modifier = Modifier.height(10.dp))
+        ChatBubble(title)
+    }
 }

@@ -15,22 +15,22 @@ import kr.boostcamp_2024.course.study.R
 @ExperimentalMaterial3Api
 @Composable
 fun CreateStudyTopAppBar(
-	onNavigationButtonClick: () -> Unit,
+    onNavigationButtonClick: () -> Unit,
 ) {
-	CenterAlignedTopAppBar(
-		title = {
-			Text(
-				text = stringResource(R.string.txt_create_study_top_app_bar),
-				style = MaterialTheme.typography.titleLarge,
-			)
-		},
-		navigationIcon = {
-			IconButton(onClick = onNavigationButtonClick) {
-				Icon(
-					imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-					contentDescription = "Back",
-				)
-			}
-		},
-	)
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                text = stringResource(R.string.txt_create_study_top_app_bar),
+                style = MaterialTheme.typography.titleLarge,
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = onNavigationButtonClick) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                )
+            }
+        },
+    )
 }

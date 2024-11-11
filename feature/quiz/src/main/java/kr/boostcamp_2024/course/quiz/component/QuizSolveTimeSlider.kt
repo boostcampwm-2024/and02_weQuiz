@@ -19,42 +19,42 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizSolveTimeSlider(
-	value: Float,
-	steps: Int,
-	valueRange: ClosedFloatingPointRange<Float>,
-	onValueChange: (Float) -> Unit,
+    value: Float,
+    steps: Int,
+    valueRange: ClosedFloatingPointRange<Float>,
+    onValueChange: (Float) -> Unit,
 ) {
-	Slider(
-		modifier = Modifier.fillMaxWidth(),
-		value = value,
-		onValueChange = { onValueChange(it) },
-		steps = steps,
-		valueRange = valueRange,
-		thumb = {
-			Box(
-				modifier = Modifier
-					.defaultMinSize(minWidth = 40.dp)
-					.clip(MaterialTheme.shapes.large)
-					.background(MaterialTheme.colorScheme.primary),
-				contentAlignment = Alignment.Center,
-			) {
-				Text(
-					text = (value.toInt()).toString(),
-					color = MaterialTheme.colorScheme.onPrimary,
-					textAlign = TextAlign.Center,
-				)
-			}
-		},
-	)
+    Slider(
+        modifier = Modifier.fillMaxWidth(),
+        value = value,
+        onValueChange = { onValueChange(it) },
+        steps = steps,
+        valueRange = valueRange,
+        thumb = {
+            Box(
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 40.dp)
+                    .clip(MaterialTheme.shapes.large)
+                    .background(MaterialTheme.colorScheme.primary),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = (value.toInt()).toString(),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        },
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun QuizSolveTimeSliderPreview() {
-	QuizSolveTimeSlider(
-		value = 0f,
-		steps = 10,
-		valueRange = 0f..10f,
-		onValueChange = {},
-	)
+    QuizSolveTimeSlider(
+        value = 0f,
+        steps = 10,
+        valueRange = 0f..10f,
+        onValueChange = {},
+    )
 }

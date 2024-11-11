@@ -16,31 +16,31 @@ import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun CreateGroupDialog(onDismissButtonClick: () -> Unit, onConfirmButtonClick: () -> Unit) {
-	var email by remember { mutableStateOf("") }
-	val isEmailValid = remember(email) { Patterns.EMAIL_ADDRESS.matcher(email).matches() }
-	WeQuizBaseDialog(
-		title = stringResource(R.string.dialog_create_group_title),
-		dialogImage = painterResource(id = R.drawable.waterfall),
-		confirmTitle = stringResource(R.string.btn_dialog_create_group_confirm),
-		dismissTitle = stringResource(R.string.btn_dialog_create_group_dismiss),
-		onConfirm = { onConfirmButtonClick() },
-		onDismissRequest = onDismissButtonClick,
-		content = {
-			WeQuizTextField(
-				label = stringResource(R.string.textfield_label_create_group),
-				text = email,
-				onTextChanged = { email = it },
-				placeholder = stringResource(R.string.textfield_placeholder_create_group),
-			)
-		},
-		confirmButtonEnabled = isEmailValid,
-	)
+    var email by remember { mutableStateOf("") }
+    val isEmailValid = remember(email) { Patterns.EMAIL_ADDRESS.matcher(email).matches() }
+    WeQuizBaseDialog(
+        title = stringResource(R.string.dialog_create_group_title),
+        dialogImage = painterResource(id = R.drawable.waterfall),
+        confirmTitle = stringResource(R.string.btn_dialog_create_group_confirm),
+        dismissTitle = stringResource(R.string.btn_dialog_create_group_dismiss),
+        onConfirm = { onConfirmButtonClick() },
+        onDismissRequest = onDismissButtonClick,
+        content = {
+            WeQuizTextField(
+                label = stringResource(R.string.textfield_label_create_group),
+                text = email,
+                onTextChanged = { email = it },
+                placeholder = stringResource(R.string.textfield_placeholder_create_group),
+            )
+        },
+        confirmButtonEnabled = isEmailValid,
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun CreateGroupScreenPreview() {
-	WeQuizTheme {
-		CreateGroupDialog(onConfirmButtonClick = {}, onDismissButtonClick = {})
-	}
+    WeQuizTheme {
+        CreateGroupDialog(onConfirmButtonClick = {}, onDismissButtonClick = {})
+    }
 }

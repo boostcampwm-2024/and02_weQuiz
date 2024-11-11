@@ -6,8 +6,8 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class WeQuizApplication : Application() {
-	override fun onCreate() {
-		super.onCreate()
-		FirebaseApp.initializeApp(this)
-	}
+    override fun onCreate() {
+        super.onCreate()
+        FirebaseApp.initializeApp(this)
+    }
 }

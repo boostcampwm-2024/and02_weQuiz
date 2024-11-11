@@ -10,15 +10,15 @@ import androidx.compose.ui.layout.ContentScale
 
 @Composable
 fun CircleImage(
-	imagePainter: Painter,
-	contentDescription: String?,
-	modifier: Modifier = Modifier,
+    imagePainter: Painter,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
 ) {
-	Image(
-		modifier = modifier
-			.clip(CircleShape),
-		painter = imagePainter,
-		contentDescription = contentDescription,
-		contentScale = ContentScale.Crop,
-	)
+    Image(
+        modifier = modifier
+            .clip(CircleShape),
+        painter = imagePainter,
+        contentDescription = contentDescription,
+        contentScale = ContentScale.Crop,
+    )
 }

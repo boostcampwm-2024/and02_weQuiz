@@ -14,31 +14,31 @@ data object CreateStudyRoute
 data object StudyRoute
 
 fun NavController.navigateCreateStudy() {
-	navigate(CreateStudyRoute)
+    navigate(CreateStudyRoute)
 }
 
 fun NavController.navigateStudy() {
-	navigate(StudyRoute)
+    navigate(StudyRoute)
 }
 
 fun NavGraphBuilder.studyNavGraph(
-	onNavigationButtonClick: () -> Unit,
-	onCreateStudySuccess: () -> Unit,
-	onCreateCategoryButtonClick: () -> Unit,
-	onCategoryClick: () -> Unit,
+    onNavigationButtonClick: () -> Unit,
+    onCreateStudySuccess: () -> Unit,
+    onCreateCategoryButtonClick: () -> Unit,
+    onCategoryClick: () -> Unit,
 ) {
-	composable<CreateStudyRoute> {
-		CreateStudyScreen(
-			onNavigationButtonClick = onNavigationButtonClick,
-			onCreateStudySuccess = onCreateStudySuccess,
-		)
-	}
+    composable<CreateStudyRoute> {
+        CreateStudyScreen(
+            onNavigationButtonClick = onNavigationButtonClick,
+            onCreateStudySuccess = onCreateStudySuccess,
+        )
+    }
 
-	composable<StudyRoute> {
-		DetailStudyScreen(
-			onNavigationButtonClick = onNavigationButtonClick,
-			onCreateCategoryButtonClick = onCreateCategoryButtonClick,
-			onCategoryClick = onCategoryClick,
-		)
-	}
+    composable<StudyRoute> {
+        DetailStudyScreen(
+            onNavigationButtonClick = onNavigationButtonClick,
+            onCreateCategoryButtonClick = onCreateCategoryButtonClick,
+            onCategoryClick = onCategoryClick,
+        )
+    }
 }

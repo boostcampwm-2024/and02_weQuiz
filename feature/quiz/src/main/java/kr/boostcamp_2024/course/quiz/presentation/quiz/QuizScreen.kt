@@ -11,38 +11,38 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun QuizScreen(
-	onNavigationButtonClick: () -> Unit,
-	onQuizStartButtonClick: () -> Unit,
+    onNavigationButtonClick: () -> Unit,
+    onQuizStartButtonClick: () -> Unit,
 ) {
-	Box(
-		modifier = Modifier.fillMaxSize(),
-	) {
-		Button(
-			modifier = Modifier.align(Alignment.TopStart),
-			onClick = onNavigationButtonClick,
-		) {
-			Text(text = "뒤로가기")
-		}
+    Box(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        Button(
+            modifier = Modifier.align(Alignment.TopStart),
+            onClick = onNavigationButtonClick,
+        ) {
+            Text(text = "뒤로가기")
+        }
 
-		Text(
-			modifier = Modifier.align(Alignment.Center),
-			text = "퀴즈 시작 화면",
-		)
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = "퀴즈 시작 화면",
+        )
 
-		Button(
-			modifier = Modifier.align(Alignment.BottomCenter),
-			onClick = onQuizStartButtonClick,
-		) {
-			Text(text = "퀴즈 시작")
-		}
-	}
+        Button(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            onClick = onQuizStartButtonClick,
+        ) {
+            Text(text = "퀴즈 시작")
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun QuizScreenPreview() {
-	QuizScreen(
-		onNavigationButtonClick = {},
-		onQuizStartButtonClick = {},
-	)
+    QuizScreen(
+        onNavigationButtonClick = {},
+        onQuizStartButtonClick = {},
+    )
 }
