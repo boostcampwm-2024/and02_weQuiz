@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="txt_question_detail_description">설명</string>
+    <string name="txt_question_detail_top_app_bar_title">문제 상세 설명</string>
+    <string name="des_question_detail_top_app_bar_navigation_icon">뒤로 가기</string>
+    <string name="txt_question_detail_solution">해설</string>
+    <string name="des_question_detail_solution_profile">프로필 사진</string>
+    <string name="txt_question_detail_title">제목</string>
     <string name="txt_quiz_result_guide">퀴즈는 어땠나요?\n퀴즈 내용을 해설과 함께\n확인해보세요!</string>
     <string name="txt_quiz_result_score">📝 점수: %1$d/%2$d</string>
     <string name="txt_quiz_question_list">문제 리스트</string>
