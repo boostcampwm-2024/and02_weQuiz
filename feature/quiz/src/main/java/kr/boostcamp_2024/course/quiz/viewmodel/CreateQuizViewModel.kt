@@ -2,10 +2,13 @@ package kr.boostcamp_2024.course.quiz.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.domain.model.QuizCreateInfo
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import javax.inject.Inject
 
@@ -42,7 +45,20 @@ class CreateQuizViewModel @Inject constructor(
     }
 
     fun createQuiz() {
-        Log.d("CreateQuizViewModel", uiState.value.toString())
-        _uiState.update { it.copy(isCreateQuizSuccess = true) }
+        viewModelScope.launch {
+            quizRepository.createQuiz(
+                QuizCreateInfo(
+                    quizTitle = uiState.value.quizTitle,
+                    quizDescription = uiState.value.quizDescription,
+                    quizDate = uiState.value.quizDate,
+                    quizSolveTime = uiState.value.quizSolveTime.toInt()
+                )
+            )
+                .onSuccess { quizId ->
+                    Log.d("CreateQuizViewModel", quizId)
+                    _uiState.update { it.copy(isCreateQuizSuccess = true) }
+                }
+                .onFailure { /* error */ }
+        }
     }
 }
