@@ -143,7 +143,7 @@ fun QuestionScreen(
                 enabled = state.currentPage > 0,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 5.dp),
+                    .padding(top = 5.dp, bottom = 30.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -185,8 +185,9 @@ fun QuestionScreen(
                 }
             },
             onDismissRequest = { state = state.copy(showDialog = false) },
-            dialogImage = painterResource(id = R.drawable.quiz_system_profile)
-        ) { }
+            dialogImage = painterResource(id = R.drawable.quiz_system_profile),
+            content = { },
+        )
     }
 }
 
