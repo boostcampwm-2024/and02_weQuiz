@@ -25,13 +25,13 @@ fun NavGraphBuilder.mainNavGraph(
     onNavigationButtonClick: () -> Unit,
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
-    onStudyClick: () -> Unit,
+    onStudyGroupClick: () -> Unit,
 ) {
     composable<MainRoute> {
         MainScreen(
             onNotificationButtonClick = onNotificationButtonClick,
             onCreateStudyButtonClick = onCreateStudyButtonClick,
-            onStudyClick = onStudyClick,
+            onStudyGroupClick = onStudyGroupClick,
         )
     }
     composable<NotificationRoute> {

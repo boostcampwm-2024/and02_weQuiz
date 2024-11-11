@@ -2,19 +2,28 @@ package kr.boostcamp_2024.course.main.presentation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -31,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -41,16 +51,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.boostcamp_2024.course.domain.model.StudyGroup
+import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.main.R
-import kr.boostcamp_2024.course.main.component.StudyItem
+import kr.boostcamp_2024.course.main.viewmodel.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
+    viewModel: MainViewModel = hiltViewModel(),
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
-    onStudyClick: () -> Unit,
+    onStudyGroupClick: () -> Unit,
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -92,14 +109,19 @@ fun MainScreen(
                     )
                 )
         ) {
-            UserContent()
-            UserStudyContent(onStudyClick = onStudyClick)
+            UserContent(user = uiState.user)
+            UserStudyContent(
+                studyGroups = uiState.studyGroups,
+                onStudyGroupClick = onStudyGroupClick
+            )
         }
     }
 }
 
 @Composable
-fun UserContent() {
+fun UserContent(
+    user: User? = null
+) {
     val configuration = LocalConfiguration.current
 
     val imageHeight = when (configuration.orientation) {
@@ -121,7 +143,7 @@ fun UserContent() {
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.BottomStart),
-            text = "홍길동",
+            text = user?.name ?: "",
             style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onPrimary,
@@ -134,7 +156,8 @@ fun UserContent() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserStudyContent(
-    onStudyClick: () -> Unit,
+    studyGroups: List<StudyGroup>,
+    onStudyGroupClick: () -> Unit,
 ) {
 
     var state by remember { mutableIntStateOf(0) }
@@ -162,7 +185,10 @@ fun UserStudyContent(
 
     when (state) {
         0 -> {
-            StudyTab(onStudyClick = onStudyClick)
+            StudyTab(
+                studyGroups = studyGroups,
+                onStudyGroupClick = onStudyGroupClick
+            )
         }
 
         1 -> {
@@ -173,68 +199,80 @@ fun UserStudyContent(
 
 @Composable
 fun StudyTab(
-    onStudyClick: () -> Unit,
+    studyGroups: List<StudyGroup>,
+    onStudyGroupClick: () -> Unit,
 ) {
     LazyColumn {
-        item {
-            StudyItem(
-                studyUrl = "",
-                studyTitle = "안드로이드 개발자",
-                studyDescription = "안드로이드 개발자를 위한 스터디입니다.",
-                studyMember = 3,
-                onStudyClick = onStudyClick
+        items(items = studyGroups, key = { it.name }) {     // TODO key
+            StudyGroupItem(
+                studyGroup = it,
+                onStudyGroupClick = onStudyGroupClick
             )
+        }
+    }
+}
+
+@Composable
+fun StudyGroupItem(
+    studyGroup: StudyGroup,
+    onStudyGroupClick: () -> Unit,
+) {
+
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Icon( // TODO studyUrl
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(MaterialTheme.shapes.large)
+                    .background(MaterialTheme.colorScheme.outlineVariant),
+                imageVector = Icons.Outlined.Star,
+                contentDescription = stringResource(R.string.des_img_study_image)
+            )
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(onClick = onStudyGroupClick)
+            ) {
+                Text(
+                    text = studyGroup.name,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+
+                if (studyGroup.description.isNotBlank()) {
+                    Text(
+                        text = studyGroup.description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Text(
+                    text = stringResource(R.string.text_study_user_count, studyGroup.users.size),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            IconButton(
+                modifier = Modifier.size(24.dp),
+                onClick = { /* TODO : ex) 스터디 나가기 */ }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = stringResource(R.string.des_btn_study_menu)
+                )
+            }
         }
 
-        item {
-            StudyItem(
-                studyUrl = "",
-                studyTitle = "OS 스터디",
-                studyDescription = "os 와압!",
-                studyMember = 10,
-                onStudyClick = onStudyClick
-            )
-        }
-
-        item {
-            StudyItem(
-                studyUrl = "",
-                studyTitle = "웹개발자",
-                studyDescription = "웹개발자를 위한 스터디입니다.",
-                studyMember = 5,
-                onStudyClick = onStudyClick
-            )
-        }
-
-        item {
-            StudyItem(
-                studyUrl = "",
-                studyTitle = "네트워크 스터디",
-                studyDescription = "",
-                studyMember = 5,
-                onStudyClick = onStudyClick
-            )
-        }
-
-        item {
-            StudyItem(
-                studyUrl = "",
-                studyTitle = "일본어 스터디",
-                studyDescription = "곤니찌와~",
-                studyMember = 6,
-                onStudyClick = onStudyClick
-            )
-        }
-
-        item {
-            StudyItem(
-                studyUrl = "",
-                studyTitle = "요리왕 비룡",
-                studyDescription = "비 내리는 날엔 난 항상 널 그리워 해.",
-                studyMember = 6,
-                onStudyClick = onStudyClick
-            )
-        }
+        HorizontalDivider(thickness = 1.dp)
     }
 }
 
@@ -244,6 +282,6 @@ fun MainScreenPreview() {
     MainScreen(
         onNotificationButtonClick = {},
         onCreateStudyButtonClick = {},
-        onStudyClick = {},
+        onStudyGroupClick = {},
     )
 }
