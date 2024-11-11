@@ -25,6 +25,7 @@ internal fun Project.configureComposeAndroid() {
             add("implementation", libs.findLibrary("androidx.ui.tooling.preview").get())
             add("implementation", libs.findLibrary("androidx.ui.graphics").get())
             add("implementation", libs.findLibrary("coil.network.okhttp").get())
+            add("implementation", libs.findLibrary("coil").get())
             add("androidTestImplementation", libs.findLibrary("androidx.espresso.core").get())
             add("debugImplementation", libs.findLibrary("androidx.ui.test.manifest").get())
             add("debugImplementation", libs.findLibrary("androidx.ui.tooling").get())
