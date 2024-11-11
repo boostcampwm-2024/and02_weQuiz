@@ -15,7 +15,7 @@ import kr.boostcamp_2024.course.domain.repository.UserRepository
 import javax.inject.Inject
 
 data class MainUiState(
-    val user: User? = null,
+    val currentUser: User? = null,
     val studyGroups: List<StudyGroup> = emptyList(),
 )
 
@@ -36,7 +36,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             userRepository.getUser("M2PzD8bxVaDAwNrLhr6E")  // TODO: getCurrentUser
                 .onSuccess { currentUser ->
-                    _uiState.update { it.copy(user = currentUser) }
+                    _uiState.update { it.copy(currentUser = currentUser) }
 
                     val studyGroupIds = currentUser.studyGroups
 
