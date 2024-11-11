@@ -34,7 +34,10 @@ fun GroupItem(profileImg: String?, name: String, removeButtonClick: () -> Unit) 
                 .weight(1f), text = name, style = MaterialTheme.typography.bodyMedium
         )
         Button(onClick = removeButtonClick) {
-            Icon(painter = painterResource(R.drawable.baseline_remove_24), contentDescription = "remove button")
+            Icon(
+                painter = painterResource(R.drawable.baseline_remove_24),
+                contentDescription = stringResource(R.string.des_detail_study_remove_group_btn)
+            )
             Text(
                 modifier = Modifier.padding(start = 8.dp),
                 text = stringResource(R.string.btn_remove_group),

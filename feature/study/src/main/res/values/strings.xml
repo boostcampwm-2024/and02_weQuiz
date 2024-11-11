@@ -27,6 +27,7 @@
     <string name="des_icon_bottom_nav_detail_study">스터디 상세 화면 네비게이션 아이콘</string>
     <string name="des_study_detail_category_item_profile">스터디 상세 화면 카테고리 프로필 사진</string>
     <string name="des_study_detail_group_profile">스터디 상세 화면 그룹원 프로필</string>
+    <string name="des_detail_study_remove_group_btn">스터디 상세 화면 그룹원 제거 버튼</string>
     <string-array name="drop_down_menu_options">
         <item>1명</item>
         <item>2명</item>
