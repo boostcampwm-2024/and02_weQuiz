@@ -33,7 +33,7 @@ fun WeQuizAsyncImage(
     modifier: Modifier = Modifier,
     imgUrl: String?,
     placeholder: Painter = painterResource(id = R.drawable.img_error),
-    error: Painter = painterResource(id = R.drawable.wequiz2),
+    error: Painter = painterResource(id = R.drawable.img_error),
     contentDescription: String?,
     fallback: Painter = painterResource(id = R.drawable.img_error)
 ) {
