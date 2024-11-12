@@ -13,7 +13,6 @@ import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
-import java.time.LocalDate
 import javax.inject.Inject
 
 data class QuizUiState(
@@ -36,7 +35,6 @@ class QuizViewModel @Inject constructor(
     val uiState: StateFlow<QuizUiState> = _uiState.asStateFlow()
 
     init {
-        Log.d("QuizViewModel", "${LocalDate.now()}")
         loadCategory()
         loadQuiz()
     }
