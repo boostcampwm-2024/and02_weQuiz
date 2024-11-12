@@ -23,9 +23,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -49,16 +53,28 @@ fun CreateQuestionScreen(
     viewModel: CreateQuestionViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.createQuestionUiState.collectAsStateWithLifecycle()
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(uiState) {
+        if (uiState.creationSuccess) {
+            onCreateQuestionSuccess()
+        }
+        uiState.snackBarMessage?.let { message ->
+            snackBarHostState.showSnackbar(message)
+            viewModel.setNewSnackBarMessage(null)
+        }
+    }
 
     CreateQuestionScreen(
         uiState = uiState,
+        snackBarHostState = snackBarHostState,
         onTitleChanged = viewModel::onTitleChanged,
         onDescriptionChanged = viewModel::onDescriptionChanged,
         onSolutionChanged = viewModel::onSolutionChanged,
         onNavigationButtonClick = onNavigationButtonClick,
         onChoiceTextChanged = viewModel::onChoiceTextChanged,
         onSelectedChoiceNumChanged = viewModel::onSelectedChoiceNumChanged,
-        onCreateQuestionSuccess = onCreateQuestionSuccess,
+        onCreateQuestionButtonClick = viewModel::createQuestion,
     )
 }
 
@@ -66,15 +82,17 @@ fun CreateQuestionScreen(
 @Composable
 fun CreateQuestionScreen(
     uiState: CreateQuestionUiState,
+    snackBarHostState: SnackbarHostState,
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onSolutionChanged: (String) -> Unit,
     onNavigationButtonClick: () -> Unit,
     onChoiceTextChanged: (Int, String) -> Unit,
     onSelectedChoiceNumChanged: (Int) -> Unit,
-    onCreateQuestionSuccess: () -> Unit,
+    onCreateQuestionButtonClick: () -> Unit,
 ) {
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -126,10 +144,7 @@ fun CreateQuestionScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 enabled = uiState.isCreateQuestionValid,
-                onClick = {
-                    // todo: 문제 출제 처리
-                    onCreateQuestionSuccess()
-                },
+                onClick = onCreateQuestionButtonClick,
             ) {
                 Text(
                     text = stringResource(id = R.string.btn_create_question),

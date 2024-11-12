@@ -1,11 +1,15 @@
 package kr.boostcamp_2024.course.quiz
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
+import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import javax.inject.Inject
 
 data class CreateQuestionUiState(
@@ -17,10 +21,14 @@ data class CreateQuestionUiState(
         choices = List(4) { "" },
     ),
     val isCreateQuestionValid: Boolean = false,
+    val snackBarMessage: String? = null,
+    val creationSuccess: Boolean = false
 )
 
 @HiltViewModel
-class CreateQuestionViewModel @Inject constructor() : ViewModel() {
+class CreateQuestionViewModel @Inject constructor(
+    private val questionRepository: QuestionRepository
+) : ViewModel() {
     private val _createQuestionUiState: MutableStateFlow<CreateQuestionUiState> = MutableStateFlow(
         CreateQuestionUiState()
     )
@@ -88,6 +96,30 @@ class CreateQuestionViewModel @Inject constructor() : ViewModel() {
             currentState.copy(
                 isCreateQuestionValid = currentState.questionCreationInfo.title.isNotBlank() &&
                         currentState.questionCreationInfo.choices.all { it.isNotBlank() }
+            )
+        }
+    }
+
+    fun createQuestion() {
+        viewModelScope.launch {
+            questionRepository.createQuestion(createQuestionUiState.value.questionCreationInfo)
+                .onSuccess {
+                    _createQuestionUiState.update { currentState ->
+                        currentState.copy(
+                            creationSuccess = true
+                        )
+                    }
+                }.onFailure { exception ->
+                    Log.e("CreateQuestionViewModel", exception.message, exception)
+                    setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
+                }
+        }
+    }
+
+    fun setNewSnackBarMessage(message: String?) {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                snackBarMessage = message
             )
         }
     }
