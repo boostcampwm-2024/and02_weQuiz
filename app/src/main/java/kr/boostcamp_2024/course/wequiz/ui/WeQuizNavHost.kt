@@ -37,9 +37,9 @@ fun WeQuizNavHost(
     ) {
         loginNavGraph(
             onLoginSuccess = {
-                navController.popBackStack()    // 로그인 시 로그인 화면 제거, 추후 수정 필요
+                navController.popBackStack() // 로그인 시 로그인 화면 제거, 추후 수정 필요
                 navController.navigateMain()
-            }
+            },
         )
 
         mainNavGraph(

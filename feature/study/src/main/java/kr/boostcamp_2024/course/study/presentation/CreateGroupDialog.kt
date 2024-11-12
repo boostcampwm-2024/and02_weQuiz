@@ -30,10 +30,10 @@ fun CreateGroupDialog(onDismissButtonClick: () -> Unit, onConfirmButtonClick: ()
                 label = stringResource(R.string.textfield_label_create_group),
                 text = email,
                 onTextChanged = { email = it },
-                placeholder = stringResource(R.string.textfield_placeholder_create_group)
+                placeholder = stringResource(R.string.textfield_placeholder_create_group),
             )
         },
-        confirmButtonEnabled = isEmailValid
+        confirmButtonEnabled = isEmailValid,
     )
 }
 

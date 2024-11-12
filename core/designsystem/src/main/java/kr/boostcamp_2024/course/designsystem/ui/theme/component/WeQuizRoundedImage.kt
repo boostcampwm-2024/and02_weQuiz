@@ -24,7 +24,7 @@ fun WeQuizLocalRoundedImage(
         modifier = modifier.clip(CircleShape),
         painter = imagePainter,
         contentDescription = contentDescription,
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Crop,
     )
 }
 
@@ -35,7 +35,7 @@ fun WeQuizAsyncImage(
     placeholder: Painter = painterResource(id = R.drawable.img_error),
     error: Painter = painterResource(id = R.drawable.img_error),
     contentDescription: String?,
-    fallback: Painter = painterResource(id = R.drawable.img_error)
+    fallback: Painter = painterResource(id = R.drawable.img_error),
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -47,6 +47,6 @@ fun WeQuizAsyncImage(
         error = error,
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
-        fallback = fallback
+        fallback = fallback,
     )
 }

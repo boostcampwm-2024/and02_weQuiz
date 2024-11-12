@@ -15,23 +15,23 @@ fun QuizScreen(
     onQuizStartButtonClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         Button(
             modifier = Modifier.align(Alignment.TopStart),
-            onClick = onNavigationButtonClick
+            onClick = onNavigationButtonClick,
         ) {
             Text(text = "뒤로가기")
         }
 
         Text(
             modifier = Modifier.align(Alignment.Center),
-            text = "퀴즈 시작 화면"
+            text = "퀴즈 시작 화면",
         )
 
         Button(
             modifier = Modifier.align(Alignment.BottomCenter),
-            onClick = onQuizStartButtonClick
+            onClick = onQuizStartButtonClick,
         ) {
             Text(text = "퀴즈 시작")
         }

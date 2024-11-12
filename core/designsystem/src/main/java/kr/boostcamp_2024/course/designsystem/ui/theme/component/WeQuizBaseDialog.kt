@@ -29,7 +29,7 @@ fun WeQuizBaseDialog(
     onConfirm: () -> Unit,
     onDismissRequest: () -> Unit,
     content: @Composable () -> Unit,
-    confirmButtonEnabled: Boolean = true
+    confirmButtonEnabled: Boolean = true,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -37,17 +37,17 @@ fun WeQuizBaseDialog(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 WeQuizLocalRoundedImage(
                     modifier = Modifier.size(120.dp),
                     imagePainter = dialogImage,
-                    contentDescription = null
+                    contentDescription = null,
                 )
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 content()
             }
@@ -64,7 +64,7 @@ fun WeQuizBaseDialog(
             ) {
                 Text(confirmTitle)
             }
-        }
+        },
     )
 }
 
@@ -86,9 +86,9 @@ private fun WeQuizBaseDialogPreview() {
                     onValueChange = {},
                     label = { Text("Password") },
                     placeholder = { Text("Enter your password") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
-            }
+            },
         )
     }
 }

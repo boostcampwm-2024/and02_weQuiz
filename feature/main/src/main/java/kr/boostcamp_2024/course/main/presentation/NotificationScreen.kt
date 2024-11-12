@@ -16,7 +16,7 @@ import kr.boostcamp_2024.course.main.component.NotificationTopAppBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationScreen(onNavigationButtonClick: () -> Unit) {
-    val notifications = remember { generateDummyNotifications() } /*Todo 뷰모델로 바꿔주기*/
+    val notifications = remember { generateDummyNotifications() } // Todo 뷰모델로 바꿔주기
 
     Scaffold(topBar = {
         NotificationTopAppBar(onNavigationButtonClick = onNavigationButtonClick)
@@ -24,20 +24,20 @@ fun NotificationScreen(onNavigationButtonClick: () -> Unit) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
         ) {
             items(notifications.size) { index ->
                 NotificationItem(
                     notifications[index],
                     onRejectClick = {},
-                    onAcceptClick = {}) //API 통신 시 바꿔주기
+                    onAcceptClick = {},
+                ) // API 통신 시 바꿔주기
             }
         }
     }
 }
 
-
-/* 임시 활용 data 생성 함수*/
+// 임시 활용 data 생성 함수
 fun generateDummyNotifications(): List<Notification> {
     return List(10) {
         Notification(groupId = 1111)

@@ -5,7 +5,7 @@ import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import javax.inject.Inject
 
 class QuizRepositoryImpl @Inject constructor(
-    firestore: FirebaseFirestore
-): QuizRepository {
+    firestore: FirebaseFirestore,
+) : QuizRepository {
     private val quizCollectionRef = firestore.collection("Quiz")
 }

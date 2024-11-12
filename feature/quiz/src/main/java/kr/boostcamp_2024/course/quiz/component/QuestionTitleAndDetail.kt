@@ -17,7 +17,7 @@ import kr.boostcamp_2024.course.quiz.R
 fun QuestionTitleAndDetail(title: String, description: String) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 10.dp)
+        modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 10.dp),
     ) {
         Text(
             stringResource(R.string.txt_question_title),

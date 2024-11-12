@@ -23,7 +23,7 @@ fun WeQuizTextField(
     minLine: Int = 1,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    trailingIcon: (@Composable () -> Unit)? = null
+    trailingIcon: (@Composable () -> Unit)? = null,
 ) {
     TextField(
         value = text,
@@ -37,14 +37,14 @@ fun WeQuizTextField(
         keyboardOptions = keyboardOptions,
         trailingIcon = trailingIcon ?: {
             IconButton(
-                onClick = { onTextChanged("") }
+                onClick = { onTextChanged("") },
             ) {
                 Icon(
                     painter = painterResource(R.drawable.outline_cancel_on_surface_variant),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    contentDescription = stringResource(id = R.string.des_clear_text)
+                    contentDescription = stringResource(id = R.string.des_clear_text),
                 )
             }
-        }
+        },
     )
 }
