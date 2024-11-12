@@ -18,13 +18,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,7 +48,6 @@ import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.main.R
 import kr.boostcamp_2024.course.main.component.StudyGroupItem
-import kr.boostcamp_2024.course.main.model.MainUiState
 import kr.boostcamp_2024.course.main.viewmodel.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,40 +60,31 @@ fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    when (val state = uiState) {
-        is MainUiState.Loading -> {
-            Box {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .align(Alignment.Center),
-                )
-            }
-        }
-
-        is MainUiState.Success -> {
-            MainScreen(
-                currentUser = state.currentUser,
-                studyGroups = state.studyGroups,
-                onNotificationButtonClick = onNotificationButtonClick,
-                onCreateStudyButtonClick = onCreateStudyButtonClick,
-                onStudyGroupClick = onStudyGroupClick
-            )
-        }
-    }
+    MainScreen(
+        currentUser = uiState.currentUser,
+        studyGroups = uiState.studyGroups,
+        isLoading = uiState.isLoading,
+        errorMessage = uiState.errorMessage,
+        onNotificationButtonClick = onNotificationButtonClick,
+        onCreateStudyButtonClick = onCreateStudyButtonClick,
+        onStudyGroupClick = onStudyGroupClick
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    currentUser: User,
+    currentUser: User?,
     studyGroups: List<StudyGroup>,
+    isLoading: Boolean,
+    errorMessage: String?,
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyGroupClick: () -> Unit
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val snackbarHostState = remember { SnackbarHostState() }
 
     var state by rememberSaveable { mutableIntStateOf(0) }
     val titles = stringArrayResource(R.array.main_tabs_titles)
@@ -101,12 +95,12 @@ fun MainScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             WeQuizImageLargeTopAppBar(
-                topAppBarImageUrl = currentUser.profileUrl,
+                topAppBarImageUrl = currentUser?.profileUrl,
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
                         modifier = Modifier.padding(16.dp),
-                        text = currentUser.name,
+                        text = currentUser?.name ?: "",
                         style = MaterialTheme.typography.displayMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onPrimary,
@@ -136,6 +130,9 @@ fun MainScreen(
                     contentDescription = stringResource(R.string.des_fab_create_study)
                 )
             }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         }
     ) { innerPadding ->
 
@@ -170,6 +167,22 @@ fun MainScreen(
                 1 -> { /* TODO 보관함 */
                 }
             }
+        }
+    }
+
+    if (isLoading) {
+        Box {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+            )
+        }
+    }
+
+    if (errorMessage != null) {
+        LaunchedEffect(errorMessage) {
+            snackbarHostState.showSnackbar(errorMessage)
         }
     }
 }
@@ -212,6 +225,8 @@ fun MainScreenPreview() {
                     categories = emptyList()
                 )
             ),
+            isLoading = true,
+            errorMessage = null,
             onNotificationButtonClick = {},
             onCreateStudyButtonClick = {},
             onStudyGroupClick = {}
