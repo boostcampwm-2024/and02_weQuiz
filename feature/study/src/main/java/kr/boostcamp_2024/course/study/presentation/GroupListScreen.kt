@@ -26,17 +26,17 @@ fun GroupListScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp),
     ) {
         CustomPropertyTab(
             onClicked = { showDialog = true },
             imageVector = Icons.Outlined.AddCircle,
-            title = R.string.property_tab_group_text
+            title = R.string.property_tab_group_text,
         )
         if (showDialog) {
             CreateGroupScreen(
                 onDismissButtonClick = { showDialog = false },
-                onConfirmButtonClick = { showDialog = false }
+                onConfirmButtonClick = { showDialog = false },
             )
         }
         GroupLazyColumn()
@@ -48,13 +48,13 @@ fun GroupLazyColumn() {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding()
+            .padding(),
     ) {
         items(10) { index ->
             GroupItem(
                 removeButtonClick = { Log.d("Group Screen", "제거됨") },
                 profileImg = null,
-                name = "홍길동"
+                name = "홍길동",
             )
 
             if (index < 9) {

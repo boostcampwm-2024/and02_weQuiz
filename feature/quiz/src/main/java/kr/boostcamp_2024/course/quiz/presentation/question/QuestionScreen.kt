@@ -41,7 +41,7 @@ fun QuestionScreen(
 ) {
     val pagerState = rememberPagerState(
         initialPage = 0,
-        pageCount = { 10 }
+        pageCount = { 10 },
     )
     var currentPage by remember { mutableIntStateOf(0) }
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -55,8 +55,8 @@ fun QuestionScreen(
             }
             item {
                 LinearProgressIndicator(
-                    progress = {(currentPage + 1) / pagerState.pageCount.toFloat()},
-                    modifier = Modifier.fillMaxWidth()
+                    progress = { (currentPage + 1) / pagerState.pageCount.toFloat() },
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
             item {
@@ -70,13 +70,13 @@ fun QuestionScreen(
             item {
                 HorizontalPager(
                     state = pagerState,
-                    userScrollEnabled = false
+                    userScrollEnabled = false,
                 ) {
                     Column {
                         QuestionTitleAndDetail(
                             // TODO (문제 제목, 설명 받아오기)
                             title = "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음.",
-                            description = "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음."
+                            description = "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음.",
                         )
                         Question(
                             selectedIndex = selectedIndexList[currentPage],
@@ -85,7 +85,7 @@ fun QuestionScreen(
                                 selectedIndexList = selectedIndexList.toMutableList().apply {
                                     this[currentPage] = newIndex
                                 }
-                            }
+                            },
                         )
                     }
                 }
@@ -97,7 +97,7 @@ fun QuestionScreen(
                 .align(Alignment.BottomCenter)
                 .background(Color.Transparent)
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(10.dp),
         ) {
             Button(
                 onClick = {
@@ -107,11 +107,14 @@ fun QuestionScreen(
                         showDialog = true
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = if (currentPage == pagerState.pageCount - 1) stringResource(R.string.txt_question_done)
-                    else stringResource(R.string.txt_question_next_question)
+                    text = if (currentPage == pagerState.pageCount - 1) {
+                        stringResource(R.string.txt_question_done)
+                    } else {
+                        stringResource(R.string.txt_question_next_question)
+                    },
                 )
             }
             Button(
@@ -129,7 +132,7 @@ fun QuestionScreen(
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                     disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                     disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
-                )
+                ),
             ) {
                 Text(text = "이전 문제")
             }
@@ -138,10 +141,16 @@ fun QuestionScreen(
 
     if (showDialog) {
         QuestionDialog(
-            title = if (currentPage == pagerState.pageCount - 1) stringResource(R.string.dialog_submit_script)
-            else stringResource(R.string.dialog_exit_script),
-            yesTitle = if (currentPage == pagerState.pageCount - 1) stringResource(R.string.txt_question_submit)
-            else stringResource(R.string.txt_question_exit),
+            title = if (currentPage == pagerState.pageCount - 1) {
+                stringResource(R.string.dialog_submit_script)
+            } else {
+                stringResource(R.string.dialog_exit_script)
+            },
+            yesTitle = if (currentPage == pagerState.pageCount - 1) {
+                stringResource(R.string.txt_question_submit)
+            } else {
+                stringResource(R.string.txt_question_exit)
+            },
             noTitle = stringResource(R.string.txt_question_cancel),
             onConfirm = {
                 showDialog = false
@@ -151,18 +160,18 @@ fun QuestionScreen(
                     TODO (제출 버튼 눌렀을 때)
                     네트워크 통신 진행 - selectedIndexList 전달
                     통신 완료 후 onQuizFinished() 실행(isSubmitting = false로 변경)
-                    */
+                     */
                 } else {
                     isSubmitting = true
                     /*
                     TODO (나가기 버튼 눌렀을 때)
                     네트워크 통신 진행 - selectedIndexList 전달
                     통신 완료 후 onNavigationButtonClick() 실행(isSubmitting = false로 변경)
-                    */
+                     */
                     onNavigationButtonClick()
                 }
             },
-            onDismissRequest = { showDialog = false }
+            onDismissRequest = { showDialog = false },
         )
     }
 }

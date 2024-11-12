@@ -144,7 +144,6 @@ fun CategoryContent(
             )
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

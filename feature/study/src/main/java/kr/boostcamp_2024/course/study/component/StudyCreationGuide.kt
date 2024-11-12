@@ -27,18 +27,18 @@ fun StudyCreationGuide(modifier: Modifier = Modifier) {
         Box(
             modifier = Modifier
                 .size(120.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
         ) {
             Image(
                 painter = painterResource(id = R.drawable.create_study_character),
                 contentDescription = stringResource(R.string.des_create_study_character),
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
         }
 
         Column(
-            modifier = Modifier.padding(start = 10.dp)
+            modifier = Modifier.padding(start = 10.dp),
         ) {
             LeftChatBubble(stringResource(R.string.txt_create_study_chat_bubble_first))
             Spacer(modifier = Modifier.height(6.dp))

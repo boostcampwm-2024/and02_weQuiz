@@ -8,8 +8,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -22,7 +20,7 @@ fun WeQuizTextField(
     text: String,
     onTextChanged: (String) -> Unit,
     placeholder: String,
-    minLine: Int = 1
+    minLine: Int = 1,
 ) {
     TextField(
         value = text,
@@ -34,14 +32,14 @@ fun WeQuizTextField(
         minLines = minLine,
         trailingIcon = {
             IconButton(
-                onClick = { onTextChanged("") }
+                onClick = { onTextChanged("") },
             ) {
                 Icon(
                     painter = painterResource(R.drawable.outline_cancel_on_surface_variant),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    contentDescription = stringResource(id = R.string.des_clear_text)
+                    contentDescription = stringResource(id = R.string.des_clear_text),
                 )
             }
-        }
+        },
     )
 }

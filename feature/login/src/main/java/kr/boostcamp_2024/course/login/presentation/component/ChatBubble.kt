@@ -19,25 +19,25 @@ fun ChatBubble(
     modifier: Modifier = Modifier,
     text: String,
     shape: RoundedCornerShape,
-    align: Alignment.Horizontal = Alignment.Start
+    align: Alignment.Horizontal = Alignment.Start,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         Box(
             modifier = modifier
                 .align(align)
                 .background(
                     color = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = shape
+                    shape = shape,
                 )
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
         ) {
             Text(
                 text = text,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
     }

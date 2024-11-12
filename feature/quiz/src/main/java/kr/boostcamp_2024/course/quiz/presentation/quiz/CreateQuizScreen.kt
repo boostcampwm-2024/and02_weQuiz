@@ -38,11 +38,12 @@ import kr.boostcamp_2024.course.quiz.component.QuizDescriptionTextField
 import kr.boostcamp_2024.course.quiz.component.QuizSolveTimeSlider
 import kr.boostcamp_2024.course.quiz.component.QuizTitleTextField
 
+// TODO: 퀴즈 생성
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateQuizScreen(
     onNavigationButtonClick: () -> Unit,
-    onCreateQuizSuccess: () -> Unit,        // TODO: 퀴즈 생성
+    onCreateQuizSuccess: () -> Unit,
 ) {
 
     var quizTitle by remember { mutableStateOf("") }
@@ -60,18 +61,18 @@ fun CreateQuizScreen(
                     IconButton(onClick = onNavigationButtonClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.btn_navigation)
+                            contentDescription = stringResource(R.string.btn_navigation),
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             // Character Guide
             Row(
@@ -79,12 +80,12 @@ fun CreateQuizScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 CircleImage(
                     modifier = Modifier.size(120.dp),
                     imagePainter = painterResource(R.drawable.sample_profile),
-                    contentDescription = null
+                    contentDescription = null,
                 )
                 ChatBubbleLeft(text = stringResource(R.string.txt_create_quiz_guide))
             }
@@ -92,24 +93,24 @@ fun CreateQuizScreen(
             // QuizInfo
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 // Title
                 QuizTitleTextField(
                     quizTitle = quizTitle,
-                    onValueChange = { quizTitle = it }
+                    onValueChange = { quizTitle = it },
                 )
 
-                //Description
+                // Description
                 QuizDescriptionTextField(
                     quizDescription = quizDescription,
-                    onValueChange = { quizDescription = it }
+                    onValueChange = { quizDescription = it },
                 )
 
                 // StartTime
                 Text(text = stringResource(R.string.txt_quiz_start_time))
                 QuizDatePickerTextField(
-                    onDateSelected = { quizDate = it }
+                    onDateSelected = { quizDate = it },
                 )
 
                 // SolveTime
@@ -118,13 +119,13 @@ fun CreateQuizScreen(
                     value = quizSolveTime,
                     steps = 8,
                     valueRange = 10f..100f,
-                    onValueChange = { quizSolveTime = it }
+                    onValueChange = { quizSolveTime = it },
                 )
 
                 // CreateButton
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = onCreateQuizSuccess    // TODO: 퀴즈 생성
+                    onClick = onCreateQuizSuccess,
                 ) {
                     Text(text = stringResource(R.string.btn_create_quiz))
                 }

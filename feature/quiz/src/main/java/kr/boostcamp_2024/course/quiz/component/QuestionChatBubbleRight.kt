@@ -14,13 +14,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.utils.formatTime
+import kr.boostcamp_2024.course.quiz.utils.timerFormat
 
 @Composable
 fun QuestionChatBubbleRight(solveTime: Int, modifier: Modifier) {
@@ -32,22 +31,25 @@ fun QuestionChatBubbleRight(solveTime: Int, modifier: Modifier) {
             countDownTime--
         }
     }
-    val formattedTime = formatTime(countDownTime)
+    val formattedTime = timerFormat(countDownTime)
     Box(
         modifier = modifier
             .clip(
                 RoundedCornerShape(
-                    topStart = 20.dp, topEnd = 20.dp, bottomStart = 20.dp, bottomEnd = 8.dp
-                )
+                    topStart = 20.dp,
+                    topEnd = 20.dp,
+                    bottomStart = 20.dp,
+                    bottomEnd = 8.dp,
+                ),
             )
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(MaterialTheme.colorScheme.secondaryContainer),
     ) {
         Text(
-            text =  "${stringResource(R.string.txt_question_timer)}$formattedTime",
+            text = "${stringResource(R.string.txt_question_timer)}$formattedTime",
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

@@ -20,12 +20,12 @@ fun CategoryListScreen(createCategoryClick: () -> Unit, categoryItemClick: () ->
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp),
     ) {
         CustomPropertyTab(
             onClicked = createCategoryClick,
             imageVector = Icons.Outlined.AddCircle,
-            title = R.string.property_tab_category_text
+            title = R.string.property_tab_category_text,
         )
         CategoryLazyColumn(categoryItemClick)
     }
@@ -42,7 +42,7 @@ fun CategoryLazyColumn(categoryItemClick: () -> Unit) {
                 author = "내가 퀴즈 낸 사람이다.",
                 quizCount = 3,
                 categoryImgUrl = null,
-                profileImgUrl = null
+                profileImgUrl = null,
             )
 
             if (index < 9) {
