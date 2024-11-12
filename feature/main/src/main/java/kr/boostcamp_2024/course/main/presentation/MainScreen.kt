@@ -29,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
 import kr.boostcamp_2024.course.domain.model.StudyGroup
@@ -86,6 +88,7 @@ fun MainScreen(
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     var state by rememberSaveable { mutableIntStateOf(0) }
@@ -152,6 +155,8 @@ fun MainScreen(
                         text = {
                             Text(
                                 text = title,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     )
@@ -162,7 +167,12 @@ fun MainScreen(
                 0 -> {
                     StudyGroupTab(
                         studyGroups = studyGroups,
-                        onStudyGroupClick = onStudyGroupClick
+                        onStudyGroupClick = onStudyGroupClick,
+                        onStudyGroupMenuClick = {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("추후 제공될 기능입니다.")
+                            }
+                        }
                     )
                 }
 
@@ -194,12 +204,14 @@ fun MainScreen(
 fun StudyGroupTab(
     studyGroups: List<StudyGroup>,
     onStudyGroupClick: () -> Unit,
+    onStudyGroupMenuClick: () -> Unit,
 ) {
     LazyColumn {
         items(items = studyGroups, key = { it.id }) { studyGroup ->
             StudyGroupItem(
                 studyGroup = studyGroup,
-                onStudyGroupClick = onStudyGroupClick
+                onStudyGroupClick = onStudyGroupClick,
+                onStudyGroupMenuClick = onStudyGroupMenuClick
             )
         }
     }

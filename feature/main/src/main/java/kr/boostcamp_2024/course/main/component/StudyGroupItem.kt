@@ -30,6 +30,7 @@ import kr.boostcamp_2024.course.main.R
 fun StudyGroupItem(
     studyGroup: StudyGroup,
     onStudyGroupClick: () -> Unit,
+    onStudyGroupMenuClick: () -> Unit,
 ) {
 
     Column {
@@ -78,7 +79,7 @@ fun StudyGroupItem(
 
             IconButton(
                 modifier = Modifier.size(24.dp),
-                onClick = { /* TODO : ex) 스터디 나가기 */ }
+                onClick = onStudyGroupMenuClick
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
@@ -107,6 +108,7 @@ fun StudyGroupItemPreview() {
                 categories = emptyList()
             ),
             onStudyGroupClick = {},
+            onStudyGroupMenuClick = {},
         )
     }
 }
