@@ -21,10 +21,11 @@ data class StudyGroupDTO(
     val users: List<String>? = null,
     val categories: List<String>? = null,
 ) {
-    fun toVO(): StudyGroup = StudyGroup(
+    fun toVO(groupId: String): StudyGroup = StudyGroup(
+        id = groupId,
         name = requireNotNull(name),
         studyGroupImageUrl = studyGroupImageUrl,
-        description = requireNotNull(description),
+        description = description,
         maxUserNum = requireNotNull(maxUserNum),
         ownerId = requireNotNull(ownerId),
         users = requireNotNull(users),
