@@ -15,15 +15,15 @@ class StudyGroupRepositoryImpl @Inject constructor(
     private val studyGroupCollectionRef = firestore.collection("StudyGroup")
     private val userCollectionRef = firestore.collection("User")
 
-    override suspend fun addStudyGroup(studyGroupCreationInfo: StudyGroupCreationInfo): Result<String> {
-        return runCatching {
+    override suspend fun addStudyGroup(studyGroupCreationInfo: StudyGroupCreationInfo): Result<String> =
+        runCatching {
             val request = StudyGroupDTO(
                 name = studyGroupCreationInfo.name,
                 description = studyGroupCreationInfo.description,
                 maxUserNum = studyGroupCreationInfo.maxUserNum,
                 ownerId = studyGroupCreationInfo.ownerId,
                 users = listOf(studyGroupCreationInfo.ownerId),
-                categories = emptyList()
+                categories = emptyList(),
             )
             val document = studyGroupCollectionRef.document()
             document.set(request).await()
@@ -31,15 +31,14 @@ class StudyGroupRepositoryImpl @Inject constructor(
             val result = document.id
             result
         }
-    }
 
-    override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<String> {
-        return runCatching {
+    override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<String> =
+        runCatching {
             val userDocRef = userCollectionRef.document(userId)
             userDocRef.update("study_groups", FieldValue.arrayUnion(studyId)).await()
             studyId // TODO 성공 반환값 고민하기
         }
-    }
+
     override suspend fun getStudyGroup(studyGroupIds: List<String>): Result<List<StudyGroup>> =
         runCatching {
             studyGroupIds.map { studyGroupId ->

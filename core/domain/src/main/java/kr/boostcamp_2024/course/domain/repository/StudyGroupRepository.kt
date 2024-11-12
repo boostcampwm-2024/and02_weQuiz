@@ -2,6 +2,7 @@ package kr.boostcamp_2024.course.domain.repository
 
 import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
 import kr.boostcamp_2024.course.domain.model.StudyGroup
+
 interface StudyGroupRepository {
     suspend fun addStudyGroup(studyGroupCreationInfo: StudyGroupCreationInfo): Result<String>
 

@@ -26,101 +26,100 @@ data class CreateStudyUiState(
 @HiltViewModel
 class CreateStudyViewModel @Inject constructor(
     private val studyGroupRepository: StudyGroupRepository,
-) :
-    ViewModel() {
-        private val _uiState = MutableStateFlow(CreateStudyUiState())
-        val uiState = _uiState.asStateFlow()
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(CreateStudyUiState())
+    val uiState = _uiState.asStateFlow()
 
-        fun onCreateStudyGroupClick(
-            onCreateGroupSuccess: () -> Unit,
-        ) {
-            viewModelScope.launch {
-                val studyGroupRequest = StudyGroupCreationInfo(
-                    name = uiState.value.name,
-                    description = uiState.value.description,
-                    maxUserNum = uiState.value.maxUserNum,
-                    ownerId = uiState.value.ownerId,
-                )
-                val addStudyGroupResult = studyGroupRepository.addStudyGroup(studyGroupRequest)
-                addStudyGroupResult
-                    .onSuccess { studyId ->
-                        _uiState.value = uiState.value.copy(isCreateStudySuccess = true)
-                        Log.d(
-                            "addStudyGroupResult",
-                            "성공, $studyId)",
-                        )
-                        val addStudyGroupToUserResult =
-                            studyGroupRepository.addStudyGroupToUser(uiState.value.ownerId, studyId)
-                        addStudyGroupToUserResult
-                            .onSuccess { result ->
-                                Log.d(
-                                    "addStudyGroupToUserResult",
-                                    "성공, $result)",
-                                )
-                                onCreateGroupSuccess()
-                                // TODO Toast 추가
-                            }
-                            .onFailure { throwable ->
-                                Log.d(
-                                    "addStudyGroupToUserResult",
-                                    "실패, ${throwable.message})",
-                                )
-                                _uiState.update {
-                                    it.copy(
-                                        isCreateStudySuccess = false,
-                                        snackBarMessage = "스터디 그룹 생성 실패",
-                                    )
-                                }
-                            }
-                    }.onFailure { throwable ->
-                        Log.d("errorMessage", "${throwable.message}")
-                        // TODO 스낵바
-                        _uiState.update {
-                            it.copy(
-                                isCreateStudySuccess = false,
-                                snackBarMessage = "스터디 그룹 생성 실패",
+    fun onCreateStudyGroupClick(
+        onCreateGroupSuccess: () -> Unit,
+    ) {
+        viewModelScope.launch {
+            val studyGroupRequest = StudyGroupCreationInfo(
+                name = uiState.value.name,
+                description = uiState.value.description,
+                maxUserNum = uiState.value.maxUserNum,
+                ownerId = uiState.value.ownerId,
+            )
+            val addStudyGroupResult = studyGroupRepository.addStudyGroup(studyGroupRequest)
+            addStudyGroupResult
+                .onSuccess { studyId ->
+                    _uiState.value = uiState.value.copy(isCreateStudySuccess = true)
+                    Log.d(
+                        "addStudyGroupResult",
+                        "성공, $studyId)",
+                    )
+                    val addStudyGroupToUserResult =
+                        studyGroupRepository.addStudyGroupToUser(uiState.value.ownerId, studyId)
+                    addStudyGroupToUserResult
+                        .onSuccess { result ->
+                            Log.d(
+                                "addStudyGroupToUserResult",
+                                "성공, $result)",
                             )
+                            onCreateGroupSuccess()
+                            // TODO Toast 추가
                         }
+                        .onFailure { throwable ->
+                            Log.d(
+                                "addStudyGroupToUserResult",
+                                "실패, ${throwable.message})",
+                            )
+                            _uiState.update {
+                                it.copy(
+                                    isCreateStudySuccess = false,
+                                    snackBarMessage = "스터디 그룹 생성 실패",
+                                )
+                            }
+                        }
+                }.onFailure { throwable ->
+                    Log.d("errorMessage", "${throwable.message}")
+                    // TODO 스낵바
+                    _uiState.update {
+                        it.copy(
+                            isCreateStudySuccess = false,
+                            snackBarMessage = "스터디 그룹 생성 실패",
+                        )
                     }
-            }
-        }
-
-        fun onNameChanged(name: String) {
-            _uiState.update { it.copy(name = name) }
-        }
-
-        fun onDescriptionChanged(description: String) {
-            _uiState.update { it.copy(description = description) }
-        }
-
-        fun onOptionSelected(option: String) {
-            _uiState.update { it.copy(selectedOption = option) }
-            val maxUserNum = when (option) {
-                "1명" -> 1
-                "2명" -> 2
-                "3명" -> 3
-                "4명" -> 4
-                "5명" -> 5
-                "6명" -> 6
-                "7명" -> 7
-                "8명" -> 8
-                "9명" -> 9
-                "10명" -> 10
-                else -> 0
-            }
-            _uiState.update { it.copy(maxUserNum = maxUserNum) }
-        }
-
-        fun onSnackBarShown() {
-            _uiState.update { it.copy(snackBarMessage = null) }
-        }
-
-        fun onExpandedChange(expanded: Boolean) {
-            Log.d("expanded", "$expanded")
-            _uiState.update { it.copy(expanded = expanded) }
-        }
-
-        fun changeExpandedFalse() {
-            _uiState.update { it.copy(expanded = false) }
+                }
         }
     }
+
+    fun onNameChanged(name: String) {
+        _uiState.update { it.copy(name = name) }
+    }
+
+    fun onDescriptionChanged(description: String) {
+        _uiState.update { it.copy(description = description) }
+    }
+
+    fun onOptionSelected(option: String) {
+        _uiState.update { it.copy(selectedOption = option) }
+        val maxUserNum = when (option) {
+            "1명" -> 1
+            "2명" -> 2
+            "3명" -> 3
+            "4명" -> 4
+            "5명" -> 5
+            "6명" -> 6
+            "7명" -> 7
+            "8명" -> 8
+            "9명" -> 9
+            "10명" -> 10
+            else -> 0
+        }
+        _uiState.update { it.copy(maxUserNum = maxUserNum) }
+    }
+
+    fun onSnackBarShown() {
+        _uiState.update { it.copy(snackBarMessage = null) }
+    }
+
+    fun onExpandedChange(expanded: Boolean) {
+        Log.d("expanded", "$expanded")
+        _uiState.update { it.copy(expanded = expanded) }
+    }
+
+    fun changeExpandedFalse() {
+        _uiState.update { it.copy(expanded = false) }
+    }
+}
