@@ -5,7 +5,7 @@ import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
 import javax.inject.Inject
 
 class UserOmrRepositoryImpl @Inject constructor(
-    firestore: FirebaseFirestore
-): UserOmrRepository {
+    firestore: FirebaseFirestore,
+) : UserOmrRepository {
     private val userOmrCollectionRef = firestore.collection("UserOmr")
 }

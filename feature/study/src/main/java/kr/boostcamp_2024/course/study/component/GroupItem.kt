@@ -15,20 +15,36 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun GroupItem(profileImg: String?, name: String, removeButtonClick: () -> Unit) {
-    Row(modifier = Modifier.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically){
-        CustomRoundImg(imgUrl = profileImg, modifier = Modifier
-            .clip(CircleShape)
-            .size(54.dp))
-        Text(modifier = Modifier
-            .padding(start = 16.dp)
-            .weight(1f), text = name, style = MaterialTheme.typography.bodyMedium)
+    Row(modifier = Modifier.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        WeQuizAsyncImage(
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(24.dp),
+            imgUrl = profileImg,
+            contentDescription = stringResource(R.string.des_study_detail_group_profile),
+        )
+        Text(
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .weight(1f),
+            text = name,
+            style = MaterialTheme.typography.bodyMedium,
+        )
         Button(onClick = removeButtonClick) {
-            Icon(painter = painterResource(R.drawable.baseline_remove_24), contentDescription = "remove button")
-            Text(modifier = Modifier.padding(start = 8.dp), text = stringResource(R.string.btn_remove_group), style = MaterialTheme.typography.labelMedium)
+            Icon(
+                painter = painterResource(R.drawable.baseline_remove_24),
+                contentDescription = stringResource(R.string.des_detail_study_remove_group_btn),
+            )
+            Text(
+                modifier = Modifier.padding(start = 8.dp),
+                text = stringResource(R.string.btn_remove_group),
+                style = MaterialTheme.typography.labelMedium,
+            )
         }
     }
 }
