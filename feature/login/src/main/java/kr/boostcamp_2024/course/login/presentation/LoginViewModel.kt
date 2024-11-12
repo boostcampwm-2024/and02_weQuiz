@@ -13,7 +13,6 @@ import kr.boostcamp_2024.course.login.BuildConfig
 import javax.inject.Inject
 
 data class LoginUiState(
-    val isLoading: Boolean = false,
     val isLoginSuccess: Boolean = false,
     val snackBarMessage: String? = null
 )
