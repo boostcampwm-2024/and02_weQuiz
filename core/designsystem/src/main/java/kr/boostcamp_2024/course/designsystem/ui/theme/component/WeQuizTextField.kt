@@ -1,6 +1,8 @@
 package kr.boostcamp_2024.course.designsystem.ui.theme.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -17,17 +19,20 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @Composable
 fun WeQuizTextField(
+    modifier: Modifier = Modifier,
     label: String,
     text: String,
     onTextChanged: (String) -> Unit,
     placeholder: String,
     minLines: Int = 1,
     maxLines: Int = 1,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     TextField(
         value = text,
         onValueChange = { onTextChanged(it) },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         textStyle = MaterialTheme.typography.bodyLarge,
         label = { Text(label) },
         placeholder = { Text(placeholder) },
@@ -44,6 +49,8 @@ fun WeQuizTextField(
                 )
             }
         },
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
     )
 }
 
@@ -55,6 +62,8 @@ fun WeQuizOutLinedTextField(
     placeholder: String,
     minLines: Int = 1,
     maxLines: Int = 1,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     OutlinedTextField(
         value = text,
@@ -75,6 +84,8 @@ fun WeQuizOutLinedTextField(
                 )
             }
         },
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
     )
 }
 
