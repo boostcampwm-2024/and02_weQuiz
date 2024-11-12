@@ -15,18 +15,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.study.CreateStudyViewModel
+import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.CreateStudyTopAppBar
-import kr.boostcamp_2024.course.study.component.DescriptionTextField
 import kr.boostcamp_2024.course.study.component.MembersDropDownMenu
 import kr.boostcamp_2024.course.study.component.StudyCreationButton
 import kr.boostcamp_2024.course.study.component.StudyCreationGuide
-import kr.boostcamp_2024.course.study.component.TitleTextField
 
 
 @Composable
@@ -40,10 +41,8 @@ fun CreateStudyScreen(
     CreateStudyScreen(
         titleText = uiState.name,
         onTitleTextChange = viewmodel::onNameChanged,
-        onClearTitleText = { viewmodel.onNameChanged("") },
         descriptionText = uiState.description,
         onDescriptionTextChange = viewmodel::onDescriptionChanged,
-        onClearDescriptionText = { viewmodel.onDescriptionChanged("") },
         selectedOption = uiState.selectedOption,
         onCreationButtonClick = {
             viewmodel.onCreateStudyGroupClick(onCreateStudySuccess)
@@ -56,9 +55,7 @@ fun CreateStudyScreen(
         onExpandedChange = { expanded -> viewmodel.onExpandedChange(expanded) },
         onDismissRequest = { viewmodel.changeExpandedFalse() }
     )
-
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,10 +63,8 @@ fun CreateStudyScreen(
     onNavigationButtonClick: () -> Unit,
     titleText: String,
     onTitleTextChange: (String) -> Unit,
-    onClearTitleText: () -> Unit,
     descriptionText: String,
     onDescriptionTextChange: (String) -> Unit,
-    onClearDescriptionText: () -> Unit,
     selectedOption: String,
     snackBarMessage: String?,
     onCreationButtonClick: () -> Unit,
@@ -100,17 +95,22 @@ fun CreateStudyScreen(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                WeQuizTextField(
+                    label = stringResource(R.string.txt_create_study_title_text_field_label),
+                    text = titleText,
+                    onTextChanged = onTitleTextChange,
+                    placeholder = stringResource(R.string.txt_create_study_title_text_field_placeholder),
+                )
 
-                TitleTextField(
-                    titleText = titleText,
-                    onTitleTextChange = onTitleTextChange,
-                    onClearTitleText = onClearTitleText,
+                WeQuizTextField(
+                    label = stringResource(R.string.txt_create_study_description_label),
+                    text = descriptionText,
+                    minLines = 6,
+                    maxLines = 6,
+                    onTextChanged = onDescriptionTextChange,
+                    placeholder = stringResource(R.string.txt_create_study_description_placeholder),
                 )
-                DescriptionTextField(
-                    descriptionText = descriptionText,
-                    onDescriptionTextChange = onDescriptionTextChange,
-                    onClearDescriptionText = onClearDescriptionText
-                )
+
                 MembersDropDownMenu(
                     expanded = expanded,
                     onExpandedChange = onExpandedChange,
@@ -139,10 +139,8 @@ fun CreateStudyScreenPreview() {
             onNavigationButtonClick = {},
             titleText = "",
             onTitleTextChange = {},
-            onClearTitleText = {},
             descriptionText = "",
             onDescriptionTextChange = {},
-            onClearDescriptionText = {},
             selectedOption = "",
             snackBarMessage = "",
             onCreationButtonClick = {},
