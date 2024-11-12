@@ -36,21 +36,53 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.domain.model.QuestionRequestVO
 import kr.boostcamp_2024.course.quiz.CreateQuestionViewModel
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.presentation.component.ChatBubble
 import kr.boostcamp_2024.course.quiz.presentation.component.WeQuizTextField
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateQuestionScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionSuccess: () -> Unit,
-    viewModel: CreateQuestionViewModel = hiltViewModel<CreateQuestionViewModel>(),
+    viewModel: CreateQuestionViewModel = hiltViewModel(),
 ) {
     val createQuestionState by viewModel.createQuestionState.collectAsStateWithLifecycle()
     val isCreateQuestionValid by viewModel.isCreateQuestionValid.collectAsStateWithLifecycle()
 
+    CreateQuestionScreen(
+        questionTitle = createQuestionState.title,
+        questionDescription = createQuestionState.description,
+        questionSolution = createQuestionState.solution,
+        onTitleChanged = viewModel::onTitleChanged,
+        onDescriptionChanged = viewModel::onDescriptionChanged,
+        onSolutionChanged = viewModel::onSolutionChanged,
+        createQuestionState = createQuestionState,
+        onNavigationButtonClick = onNavigationButtonClick,
+        onChoiceTextChanged = viewModel::onChoiceTextChanged,
+        onSelectedChoiceNumChanged = viewModel::onSelectedChoiceNumChanged,
+        isCreateQuestionValid = isCreateQuestionValid,
+        onCreateQuestionSuccess = onCreateQuestionSuccess,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateQuestionScreen(
+    questionTitle: String,
+    questionDescription: String?,
+    questionSolution: String?,
+    onTitleChanged: (String) -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onSolutionChanged: (String) -> Unit,
+    createQuestionState: QuestionRequestVO,
+    onNavigationButtonClick: () -> Unit,
+    onChoiceTextChanged: (Int, String) -> Unit,
+    onSelectedChoiceNumChanged: (Int) -> Unit,
+    isCreateQuestionValid: Boolean,
+    onCreateQuestionSuccess: () -> Unit,
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -84,19 +116,19 @@ fun CreateQuestionScreen(
             )
             CreateQuestionContent(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                title = createQuestionState.title,
-                description = createQuestionState.description,
-                solution = createQuestionState.solution,
-                onTitleChanged = viewModel::onTitleChanged,
-                onDescriptionChanged = viewModel::onDescriptionChanged,
-                onSolutionChanged = viewModel::onSolutionChanged,
+                title = questionTitle,
+                description = questionDescription,
+                solution = questionSolution,
+                onTitleChanged = onTitleChanged,
+                onDescriptionChanged = onDescriptionChanged,
+                onSolutionChanged = onSolutionChanged,
             )
             CreateChoiceItems(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 choices = createQuestionState.choices,
                 selectedChoiceNum = createQuestionState.answer,
-                updateChoiceText = viewModel::onChoiceTextChanged,
-                updateSelectedChoiceNum = viewModel::onSelectedChoiceNumChanged,
+                updateChoiceText = onChoiceTextChanged,
+                updateSelectedChoiceNum = onSelectedChoiceNumChanged,
             )
             Button(
                 modifier = Modifier
@@ -152,7 +184,7 @@ fun CreateQuestionGuideContent(
 fun CreateQuestionContent(
     modifier: Modifier = Modifier,
     title: String,
-    description: String,
+    description: String? = null,
     solution: String? = null,
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
@@ -170,7 +202,7 @@ fun CreateQuestionContent(
         )
         WeQuizTextField(
             label = stringResource(id = R.string.txt_question_content_label),
-            text = description,
+            text = description ?: "",
             onTextChanged = onDescriptionChanged,
             placeholder = stringResource(id = R.string.txt_question_content_placeholder),
             minLine = 6,
