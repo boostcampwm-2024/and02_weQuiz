@@ -1,13 +1,16 @@
 package kr.boostcamp_2024.course.main.presentation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -24,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringArrayResource
@@ -40,6 +44,7 @@ import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.main.R
 import kr.boostcamp_2024.course.main.component.StudyGroupItem
+import kr.boostcamp_2024.course.main.model.MainUiState
 import kr.boostcamp_2024.course.main.viewmodel.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,13 +57,27 @@ fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    MainScreen(
-        currentUser = uiState.currentUser,
-        studyGroups = uiState.studyGroups,
-        onNotificationButtonClick = onNotificationButtonClick,
-        onCreateStudyButtonClick = onCreateStudyButtonClick,
-        onStudyGroupClick = onStudyGroupClick
-    )
+    when (val state = uiState) {
+        is MainUiState.Loading -> {
+            Box {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .align(Alignment.Center),
+                )
+            }
+        }
+
+        is MainUiState.Success -> {
+            MainScreen(
+                currentUser = state.currentUser,
+                studyGroups = state.studyGroups,
+                onNotificationButtonClick = onNotificationButtonClick,
+                onCreateStudyButtonClick = onCreateStudyButtonClick,
+                onStudyGroupClick = onStudyGroupClick
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
