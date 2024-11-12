@@ -1,6 +1,5 @@
 package kr.boostcamp_2024.course.main.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,15 +21,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.main.R
 
 @Composable
-fun StudyItem(
-    studyUrl: String,
-    studyTitle: String,
-    studyDescription: String,
-    studyMember: Int,
-    onStudyClick: () -> Unit,
+fun StudyGroupItem(
+    studyGroup: StudyGroup,
+    onStudyGroupClick: () -> Unit,
+    onStudyGroupMenuClick: () -> Unit,
 ) {
 
     Column {
@@ -41,36 +40,36 @@ fun StudyItem(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // TODO studyUrl
-            Icon(
+            WeQuizAsyncImage(
                 modifier = Modifier
                     .size(56.dp)
-                    .clip(MaterialTheme.shapes.large)
-                    .background(MaterialTheme.colorScheme.outlineVariant),
-                imageVector = Icons.Outlined.Star,
+                    .clip(MaterialTheme.shapes.large),
+                imgUrl = studyGroup.studyGroupImageUrl,
                 contentDescription = stringResource(R.string.des_img_study_image),
             )
 
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable(onClick = onStudyClick),
+                    .clickable(onClick = onStudyGroupClick),
             ) {
                 Text(
-                    text = studyTitle,
+                    text = studyGroup.name,
                     style = MaterialTheme.typography.bodyLarge,
                 )
 
-                if (studyDescription.isNotEmpty()) {
+                if (studyGroup.description.isNullOrBlank().not()) {
                     Text(
-                        text = studyDescription,
+                        text = studyGroup.description!!,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
 
                 Text(
-                    text = stringResource(R.string.text_study_user_count, studyMember),
+                    text = stringResource(R.string.txt_study_user_count, studyGroup.users.size),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,
@@ -80,7 +79,7 @@ fun StudyItem(
 
             IconButton(
                 modifier = Modifier.size(24.dp),
-                onClick = { /* TODO : ex) 스터디 나가기 */ },
+                onClick = onStudyGroupMenuClick,
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
@@ -95,12 +94,21 @@ fun StudyItem(
 
 @Preview(showBackground = true)
 @Composable
-fun StudyItemPreview() {
-    StudyItem(
-        studyUrl = "",
-        studyTitle = "안드로이드 개발자",
-        studyDescription = "안드로이드 개발자를 위한 스터디입니다.",
-        studyMember = 3,
-        onStudyClick = {},
-    )
+fun StudyGroupItemPreview() {
+    WeQuizTheme {
+        StudyGroupItem(
+            studyGroup = StudyGroup(
+                id = "1234",
+                name = "일본어 스터디",
+                studyGroupImageUrl = null,
+                description = "일본어 스터디 그룹 와압~!",
+                maxUserNum = 12,
+                ownerId = "test",
+                users = listOf("test"),
+                categories = emptyList(),
+            ),
+            onStudyGroupClick = {},
+            onStudyGroupMenuClick = {},
+        )
+    }
 }
