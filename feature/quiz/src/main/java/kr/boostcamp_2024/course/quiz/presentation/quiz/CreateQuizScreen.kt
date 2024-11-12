@@ -146,6 +146,7 @@ fun CreateQuizScreen(
                 onTextChanged = onQuizDescriptionChange,
                 label = stringResource(R.string.txt_quiz_description_label),
                 placeholder = stringResource(R.string.txt_quiz_description_placeholder),
+                minLines = 6,
                 maxLines = 6
             )
 

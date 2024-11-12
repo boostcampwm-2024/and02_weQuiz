@@ -20,7 +20,8 @@ data class QuizDTO(
     @set:PropertyName("user_omrs")
     var userOmrs: List<String>? = null
 ) {
-    fun toVO(): Quiz = Quiz(
+    fun toVO(quizId: String): Quiz = Quiz(
+        id = quizId,
         title = requireNotNull(title),
         description = requireNotNull(description),
         startTime = requireNotNull(startTime),

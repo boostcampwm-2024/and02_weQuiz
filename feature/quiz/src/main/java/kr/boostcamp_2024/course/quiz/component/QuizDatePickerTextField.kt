@@ -38,7 +38,7 @@ fun QuizDatePickerTextField(
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = quizDate,
-            onValueChange = { },
+            onValueChange = { /* no-op */ },
             label = {
                 Text(text = stringResource(R.string.txt_quiz_date_picker))
             },
