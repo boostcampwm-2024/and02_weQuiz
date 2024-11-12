@@ -49,7 +49,7 @@ fun QuizScreen(
     viewModel: QuizViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: () -> Unit,
-    onStartQuizButtonClick: () -> Unit
+    onStartQuizButtonClick: () -> Unit,
 ) {
     // 매개변수에 hiltViewModel()
     // 뷰모델에서 받아서 아래에 넣어주기
@@ -61,7 +61,7 @@ fun QuizScreen(
         quizQuestionCount = 10,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuestionButtonClick = onCreateQuestionButtonClick,
-        onStartQuizButtonClick = onStartQuizButtonClick
+        onStartQuizButtonClick = onStartQuizButtonClick,
     )
 }
 
@@ -74,7 +74,7 @@ fun QuizScreen(
     quizQuestionCount: Int,
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: () -> Unit,
-    onStartQuizButtonClick: () -> Unit
+    onStartQuizButtonClick: () -> Unit,
 ) {
     // TODO: startTime으로 계산
     // 일단 임시로 여기에
@@ -89,15 +89,15 @@ fun QuizScreen(
                     IconButton(onClick = onNavigationButtonClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                )
+                    containerColor = Color.Transparent,
+                ),
             )
-        }
+        },
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -106,15 +106,15 @@ fun QuizScreen(
                     PaddingValues(
                         start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
                         end = innerPadding.calculateEndPadding(LocalLayoutDirection.current),
-                        bottom = innerPadding.calculateBottomPadding()
-                    )
-                )
+                        bottom = innerPadding.calculateBottomPadding(),
+                    ),
+                ),
         ) {
             // TODO: 이미지
             WeQuizAsyncImage(
                 modifier = Modifier.fillMaxSize(),
                 imgUrl = "",
-                contentDescription = null
+                contentDescription = null,
             )
 
             Column(
@@ -122,7 +122,7 @@ fun QuizScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 20.dp)
                     .align(Alignment.BottomCenter),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 // QuizTitle
                 Text(
@@ -131,19 +131,19 @@ fun QuizScreen(
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onPrimary,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
 
                 // QuizDescription
                 Text(
                     text = quizDescription,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
                 )
 
                 // QuizChip
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     ElevatedAssistChip(
                         onClick = { },
@@ -151,15 +151,15 @@ fun QuizScreen(
                             Text(
                                 text = stringResource(
                                     R.string.txt_quiz_question_count,
-                                    quizQuestionCount
-                                )
+                                    quizQuestionCount,
+                                ),
                             )
                         },
                         leadingIcon = {
                             Icon(
                                 modifier = Modifier.size(18.dp),
                                 painter = painterResource(R.drawable.edit_24),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         },
                     )
@@ -172,7 +172,7 @@ fun QuizScreen(
                             Icon(
                                 modifier = Modifier.size(18.dp),
                                 painter = painterResource(R.drawable.search_24),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         },
                     )
@@ -182,7 +182,7 @@ fun QuizScreen(
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onCreateQuestionButtonClick() },
-                    enabled = canCreateQuestion
+                    enabled = canCreateQuestion,
                 ) {
                     when (canCreateQuestion) {
                         true -> Text(text = stringResource(R.string.txt_open_create_question))
@@ -192,7 +192,7 @@ fun QuizScreen(
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onStartQuizButtonClick() },
-                    enabled = (canCreateQuestion || quizQuestionCount == 0).not()
+                    enabled = (canCreateQuestion || quizQuestionCount == 0).not(),
                 ) {
                     when (canCreateQuestion.not() && quizQuestionCount == 0) {
                         true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
@@ -215,7 +215,7 @@ fun QuizStartScreenPreview() {
             quizQuestionCount = 10,
             onNavigationButtonClick = {},
             onCreateQuestionButtonClick = {},
-            onStartQuizButtonClick = {}
+            onStartQuizButtonClick = {},
         )
     }
 }

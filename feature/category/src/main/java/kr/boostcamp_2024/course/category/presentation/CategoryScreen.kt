@@ -42,19 +42,18 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: () -> Unit,
-    onQuizClick: () -> Unit
+    onQuizClick: () -> Unit,
 ) {
     val dummyCategory = Category(
         title = "안드 마스터",
         description = "안드로이드 마스터가 되어 보아요!!",
         categoryImageUrl = null,
-        quizzes = listOf("1", "1", "1", "1", "1", "1", "1", "1", "1", "1")
+        quizzes = listOf("1", "1", "1", "1", "1", "1", "1", "1", "1", "1"),
     )
 
     var selectedTabIndex by remember { mutableIntStateOf(0) }
@@ -65,55 +64,55 @@ fun CategoryScreen(
                 title = { /* no - op */ },
                 navigationIcon = {
                     IconButton(
-                        onClick = onNavigationButtonClick
+                        onClick = onNavigationButtonClick,
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.des_btn_back)
+                            contentDescription = stringResource(R.string.des_btn_back),
                         )
                     }
                 },
                 actions = {
                     IconButton(
-                        onClick = { /* todo: 카테고리 설정 */ }
+                        onClick = { /* todo: 카테고리 설정 */ },
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(R.string.des_btn_settings)
+                            contentDescription = stringResource(R.string.des_btn_settings),
                         )
                     }
-                }
+                },
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onCreateQuizButtonClick,
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = stringResource(R.string.des_fab_create_quiz)
+                    contentDescription = stringResource(R.string.des_fab_create_quiz),
                 )
             }
-        }
+        },
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
         ) {
             CategoryContent(
                 categoryTitle = dummyCategory.title,
-                categoryDescription = dummyCategory.description
+                categoryDescription = dummyCategory.description,
             )
             QuizTabs(
                 selectedTabIndex = selectedTabIndex,
-                onTabClick = { index -> selectedTabIndex = index }
+                onTabClick = { index -> selectedTabIndex = index },
             )
             if (selectedTabIndex == 0) {
                 QuizList(
                     modifier = Modifier.weight(1f),
                     quizzes = dummyCategory.quizzes,
-                    onQuizClick = onQuizClick
+                    onQuizClick = onQuizClick,
                 )
             }
         }
@@ -123,24 +122,24 @@ fun CategoryScreen(
 @Composable
 fun CategoryContent(
     categoryTitle: String,
-    categoryDescription: String?
+    categoryDescription: String?,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = categoryTitle,
             style = MaterialTheme.typography.displayMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
         categoryDescription?.let { description ->
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -150,7 +149,7 @@ fun CategoryContent(
 @Composable
 fun QuizTabs(
     selectedTabIndex: Int,
-    onTabClick: (Int) -> Unit
+    onTabClick: (Int) -> Unit,
 ) {
     val tabs = stringArrayResource(R.array.quiz_tabs)
     PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
@@ -163,9 +162,9 @@ fun QuizTabs(
                     Text(
                         text = title,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
-                }
+                },
             )
         }
     }
@@ -175,7 +174,7 @@ fun QuizTabs(
 fun QuizList(
     modifier: Modifier = Modifier,
     quizzes: List<String>,
-    onQuizClick: () -> Unit
+    onQuizClick: () -> Unit,
 ) {
     val tmpQuiz = Quiz(
         title = "안드로이드 퀴즈",
@@ -183,18 +182,18 @@ fun QuizList(
         startTime = "2021-09-01",
         solveTime = 10,
         questions = emptyList(),
-        userOmrs = emptyList()
+        userOmrs = emptyList(),
     )
 
     LazyVerticalGrid(
         modifier = modifier.padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        columns = GridCells.Fixed(3)
+        columns = GridCells.Fixed(3),
     ) {
         items(quizzes) { quiz ->
             QuizItem(
                 quiz = tmpQuiz,
-                onQuizClick = onQuizClick
+                onQuizClick = onQuizClick,
             )
 
         }
@@ -204,13 +203,13 @@ fun QuizList(
 @Composable
 fun QuizItem(
     quiz: Quiz,
-    onQuizClick: () -> Unit
+    onQuizClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .padding(top = 8.dp)
             .clickable { onQuizClick() },
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         WeQuizAsyncImage(
             modifier = Modifier
@@ -218,19 +217,19 @@ fun QuizItem(
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(16.dp)),
             imgUrl = null,
-            contentDescription = null
+            contentDescription = null,
         )
 
         Text(
             text = quiz.title,
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
         // todo: date format
         Text(
             text = quiz.startTime,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

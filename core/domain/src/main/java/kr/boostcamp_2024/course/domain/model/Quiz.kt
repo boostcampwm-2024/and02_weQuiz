@@ -6,5 +6,5 @@ data class Quiz(
     val startTime: String,
     val solveTime: Int,
     val questions: List<String>,
-    val userOmrs: List<String>
+    val userOmrs: List<String>,
 )
