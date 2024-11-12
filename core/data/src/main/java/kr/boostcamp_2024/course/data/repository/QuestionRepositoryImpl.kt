@@ -12,10 +12,8 @@ class QuestionRepositoryImpl @Inject constructor(
 ) : QuestionRepository {
     private val questionCollectionRef = firestore.collection("Question")
 
-    override suspend fun createQuestion(questionCreationInfo: QuestionCreationInfo): Result<String> {
-        return runCatching {
-            val document = questionCollectionRef.add(questionCreationInfo.toDTO()).await()
-            document.id
-        }
+    override suspend fun createQuestion(questionCreationInfo: QuestionCreationInfo): Result<String> = runCatching {
+        val document = questionCollectionRef.add(questionCreationInfo.toDTO()).await()
+        document.id
     }
 }
