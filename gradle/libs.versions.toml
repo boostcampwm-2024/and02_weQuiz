@@ -4,7 +4,7 @@ androidDesugarJdkLibs = "2.1.2"
 
 # kotlin
 coilNetworkOkhttp = "3.0.2"
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 kotlinxSerializationJson = "1.7.3"
 
 # androidx
