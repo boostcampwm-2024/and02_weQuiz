@@ -7,11 +7,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.domain.model.StudyGroup
+import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
-import kr.boostcamp_2024.course.main.model.MainUiState
 import javax.inject.Inject
+
+data class MainUiState(
+    val isLoading: Boolean = false,
+    val currentUser: User? = null,
+    val studyGroups: List<StudyGroup> = emptyList(),
+    val errorMessage: String? = null
+)
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -19,7 +28,7 @@ class MainViewModel @Inject constructor(
     private val studyGroupRepository: StudyGroupRepository
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState.Loading)
+    private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
     init {
@@ -28,7 +37,7 @@ class MainViewModel @Inject constructor(
 
     private fun loadStudyGroups() {
         viewModelScope.launch {
-            _uiState.value = MainUiState.Loading
+            _uiState.update { it.copy(isLoading = true) }
 
             userRepository.getUser("M2PzD8bxVaDAwNrLhr6E")  // TODO: getCurrentUser
                 .onSuccess { currentUser ->
@@ -36,16 +45,27 @@ class MainViewModel @Inject constructor(
 
                     studyGroupRepository.getStudyGroup(studyGroupIds)
                         .onSuccess { studyGroups ->
-                            _uiState.value = MainUiState.Success(currentUser, studyGroups)
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    currentUser = currentUser,
+                                    studyGroups = studyGroups
+                                )
+                            }
                         }
                         .onFailure {
                             Log.e("MainViewModel", "Failed to load study groups", it)
-                            /* error */
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    errorMessage = "스터디 그룹 로드에 실패했습니다."
+                                )
+                            }
                         }
                 }
                 .onFailure {
                     Log.e("MainViewModel", "Failed to load user", it)
-                    /* error */
+                    _uiState.update { it.copy(isLoading = false, errorMessage = "유저 로드에 실패했습니다.") }
                 }
         }
     }
