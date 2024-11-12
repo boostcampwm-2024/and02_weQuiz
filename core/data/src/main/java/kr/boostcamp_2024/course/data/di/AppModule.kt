@@ -12,6 +12,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
+// todo: encrypt data store
 private val Context.weQuizDataStore: DataStore<Preferences> by preferencesDataStore("wequiz_datastore")
 
 @Module
