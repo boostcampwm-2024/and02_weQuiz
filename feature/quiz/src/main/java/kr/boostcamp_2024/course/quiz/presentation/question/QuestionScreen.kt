@@ -1,8 +1,10 @@
 package kr.boostcamp_2024.course.quiz.presentation.question
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -71,15 +73,17 @@ fun QuestionScreen(
                 )
             }
             item {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(end = 16.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     WeQuizRightChatBubble(
-                        modifier = Modifier.align(Alignment.Center),
+                        modifier = Modifier.align(Alignment.CenterVertically),
                         text = "${stringResource(R.string.txt_question_timer)}${formatTime(state.countDownTime)}",
                     )
                     WeQuizLocalRoundedImage(
-                        modifier = Modifier.align(Alignment.CenterEnd),
+                        modifier = Modifier.align(Alignment.CenterVertically),
                         imagePainter = painterResource(id = R.drawable.quiz_system_profile),
                         contentDescription = stringResource(R.string.des_image_question),
                     )
