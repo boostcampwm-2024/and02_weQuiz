@@ -12,8 +12,8 @@ class QuizRepositoryImpl @Inject constructor(
 ) : QuizRepository {
     private val quizCollectionRef = firestore.collection("Quiz")
 
-    override suspend fun createQuiz(quizCreateInfo: QuizCreationInfo): Result<String> {
-        return runCatching {
+    override suspend fun createQuiz(quizCreateInfo: QuizCreationInfo): Result<String> =
+        runCatching {
             val newQuiz = QuizDTO(
                 title = quizCreateInfo.quizTitle,
                 description = quizCreateInfo.quizDescription,
@@ -27,5 +27,4 @@ class QuizRepositoryImpl @Inject constructor(
 
             document.id
         }
-    }
 }
