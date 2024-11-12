@@ -8,8 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -18,7 +19,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -29,8 +29,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,9 +42,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLeftChatBubble
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizOutLinedTextField
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.quiz.R
+import kr.boostcamp_2024.course.quiz.component.CreateChoiceItems
+import kr.boostcamp_2024.course.quiz.component.CreateQuestionContent
 import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuestionUiState
 import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuestionViewModel
 
@@ -52,6 +56,7 @@ fun CreateQuestionScreen(
 ) {
     val uiState by viewModel.createQuestionUiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
+    val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(uiState) {
         if (uiState.creationSuccess) {
@@ -66,6 +71,7 @@ fun CreateQuestionScreen(
     CreateQuestionScreen(
         uiState = uiState,
         snackBarHostState = snackBarHostState,
+        focusRequester = focusRequester,
         onTitleChanged = viewModel::onTitleChanged,
         onDescriptionChanged = viewModel::onDescriptionChanged,
         onSolutionChanged = viewModel::onSolutionChanged,
@@ -80,6 +86,7 @@ fun CreateQuestionScreen(
 @Composable
 fun CreateQuestionScreen(
     uiState: CreateQuestionUiState,
+    focusRequester: FocusRequester,
     snackBarHostState: SnackbarHostState,
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
@@ -89,6 +96,8 @@ fun CreateQuestionScreen(
     onSelectedChoiceNumChanged: (Int) -> Unit,
     onCreateQuestionButtonClick: () -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
@@ -128,6 +137,9 @@ fun CreateQuestionScreen(
                 item {
                     CreateQuestionContent(
                         modifier = Modifier.padding(horizontal = 16.dp),
+                        focusRequester = focusRequester,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                         title = uiState.questionCreationInfo.title,
                         description = uiState.questionCreationInfo.description,
                         solution = uiState.questionCreationInfo.solution,
@@ -140,6 +152,7 @@ fun CreateQuestionScreen(
                 item {
                     CreateChoiceItems(
                         modifier = Modifier.padding(horizontal = 16.dp),
+                        focusManager = focusManager,
                         choices = uiState.questionCreationInfo.choices,
                         selectedChoiceNum = uiState.questionCreationInfo.answer,
                         updateChoiceText = onChoiceTextChanged,
@@ -198,99 +211,6 @@ fun CreateQuestionGuideContent(
                 text = stringResource(id = R.string.txt_create_question_guide2),
             )
         }
-    }
-}
-
-@Composable
-fun CreateQuestionContent(
-    modifier: Modifier = Modifier,
-    title: String,
-    description: String? = null,
-    solution: String? = null,
-    onTitleChanged: (String) -> Unit,
-    onDescriptionChanged: (String) -> Unit,
-    onSolutionChanged: (String) -> Unit,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        WeQuizTextField(
-            label = stringResource(id = R.string.txt_question_title_label),
-            text = title,
-            onTextChanged = onTitleChanged,
-            placeholder = stringResource(id = R.string.txt_question_title_placeholder),
-        )
-        WeQuizTextField(
-            label = stringResource(id = R.string.txt_question_content_label),
-            text = description ?: "",
-            onTextChanged = onDescriptionChanged,
-            placeholder = stringResource(id = R.string.txt_question_content_placeholder),
-            minLines = 6,
-            maxLines = 6,
-        )
-        WeQuizTextField(
-            label = stringResource(id = R.string.txt_question_description_label),
-            text = solution ?: "",
-            onTextChanged = onSolutionChanged,
-            placeholder = stringResource(id = R.string.txt_question_description_placeholder),
-            minLines = 6,
-            maxLines = 6,
-        )
-    }
-}
-
-@Composable
-fun CreateChoiceItems(
-    modifier: Modifier = Modifier,
-    choices: List<String>,
-    selectedChoiceNum: Int,
-    updateChoiceText: (Int, String) -> Unit,
-    updateSelectedChoiceNum: (Int) -> Unit,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        choices.forEachIndexed { index, choiceText ->
-            ChoiceItem(
-                text = choiceText,
-                onTextChanged = { updateChoiceText(index, it) },
-                isSelected = selectedChoiceNum == index,
-                onSelected = { updateSelectedChoiceNum(index) },
-            )
-        }
-    }
-}
-
-@Composable
-fun ChoiceItem(
-    modifier: Modifier = Modifier,
-    text: String,
-    onTextChanged: (String) -> Unit,
-    isSelected: Boolean,
-    onSelected: (Boolean) -> Unit,
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        RadioButton(
-            selected = isSelected,
-            onClick = {
-                onSelected(!isSelected)
-            },
-        )
-        WeQuizOutLinedTextField(
-            modifier = Modifier.weight(1f),
-            text = text,
-            onTextChanged = onTextChanged,
-            placeholder = stringResource(id = R.string.txt_question_choice_placeholder),
-            minLines = 1,
-            maxLines = 1,
-        )
     }
 }
 
