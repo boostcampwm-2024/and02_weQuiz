@@ -22,7 +22,7 @@ fun QuizSolveTimeSlider(
     value: Float,
     steps: Int,
     valueRange: ClosedFloatingPointRange<Float>,
-    onValueChange: (Float) -> Unit
+    onValueChange: (Float) -> Unit,
 ) {
     Slider(
         modifier = Modifier.fillMaxWidth(),
@@ -36,15 +36,15 @@ fun QuizSolveTimeSlider(
                     .defaultMinSize(minWidth = 40.dp)
                     .clip(MaterialTheme.shapes.large)
                     .background(MaterialTheme.colorScheme.primary),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = (value.toInt()).toString(),
                     color = MaterialTheme.colorScheme.onPrimary,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
-        }
+        },
     )
 }
 
@@ -55,6 +55,6 @@ fun QuizSolveTimeSliderPreview() {
         value = 0f,
         steps = 10,
         valueRange = 0f..10f,
-        onValueChange = {}
+        onValueChange = {},
     )
 }

@@ -61,24 +61,26 @@ fun QuizResultScreen(
                     IconButton(onClick = onNavigationButtonClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.btn_navigation)
+                            contentDescription = stringResource(R.string.btn_navigation),
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding),
         ) {
-            QuizResultContent( // 캐릭터 & 점수
+            // 캐릭터 & 점수
+            QuizResultContent(
                 totalQuestions = 10,
-                correctAnswers = 9
+                correctAnswers = 9,
             )
-            QuestionResultListContent( // 문제 리스트
-                onQuestionClick = onQuestionClick
+            // 문제 리스트
+            QuestionResultListContent(
+                onQuestionClick = onQuestionClick,
             )
         }
     }
@@ -87,24 +89,24 @@ fun QuizResultScreen(
 @Composable
 fun QuizResultContent(
     totalQuestions: Int,
-    correctAnswers: Int
+    correctAnswers: Int,
 ) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(24.dp)
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             ChatBubbleRight(text = stringResource(R.string.txt_quiz_result_guide))
             ChatBubbleRight(
                 text = stringResource(
                     R.string.txt_quiz_result_score,
                     correctAnswers,
-                    totalQuestions
-                )
+                    totalQuestions,
+                ),
             )
         }
 
@@ -113,23 +115,23 @@ fun QuizResultContent(
                 .size(120.dp)
                 .align(Alignment.CenterVertically),
             imagePainter = painterResource(id = R.drawable.sample_profile1),
-            contentDescription = null
+            contentDescription = null,
         )
     }
 }
 
 @Composable
 fun QuestionResultListContent(
-    onQuestionClick: () -> Unit
+    onQuestionClick: () -> Unit,
 ) {
     Text(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        text = stringResource(R.string.txt_quiz_question_list)
+        text = stringResource(R.string.txt_quiz_question_list),
     )
 
     LazyColumn(
         modifier = Modifier.padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         item {
             QuestionResultItem(
@@ -138,7 +140,7 @@ fun QuestionResultListContent(
                 questionTitle = "아파트 아파트~",
                 questionImageUrl = "",
                 questionDescription = "채영이가 좋아하는 랜덤 게임",
-                onQuestionClick = onQuestionClick
+                onQuestionClick = onQuestionClick,
             )
         }
 
@@ -149,7 +151,7 @@ fun QuestionResultListContent(
                 questionTitle = "거침없이 걸어가지",
                 questionImageUrl = "123",
                 questionDescription = "삐리뽕빠라빵",
-                onQuestionClick = onQuestionClick
+                onQuestionClick = onQuestionClick,
             )
         }
 
@@ -160,7 +162,7 @@ fun QuestionResultListContent(
                 questionTitle = "그런 일은 절대로 없을 거라",
                 questionImageUrl = "",
                 questionDescription = "그런 일은 절대로 없는 거죠, 나는 믿을게요 오늘은 안 돼요, 내 사랑이 이대로는 이별을 감당하긴 어려운걸요",
-                onQuestionClick = onQuestionClick
+                onQuestionClick = onQuestionClick,
             )
         }
     }
@@ -173,7 +175,7 @@ fun QuestionResultItem(
     questionTitle: String,
     questionImageUrl: String,
     questionDescription: String,
-    onQuestionClick: () -> Unit
+    onQuestionClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -183,11 +185,11 @@ fun QuestionResultItem(
             .padding(10.dp)
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         VerticalDivider(
             thickness = 4.dp,
-            color = if (isCorrect) MaterialTheme.colorScheme.surfaceTint else MaterialTheme.colorScheme.error
+            color = if (isCorrect) MaterialTheme.colorScheme.surfaceTint else MaterialTheme.colorScheme.error,
         )
 
         // TODO QuestionImageComposable
@@ -196,36 +198,37 @@ fun QuestionResultItem(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant)
+                    .background(MaterialTheme.colorScheme.onSurfaceVariant),
             )
         }
 
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         ) {
             Text(
                 text = questionTitle,
                 style = MaterialTheme.typography.titleLarge,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = questionDescription,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
             Spacer(modifier = Modifier.weight(1f))
+            // 상위 컴포저블에서 해결. 불필요
             IconButton(
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.End),
-                onClick = { }   // 상위 컴포저블에서 해결. 불필요
+                onClick = { },
             ) {
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
         }
@@ -245,10 +248,10 @@ fun ChatBubbleRight(
                     topStart = 20.dp,
                     topEnd = 20.dp,
                     bottomStart = 20.dp,
-                    bottomEnd = 8.dp
-                )
+                    bottomEnd = 8.dp,
+                ),
             ),
-        color = backgroundColor
+        color = backgroundColor,
     ) {
         Text(
             modifier = Modifier
@@ -256,7 +259,7 @@ fun ChatBubbleRight(
             text = text,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -272,13 +275,13 @@ fun CircleImage(
             .clip(CircleShape),
         painter = imagePainter,
         contentDescription = contentDescription,
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Crop,
     )
 }
 
 @Preview(
     showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Preview(showBackground = true)
 @Composable

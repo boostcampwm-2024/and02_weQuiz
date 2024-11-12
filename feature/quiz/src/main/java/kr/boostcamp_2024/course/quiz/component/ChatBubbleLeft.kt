@@ -25,10 +25,10 @@ fun ChatBubbleLeft(
                     topStart = 20.dp,
                     topEnd = 20.dp,
                     bottomStart = 8.dp,
-                    bottomEnd = 20.dp
-                )
+                    bottomEnd = 20.dp,
+                ),
             ),
-        color = backgroundColor
+        color = backgroundColor,
     ) {
         Text(
             modifier = Modifier
@@ -36,7 +36,7 @@ fun ChatBubbleLeft(
             text = text,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

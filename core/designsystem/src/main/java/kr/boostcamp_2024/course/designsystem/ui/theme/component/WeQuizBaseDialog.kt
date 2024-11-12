@@ -3,7 +3,6 @@ package kr.boostcamp_2024.course.designsystem.ui.theme.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -29,7 +28,8 @@ fun WeQuizBaseDialog(
     dismissTitle: String,
     onConfirm: () -> Unit,
     onDismissRequest: () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+    confirmButtonEnabled: Boolean = true,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -37,17 +37,17 @@ fun WeQuizBaseDialog(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 WeQuizLocalRoundedImage(
                     modifier = Modifier.size(120.dp),
                     imagePainter = dialogImage,
-                    contentDescription = null
+                    contentDescription = null,
                 )
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 content()
             }
@@ -58,10 +58,13 @@ fun WeQuizBaseDialog(
             }
         },
         confirmButton = {
-            Button(onClick = onConfirm) {
+            Button(
+                onClick = onConfirm,
+                enabled = confirmButtonEnabled,
+            ) {
                 Text(confirmTitle)
             }
-        }
+        },
     )
 }
 
@@ -76,15 +79,16 @@ private fun WeQuizBaseDialogPreview() {
             dismissTitle = "Cancel",
             onConfirm = {},
             onDismissRequest = {},
+            confirmButtonEnabled = false,
             content = {
                 TextField(
                     value = "",
                     onValueChange = {},
                     label = { Text("Password") },
                     placeholder = { Text("Enter your password") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
-            }
+            },
         )
     }
 }

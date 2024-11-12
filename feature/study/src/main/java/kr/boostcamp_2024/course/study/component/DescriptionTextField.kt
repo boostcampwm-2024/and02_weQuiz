@@ -19,9 +19,8 @@ fun DescriptionTextField(
     descriptionText: String,
     onDescriptionTextChange: (String) -> Unit,
     onClearDescriptionText: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-
 
     Box(modifier = modifier.fillMaxWidth()) {
         TextField(
@@ -39,7 +38,7 @@ fun DescriptionTextField(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Cancel,
-                contentDescription = stringResource(R.string.des_clear_text)
+                contentDescription = stringResource(R.string.des_clear_text),
             )
         }
     }

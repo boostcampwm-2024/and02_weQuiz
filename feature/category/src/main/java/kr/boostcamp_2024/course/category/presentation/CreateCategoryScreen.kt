@@ -16,11 +16,11 @@ fun CreateCategoryScreen(
     onCreateCategorySuccess: () -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         Button(
             modifier = Modifier.align(Alignment.TopStart),
-            onClick = onNavigationButtonClick
+            onClick = onNavigationButtonClick,
         ) {
             Text(text = "뒤로가기 버튼")
         }
@@ -45,4 +45,3 @@ fun CreateCategoryScreenPreview() {
         onCreateCategorySuccess = {},
     )
 }
-

@@ -14,24 +14,28 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun LeftChatBubble(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
             .clip(
                 RoundedCornerShape(
-                    topStart = 20.dp, topEnd = 20.dp, bottomStart = 8.dp, bottomEnd = 20.dp
-                )
-            )
+                    topStart = 20.dp,
+                    topEnd = 20.dp,
+                    bottomStart = 8.dp,
+                    bottomEnd = 20.dp,
+                ),
+            ),
     ) {
         Text(
             text = text,
             modifier = Modifier.padding(
-                horizontal = 16.dp, vertical = 10.dp
+                horizontal = 16.dp,
+                vertical = 10.dp,
             ),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
