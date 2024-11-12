@@ -55,6 +55,7 @@ fun CreateQuizScreen(
         quizDescription = uiState.quizDescription,
         quizDate = uiState.quizDate,
         quizSolveTime = uiState.quizSolveTime,
+        createQuizButtonEnabled = uiState.isCreateQuizButtonEnabled,
         onQuizTitleChange = viewModel::setQuizTitle,
         onQuizDescriptionChange = viewModel::setQuizDescription,
         onQuizDateChange = viewModel::setQuizDate,
@@ -78,6 +79,7 @@ fun CreateQuizScreen(
     quizDescription: String,
     quizDate: String,
     quizSolveTime: Float,
+    createQuizButtonEnabled: Boolean,
     onQuizTitleChange: (String) -> Unit,
     onQuizDescriptionChange: (String) -> Unit,
     onQuizDateChange: (String) -> Unit,
@@ -169,7 +171,8 @@ fun CreateQuizScreen(
             // CreateButton
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onCreateQuizButtonClick
+                onClick = onCreateQuizButtonClick,
+                enabled = createQuizButtonEnabled
             ) {
                 Text(text = stringResource(R.string.btn_create_quiz))
             }
@@ -185,7 +188,8 @@ fun CreateQuizScreenPreview() {
             quizTitle = "",
             quizDescription = "",
             quizDate = "",
-            quizSolveTime = 0f,
+            quizSolveTime = 10f,
+            createQuizButtonEnabled = true,
             onQuizTitleChange = {},
             onQuizDescriptionChange = {},
             onQuizDateChange = {},
