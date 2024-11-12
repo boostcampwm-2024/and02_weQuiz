@@ -45,6 +45,11 @@
     <string name="txt_question_description_placeholder">해설을 입력해주세요.</string>
     <string name="txt_question_choice_placeholder">객관식 내용을 입력해주세요.</string>
     <string name="btn_create_question">문제 출제</string>
+     <string name="txt_quiz_question_count">총 %d문제</string>
+    <string name="txt_open_create_question">문제 출제</string>
+    <string name="txt_close_create_question">문제 출제가 마감되었습니다.</string>
+    <string name="txt_quiz_start">퀴즈 시작</string>
+    <string name="txt_quiz_question_count_zero">문제가 없습니다!</string>
     <!-- content description  -->
     <string name="des_btn_back">뒤로가기</string>
     <string name="des_clear_text">텍스트 지우기</string>

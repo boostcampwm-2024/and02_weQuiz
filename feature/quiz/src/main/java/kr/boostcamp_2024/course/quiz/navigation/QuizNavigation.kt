@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.navigation
 
+import android.annotation.SuppressLint
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -37,6 +38,7 @@ fun NavController.navigateQuestionDetail() {
     navigate(QuestionDetailRoute)
 }
 
+@SuppressLint("RestrictedApi")
 fun NavController.navigateQuestionScreen() {
     navigate(QuestionScreenRoute) {
         popUpTo(QuizRoute) {
@@ -49,6 +51,7 @@ fun NavController.navigateQuiz() {
     navigate(QuizRoute)
 }
 
+@SuppressLint("RestrictedApi")
 fun NavController.navigateQuizResult() {
     navigate(QuizResultRoute) {
         popUpTo(QuestionScreenRoute) {
@@ -65,9 +68,10 @@ fun NavGraphBuilder.quizNavGraph(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionSuccess: () -> Unit,
     onQuizFinished: () -> Unit,
-    onQuizStartButtonClick: () -> Unit,
     onQuestionClick: () -> Unit,
     onCreateQuizSuccess: () -> Unit,
+    onCreateQuestionButtonClick: () -> Unit,
+    onStartQuizButtonClick: () -> Unit,
 ) {
     composable<CreateQuestionRoute> {
         CreateQuestionScreen(
@@ -89,7 +93,8 @@ fun NavGraphBuilder.quizNavGraph(
     composable<QuizRoute> {
         QuizScreen(
             onNavigationButtonClick = onNavigationButtonClick,
-            onQuizStartButtonClick = onQuizStartButtonClick,
+            onCreateQuestionButtonClick = onCreateQuestionButtonClick,
+            onStartQuizButtonClick = onStartQuizButtonClick,
         )
     }
     composable<QuizResultRoute> {

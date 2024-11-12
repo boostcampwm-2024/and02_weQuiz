@@ -32,6 +32,7 @@ ij_kotlin_allow_trailing_comma = true
 ij_kotlin_allow_trailing_comma_on_call_site = true
 ktlint_standard_multiline_expression_wrapping = disabled
 ktlint_standard_value-parameter-comment = disabled
+ktlint_standard_chain-method-continuation = disabled
 
 [*.{yml,yaml}]
 indent_size = 2

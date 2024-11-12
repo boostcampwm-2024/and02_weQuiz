@@ -1,3 +1,7 @@
 package kr.boostcamp_2024.course.domain.repository
 
-interface StudyGroupRepository
+import kr.boostcamp_2024.course.domain.model.StudyGroup
+
+interface StudyGroupRepository {
+    suspend fun getStudyGroup(studyGroupIds: List<String>): Result<List<StudyGroup>>
+}

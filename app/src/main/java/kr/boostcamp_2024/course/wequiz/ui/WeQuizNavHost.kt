@@ -13,9 +13,9 @@ import kr.boostcamp_2024.course.login.loginNavGraph
 import kr.boostcamp_2024.course.main.navigation.mainNavGraph
 import kr.boostcamp_2024.course.main.navigation.navigateMain
 import kr.boostcamp_2024.course.main.navigation.navigateNotification
+import kr.boostcamp_2024.course.quiz.navigation.navigateCreateQuestion
 import kr.boostcamp_2024.course.quiz.navigation.navigateCreateQuiz
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuestionDetail
-import kr.boostcamp_2024.course.quiz.navigation.navigateQuestionScreen
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuiz
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuizResult
 import kr.boostcamp_2024.course.quiz.navigation.quizNavGraph
@@ -46,7 +46,7 @@ fun WeQuizNavHost(
             onNavigationButtonClick = navController::navigateUp,
             onNotificationButtonClick = navController::navigateNotification,
             onCreateStudyButtonClick = navController::navigateCreateStudy,
-            onStudyClick = navController::navigateStudy,
+            onStudyGroupClick = navController::navigateStudy,
         )
 
         studyNavGraph(
@@ -67,9 +67,10 @@ fun WeQuizNavHost(
             onNavigationButtonClick = navController::navigateUp,
             onCreateQuestionSuccess = navController::navigateUp,
             onQuizFinished = navController::navigateQuizResult,
-            onQuizStartButtonClick = navController::navigateQuestionScreen,
             onQuestionClick = navController::navigateQuestionDetail,
             onCreateQuizSuccess = navController::navigateUp,
+            onCreateQuestionButtonClick = navController::navigateCreateQuestion,
+            onStartQuizButtonClick = navController::navigateQuiz,
         )
     }
 }
