@@ -29,16 +29,16 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizDatePickerTextField(
+    quizDate: String,
     onDateSelected: (String) -> Unit,
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf("") }
 
     Box {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = selectedDate,
-            onValueChange = { onDateSelected(it) },
+            value = quizDate,
+            onValueChange = { /* no-op */ },
             label = {
                 Text(text = stringResource(R.string.txt_quiz_date_picker))
             },
@@ -55,7 +55,7 @@ fun QuizDatePickerTextField(
 
         if (showDatePicker) {
             DatePickerModal(
-                onDateSelected = { selectedDate = it?.let { convertMillisToDate(it) } ?: "" },
+                onDateSelected = { onDateSelected(it?.let { convertMillisToDate(it) } ?: "") },
                 onDismiss = { showDatePicker = false },
             )
         }
@@ -98,5 +98,8 @@ private fun convertMillisToDate(millis: Long): String {
 @Preview(showBackground = true)
 @Composable
 fun QuizDatePickerTextFieldPreview() {
-    QuizDatePickerTextField(onDateSelected = {})
+    QuizDatePickerTextField(
+        quizDate = "",
+        onDateSelected = {},
+    )
 }
