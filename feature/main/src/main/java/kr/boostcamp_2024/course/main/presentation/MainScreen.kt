@@ -166,7 +166,7 @@ fun StudyGroupTab(
     onStudyGroupClick: () -> Unit,
 ) {
     LazyColumn {
-        items(items = studyGroups, key = { it.name }) { studyGroup ->   // TODO key
+        items(items = studyGroups, key = { it.id }) { studyGroup ->
             StudyGroupItem(
                 studyGroup = studyGroup,
                 onStudyGroupClick = onStudyGroupClick
@@ -188,6 +188,7 @@ fun MainScreenPreview() {
             ),
             studyGroups = listOf(
                 StudyGroup(
+                    id = "1234",
                     name = "일본어 스터디",
                     studyGroupImageUrl = null,
                     description = "일본어 스터디그룹 와압~!",

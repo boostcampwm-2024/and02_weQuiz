@@ -57,9 +57,9 @@ fun StudyGroupItem(
                     style = MaterialTheme.typography.bodyLarge
                 )
 
-                if (studyGroup.description.isNotBlank()) {
+                if (studyGroup.description.isNullOrBlank().not()) {
                     Text(
-                        text = studyGroup.description,
+                        text = studyGroup.description!!,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
@@ -97,6 +97,7 @@ fun StudyGroupItemPreview() {
     WeQuizTheme {
         StudyGroupItem(
             studyGroup = StudyGroup(
+                id = "1234",
                 name = "일본어 스터디",
                 studyGroupImageUrl = null,
                 description = "일본어 스터디 그룹 와압~!",
