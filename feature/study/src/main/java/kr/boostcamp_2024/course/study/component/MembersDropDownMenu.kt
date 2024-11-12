@@ -9,10 +9,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -21,14 +17,18 @@ import kr.boostcamp_2024.course.study.R
 
 @ExperimentalMaterial3Api
 @Composable
-fun MembersDropDownMenu(modifier: Modifier = Modifier) {
-    var expanded by remember { mutableStateOf(false) }
-    val membersDropDownMenuText = stringResource(R.string.txt_members_drop_down_menu)
-    var selectedOption by remember { mutableStateOf(membersDropDownMenuText) }
+fun MembersDropDownMenu(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    selectedOption: String,
+    onDismissRequest: () -> Unit,
+    onOptionSelected: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val dropDownMenuOptions = stringArrayResource(R.array.drop_down_menu_options)
 
     ExposedDropdownMenuBox(
-        expanded = expanded, onExpandedChange = { expanded = !expanded }, modifier = modifier
+        expanded = expanded, onExpandedChange = onExpandedChange, modifier = modifier
     ) {
         TextField(
             value = selectedOption,
@@ -42,15 +42,15 @@ fun MembersDropDownMenu(modifier: Modifier = Modifier) {
 
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false },
+            onDismissRequest = onDismissRequest,
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(max = 130.dp)
+                .heightIn(max = 110.dp)
         ) {
             dropDownMenuOptions.forEach { option ->
                 DropdownMenuItem(text = { Text(option) }, onClick = {
-                    selectedOption = option
-                    expanded = false
+                    onOptionSelected(option)
+                    onExpandedChange(false)
                 })
             }
         }
