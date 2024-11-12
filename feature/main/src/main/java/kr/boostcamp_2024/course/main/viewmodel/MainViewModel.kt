@@ -37,8 +37,8 @@ class MainViewModel @Inject constructor(
     private fun loadStudyGroups() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-
-            userRepository.getUser("M2PzD8bxVaDAwNrLhr6E") // TODO: getCurrentUser
+            // TODO: getCurrentUser
+            userRepository.getUser("M2PzD8bxVaDAwNrLhr6E")
                 .onSuccess { currentUser ->
                     val studyGroupIds = currentUser.studyGroups
 
