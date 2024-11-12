@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.domain.model.QuestionRequestVO
+import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
 import kr.boostcamp_2024.course.quiz.CreateQuestionViewModel
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.presentation.component.ChatBubble
@@ -76,7 +76,7 @@ fun CreateQuestionScreen(
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onSolutionChanged: (String) -> Unit,
-    createQuestionState: QuestionRequestVO,
+    createQuestionState: QuestionCreationInfo,
     onNavigationButtonClick: () -> Unit,
     onChoiceTextChanged: (Int, String) -> Unit,
     onSelectedChoiceNumChanged: (Int) -> Unit,

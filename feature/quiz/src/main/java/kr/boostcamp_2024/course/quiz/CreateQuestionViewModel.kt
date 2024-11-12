@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kr.boostcamp_2024.course.domain.model.QuestionRequestVO
+import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateQuestionViewModel @Inject constructor() : ViewModel() {
-    private val _createQuestionState: MutableStateFlow<QuestionRequestVO> = MutableStateFlow(
-        QuestionRequestVO(
+    private val _createQuestionState: MutableStateFlow<QuestionCreationInfo> = MutableStateFlow(
+        QuestionCreationInfo(
             title = "",
             description = "",
             solution = null,
@@ -19,7 +19,7 @@ class CreateQuestionViewModel @Inject constructor() : ViewModel() {
         ),
     )
 
-    val createQuestionState: StateFlow<QuestionRequestVO> = _createQuestionState
+    val createQuestionState: StateFlow<QuestionCreationInfo> = _createQuestionState
     private val _isCreateQuestionValid: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isCreateQuestionValid: StateFlow<Boolean> = _isCreateQuestionValid
 
