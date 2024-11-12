@@ -33,15 +33,15 @@ fun WeQuizTextField(
         maxLines = maxLines,
         trailingIcon = {
             IconButton(
-                onClick = { onTextChanged("") }
+                onClick = { onTextChanged("") },
             ) {
                 Icon(
                     painter = painterResource(R.drawable.outline_cancel_24),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    contentDescription = stringResource(id = R.string.des_clear_text)
+                    contentDescription = stringResource(id = R.string.des_clear_text),
                 )
             }
-        }
+        },
     )
 }
 
@@ -52,6 +52,6 @@ fun WeQuizTextFieldPreview() {
         label = "Label",
         text = "Text",
         onTextChanged = {},
-        placeholder = "Placeholder"
+        placeholder = "Placeholder",
     )
 }

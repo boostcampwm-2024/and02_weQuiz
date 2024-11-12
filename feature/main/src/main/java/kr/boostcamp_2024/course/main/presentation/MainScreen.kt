@@ -62,35 +62,35 @@ fun MainScreen(
                         Icon(
                             imageVector = Icons.Outlined.Notifications,
                             contentDescription = stringResource(
-                                R.string.des_btn_notification
-                            )
+                                R.string.des_btn_notification,
+                            ),
                         )
                     }
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = Color.Transparent
-                )
+                    containerColor = Color.Transparent,
+                ),
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onCreateStudyButtonClick) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.des_fab_create_study)
+                    contentDescription = stringResource(R.string.des_fab_create_study),
                 )
             }
-        }
+        },
     ) { innerPadding ->
-
+        // Ignore Top Padding
         Column(
             modifier = Modifier
                 .padding(
-                    PaddingValues(  // Ignore Top Padding
+                    PaddingValues(
                         start = innerPadding.calculateLeftPadding(LocalLayoutDirection.current),
                         end = innerPadding.calculateRightPadding(LocalLayoutDirection.current),
-                        bottom = innerPadding.calculateBottomPadding()
-                    )
-                )
+                        bottom = innerPadding.calculateBottomPadding(),
+                    ),
+                ),
         ) {
             UserContent()
             UserStudyContent(onStudyClick = onStudyClick)
@@ -112,9 +112,9 @@ fun UserContent() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(imageHeight),
-            painter = painterResource(id = R.drawable.sample),
+            painter = painterResource(id = kr.boostcamp_2024.course.designsystem.R.drawable.img_error),
             contentScale = ContentScale.Crop,
-            contentDescription = null
+            contentDescription = null,
         )
 
         Text(
@@ -126,7 +126,7 @@ fun UserContent() {
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onPrimary,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
@@ -140,7 +140,7 @@ fun UserStudyContent(
     var state by remember { mutableIntStateOf(0) }
     val titles = listOf(
         stringResource(R.string.tab_participating_study),
-        stringResource(R.string.tab_storage)
+        stringResource(R.string.tab_storage),
     )
 
     PrimaryTabRow(selectedTabIndex = state) {
@@ -153,9 +153,9 @@ fun UserStudyContent(
                     Text(
                         text = title,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
-                }
+                },
             )
         }
     }
@@ -182,7 +182,7 @@ fun StudyTab(
                 studyTitle = "안드로이드 개발자",
                 studyDescription = "안드로이드 개발자를 위한 스터디입니다.",
                 studyMember = 3,
-                onStudyClick = onStudyClick
+                onStudyClick = onStudyClick,
             )
         }
 
@@ -192,7 +192,7 @@ fun StudyTab(
                 studyTitle = "OS 스터디",
                 studyDescription = "os 와압!",
                 studyMember = 10,
-                onStudyClick = onStudyClick
+                onStudyClick = onStudyClick,
             )
         }
 
@@ -202,7 +202,7 @@ fun StudyTab(
                 studyTitle = "웹개발자",
                 studyDescription = "웹개발자를 위한 스터디입니다.",
                 studyMember = 5,
-                onStudyClick = onStudyClick
+                onStudyClick = onStudyClick,
             )
         }
 
@@ -212,7 +212,7 @@ fun StudyTab(
                 studyTitle = "네트워크 스터디",
                 studyDescription = "",
                 studyMember = 5,
-                onStudyClick = onStudyClick
+                onStudyClick = onStudyClick,
             )
         }
 
@@ -222,7 +222,7 @@ fun StudyTab(
                 studyTitle = "일본어 스터디",
                 studyDescription = "곤니찌와~",
                 studyMember = 6,
-                onStudyClick = onStudyClick
+                onStudyClick = onStudyClick,
             )
         }
 
@@ -232,7 +232,7 @@ fun StudyTab(
                 studyTitle = "요리왕 비룡",
                 studyDescription = "비 내리는 날엔 난 항상 널 그리워 해.",
                 studyMember = 6,
-                onStudyClick = onStudyClick
+                onStudyClick = onStudyClick,
             )
         }
     }

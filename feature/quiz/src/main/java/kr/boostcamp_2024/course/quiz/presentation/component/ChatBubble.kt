@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ChatBubble(
     modifier: Modifier = Modifier,
-    text: String
+    text: String,
 ) {
     Box(
         modifier = modifier
@@ -24,16 +24,16 @@ fun ChatBubble(
                     topStart = 20.dp,
                     topEnd = 20.dp,
                     bottomStart = 8.dp,
-                    bottomEnd = 20.dp
-                )
+                    bottomEnd = 20.dp,
+                ),
             )
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         Text(
             text = text,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
     }
 }

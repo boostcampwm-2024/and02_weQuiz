@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="quiz_tabs">
+        <item>진행 중</item>
+        <item>진행 완료</item>
+    </string-array>
+    <!--  content description  -->
+    <string name="des_btn_back">뒤로가기</string>
+    <string name="des_btn_settings">카테고리 설정</string>
+    <string name="des_fab_create_quiz">퀴즈 생성</string>
+</resources>

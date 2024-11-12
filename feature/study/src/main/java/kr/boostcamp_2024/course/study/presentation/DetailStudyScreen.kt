@@ -1,87 +1,105 @@
 package kr.boostcamp_2024.course.study.presentation
 
+import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import kr.boostcamp_2024.course.study.component.DetailStudyTopBar
+import androidx.compose.ui.text.font.FontWeight
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
+import kr.boostcamp_2024.course.study.R
+import kr.boostcamp_2024.course.study.component.CustomIconButton
 import kr.boostcamp_2024.course.study.navigation.DetailScreenRoute
 import kr.boostcamp_2024.course.study.navigation.GroupScreenRoute
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailStudyScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
-    onCategoryClick: () -> Unit
+    onCategoryClick: () -> Unit,
 ) {
-    val bottomNavController = rememberNavController()
+    var selectedScreenIndex by remember { mutableIntStateOf(0) }
+    val screenList = listOf(
+        DetailScreenRoute,
+        GroupScreenRoute,
+    )
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = { DetailStudyTopBar() },
-        bottomBar = {
-            val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
-            val currentDestination = navBackStackEntry?.destination
-            val navList = listOf(
-                DetailScreenRoute, GroupScreenRoute
-            )
-            NavigationBar {
-                navList.forEach { nav ->
-                    val selected = currentDestination?.hasRoute(nav::class) ?: false
-                    NavigationBarItem(
-                        selected = selected,
-                        onClick = {
-                            bottomNavController.navigate(nav) {
-                                // 내비게이션 시작 지점까지 있는 모든 스택을 팝하는 부분
-                                // 탭한 스크린만 남겨놓기 위한 설계
-                                popUpTo(bottomNavController.graph.findStartDestination().id) {
-                                    // 화면 상태 저장하는 부분
-                                    saveState = true
-                                }
-                                // 같은 탭을 또 클릭했을 때 중복으로 스택에 쌓이지 않도록 하는 설정
-                                launchSingleTop = true
-                                // 같은 탭을 또 클릭했을 때 상태 유지를 위한 설정
-                                restoreState = true
-                            }
-                        },
-                        label = { Text(text = stringResource(nav.title)) },
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = nav.iconId),
-                                contentDescription = "Bottom Navigation Icon"
-                            )
-                        }
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            WeQuizImageLargeTopAppBar(
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = "OS 스터디",
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.SemiBold,
                     )
+                },
+                topAppBarImageUrl = "https://avatars.githubusercontent.com/u/147039081?v=4",
+                navigationIcon = {
+                    CustomIconButton(
+                        onClicked = onNavigationButtonClick,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        description = stringResource(R.string.btn_detail_study_top_bar_back),
+                    )
+                },
+                actions = {
+                    CustomIconButton(
+                        onClicked = { Log.d("detail", "설정 클릭됨") },
+                        imageVector = Icons.Filled.Settings,
+                        description = stringResource(R.string.btn_top_bar_detail_study_setting),
+                    )
+                },
+            )
+        },
+        bottomBar = {
+            NavigationBar {
+                screenList.forEachIndexed { index, screen ->
+                    val selected = selectedScreenIndex == index
+                    NavigationBarItem(selected = selected, onClick = {
+                        selectedScreenIndex = index
+                    }, label = { Text(text = stringResource(screen.title)) }, icon = {
+                        Icon(
+                            painter = painterResource(id = screen.iconId),
+                            contentDescription = stringResource(R.string.des_icon_bottom_nav_detail_study),
+                        )
+                    })
                 }
             }
-        }
+        },
     ) { innerPadding ->
-        NavHost(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            navController = bottomNavController,
-            startDestination = DetailScreenRoute
         ) {
-            composable<DetailScreenRoute> {
-                CategoryListScreen()
-            }
-            composable<GroupScreenRoute> {
-                GroupListScreen()
+            when (selectedScreenIndex) {
+                0 -> CategoryListScreen(onCreateCategoryButtonClick, onCategoryClick)
+                1 -> GroupListScreen()
             }
         }
     }

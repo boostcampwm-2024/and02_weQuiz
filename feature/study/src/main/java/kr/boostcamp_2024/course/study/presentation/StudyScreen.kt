@@ -18,18 +18,18 @@ fun StudyScreen(
     onCategoryClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         Button(
             modifier = Modifier.align(Alignment.TopStart),
-            onClick = onNavigationButtonClick
+            onClick = onNavigationButtonClick,
         ) {
             Text(text = "뒤로가기")
         }
 
         Column(
             modifier = Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(onClick = onCreateCategoryButtonClick) {
                 Text(text = "카테고리 생성")
@@ -48,7 +48,7 @@ fun StudyScreen(
 
         Row(
             modifier = Modifier.align(Alignment.BottomCenter),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Button(onClick = { /*TODO*/ }) {
                 Text(text = "카테고리")

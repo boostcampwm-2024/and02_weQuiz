@@ -13,9 +13,9 @@ import kr.boostcamp_2024.course.login.loginNavGraph
 import kr.boostcamp_2024.course.main.navigation.mainNavGraph
 import kr.boostcamp_2024.course.main.navigation.navigateMain
 import kr.boostcamp_2024.course.main.navigation.navigateNotification
+import kr.boostcamp_2024.course.quiz.navigation.navigateCreateQuestion
 import kr.boostcamp_2024.course.quiz.navigation.navigateCreateQuiz
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuestionDetail
-import kr.boostcamp_2024.course.quiz.navigation.navigateQuestionScreen
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuiz
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuizResult
 import kr.boostcamp_2024.course.quiz.navigation.quizNavGraph
@@ -37,9 +37,9 @@ fun WeQuizNavHost(
     ) {
         loginNavGraph(
             onLoginSuccess = {
-                navController.popBackStack()    // 로그인 시 로그인 화면 제거, 추후 수정 필요
+                navController.popBackStack() // 로그인 시 로그인 화면 제거, 추후 수정 필요
                 navController.navigateMain()
-            }
+            },
         )
 
         mainNavGraph(
@@ -67,9 +67,10 @@ fun WeQuizNavHost(
             onNavigationButtonClick = navController::navigateUp,
             onCreateQuestionSuccess = navController::navigateUp,
             onQuizFinished = navController::navigateQuizResult,
-            onQuizStartButtonClick = navController::navigateQuestionScreen,
             onQuestionClick = navController::navigateQuestionDetail,
             onCreateQuizSuccess = navController::navigateUp,
+            onCreateQuestionButtonClick = navController::navigateCreateQuestion,
+            onStartQuizButtonClick = navController::navigateQuiz,
         )
     }
 }

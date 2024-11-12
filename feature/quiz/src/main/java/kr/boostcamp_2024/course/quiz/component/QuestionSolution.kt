@@ -27,13 +27,13 @@ fun QuestionSolution(solution: String) {
         Text(
             text = stringResource(R.string.txt_question_detail_solution),
             modifier = Modifier,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(modifier = Modifier.height(10.dp))
         Row(modifier = Modifier) {
             ChatBubble(
                 solution,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
 
             Box(
@@ -41,14 +41,13 @@ fun QuestionSolution(solution: String) {
                     .padding(start = 10.dp)
                     .align(Alignment.CenterVertically)
                     .size(120.dp)
-                    .clip(CircleShape)
-
+                    .clip(CircleShape),
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.create_study_character),
                     contentDescription = stringResource(R.string.des_question_detail_solution_profile),
                     modifier = Modifier,
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
             }
         }
