@@ -12,12 +12,20 @@ class StudyGroupRepositoryImpl @Inject constructor(
 ) : StudyGroupRepository {
     private val studyGroupCollectionRef = firestore.collection("StudyGroup")
 
-    override suspend fun getStudyGroup(studyGroupIds: List<String>): Result<List<StudyGroup>> =
+    override suspend fun getStudyGroup(studyGroupId: String): Result<StudyGroup> =
         runCatching {
-            studyGroupIds.map { studyGroupId ->
-                val document = studyGroupCollectionRef.document(studyGroupId).get().await()
+            val document = studyGroupCollectionRef.document(studyGroupId).get().await()
+            val response = document.toObject(StudyGroupDTO::class.java)
+            requireNotNull(response).toVO(studyGroupId)
+        }
+
+
+    override suspend fun getStudyGroups(studyGroupIds: List<String>): Result<List<StudyGroup>> =
+        runCatching {
+            studyGroupIds.map { studyGroupIds ->
+                val document = studyGroupCollectionRef.document(studyGroupIds).get().await()
                 val response = document.toObject(StudyGroupDTO::class.java)
-                requireNotNull(response).toVO(studyGroupId)
+                requireNotNull(response).toVO(studyGroupIds)
             }
         }
 }
