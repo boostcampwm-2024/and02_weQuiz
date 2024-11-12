@@ -46,7 +46,7 @@ fun LoginScreen(
             .fillMaxSize()
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         LoginGuideImageAndText()
         LoginContent()
@@ -64,7 +64,7 @@ fun LoginGuideImageAndText() {
             painter = painterResource(R.drawable.img_app_logo),
             modifier = Modifier.width(300.dp),
             contentDescription = null,
-            contentScale = ContentScale.FillWidth
+            contentScale = ContentScale.FillWidth,
         )
         ChatBubble(
             text = stringResource(R.string.txt_introduce_app1),
@@ -72,8 +72,8 @@ fun LoginGuideImageAndText() {
                 topStart = 20.dp,
                 topEnd = 20.dp,
                 bottomStart = 8.dp,
-                bottomEnd = 20.dp
-            )
+                bottomEnd = 20.dp,
+            ),
         )
         ChatBubble(
             text = stringResource(R.string.txt_introduce_app2),
@@ -82,8 +82,8 @@ fun LoginGuideImageAndText() {
                 topStart = 20.dp,
                 topEnd = 20.dp,
                 bottomStart = 20.dp,
-                bottomEnd = 8.dp
-            )
+                bottomEnd = 8.dp,
+            ),
         )
     }
 }
@@ -101,7 +101,7 @@ fun LoginContent() {
             label = stringResource(R.string.txt_login_email_label),
             text = "",
             onTextChanged = {},
-            placeholder = stringResource(R.string.txt_login_email_placeholder)
+            placeholder = stringResource(R.string.txt_login_email_placeholder),
         )
 
         WeQuizTextField(
@@ -117,7 +117,7 @@ fun LoginContent() {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
                 IconButton(
-                    onClick = { showPassword = !showPassword }
+                    onClick = { showPassword = !showPassword },
                 ) {
                     Icon(
                         painter = if (showPassword) {
@@ -125,37 +125,37 @@ fun LoginContent() {
                         } else {
                             painterResource(R.drawable.baseline_visibility_off_24)
                         },
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
-            }
+            },
         )
     }
 }
 
 @Composable
 fun LoginButtons(
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Button(
             onClick = {
-                /* todo: 로그인 처리 */
+                // todo: 로그인 처리
                 onLoginSuccess()
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text(text = stringResource(R.string.btn_sign_in))
         }
         OutlinedButton(
             onClick = { /* todo: 회원가입 처리 */ },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text(text = stringResource(R.string.btn_sign_up))
         }
@@ -163,7 +163,7 @@ fun LoginButtons(
             text = stringResource(R.string.txt_experience),
             modifier = Modifier.clickable(
                 enabled = true,
-                onClick = { /* todo: 체험하기 처리*/ }
+                onClick = { /* todo: 체험하기 처리*/ },
             ),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.primary,

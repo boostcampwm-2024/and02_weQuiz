@@ -33,10 +33,10 @@ fun QuizTitleTextField(
             IconButton(onClick = { onValueChange("") }) {
                 Icon(
                     imageVector = Icons.Outlined.Cancel,
-                    contentDescription = stringResource(R.string.btn_clear_text)
+                    contentDescription = stringResource(R.string.btn_clear_text),
                 )
             }
-        }
+        },
     )
 }
 

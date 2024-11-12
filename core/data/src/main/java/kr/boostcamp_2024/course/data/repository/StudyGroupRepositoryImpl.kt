@@ -5,7 +5,7 @@ import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import javax.inject.Inject
 
 class StudyGroupRepositoryImpl @Inject constructor(
-    firestore: FirebaseFirestore
-): StudyGroupRepository {
+    firestore: FirebaseFirestore,
+) : StudyGroupRepository {
     private val studyGroupCollectionRef = firestore.collection("StudyGroup")
 }

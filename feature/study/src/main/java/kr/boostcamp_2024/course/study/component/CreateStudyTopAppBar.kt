@@ -20,7 +20,8 @@ fun CreateStudyTopAppBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = stringResource(R.string.txt_create_study_top_app_bar), style = MaterialTheme.typography.titleLarge
+                text = stringResource(R.string.txt_create_study_top_app_bar),
+                style = MaterialTheme.typography.titleLarge,
             )
         },
         navigationIcon = {
