@@ -13,6 +13,7 @@ import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import javax.inject.Inject
 
 data class CreateQuestionUiState(
+    val isLoading: Boolean = false,
     val questionCreationInfo: QuestionCreationInfo = QuestionCreationInfo(
         title = "",
         description = "",
@@ -101,18 +102,28 @@ class CreateQuestionViewModel @Inject constructor(
     }
 
     fun createQuestion() {
+        setLoadingState(true)
         viewModelScope.launch {
             questionRepository.createQuestion(createQuestionUiState.value.questionCreationInfo)
                 .onSuccess {
                     _createQuestionUiState.update { currentState ->
                         currentState.copy(
-                            creationSuccess = true
+                            isLoading = false,
+                            creationSuccess = false
                         )
                     }
                 }.onFailure { exception ->
                     Log.e("CreateQuestionViewModel", exception.message, exception)
                     setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
                 }
+        }
+    }
+
+    fun setLoadingState(isLoading: Boolean) {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                isLoading = isLoading
+            )
         }
     }
 

@@ -2,6 +2,7 @@ package kr.boostcamp_2024.course.quiz.presentation.question
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -114,40 +117,52 @@ fun CreateQuestionScreen(
         },
     ) { innerPadding ->
         val scrollState = rememberScrollState()
-        Column(
+        Box(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .verticalScroll(scrollState),
         ) {
-            CreateQuestionGuideContent(
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
-            CreateQuestionContent(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                title = uiState.questionCreationInfo.title,
-                description = uiState.questionCreationInfo.description,
-                solution = uiState.questionCreationInfo.solution,
-                onTitleChanged = onTitleChanged,
-                onDescriptionChanged = onDescriptionChanged,
-                onSolutionChanged = onSolutionChanged,
-            )
-            CreateChoiceItems(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                choices = uiState.questionCreationInfo.choices,
-                selectedChoiceNum = uiState.questionCreationInfo.answer,
-                updateChoiceText = onChoiceTextChanged,
-                updateSelectedChoiceNum = onSelectedChoiceNumChanged,
-            )
-            Button(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                enabled = uiState.isCreateQuestionValid,
-                onClick = onCreateQuestionButtonClick,
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
             ) {
-                Text(
-                    text = stringResource(id = R.string.btn_create_question),
+                CreateQuestionGuideContent(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+                CreateQuestionContent(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    title = uiState.questionCreationInfo.title,
+                    description = uiState.questionCreationInfo.description,
+                    solution = uiState.questionCreationInfo.solution,
+                    onTitleChanged = onTitleChanged,
+                    onDescriptionChanged = onDescriptionChanged,
+                    onSolutionChanged = onSolutionChanged,
+                )
+                CreateChoiceItems(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    choices = uiState.questionCreationInfo.choices,
+                    selectedChoiceNum = uiState.questionCreationInfo.answer,
+                    updateChoiceText = onChoiceTextChanged,
+                    updateSelectedChoiceNum = onSelectedChoiceNumChanged,
+                )
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    enabled = uiState.isCreateQuestionValid,
+                    onClick = onCreateQuestionButtonClick,
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.btn_create_question),
+                    )
+                }
+            }
+            if (uiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .align(Alignment.Center)
                 )
             }
         }
