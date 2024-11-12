@@ -22,6 +22,7 @@ class StudyGroupRepositoryImpl @Inject constructor(
                 maxUserNum = studyGroupCreationInfo.maxUserNum,
                 ownerId = studyGroupCreationInfo.ownerId,
                 users = listOf(studyGroupCreationInfo.ownerId),
+                categories = emptyList()
             )
             val document = studyGroupCollectionRef.document()
             document.set(request).await()

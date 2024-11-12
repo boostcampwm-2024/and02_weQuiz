@@ -3,7 +3,7 @@ package kr.boostcamp_2024.course.data.model
 import com.google.firebase.firestore.PropertyName
 
 class StudyGroupDTO(
-    val categories: List<String>? = emptyList(),
+    val categories: List<String>? = null,
     val description: String? = null,
     @get:PropertyName("max_user_num")
     @set:PropertyName("max_user_num")
