@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kr.boostcamp_2024.course.domain.model.QuizCreateInfo
+import kr.boostcamp_2024.course.domain.model.QuizCreationInfo
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import javax.inject.Inject
 
@@ -16,9 +16,12 @@ data class CreateQuizUiState(
     val quizTitle: String = "",
     val quizDescription: String = "",
     val quizDate: String = "",
-    val quizSolveTime: Float = 0f,
+    val quizSolveTime: Float = 10f,
     val isCreateQuizSuccess: Boolean = false,
-)
+) {
+    val isCreateQuizButtonEnabled: Boolean
+        get() = quizTitle.isNotBlank() && quizDate.isNotBlank() && quizSolveTime > 0
+}
 
 @HiltViewModel
 class CreateQuizViewModel @Inject constructor(
@@ -47,9 +50,9 @@ class CreateQuizViewModel @Inject constructor(
     fun createQuiz() {
         viewModelScope.launch {
             quizRepository.createQuiz(
-                QuizCreateInfo(
+                QuizCreationInfo(
                     quizTitle = uiState.value.quizTitle,
-                    quizDescription = uiState.value.quizDescription,
+                    quizDescription = uiState.value.quizDescription.takeIf { it.isNotBlank() },
                     quizDate = uiState.value.quizDate,
                     quizSolveTime = uiState.value.quizSolveTime.toInt()
                 )
