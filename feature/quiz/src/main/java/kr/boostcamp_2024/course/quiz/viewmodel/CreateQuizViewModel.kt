@@ -25,9 +25,8 @@ data class CreateQuizUiState(
 
 @HiltViewModel
 class CreateQuizViewModel @Inject constructor(
-    private val quizRepository: QuizRepository
+    private val quizRepository: QuizRepository,
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(CreateQuizUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -54,8 +53,8 @@ class CreateQuizViewModel @Inject constructor(
                     quizTitle = uiState.value.quizTitle,
                     quizDescription = uiState.value.quizDescription.takeIf { it.isNotBlank() },
                     quizDate = uiState.value.quizDate,
-                    quizSolveTime = uiState.value.quizSolveTime.toInt()
-                )
+                    quizSolveTime = uiState.value.quizSolveTime.toInt(),
+                ),
             )
                 .onSuccess { quizId ->
                     Log.d("CreateQuizViewModel", quizId)

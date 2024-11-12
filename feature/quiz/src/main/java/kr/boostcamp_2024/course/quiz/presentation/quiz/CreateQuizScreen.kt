@@ -46,7 +46,7 @@ import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuizViewModel
 fun CreateQuizScreen(
     viewModel: CreateQuizViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
-    onCreateQuizSuccess: () -> Unit
+    onCreateQuizSuccess: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -61,16 +61,15 @@ fun CreateQuizScreen(
         onQuizDateChange = viewModel::setQuizDate,
         onQuizSolveTimeChange = viewModel::setQuizSolveTime,
         onNavigationButtonClick = onNavigationButtonClick,
-        onCreateQuizButtonClick = viewModel::createQuiz
+        onCreateQuizButtonClick = viewModel::createQuiz,
     )
 
     if (uiState.isCreateQuizSuccess) {
         LaunchedEffect(Unit) {
-            onCreateQuizSuccess()   // TODO: argument to CategoryScreen
+            onCreateQuizSuccess() // TODO: argument to CategoryScreen
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,12 +97,12 @@ fun CreateQuizScreen(
                     IconButton(onClick = onNavigationButtonClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.btn_navigation)
+                            contentDescription = stringResource(R.string.btn_navigation),
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -111,23 +110,23 @@ fun CreateQuizScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp, vertical = 10.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             // Character Guide
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 WeQuizLocalRoundedImage(
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape),
                     imagePainter = painterResource(R.drawable.sample_profile),
-                    contentDescription = null
+                    contentDescription = null,
                 )
                 WeQuizLeftChatBubble(
-                    text = stringResource(R.string.txt_create_quiz_guide)
+                    text = stringResource(R.string.txt_create_quiz_guide),
                 )
             }
 
@@ -149,14 +148,14 @@ fun CreateQuizScreen(
                 label = stringResource(R.string.txt_quiz_description_label),
                 placeholder = stringResource(R.string.txt_quiz_description_placeholder),
                 minLines = 6,
-                maxLines = 6
+                maxLines = 6,
             )
 
             // StartTime
             Text(text = stringResource(R.string.txt_quiz_start_time))
             QuizDatePickerTextField(
                 quizDate = quizDate,
-                onDateSelected = { onQuizDateChange(it) }
+                onDateSelected = { onQuizDateChange(it) },
             )
 
             // SolveTime
@@ -165,14 +164,14 @@ fun CreateQuizScreen(
                 value = quizSolveTime,
                 steps = 8,
                 valueRange = 10f..100f,
-                onValueChange = { onQuizSolveTimeChange(it) }
+                onValueChange = { onQuizSolveTimeChange(it) },
             )
 
             // CreateButton
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = onCreateQuizButtonClick,
-                enabled = createQuizButtonEnabled
+                enabled = createQuizButtonEnabled,
             ) {
                 Text(text = stringResource(R.string.btn_create_quiz))
             }
@@ -195,7 +194,7 @@ fun CreateQuizScreenPreview() {
             onQuizDateChange = {},
             onQuizSolveTimeChange = {},
             onNavigationButtonClick = {},
-            onCreateQuizButtonClick = {}
+            onCreateQuizButtonClick = {},
         )
     }
 }

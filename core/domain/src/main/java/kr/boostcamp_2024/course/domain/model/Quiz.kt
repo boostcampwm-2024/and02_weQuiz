@@ -4,8 +4,8 @@ data class Quiz(
     val id: String,
     val title: String,
     val description: String?,
-    var startTime: String,
-    var solveTime: Int,
+    val startTime: String,
+    val solveTime: Int,
     val questions: List<String>,
-    var userOmrs: List<String>,
+    val userOmrs: List<String>,
 )

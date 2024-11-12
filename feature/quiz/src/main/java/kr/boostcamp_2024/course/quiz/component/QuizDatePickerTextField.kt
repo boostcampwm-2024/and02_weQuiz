@@ -30,7 +30,7 @@ import java.util.Locale
 @Composable
 fun QuizDatePickerTextField(
     quizDate: String,
-    onDateSelected: (String) -> Unit
+    onDateSelected: (String) -> Unit,
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
 
@@ -47,16 +47,16 @@ fun QuizDatePickerTextField(
                 IconButton(onClick = { showDatePicker = true }) {
                     Icon(
                         imageVector = Icons.Default.Today,
-                        contentDescription = stringResource(R.string.btn_show_date_picker)
+                        contentDescription = stringResource(R.string.btn_show_date_picker),
                     )
                 }
-            }
+            },
         )
 
         if (showDatePicker) {
             DatePickerModal(
                 onDateSelected = { onDateSelected(it?.let { convertMillisToDate(it) } ?: "") },
-                onDismiss = { showDatePicker = false }
+                onDismiss = { showDatePicker = false },
             )
         }
     }
@@ -66,7 +66,7 @@ fun QuizDatePickerTextField(
 @Composable
 private fun DatePickerModal(
     onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val datePickerState = rememberDatePickerState()
 
@@ -84,7 +84,7 @@ private fun DatePickerModal(
             TextButton(onClick = onDismiss) {
                 Text(text = stringResource(R.string.txt_dialog_dismiss))
             }
-        }
+        },
     ) {
         DatePicker(state = datePickerState)
     }
@@ -100,6 +100,6 @@ private fun convertMillisToDate(millis: Long): String {
 fun QuizDatePickerTextFieldPreview() {
     QuizDatePickerTextField(
         quizDate = "",
-        onDateSelected = {}
+        onDateSelected = {},
     )
 }
