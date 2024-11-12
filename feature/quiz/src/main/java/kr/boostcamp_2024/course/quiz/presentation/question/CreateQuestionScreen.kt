@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
+import kr.boostcamp_2024.course.quiz.CreateQuestionUiState
 import kr.boostcamp_2024.course.quiz.CreateQuestionViewModel
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.presentation.component.ChatBubble
@@ -48,21 +48,16 @@ fun CreateQuestionScreen(
     onCreateQuestionSuccess: () -> Unit,
     viewModel: CreateQuestionViewModel = hiltViewModel(),
 ) {
-    val createQuestionState by viewModel.createQuestionState.collectAsStateWithLifecycle()
-    val isCreateQuestionValid by viewModel.isCreateQuestionValid.collectAsStateWithLifecycle()
+    val uiState by viewModel.createQuestionUiState.collectAsStateWithLifecycle()
 
     CreateQuestionScreen(
-        questionTitle = createQuestionState.title,
-        questionDescription = createQuestionState.description,
-        questionSolution = createQuestionState.solution,
+        uiState = uiState,
         onTitleChanged = viewModel::onTitleChanged,
         onDescriptionChanged = viewModel::onDescriptionChanged,
         onSolutionChanged = viewModel::onSolutionChanged,
-        createQuestionState = createQuestionState,
         onNavigationButtonClick = onNavigationButtonClick,
         onChoiceTextChanged = viewModel::onChoiceTextChanged,
         onSelectedChoiceNumChanged = viewModel::onSelectedChoiceNumChanged,
-        isCreateQuestionValid = isCreateQuestionValid,
         onCreateQuestionSuccess = onCreateQuestionSuccess,
     )
 }
@@ -70,17 +65,13 @@ fun CreateQuestionScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateQuestionScreen(
-    questionTitle: String,
-    questionDescription: String?,
-    questionSolution: String?,
+    uiState: CreateQuestionUiState,
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onSolutionChanged: (String) -> Unit,
-    createQuestionState: QuestionCreationInfo,
     onNavigationButtonClick: () -> Unit,
     onChoiceTextChanged: (Int, String) -> Unit,
     onSelectedChoiceNumChanged: (Int) -> Unit,
-    isCreateQuestionValid: Boolean,
     onCreateQuestionSuccess: () -> Unit,
 ) {
     Scaffold(
@@ -116,17 +107,17 @@ fun CreateQuestionScreen(
             )
             CreateQuestionContent(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                title = questionTitle,
-                description = questionDescription,
-                solution = questionSolution,
+                title = uiState.questionCreationInfo.title,
+                description = uiState.questionCreationInfo.description,
+                solution = uiState.questionCreationInfo.solution,
                 onTitleChanged = onTitleChanged,
                 onDescriptionChanged = onDescriptionChanged,
                 onSolutionChanged = onSolutionChanged,
             )
             CreateChoiceItems(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                choices = createQuestionState.choices,
-                selectedChoiceNum = createQuestionState.answer,
+                choices = uiState.questionCreationInfo.choices,
+                selectedChoiceNum = uiState.questionCreationInfo.answer,
                 updateChoiceText = onChoiceTextChanged,
                 updateSelectedChoiceNum = onSelectedChoiceNumChanged,
             )
@@ -134,7 +125,7 @@ fun CreateQuestionScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                enabled = isCreateQuestionValid,
+                enabled = uiState.isCreateQuestionValid,
                 onClick = {
                     // todo: 문제 출제 처리
                     onCreateQuestionSuccess()
