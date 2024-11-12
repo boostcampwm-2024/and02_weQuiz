@@ -70,7 +70,7 @@ fun MainScreen(
         onErrorMessageShown = viewModel::shownErrorMessage,
         onNotificationButtonClick = onNotificationButtonClick,
         onCreateStudyButtonClick = onCreateStudyButtonClick,
-        onStudyGroupClick = onStudyGroupClick
+        onStudyGroupClick = onStudyGroupClick,
     )
 }
 
@@ -84,7 +84,7 @@ fun MainScreen(
     onErrorMessageShown: () -> Unit,
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
-    onStudyGroupClick: () -> Unit
+    onStudyGroupClick: () -> Unit,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -110,7 +110,7 @@ fun MainScreen(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onPrimary,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
                 },
                 actions = {
@@ -118,8 +118,8 @@ fun MainScreen(
                         Icon(
                             imageVector = Icons.Outlined.Notifications,
                             contentDescription = stringResource(
-                                R.string.des_btn_notification
-                            )
+                                R.string.des_btn_notification,
+                            ),
                         )
                     }
                 },
@@ -128,23 +128,23 @@ fun MainScreen(
         floatingActionButton = {
             FloatingActionButton(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                onClick = onCreateStudyButtonClick
+                onClick = onCreateStudyButtonClick,
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.des_fab_create_study)
+                    contentDescription = stringResource(R.string.des_fab_create_study),
                 )
             }
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
-        }
+        },
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding),
         ) {
             PrimaryTabRow(selectedTabIndex = state) {
                 titles.forEachIndexed { index, title ->
@@ -156,9 +156,9 @@ fun MainScreen(
                             Text(
                                 text = title,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
                             )
-                        }
+                        },
                     )
                 }
             }
@@ -172,11 +172,11 @@ fun MainScreen(
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar("추후 제공될 기능입니다.")
                             }
-                        }
+                        },
                     )
                 }
 
-                1 -> { /* TODO 보관함 */
+                1 -> { // TODO 보관함
                 }
             }
         }
@@ -211,7 +211,7 @@ fun StudyGroupTab(
             StudyGroupItem(
                 studyGroup = studyGroup,
                 onStudyGroupClick = onStudyGroupClick,
-                onStudyGroupMenuClick = onStudyGroupMenuClick
+                onStudyGroupMenuClick = onStudyGroupMenuClick,
             )
         }
     }
@@ -226,7 +226,7 @@ fun MainScreenPreview() {
                 email = "email@email.com",
                 name = "홍준표",
                 profileUrl = "testUrl",
-                studyGroups = listOf()
+                studyGroups = listOf(),
             ),
             studyGroups = listOf(
                 StudyGroup(
@@ -237,15 +237,15 @@ fun MainScreenPreview() {
                     maxUserNum = 12,
                     ownerId = "test",
                     users = listOf("test"),
-                    categories = emptyList()
-                )
+                    categories = emptyList(),
+                ),
             ),
             isLoading = true,
             errorMessage = null,
             onErrorMessageShown = {},
             onNotificationButtonClick = {},
             onCreateStudyButtonClick = {},
-            onStudyGroupClick = {}
+            onStudyGroupClick = {},
         )
     }
 }

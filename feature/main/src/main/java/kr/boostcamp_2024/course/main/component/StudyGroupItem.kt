@@ -38,7 +38,7 @@ fun StudyGroupItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             WeQuizAsyncImage(
                 modifier = Modifier
@@ -51,11 +51,11 @@ fun StudyGroupItem(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable(onClick = onStudyGroupClick)
+                    .clickable(onClick = onStudyGroupClick),
             ) {
                 Text(
                     text = studyGroup.name,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
                 )
 
                 if (studyGroup.description.isNullOrBlank().not()) {
@@ -64,7 +64,7 @@ fun StudyGroupItem(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
 
@@ -73,17 +73,17 @@ fun StudyGroupItem(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
 
             IconButton(
                 modifier = Modifier.size(24.dp),
-                onClick = onStudyGroupMenuClick
+                onClick = onStudyGroupMenuClick,
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
-                    contentDescription = stringResource(R.string.des_btn_study_menu)
+                    contentDescription = stringResource(R.string.des_btn_study_menu),
                 )
             }
         }
@@ -105,7 +105,7 @@ fun StudyGroupItemPreview() {
                 maxUserNum = 12,
                 ownerId = "test",
                 users = listOf("test"),
-                categories = emptyList()
+                categories = emptyList(),
             ),
             onStudyGroupClick = {},
             onStudyGroupMenuClick = {},

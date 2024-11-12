@@ -19,15 +19,14 @@ data class MainUiState(
     val isLoading: Boolean = false,
     val currentUser: User? = null,
     val studyGroups: List<StudyGroup> = emptyList(),
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 )
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val studyGroupRepository: StudyGroupRepository
+    private val studyGroupRepository: StudyGroupRepository,
 ) : ViewModel() {
-
     private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
@@ -39,7 +38,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            userRepository.getUser("M2PzD8bxVaDAwNrLhr6E")  // TODO: getCurrentUser
+            userRepository.getUser("M2PzD8bxVaDAwNrLhr6E") // TODO: getCurrentUser
                 .onSuccess { currentUser ->
                     val studyGroupIds = currentUser.studyGroups
 
@@ -49,7 +48,7 @@ class MainViewModel @Inject constructor(
                                 it.copy(
                                     isLoading = false,
                                     currentUser = currentUser,
-                                    studyGroups = studyGroups
+                                    studyGroups = studyGroups,
                                 )
                             }
                         }
@@ -58,7 +57,7 @@ class MainViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
-                                    errorMessage = "스터디 그룹 로드에 실패했습니다."
+                                    errorMessage = "스터디 그룹 로드에 실패했습니다.",
                                 )
                             }
                         }

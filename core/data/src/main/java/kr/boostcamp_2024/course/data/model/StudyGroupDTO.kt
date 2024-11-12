@@ -5,16 +5,13 @@ import kr.boostcamp_2024.course.domain.model.StudyGroup
 
 data class StudyGroupDTO(
     val name: String? = null,
-
     @get:PropertyName("study_group_image_url")
     @set:PropertyName("study_group_image_url")
     var studyGroupImageUrl: String? = null,
     val description: String? = null,
-
     @get:PropertyName("max_user_num")
     @set:PropertyName("max_user_num")
     var maxUserNum: Int? = null,
-
     @get:PropertyName("owner_id")
     @set:PropertyName("owner_id")
     var ownerId: String? = null,
