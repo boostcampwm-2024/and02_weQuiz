@@ -20,21 +20,21 @@ fun QuestionDialog(
     yesTitle: String,
     noTitle: String,
     onConfirm: () -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 RoundImage(modifier = Modifier.size(120.dp))
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 16.dp)
+                    modifier = Modifier.padding(top = 16.dp),
                 )
             }
         },
@@ -45,6 +45,6 @@ fun QuestionDialog(
             Button(onClick = onConfirm) {
                 Text(yesTitle)
             }
-        }
+        },
     )
 }

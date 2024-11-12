@@ -34,10 +34,10 @@ fun QuizDescriptionTextField(
             IconButton(onClick = { onValueChange("") }) {
                 Icon(
                     imageVector = Icons.Outlined.Cancel,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
-        }
+        },
     )
 }
 

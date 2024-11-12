@@ -105,5 +105,3 @@ fun NavGraphBuilder.quizNavGraph(
         )
     }
 }
-
-

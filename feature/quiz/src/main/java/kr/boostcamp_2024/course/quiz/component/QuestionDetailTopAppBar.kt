@@ -20,7 +20,7 @@ import kr.boostcamp_2024.course.quiz.R
 @Composable
 fun QuestionDetailTopAppBar(
     modifier: Modifier = Modifier,
-    onNavigationButtonClick: () -> Unit
+    onNavigationButtonClick: () -> Unit,
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier.padding(bottom = 20.dp),
@@ -28,13 +28,13 @@ fun QuestionDetailTopAppBar(
             Text(
                 text = stringResource(R.string.txt_question_detail_top_app_bar_title),
                 modifier = Modifier,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
             )
         },
         navigationIcon = {
             IconButton(
                 onClick = onNavigationButtonClick,
-                modifier = Modifier
+                modifier = Modifier,
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -42,8 +42,9 @@ fun QuestionDetailTopAppBar(
                     modifier = Modifier,
                 )
             }
-        }, colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
     )
 }

@@ -8,9 +8,9 @@ import kr.boostcamp_2024.course.login.presentation.LoginScreen
 @Serializable
 data object LoginRoute
 
-//fun NavController.navigationLogin() {
+// fun NavController.navigationLogin() {
 //    navigate(LoginRoute)
-//}
+// }
 
 fun NavGraphBuilder.loginNavGraph(
     onLoginSuccess: () -> Unit,

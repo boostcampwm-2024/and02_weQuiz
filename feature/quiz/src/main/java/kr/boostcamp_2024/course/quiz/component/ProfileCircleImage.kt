@@ -19,6 +19,6 @@ fun CircleImage(
             .clip(CircleShape),
         painter = imagePainter,
         contentDescription = contentDescription,
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Crop,
     )
 }
