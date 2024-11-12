@@ -177,6 +177,7 @@ fun QuizList(
     onQuizClick: () -> Unit,
 ) {
     val tmpQuiz = Quiz(
+        id = "1",
         title = "안드로이드 퀴즈",
         description = "안드로이드 퀴즈를 풀어보세요!",
         startTime = "2021-09-01",
