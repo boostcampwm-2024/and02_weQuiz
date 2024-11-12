@@ -65,6 +65,7 @@ fun MainScreen(
         studyGroups = uiState.studyGroups,
         isLoading = uiState.isLoading,
         errorMessage = uiState.errorMessage,
+        onErrorMessageShown = viewModel::shownErrorMessage,
         onNotificationButtonClick = onNotificationButtonClick,
         onCreateStudyButtonClick = onCreateStudyButtonClick,
         onStudyGroupClick = onStudyGroupClick
@@ -78,6 +79,7 @@ fun MainScreen(
     studyGroups: List<StudyGroup>,
     isLoading: Boolean,
     errorMessage: String?,
+    onErrorMessageShown: () -> Unit,
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyGroupClick: () -> Unit
@@ -183,6 +185,7 @@ fun MainScreen(
     if (errorMessage != null) {
         LaunchedEffect(errorMessage) {
             snackbarHostState.showSnackbar(errorMessage)
+            onErrorMessageShown()
         }
     }
 }
@@ -227,6 +230,7 @@ fun MainScreenPreview() {
             ),
             isLoading = true,
             errorMessage = null,
+            onErrorMessageShown = {},
             onNotificationButtonClick = {},
             onCreateStudyButtonClick = {},
             onStudyGroupClick = {}
