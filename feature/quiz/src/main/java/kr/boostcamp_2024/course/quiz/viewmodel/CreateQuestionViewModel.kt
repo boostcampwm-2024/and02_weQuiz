@@ -96,7 +96,7 @@ class CreateQuestionViewModel @Inject constructor(
         _createQuestionUiState.update { currentState ->
             currentState.copy(
                 isCreateQuestionValid = currentState.questionCreationInfo.title.isNotBlank() &&
-                        currentState.questionCreationInfo.choices.all { it.isNotBlank() },
+                    currentState.questionCreationInfo.choices.all { it.isNotBlank() },
             )
         }
     }
