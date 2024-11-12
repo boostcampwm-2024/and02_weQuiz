@@ -40,9 +40,9 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLeftChatBu
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizOutLinedTextField
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
-import kr.boostcamp_2024.course.quiz.CreateQuestionUiState
-import kr.boostcamp_2024.course.quiz.CreateQuestionViewModel
 import kr.boostcamp_2024.course.quiz.R
+import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuestionUiState
+import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuestionViewModel
 
 @Composable
 fun CreateQuestionScreen(

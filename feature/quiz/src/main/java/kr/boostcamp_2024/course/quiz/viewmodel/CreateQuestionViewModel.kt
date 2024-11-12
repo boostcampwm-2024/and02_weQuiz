@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.quiz
+package kr.boostcamp_2024.course.quiz.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -23,15 +23,15 @@ data class CreateQuestionUiState(
     ),
     val isCreateQuestionValid: Boolean = false,
     val snackBarMessage: String? = null,
-    val creationSuccess: Boolean = false
+    val creationSuccess: Boolean = false,
 )
 
 @HiltViewModel
 class CreateQuestionViewModel @Inject constructor(
-    private val questionRepository: QuestionRepository
+    private val questionRepository: QuestionRepository,
 ) : ViewModel() {
     private val _createQuestionUiState: MutableStateFlow<CreateQuestionUiState> = MutableStateFlow(
-        CreateQuestionUiState()
+        CreateQuestionUiState(),
     )
     val createQuestionUiState: StateFlow<CreateQuestionUiState> = _createQuestionUiState
 
@@ -85,8 +85,8 @@ class CreateQuestionViewModel @Inject constructor(
         _createQuestionUiState.update { currentState ->
             currentState.copy(
                 questionCreationInfo = currentState.questionCreationInfo.copy(
-                    answer = changedNum
-                )
+                    answer = changedNum,
+                ),
             )
         }
         checkCreateQuestionValid()
@@ -96,7 +96,7 @@ class CreateQuestionViewModel @Inject constructor(
         _createQuestionUiState.update { currentState ->
             currentState.copy(
                 isCreateQuestionValid = currentState.questionCreationInfo.title.isNotBlank() &&
-                        currentState.questionCreationInfo.choices.all { it.isNotBlank() }
+                        currentState.questionCreationInfo.choices.all { it.isNotBlank() },
             )
         }
     }
@@ -109,7 +109,7 @@ class CreateQuestionViewModel @Inject constructor(
                     _createQuestionUiState.update { currentState ->
                         currentState.copy(
                             isLoading = false,
-                            creationSuccess = false
+                            creationSuccess = false,
                         )
                     }
                 }.onFailure { exception ->
@@ -122,7 +122,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun setLoadingState(isLoading: Boolean) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                isLoading = isLoading
+                isLoading = isLoading,
             )
         }
     }
@@ -130,7 +130,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun setNewSnackBarMessage(message: String?) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                snackBarMessage = message
+                snackBarMessage = message,
             )
         }
     }
