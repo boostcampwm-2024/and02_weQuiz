@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,23 +44,42 @@ fun LoginScreen(
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val loginUiState by loginViewModel.loginUiState.collectAsStateWithLifecycle()
+    val snackBarHostState = remember { SnackbarHostState() }
+
     LaunchedEffect(loginUiState) {
-        if (loginUiState is LoginUiState.Success) {
+        if (loginUiState.isLoginSuccess) {
             onLoginSuccess()
+        }
+        loginUiState.snackBarMessage?.let { message ->
+            snackBarHostState.showSnackbar(message)
+            loginViewModel.setNewSnackBarMessage(null)
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LoginGuideImageAndText()
-        LoginContent()
-        LoginButtons(onLoginSuccess = loginViewModel::loginForExperience)
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = innerPadding.calculateBottomPadding(),
+                ),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LoginGuideImageAndText()
+            LoginContent()
+            LoginButtons(
+                onLoginSuccess = loginViewModel::loginForExperience,
+                showSnackBar = loginViewModel::setNewSnackBarMessage
+            )
+        }
     }
+
 }
 
 @Composable
@@ -92,7 +114,7 @@ fun LoginContent() {
         WeQuizTextField(
             label = stringResource(R.string.txt_login_email_label),
             text = "",
-            onTextChanged = {},
+            onTextChanged = { /* todo: 이메일 입력 처리 */ },
             placeholder = stringResource(R.string.txt_login_email_placeholder)
         )
 
@@ -105,7 +127,8 @@ fun LoginContent() {
 
 @Composable
 fun LoginButtons(
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
+    showSnackBar: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -115,13 +138,19 @@ fun LoginButtons(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = { /* todo: 로그인 처리 */ },
+            onClick = {
+                /* todo: 로그인 처리 */
+                showSnackBar("추후 제공될 기능입니다.")
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = stringResource(R.string.btn_sign_in))
         }
         OutlinedButton(
-            onClick = { /* todo: 회원가입 처리 */ },
+            onClick = {
+                /* todo: 회원가입 처리 */
+                showSnackBar("추후 제공될 기능입니다.")
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = stringResource(R.string.btn_sign_up))
