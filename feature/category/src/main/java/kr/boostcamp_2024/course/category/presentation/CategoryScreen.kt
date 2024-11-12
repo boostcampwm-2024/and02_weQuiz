@@ -53,7 +53,7 @@ fun CategoryScreen(
     val dummyCategory = Category(
         title = "안드 마스터",
         description = "안드로이드 마스터가 되어 보아요!!",
-        categoryImage = null,
+        categoryImageUrl = null,
         quizzes = listOf("1", "1", "1", "1", "1", "1", "1", "1", "1", "1")
     )
 
