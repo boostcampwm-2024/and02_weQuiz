@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
@@ -19,18 +18,17 @@ fun WeQuizChatBubble(
     text: String,
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     modifier: Modifier = Modifier,
-    shape: RoundedCornerShape = RoundedCornerShape(10.dp),
+    shape: RoundedCornerShape = RoundedCornerShape(10.dp)
 ) {
     Surface(
         modifier = modifier.clip(shape),
-        color = backgroundColor,
+        color = backgroundColor
     ) {
         Text(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             text = text,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
         )
     }
 }
@@ -39,7 +37,7 @@ fun WeQuizChatBubble(
 fun WeQuizRightChatBubble(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
-    text: String,
+    text: String
 ) {
     WeQuizChatBubble(
         modifier = modifier,
@@ -49,7 +47,7 @@ fun WeQuizRightChatBubble(
             topStart = 20.dp,
             topEnd = 20.dp,
             bottomStart = 20.dp,
-            bottomEnd = 8.dp,
+            bottomEnd = 8.dp
         ),
     )
 }
@@ -58,7 +56,7 @@ fun WeQuizRightChatBubble(
 fun WeQuizLeftChatBubble(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
-    text: String,
+    text: String
 ) {
     WeQuizChatBubble(
         modifier = modifier,
@@ -68,10 +66,11 @@ fun WeQuizLeftChatBubble(
             topStart = 20.dp,
             topEnd = 20.dp,
             bottomStart = 8.dp,
-            bottomEnd = 20.dp,
+            bottomEnd = 20.dp
         ),
     )
 }
+
 
 @Preview
 @Composable
@@ -79,7 +78,7 @@ fun WeQuizChatBubblePreview() {
     WeQuizTheme {
         WeQuizChatBubble(
             text = "Hello, World!",
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(16.dp)
         )
     }
 }
@@ -89,7 +88,7 @@ fun WeQuizChatBubblePreview() {
 fun ChatBubbleRightPreview() {
     WeQuizTheme {
         WeQuizRightChatBubble(
-            text = "Hello, World!",
+            text = "Hello, World!"
         )
     }
 }
@@ -99,7 +98,7 @@ fun ChatBubbleRightPreview() {
 fun WeQuizLeftChatBubblePreview() {
     WeQuizTheme {
         WeQuizLeftChatBubble(
-            text = "Hello, World!",
+            text = "Hello, World!"
         )
     }
 }
