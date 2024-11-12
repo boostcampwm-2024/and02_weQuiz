@@ -19,4 +19,13 @@ class UserRepositoryImpl @Inject constructor(
             requireNotNull(response).toVO()
         }
     }
+
+    override suspend fun getUsers(userIds: List<String>): Result<List<User>> =
+        runCatching {
+            userIds.map { userIds ->
+                val document = userCollectionRef.document(userIds).get().await()
+                val response = document.toObject(UserDTO::class.java)
+                requireNotNull(response).toVO()
+            }
+        }
 }
