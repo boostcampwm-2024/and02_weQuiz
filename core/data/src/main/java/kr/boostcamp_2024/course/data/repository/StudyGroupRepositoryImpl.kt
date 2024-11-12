@@ -9,7 +9,7 @@ import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import javax.inject.Inject
 
 class StudyGroupRepositoryImpl @Inject constructor(
-    firestore: FirebaseFirestore
+    firestore: FirebaseFirestore,
 ) : StudyGroupRepository {
     private val studyGroupCollectionRef = firestore.collection("StudyGroup")
     private val userCollectionRef = firestore.collection("User")
@@ -21,7 +21,7 @@ class StudyGroupRepositoryImpl @Inject constructor(
                 description = studyGroupCreationInfo.description,
                 maxUserNum = studyGroupCreationInfo.maxUserNum,
                 ownerId = studyGroupCreationInfo.ownerId,
-                users = listOf(studyGroupCreationInfo.ownerId)
+                users = listOf(studyGroupCreationInfo.ownerId),
             )
             val document = studyGroupCollectionRef.document()
             document.set(request).await()

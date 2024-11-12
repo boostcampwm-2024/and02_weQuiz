@@ -4,5 +4,5 @@ data class StudyGroupCreationInfo(
     val description: String?,
     val maxUserNum: Int,
     val name: String,
-    val ownerId: String
+    val ownerId: String,
 )

@@ -27,7 +27,7 @@ fun StudyCreationGuide(modifier: Modifier = Modifier) {
         )
 
         Column(
-            modifier = Modifier.padding(start = 10.dp)
+            modifier = Modifier.padding(start = 10.dp),
         ) {
             WeQuizLeftChatBubble(text = stringResource(R.string.txt_create_study_chat_bubble_first))
             Spacer(modifier = Modifier.height(6.dp))

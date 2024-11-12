@@ -7,5 +7,5 @@ data class StudyGroup(
     val name: String,
     val ownerId: String,
     val studyGroupImageUrl: String?,
-    val users: List<String>
+    val users: List<String>,
 )

@@ -29,7 +29,6 @@ import kr.boostcamp_2024.course.study.component.MembersDropDownMenu
 import kr.boostcamp_2024.course.study.component.StudyCreationButton
 import kr.boostcamp_2024.course.study.component.StudyCreationGuide
 
-
 @Composable
 fun CreateStudyScreen(
     viewmodel: CreateStudyViewModel = hiltViewModel<CreateStudyViewModel>(),
@@ -53,7 +52,7 @@ fun CreateStudyScreen(
         onSnackBarShown = { viewmodel.onSnackBarShown() },
         expanded = uiState.expanded,
         onExpandedChange = { expanded -> viewmodel.onExpandedChange(expanded) },
-        onDismissRequest = { viewmodel.changeExpandedFalse() }
+        onDismissRequest = { viewmodel.changeExpandedFalse() },
     )
 }
 
@@ -82,18 +81,19 @@ fun CreateStudyScreen(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             CreateStudyTopAppBar(onNavigationButtonClick = onNavigationButtonClick)
-        }) { paddingValues ->
+        },
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .verticalScroll(scrollState)
+                .verticalScroll(scrollState),
         ) {
             StudyCreationGuide()
 
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 WeQuizTextField(
                     label = stringResource(R.string.txt_create_study_title_text_field_label),

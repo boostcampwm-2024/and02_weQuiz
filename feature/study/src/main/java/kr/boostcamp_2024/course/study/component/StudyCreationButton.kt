@@ -24,8 +24,8 @@ fun StudyCreationButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
             text = stringResource(R.string.txt_study_creation_button),
             modifier = modifier,
             style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Medium
-            )
+                fontWeight = FontWeight.Medium,
+            ),
         )
     }
 }

@@ -15,5 +15,5 @@ class StudyGroupDTO(
     @get:PropertyName("study_group_image_url")
     @set:PropertyName("study_group_image_url")
     var studyGroupImageUrl: String? = null,
-    val users: List<String>? = null
+    val users: List<String>? = null,
 )

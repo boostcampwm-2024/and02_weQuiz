@@ -23,12 +23,14 @@ fun MembersDropDownMenu(
     selectedOption: String,
     onDismissRequest: () -> Unit,
     onOptionSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val dropDownMenuOptions = stringArrayResource(R.array.drop_down_menu_options)
 
     ExposedDropdownMenuBox(
-        expanded = expanded, onExpandedChange = onExpandedChange, modifier = modifier
+        expanded = expanded,
+        onExpandedChange = onExpandedChange,
+        modifier = modifier,
     ) {
         TextField(
             value = selectedOption,
@@ -38,14 +40,15 @@ fun MembersDropDownMenu(
             modifier = Modifier
                 .fillMaxWidth()
                 .menuAnchor(),
-            label = { Text(stringResource(R.string.txt_members_drop_down_menu_label)) })
+            label = { Text(stringResource(R.string.txt_members_drop_down_menu_label)) },
+        )
 
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = onDismissRequest,
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(max = 110.dp)
+                .heightIn(max = 110.dp),
         ) {
             dropDownMenuOptions.forEach { option ->
                 DropdownMenuItem(text = { Text(option) }, onClick = {
