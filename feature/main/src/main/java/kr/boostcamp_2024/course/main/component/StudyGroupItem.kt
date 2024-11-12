@@ -68,7 +68,7 @@ fun StudyGroupItem(
                 }
 
                 Text(
-                    text = stringResource(R.string.text_study_user_count, studyGroup.users.size),
+                    text = stringResource(R.string.txt_study_user_count, studyGroup.users.size),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,

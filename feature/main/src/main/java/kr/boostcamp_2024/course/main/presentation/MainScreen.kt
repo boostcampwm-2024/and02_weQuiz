@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -73,10 +74,7 @@ fun MainScreen(
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     var state by rememberSaveable { mutableIntStateOf(0) }
-    val titles = listOf(
-        stringResource(R.string.tab_participating_study),
-        stringResource(R.string.tab_storage)
-    )
+    val titles = stringArrayResource(R.array.main_tabs_titles)
 
     Scaffold(
         modifier = Modifier
@@ -97,7 +95,6 @@ fun MainScreen(
                         overflow = TextOverflow.Ellipsis
                     )
                 },
-                navigationIcon = { },
                 actions = {
                     IconButton(onClick = onNotificationButtonClick) {
                         Icon(
@@ -137,8 +134,6 @@ fun MainScreen(
                         text = {
                             Text(
                                 text = title,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     )
