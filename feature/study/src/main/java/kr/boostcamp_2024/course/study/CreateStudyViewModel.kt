@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -19,7 +18,9 @@ data class CreateStudyUiState(
     val maxUserNum: Int = 0,
     val ownerId: String = "M2PzD8bxVaDAwNrLhr6E", /*TODO 로그인 기능 구현 후 수정*/
     val isCreateStudySuccess: Boolean = false,
-    val snackBarMessage: String? = null
+    val selectedOption: String = "",
+    val snackBarMessage: String? = null,
+    val expanded: Boolean = false
 )
 
 @HiltViewModel
@@ -30,8 +31,6 @@ class CreateStudyViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CreateStudyUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _selectedOption: MutableStateFlow<String> = MutableStateFlow("")
-    val selectedOption: StateFlow<String> = _selectedOption
 
     fun onCreateStudyGroupClick(
         onCreateGroupSuccess: () -> Unit
@@ -67,7 +66,6 @@ class CreateStudyViewModel @Inject constructor(
                                 "addStudyGroupToUserResult",
                                 "실패, ${throwable.message})"
                             )
-                            /*TODO 스낵바*/
                             _uiState.update {
                                 it.copy(
                                     isCreateStudySuccess = false,
@@ -97,7 +95,7 @@ class CreateStudyViewModel @Inject constructor(
     }
 
     fun onOptionSelected(option: String) {
-        _selectedOption.value = option
+        _uiState.update { it.copy(selectedOption = option) }
         val maxUserNum = when (option) {
             "1명" -> 1
             "2명" -> 2
@@ -116,5 +114,14 @@ class CreateStudyViewModel @Inject constructor(
 
     fun onSnackBarShown() {
         _uiState.update { it.copy(snackBarMessage = null) }
+    }
+
+    fun onExpandedChange(expanded: Boolean) {
+        Log.d("expanded", "$expanded")
+        _uiState.update { it.copy(expanded = expanded) }
+    }
+
+    fun changeExpandedFalse() {
+        _uiState.update { it.copy(expanded = false) }
     }
 }
