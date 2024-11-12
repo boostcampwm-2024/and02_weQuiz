@@ -24,6 +24,7 @@ data class CreateQuestionUiState(
     val isCreateQuestionValid: Boolean = false,
     val snackBarMessage: String? = null,
     val creationSuccess: Boolean = false,
+    val questionKey: String? = null,
 )
 
 @HiltViewModel
@@ -105,11 +106,12 @@ class CreateQuestionViewModel @Inject constructor(
         setLoadingState(true)
         viewModelScope.launch {
             questionRepository.createQuestion(createQuestionUiState.value.questionCreationInfo)
-                .onSuccess {
+                .onSuccess { questionKey ->
                     _createQuestionUiState.update { currentState ->
                         currentState.copy(
                             isLoading = false,
-                            creationSuccess = false,
+                            creationSuccess = true,
+                            questionKey = questionKey,
                         )
                     }
                 }.onFailure { exception ->
@@ -119,7 +121,7 @@ class CreateQuestionViewModel @Inject constructor(
         }
     }
 
-    fun setLoadingState(isLoading: Boolean) {
+    private fun setLoadingState(isLoading: Boolean) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
                 isLoading = isLoading,

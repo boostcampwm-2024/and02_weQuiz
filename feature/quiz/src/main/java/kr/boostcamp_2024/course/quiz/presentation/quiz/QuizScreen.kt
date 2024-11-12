@@ -46,6 +46,8 @@ import kr.boostcamp_2024.course.quiz.viewmodel.QuizViewModel
 
 @Composable
 fun QuizScreen(
+    // todo: 퀴즈에 문제 넣어주세요!
+    questionKey: String?,
     viewModel: QuizViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: () -> Unit,
