@@ -112,7 +112,7 @@ fun UserContent() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(imageHeight),
-            painter = painterResource(id = R.drawable.sample),
+            painter = painterResource(id = kr.boostcamp_2024.course.designsystem.R.drawable.img_error),
             contentScale = ContentScale.Crop,
             contentDescription = null,
         )
