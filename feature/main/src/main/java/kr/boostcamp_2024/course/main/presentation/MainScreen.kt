@@ -83,8 +83,8 @@ fun MainScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    currentUser: User? = null,
-    studyGroups: List<StudyGroup> = emptyList(),
+    currentUser: User,
+    studyGroups: List<StudyGroup>,
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyGroupClick: () -> Unit
@@ -101,12 +101,12 @@ fun MainScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             WeQuizImageLargeTopAppBar(
-                topAppBarImageUrl = currentUser?.profileUrl,
+                topAppBarImageUrl = currentUser.profileUrl,
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
                         modifier = Modifier.padding(16.dp),
-                        text = currentUser?.name ?: "",
+                        text = currentUser.name,
                         style = MaterialTheme.typography.displayMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onPrimary,
