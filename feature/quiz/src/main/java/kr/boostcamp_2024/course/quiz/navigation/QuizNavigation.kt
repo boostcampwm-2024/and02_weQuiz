@@ -91,7 +91,7 @@ fun NavGraphBuilder.quizNavGraph(
         QuizScreen(
             onNavigationButtonClick = onNavigationButtonClick,
             onCreateQuestionButtonClick = onCreateQuestionButtonClick,
-            onStartQuizButtonClick = onStartQuizButtonClick
+            onStartQuizButtonClick = onStartQuizButtonClick,
         )
     }
     composable<QuizResultRoute> {
