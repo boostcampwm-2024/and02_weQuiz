@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.StudyGroupDTO
 import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
+import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import javax.inject.Inject
 
@@ -39,4 +40,12 @@ class StudyGroupRepositoryImpl @Inject constructor(
             studyId // TODO 성공 반환값 고민하기
         }
     }
+    override suspend fun getStudyGroup(studyGroupIds: List<String>): Result<List<StudyGroup>> =
+        runCatching {
+            studyGroupIds.map { studyGroupId ->
+                val document = studyGroupCollectionRef.document(studyGroupId).get().await()
+                val response = document.toObject(StudyGroupDTO::class.java)
+                requireNotNull(response).toVO(studyGroupId)
+            }
+        }
 }
