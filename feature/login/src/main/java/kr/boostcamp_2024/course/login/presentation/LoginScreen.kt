@@ -56,6 +56,19 @@ fun LoginScreen(
         }
     }
 
+    LoginScreen(
+        snackBarHostState,
+        loginViewModel::loginForExperience,
+        loginViewModel::setNewSnackBarMessage
+    )
+}
+
+@Composable
+private fun LoginScreen(
+    snackBarHostState: SnackbarHostState,
+    onLoginSuccess: () -> Unit,
+    setNewSnackBarMessage: (String) -> Unit,
+) {
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) }
     ) { innerPadding ->
@@ -74,12 +87,11 @@ fun LoginScreen(
             LoginGuideImageAndText()
             LoginContent()
             LoginButtons(
-                onLoginSuccess = loginViewModel::loginForExperience,
-                showSnackBar = loginViewModel::setNewSnackBarMessage
+                onLoginSuccess = onLoginSuccess,
+                showSnackBar = setNewSnackBarMessage
             )
         }
     }
-
 }
 
 @Composable
@@ -173,7 +185,9 @@ fun LoginButtons(
 fun LoginScreenPreview() {
     WeQuizTheme {
         LoginScreen(
+            snackBarHostState = SnackbarHostState(),
             onLoginSuccess = {},
+            setNewSnackBarMessage = { }
         )
     }
 }
