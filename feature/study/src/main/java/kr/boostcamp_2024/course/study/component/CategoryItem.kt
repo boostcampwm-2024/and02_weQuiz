@@ -22,18 +22,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import kotlinx.serialization.json.JsonNull.content
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun CategoryItem(
     onClicked: () -> Unit,
-    title: String,
-    content: String,
-    author: String,
     quizCount: Int,
-    categoryImgUrl: String? = null,
-    profileImgUrl: String? = null,
+    category: Category,
+    profileImgUrl: String?,
+    author: String,
 ) {
     Row(
         modifier = Modifier
@@ -42,8 +42,8 @@ fun CategoryItem(
             .clickable(onClick = onClicked),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        QuizCountBadge(categoryImgUrl, quizCount)
-        DetailStudyDescription(title, content, profileImgUrl, author)
+        QuizCountBadge(category.categoryImageUrl, quizCount)
+        DetailStudyDescription(category.name, content, profileImgUrl, author)
     }
 }
 
