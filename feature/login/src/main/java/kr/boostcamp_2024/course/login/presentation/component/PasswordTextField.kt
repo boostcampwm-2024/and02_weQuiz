@@ -53,7 +53,11 @@ fun PasswordTextField(
                     } else {
                         painterResource(R.drawable.baseline_visibility_off_24)
                     },
-                    contentDescription = null
+                    contentDescription = if (showPassword)  {
+                        stringResource(R.string.des_ic_visible_password)
+                    } else {
+                        stringResource(R.string.des_ic_invisible_password)
+                    }
                 )
             }
         }
