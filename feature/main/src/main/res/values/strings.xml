@@ -9,7 +9,9 @@
     <string name="des_fab_create_study">스터디 생성</string>
     <string name="des_img_study_image">스터디 이미지</string>
     <string name="des_btn_study_menu">스터디 메뉴</string>
-    <string name="text_study_user_count">인원: %1$s명</string>
-    <string name="tab_participating_study">참여 스터디</string>
-    <string name="tab_storage">보관함</string>
+    <string name="txt_study_user_count">인원: %1$s명</string>
+    <string-array name="main_tabs_titles">
+        <item>참여 스터디</item>
+        <item>보관함</item>
+    </string-array>
 </resources>
