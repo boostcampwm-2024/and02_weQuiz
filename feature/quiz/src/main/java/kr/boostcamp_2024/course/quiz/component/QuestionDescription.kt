@@ -15,7 +15,7 @@ import kr.boostcamp_2024.course.quiz.R
 fun QuestionDescription(description: String) {
     Column(
         modifier = Modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Text(text = stringResource(R.string.txt_question_detail_description), modifier = Modifier, style = MaterialTheme.typography.bodyMedium)
         ChatBubble(description)

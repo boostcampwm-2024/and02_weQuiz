@@ -18,25 +18,25 @@ fun CategoryScreen(
     onQuizClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         Button(
             modifier = Modifier.align(Alignment.TopStart),
-            onClick = onNavigationButtonClick
+            onClick = onNavigationButtonClick,
         ) {
             Text(text = "뒤로가기 버튼")
         }
 
         Button(
             modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = onCreateQuizButtonClick
+            onClick = onCreateQuizButtonClick,
         ) {
             Text(text = "퀴즈 생성")
         }
 
         Column(
             modifier = Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row {
                 Button(onClick = { /*TODO*/ }) {

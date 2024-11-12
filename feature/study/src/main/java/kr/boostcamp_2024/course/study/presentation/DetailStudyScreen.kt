@@ -41,7 +41,8 @@ fun DetailStudyScreen(
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }
     val screenList = listOf(
-        DetailScreenRoute, GroupScreenRoute
+        DetailScreenRoute,
+        GroupScreenRoute,
     )
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     Scaffold(
@@ -53,7 +54,9 @@ fun DetailStudyScreen(
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
-                        text = "OS 스터디", style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.SemiBold
+                        text = "OS 스터디",
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.SemiBold,
                     )
                 },
                 topAppBarImageUrl = "https://avatars.githubusercontent.com/u/147039081?v=4",
@@ -61,18 +64,19 @@ fun DetailStudyScreen(
                     CustomIconButton(
                         onClicked = onNavigationButtonClick,
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        description = stringResource(R.string.btn_detail_study_top_bar_back)
+                        description = stringResource(R.string.btn_detail_study_top_bar_back),
                     )
                 },
                 actions = {
                     CustomIconButton(
                         onClicked = { Log.d("detail", "설정 클릭됨") },
                         imageVector = Icons.Filled.Settings,
-                        description = stringResource(R.string.btn_top_bar_detail_study_setting)
+                        description = stringResource(R.string.btn_top_bar_detail_study_setting),
                     )
-                }
+                },
             )
-        }, bottomBar = {
+        },
+        bottomBar = {
             NavigationBar {
                 screenList.forEachIndexed { index, screen ->
                     val selected = selectedScreenIndex == index
@@ -81,16 +85,17 @@ fun DetailStudyScreen(
                     }, label = { Text(text = stringResource(screen.title)) }, icon = {
                         Icon(
                             painter = painterResource(id = screen.iconId),
-                            contentDescription = stringResource(R.string.des_icon_bottom_nav_detail_study)
+                            contentDescription = stringResource(R.string.des_icon_bottom_nav_detail_study),
                         )
                     })
                 }
             }
-        }) { innerPadding ->
+        },
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding),
         ) {
             when (selectedScreenIndex) {
                 0 -> CategoryListScreen(onCreateCategoryButtonClick, onCategoryClick)

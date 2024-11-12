@@ -15,8 +15,8 @@ class CreateQuestionViewModel @Inject constructor() : ViewModel() {
             description = "",
             solution = null,
             answer = 0,
-            choices = listOf("", "", "", "")
-        )
+            choices = listOf("", "", "", ""),
+        ),
     )
 
     val createQuestionState: StateFlow<QuestionRequestVO> = _createQuestionState
@@ -25,21 +25,21 @@ class CreateQuestionViewModel @Inject constructor() : ViewModel() {
 
     fun onTitleChanged(title: String) {
         _createQuestionState.value = createQuestionState.value.copy(
-            title = title
+            title = title,
         )
         checkCreateQuestionValid()
     }
 
     fun onDescriptionChanged(description: String) {
         _createQuestionState.value = createQuestionState.value.copy(
-            description = description
+            description = description,
         )
         checkCreateQuestionValid()
     }
 
     fun onSolutionChanged(solution: String) {
         _createQuestionState.value = createQuestionState.value.copy(
-            solution = solution
+            solution = solution,
         )
         checkCreateQuestionValid()
     }
@@ -48,14 +48,14 @@ class CreateQuestionViewModel @Inject constructor() : ViewModel() {
         _createQuestionState.value = createQuestionState.value.copy(
             choices = createQuestionState.value.choices.mapIndexed { index, text ->
                 if (index == changedIndex) changedText else text
-            }
+            },
         )
         checkCreateQuestionValid()
     }
 
     fun onSelectedChoiceNumChanged(changedNum: Int) {
         _createQuestionState.value = createQuestionState.value.copy(
-            answer = changedNum
+            answer = changedNum,
         )
         checkCreateQuestionValid()
     }

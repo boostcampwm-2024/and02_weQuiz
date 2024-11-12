@@ -31,17 +31,19 @@ fun GroupItem(profileImg: String?, name: String, removeButtonClick: () -> Unit) 
         Text(
             modifier = Modifier
                 .padding(start = 16.dp)
-                .weight(1f), text = name, style = MaterialTheme.typography.bodyMedium
+                .weight(1f),
+            text = name,
+            style = MaterialTheme.typography.bodyMedium,
         )
         Button(onClick = removeButtonClick) {
             Icon(
                 painter = painterResource(R.drawable.baseline_remove_24),
-                contentDescription = stringResource(R.string.des_detail_study_remove_group_btn)
+                contentDescription = stringResource(R.string.des_detail_study_remove_group_btn),
             )
             Text(
                 modifier = Modifier.padding(start = 8.dp),
                 text = stringResource(R.string.btn_remove_group),
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelMedium,
             )
         }
     }
