@@ -20,37 +20,64 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.category.R
+import kr.boostcamp_2024.course.category.viewModel.CategoryViewModel
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: () -> Unit,
     onQuizClick: () -> Unit,
+    categoryViewModel: CategoryViewModel = hiltViewModel(),
 ) {
-    val dummyCategory = Category(
-        id = "123",
-        name = "안드 마스터",
-        description = "안드로이드 마스터가 되어 보아요!!",
-        categoryImageUrl = null,
-        quizzes = listOf("1", "1", "1", "1", "1", "1", "1", "1", "1", "1"),
-    )
+    val categoryUiState = categoryViewModel.categoryUiState.collectAsStateWithLifecycle()
+    val snackBarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(Unit) {
+        categoryUiState.value.snackBarMessage?.let { message ->
+            snackBarHostState.showSnackbar(message)
+            categoryViewModel.setNewSnackBarMessage(null)
+        }
+    }
+
+    CategoryScreen(
+        category = categoryUiState.value.category,
+        quizList = categoryUiState.value.quizList,
+        onNavigationButtonClick = onNavigationButtonClick,
+        onCreateQuizButtonClick = onCreateQuizButtonClick,
+        onQuizClick = onQuizClick,
+        setNewSnackBarMessage = categoryViewModel::setNewSnackBarMessage,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CategoryScreen(
+    category: Category?,
+    quizList: List<Quiz>?,
+    onNavigationButtonClick: () -> Unit,
+    onCreateQuizButtonClick: () -> Unit,
+    onQuizClick: () -> Unit,
+    setNewSnackBarMessage: (String) -> Unit,
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -67,7 +94,10 @@ fun CategoryScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = { /* todo: 카테고리 설정 */ },
+                        onClick = {
+                            // todo: 카테고리 설정
+                            setNewSnackBarMessage("추후 제공될 기능입니다.")
+                        },
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
@@ -90,18 +120,22 @@ fun CategoryScreen(
             }
         },
     ) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(innerPadding),
-        ) {
-            CategoryContent(
-                categoryTitle = dummyCategory.name,
-                categoryDescription = dummyCategory.description,
-            )
-            QuizList(
-                modifier = Modifier.weight(1f),
-                quizzes = dummyCategory.quizzes,
-                onQuizClick = onQuizClick,
-            )
+        if (category != null) {
+            Column(
+                modifier = Modifier.padding(innerPadding),
+            ) {
+                CategoryContent(
+                    categoryTitle = category.name,
+                    categoryDescription = category.description,
+                )
+                QuizList(
+                    modifier = Modifier.weight(1f),
+                    quizzes = quizList,
+                    onQuizClick = onQuizClick,
+                )
+            }
+        } else {
+            WeQuizCircularProgressIndicator()
         }
     }
 }
@@ -135,31 +169,27 @@ fun CategoryContent(
 @Composable
 fun QuizList(
     modifier: Modifier = Modifier,
-    quizzes: List<String>,
+    quizzes: List<Quiz>?,
     onQuizClick: () -> Unit,
 ) {
-    val tmpQuiz = Quiz(
-        id = "1",
-        title = "안드로이드 퀴즈",
-        description = "안드로이드 퀴즈를 풀어보세요!",
-        startTime = "2021-09-01",
-        solveTime = 10,
-        questions = emptyList(),
-        userOmrs = emptyList(),
-    )
-
-    LazyVerticalGrid(
-        modifier = modifier.padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        columns = GridCells.Fixed(3),
-    ) {
-        items(quizzes) { quiz ->
-            QuizItem(
-                quiz = tmpQuiz,
-                onQuizClick = onQuizClick,
-            )
-
+    if (quizzes != null) {
+        LazyVerticalGrid(
+            modifier = modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            columns = GridCells.Fixed(3),
+        ) {
+            items(
+                items = quizzes,
+                key = { it.id },
+            ) { quiz ->
+                QuizItem(
+                    quiz = quiz,
+                    onQuizClick = onQuizClick,
+                )
+            }
         }
+    } else {
+        WeQuizCircularProgressIndicator()
     }
 }
 
