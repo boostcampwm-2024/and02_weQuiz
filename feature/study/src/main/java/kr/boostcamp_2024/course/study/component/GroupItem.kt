@@ -16,26 +16,27 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.study.R
 
 @Composable
-fun GroupItem(profileImg: String?, name: String, removeButtonClick: () -> Unit) {
+fun GroupItem(removeButtonClick: (String) -> Unit, user: User) {
     Row(modifier = Modifier.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
         WeQuizAsyncImage(
             modifier = Modifier
                 .clip(CircleShape)
                 .size(24.dp),
-            imgUrl = profileImg,
+            imgUrl = user.profileUrl,
             contentDescription = stringResource(R.string.des_study_detail_group_profile),
         )
         Text(
             modifier = Modifier
                 .padding(start = 16.dp)
                 .weight(1f),
-            text = name,
+            text = user.name,
             style = MaterialTheme.typography.bodyMedium,
         )
-        Button(onClick = removeButtonClick) {
+        Button(onClick = { removeButtonClick(user.id) }) {
             Icon(
                 painter = painterResource(R.drawable.baseline_remove_24),
                 contentDescription = stringResource(R.string.des_detail_study_remove_group_btn),
