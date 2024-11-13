@@ -33,8 +33,10 @@ class DetailStudyViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<DetailStudyUiState> = MutableStateFlow(DetailStudyUiState())
+    private val _uiState: MutableStateFlow<DetailStudyUiState> =
+        MutableStateFlow(DetailStudyUiState())
     val uiState: StateFlow<DetailStudyUiState> = _uiState.asStateFlow()
+    private val studyGroupId = "c3d8PxS8smyz39Hy44Bb"
 
     init {
         loadStudyGroup()
@@ -44,7 +46,7 @@ class DetailStudyViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             // TODO: getCurrentGroup
-            studyGroupRepository.getStudyGroup("Jn1m6Pr8B3a9gfZvNLKB")
+            studyGroupRepository.getStudyGroup(studyGroupId)
                 .onSuccess { currentGroup ->
                     val ownerId = currentGroup.ownerId
                     val categoryIds = currentGroup.categories
@@ -131,6 +133,42 @@ class DetailStudyViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    fun deleteStudyGroupMember(userId: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            studyGroupRepository.deleteUser(studyGroupId, userId)
+                .onSuccess {
+                    deleteUserGroup(userId, studyGroupId)
+
+                }.onFailure {
+                    Log.e("DetailStudyViewModel", "Failed to delete study group member", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessageId = R.string.error_message_delete_study_group_member,
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun deleteUserGroup(userId: String, groupId: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            userRepository.deleteStudyGroupUser(userId, groupId).onSuccess {
+                loadStudyGroup()
+            }.onFailure {
+                Log.e("DetailStudyViewModel", "Failed to delete study group member", it)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessageId = R.string.error_message_delete_users_group,
+                    )
+                }
+            }
         }
     }
 

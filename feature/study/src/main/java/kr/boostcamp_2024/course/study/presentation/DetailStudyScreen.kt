@@ -67,7 +67,7 @@ fun DetailStudyScreen(
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateCategoryButtonClick = onCreateCategoryButtonClick,
         onCategoryClick = onCategoryClick,
-        onRemoveStudyGroupMemberButtonClick = { },
+        onRemoveStudyGroupMemberButtonClick = viewModel::deleteStudyGroupMember,
     )
 }
 
