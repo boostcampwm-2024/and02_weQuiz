@@ -15,12 +15,13 @@ import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
+import kr.boostcamp_2024.course.study.R
 import javax.inject.Inject
 
 data class DetailStudyUiState(
     val isLoading: Boolean = false,
     val currentGroup: StudyGroup? = null,
-    val errorMessage: String? = null,
+    val errorMessageId: Int? = null,
     val categories: List<Category> = emptyList(),
     val users: List<User> = emptyList(),
     val owner: User? = null,
@@ -56,7 +57,7 @@ class DetailStudyViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = "스터디 그룹 로드에 실패했습니다.",
+                            errorMessageId = R.string.error_message_load_study_group,
                         )
                     }
                 }
@@ -80,7 +81,7 @@ class DetailStudyViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = "카테고리 로드에 실패했습니다.",
+                            errorMessageId = R.string.error_message_load_categories,
                         )
                     }
                 }
@@ -103,7 +104,7 @@ class DetailStudyViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = "유저 로드에 실패했습니다.",
+                            errorMessageId = R.string.error_message_load_users,
                         )
                     }
                 }
@@ -126,7 +127,7 @@ class DetailStudyViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = "카테고리 생성자 로드에 실패했습니다.",
+                            errorMessageId = R.string.error_message_load_owner,
                         )
                     }
                 }
@@ -134,6 +135,6 @@ class DetailStudyViewModel @Inject constructor(
     }
 
     fun shownErrorMessage() {
-        _uiState.update { it.copy(errorMessage = null) }
+        _uiState.update { it.copy(errorMessageId = null) }
     }
 }

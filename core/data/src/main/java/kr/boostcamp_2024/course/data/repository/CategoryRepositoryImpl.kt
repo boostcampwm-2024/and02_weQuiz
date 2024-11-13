@@ -14,10 +14,10 @@ class CategoryRepositoryImpl @Inject constructor(
 
     override suspend fun getCategories(categoryIds: List<String>): Result<List<Category>> =
         runCatching {
-            categoryIds.map { categoryIds ->
-                val document = categoryCollectionRef.document(categoryIds).get().await()
+            categoryIds.map { categoryId ->
+                val document = categoryCollectionRef.document(categoryId).get().await()
                 val response = document.toObject(CategoryDTO::class.java)
-                requireNotNull(response).toVO(categoryIds)
+                requireNotNull(response).toVO(categoryId)
             }
         }
 }

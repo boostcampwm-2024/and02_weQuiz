@@ -22,10 +22,10 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getUsers(userIds: List<String>): Result<List<User>> =
         runCatching {
-            userIds.map { userIds ->
-                val document = userCollectionRef.document(userIds).get().await()
+            userIds.map { userId ->
+                val document = userCollectionRef.document(userId).get().await()
                 val response = document.toObject(UserDTO::class.java)
-                requireNotNull(response).toVO(userIds)
+                requireNotNull(response).toVO(userId)
             }
         }
 }

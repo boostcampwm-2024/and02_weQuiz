@@ -21,10 +21,10 @@ class StudyGroupRepositoryImpl @Inject constructor(
 
     override suspend fun getStudyGroups(studyGroupIds: List<String>): Result<List<StudyGroup>> =
         runCatching {
-            studyGroupIds.map { studyGroupIds ->
-                val document = studyGroupCollectionRef.document(studyGroupIds).get().await()
+            studyGroupIds.map { studyGroupId ->
+                val document = studyGroupCollectionRef.document(studyGroupId).get().await()
                 val response = document.toObject(StudyGroupDTO::class.java)
-                requireNotNull(response).toVO(studyGroupIds)
+                requireNotNull(response).toVO(studyGroupId)
             }
         }
 }

@@ -25,7 +25,7 @@ fun GroupItem(removeButtonClick: (String) -> Unit, user: User) {
         WeQuizAsyncImage(
             modifier = Modifier
                 .clip(CircleShape)
-                .size(24.dp),
+                .size(54.dp),
             imgUrl = user.profileUrl,
             contentDescription = stringResource(R.string.des_study_detail_group_profile),
         )
@@ -34,7 +34,7 @@ fun GroupItem(removeButtonClick: (String) -> Unit, user: User) {
                 .padding(start = 16.dp)
                 .weight(1f),
             text = user.name,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyLarge,
         )
         Button(onClick = { removeButtonClick(user.id) }) {
             Icon(
@@ -44,7 +44,7 @@ fun GroupItem(removeButtonClick: (String) -> Unit, user: User) {
             Text(
                 modifier = Modifier.padding(start = 8.dp),
                 text = stringResource(R.string.btn_remove_group),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.bodySmall,
             )
         }
     }

@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -61,7 +62,7 @@ fun DetailStudyScreen(
         users = uiState.users,
         owner = uiState.owner,
         isLoading = uiState.isLoading,
-        errorMessage = uiState.errorMessage,
+        errorMessageId = uiState.errorMessageId,
         onErrorMessageShown = viewModel::shownErrorMessage,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateCategoryButtonClick = onCreateCategoryButtonClick,
@@ -78,7 +79,7 @@ fun DetailStudyScreen(
     users: List<User>,
     owner: User?,
     isLoading: Boolean,
-    errorMessage: String?,
+    errorMessageId: Int?,
     onErrorMessageShown: () -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
@@ -92,6 +93,7 @@ fun DetailStudyScreen(
     )
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         modifier = Modifier
@@ -117,7 +119,11 @@ fun DetailStudyScreen(
                 },
                 actions = {
                     CustomIconButton(
-                        onClicked = { coroutineScope.launch { snackBarHostState.showSnackbar("추후 제공될 기능입니다.") } },
+                        onClicked = {
+                            coroutineScope.launch {
+                                snackBarHostState.showSnackbar(context.getString(R.string.btn_setting_snack_bar_message))
+                            }
+                        },
                         imageVector = Icons.Filled.Settings,
                         description = stringResource(R.string.btn_top_bar_detail_study_setting),
                     )
@@ -170,9 +176,9 @@ fun DetailStudyScreen(
         }
     }
 
-    if (errorMessage != null) {
-        LaunchedEffect(errorMessage) {
-            snackBarHostState.showSnackbar(errorMessage)
+    if (errorMessageId != null) {
+        LaunchedEffect(errorMessageId) {
+            snackBarHostState.showSnackbar(context.getString(errorMessageId))
             onErrorMessageShown()
         }
     }

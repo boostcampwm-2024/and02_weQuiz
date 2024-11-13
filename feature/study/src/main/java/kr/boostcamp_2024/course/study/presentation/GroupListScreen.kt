@@ -37,7 +37,7 @@ fun GroupListScreen(currentGroup: StudyGroup?, users: List<User>, removeClick: (
             currentGroup = currentGroup ?: StudyGroup("", "", "", "", 0, "", emptyList(), emptyList()),
         )
         if (showDialog) {
-            CreateGroupScreen(
+            CreateGroupDialog(
                 onDismissButtonClick = { showDialog = false },
                 onConfirmButtonClick = { showDialog = false },
             )
