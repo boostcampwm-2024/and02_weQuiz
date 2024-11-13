@@ -25,7 +25,7 @@ import kr.boostcamp_2024.course.login.R
 @Composable
 fun PasswordTextField(
     password: String,
-    onPasswordChanged: (String) -> Unit
+    onPasswordChanged: (String) -> Unit,
 ) {
     var showPassword by remember { mutableStateOf(false) }
     TextField(
@@ -45,7 +45,7 @@ fun PasswordTextField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
             IconButton(
-                onClick = { showPassword = !showPassword }
+                onClick = { showPassword = !showPassword },
             ) {
                 Icon(
                     painter = if (showPassword) {
@@ -53,14 +53,14 @@ fun PasswordTextField(
                     } else {
                         painterResource(R.drawable.baseline_visibility_off_24)
                     },
-                    contentDescription = if (showPassword)  {
+                    contentDescription = if (showPassword) {
                         stringResource(R.string.des_ic_visible_password)
                     } else {
                         stringResource(R.string.des_ic_invisible_password)
-                    }
+                    },
                 )
             }
-        }
+        },
     )
 }
 
@@ -70,7 +70,7 @@ fun PasswordTextFieldPreview() {
     WeQuizTheme {
         PasswordTextField(
             password = "",
-            onPasswordChanged = {}
+            onPasswordChanged = {},
         )
     }
 }

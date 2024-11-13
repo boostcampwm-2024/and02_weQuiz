@@ -10,7 +10,7 @@ import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val weQuizDataStore: DataStore<Preferences>
+    private val weQuizDataStore: DataStore<Preferences>,
 ) : AuthRepository {
     override suspend fun storeUserKey(userKey: String): Result<Unit> {
         return runCatching {

@@ -61,6 +61,6 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun provideAuthRepository(
-        authRepositoryImpl: AuthRepositoryImpl
+        authRepositoryImpl: AuthRepositoryImpl,
     ): AuthRepository
 }

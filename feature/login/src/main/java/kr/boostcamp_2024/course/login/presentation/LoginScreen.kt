@@ -72,7 +72,7 @@ private fun LoginScreen(
     setNewSnackBarMessage: (String) -> Unit,
 ) {
     Scaffold(
-        snackbarHost = { SnackbarHost(snackBarHostState) }
+        snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -165,7 +165,7 @@ fun LoginButtons(
     ) {
         Button(
             onClick = {
-                /* todo: 로그인 처리 */
+                // todo: 로그인 처리
                 showSnackBar("추후 제공될 기능입니다.")
             },
             modifier = Modifier.fillMaxWidth(),
@@ -174,7 +174,7 @@ fun LoginButtons(
         }
         OutlinedButton(
             onClick = {
-                /* todo: 회원가입 처리 */
+                // todo: 회원가입 처리
                 showSnackBar("추후 제공될 기능입니다.")
             },
             modifier = Modifier.fillMaxWidth(),
@@ -185,7 +185,7 @@ fun LoginButtons(
             text = stringResource(R.string.txt_experience),
             modifier = Modifier.clickable(
                 enabled = true,
-                onClick = onLoginSuccess
+                onClick = onLoginSuccess,
             ),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.primary,

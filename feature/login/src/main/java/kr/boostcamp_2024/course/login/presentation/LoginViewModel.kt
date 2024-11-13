@@ -12,12 +12,13 @@ import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import javax.inject.Inject
 
 data class LoginUiState(
-    val isLoginSuccess: Boolean = false, val snackBarMessage: String? = null
+    val isLoginSuccess: Boolean = false,
+    val snackBarMessage: String? = null,
 )
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
     private val _loginUiState: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState())
     val loginUiState: StateFlow<LoginUiState> = _loginUiState

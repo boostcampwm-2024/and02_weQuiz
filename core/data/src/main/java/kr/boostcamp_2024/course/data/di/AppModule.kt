@@ -22,5 +22,7 @@ object AppModule {
     fun provideFirebaseFireStore() = Firebase.firestore
 
     @Provides
-    fun provideWeQuizDataStore(@ApplicationContext context: Context) = context.weQuizDataStore
+    fun provideWeQuizDataStore(
+        @ApplicationContext context: Context,
+    ) = context.weQuizDataStore
 }
