@@ -10,10 +10,10 @@ data class QuestionDTO(
     val solution: String? = null,
 ) {
     fun toVO(): Question = Question(
-            title = requireNotNull(title),
-            description = requireNotNull(description),
-            choices = requireNotNull(choices),
-            solution = solution ?: "",
-            answer = answer ?: -1,
+        title = requireNotNull(title),
+        description = requireNotNull(description),
+        choices = requireNotNull(choices),
+        solution = solution ?: "",
+        answer = answer ?: -1,
         )
 }
