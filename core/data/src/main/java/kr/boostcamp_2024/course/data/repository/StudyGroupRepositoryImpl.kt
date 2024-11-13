@@ -20,4 +20,13 @@ class StudyGroupRepositoryImpl @Inject constructor(
                 requireNotNull(response).toVO(studyGroupId)
             }
         }
+
+    override suspend fun getStudyGroupName(studyGroupId: String): Result<String> =
+        runCatching {
+            val document = studyGroupCollectionRef.document(studyGroupId).get().await()
+            val response = document.toObject(StudyGroupDTO::class.java)
+            val studyGroupName = requireNotNull(requireNotNull(response).name)
+            studyGroupName
+        }
+
 }

@@ -23,11 +23,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.domain.model.NotificationWithGroupInfo
 import kr.boostcamp_2024.course.main.R
 
 @Composable
 fun NotificationItem(
-    notification: Notification,
+    notificationInfo: NotificationWithGroupInfo,
     onRejectClick: () -> Unit,
     onAcceptClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -51,7 +52,7 @@ fun NotificationItem(
         ) {
             // 그룹이름 받아오는것으로 수정
             Text(
-                text = notification.groupId.toString(),
+                text = notificationInfo.studyGroupName,
                 style = MaterialTheme.typography.labelMedium,
             )
             Text(
@@ -108,8 +109,8 @@ fun NotificationItem(
     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 }
 
-// 임시 활용 data class
-data class Notification(
-    val notificationId: Int = 0,
-    val groupId: Int,
-)
+//// 임시 활용 data class
+//data class Notification(
+//    val notificationId: Int = 0,
+//    val groupId: Int,
+//)
