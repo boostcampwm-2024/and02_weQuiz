@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.data.repository
 
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.UserDTO
@@ -28,4 +29,11 @@ class UserRepositoryImpl @Inject constructor(
                 requireNotNull(response).toVO(userId)
             }
         }
+
+    override suspend fun deleteStudyGroupUser(userId: String, studyGroupId: String): Result<Unit> {
+        return runCatching {
+            val document = userCollectionRef.document(userId)
+            document.update("study_groups", FieldValue.arrayRemove(studyGroupId)).await()
+        }
+    }
 }
