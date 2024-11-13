@@ -1,6 +1,5 @@
 package kr.boostcamp_2024.course.quiz.navigation
 
-import android.annotation.SuppressLint
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -41,10 +40,9 @@ fun NavController.navigateQuestionDetail() {
     navigate(QuestionDetailRoute)
 }
 
-@SuppressLint("RestrictedApi")
 fun NavController.navigateQuestionScreen() {
     navigate(QuestionScreenRoute) {
-        popUpTo(QuizRoute) {
+        popUpTo(QuizRoute::class.java.name) {
             inclusive = true
         }
     }
@@ -52,23 +50,23 @@ fun NavController.navigateQuestionScreen() {
 
 fun NavController.navigateQuiz(questionKey: String? = null) {
     navigate(QuizRoute(questionKey)) {
-        popUpTo(CreateQuestionRoute) {
+        popUpTo(CreateQuestionRoute::class.java.name) {
             inclusive = true
         }
         launchSingleTop = true
     }
 }
 
+fun NavController.navigateCreateQuiz() {
+    navigate(CreateQuizRoute)
+}
+
 fun NavController.navigateQuizResult() {
-    navigate(QuizResultRoute) {
-        popUpTo(QuestionScreenRoute) {
+    navigate(QuizResultRoute::class.java.name) {
+        popUpTo(QuestionScreenRoute::class.java.name) {
             inclusive = true
         }
     }
-}
-
-fun NavController.navigateCreateQuiz() {
-    navigate(CreateQuizRoute)
 }
 
 fun NavGraphBuilder.quizNavGraph(
