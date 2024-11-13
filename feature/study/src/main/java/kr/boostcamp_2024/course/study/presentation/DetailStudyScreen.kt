@@ -161,7 +161,7 @@ fun DetailStudyScreen(
         ) {
             when (selectedScreenIndex) {
                 0 -> CategoryListScreen(owner, currentGroup, categories, onCreateCategoryButtonClick, onCategoryClick)
-                1 -> GroupListScreen(currentGroup, users, onRemoveStudyGroupMemberButtonClick)
+                1 -> GroupListScreen(currentGroup, owner, users, onRemoveStudyGroupMemberButtonClick)
             }
         }
     }

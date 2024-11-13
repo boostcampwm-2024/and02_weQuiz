@@ -23,8 +23,9 @@ import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 import kr.boostcamp_2024.course.study.component.GroupItem
 
 @Composable
-fun GroupListScreen(currentGroup: StudyGroup?, users: List<User>, removeClick: (String) -> Unit) {
+fun GroupListScreen(currentGroup: StudyGroup?, owner: User?, users: List<User>, removeClick: (String) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
+    val isOwner: Boolean = owner?.id == "123"
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -42,12 +43,12 @@ fun GroupListScreen(currentGroup: StudyGroup?, users: List<User>, removeClick: (
                 onConfirmButtonClick = { showDialog = false },
             )
         }
-        GroupLazyColumn(users, removeClick)
+        GroupLazyColumn(isOwner, users, removeClick)
     }
 }
 
 @Composable
-fun GroupLazyColumn(users: List<User>, removeClick: (String) -> Unit) {
+fun GroupLazyColumn(isOwner: Boolean, users: List<User>, removeClick: (String) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,6 +56,7 @@ fun GroupLazyColumn(users: List<User>, removeClick: (String) -> Unit) {
     ) {
         itemsIndexed(items = users, key = { _, user -> user.id }) { index, user ->
             GroupItem(
+                isOwner,
                 removeClick,
                 user,
             )
