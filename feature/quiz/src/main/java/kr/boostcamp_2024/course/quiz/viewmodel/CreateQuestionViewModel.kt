@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
+import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import javax.inject.Inject
 
 data class CreateQuestionUiState(
@@ -29,6 +30,7 @@ data class CreateQuestionUiState(
 @HiltViewModel
 class CreateQuestionViewModel @Inject constructor(
     private val questionRepository: QuestionRepository,
+    private val quizRepository: QuizRepository,
 ) : ViewModel() {
     private val _createQuestionUiState: MutableStateFlow<CreateQuestionUiState> = MutableStateFlow(
         CreateQuestionUiState(),
@@ -105,19 +107,32 @@ class CreateQuestionViewModel @Inject constructor(
         setLoadingState(true)
         viewModelScope.launch {
             questionRepository.createQuestion(createQuestionUiState.value.questionCreationInfo)
-                .onSuccess { questionKey ->
-                    // todo: 퀴즈에 문제 저장
-
-                    _createQuestionUiState.update { currentState ->
-                        currentState.copy(
-                            isLoading = false,
-                            creationSuccess = true,
-                        )
-                    }
+                .onSuccess { questionId ->
+                    saveQuestionToQuiz(quizId, questionId)
                 }.onFailure { exception ->
                     Log.e("CreateQuestionViewModel", exception.message, exception)
                     setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
                 }
+        }
+    }
+
+    private suspend fun saveQuestionToQuiz(quizId: String, questionId: String) {
+        try {
+            val quiz = quizRepository.getQuiz(quizId).getOrThrow()
+            Log.d("CreateQuestionViewModel", "quiz: $quiz")
+            val newQuestionList = quiz.questions.toMutableList().apply { add(questionId) }
+            quizRepository.updateQuizQuestionList(quizId, newQuestionList).getOrThrow()
+
+            _createQuestionUiState.update { currentState ->
+                currentState.copy(
+                    isLoading = false,
+                    creationSuccess = true,
+                )
+            }
+        } catch (exception: Exception) {
+            // todo: 문제를 삭제해야 하지 않을까?
+            Log.e("CreateQuestionViewModel", exception.message, exception)
+            setNewSnackBarMessage("문제 저장에 실패했습니다. 다시 시도해주세요!")
         }
     }
 
