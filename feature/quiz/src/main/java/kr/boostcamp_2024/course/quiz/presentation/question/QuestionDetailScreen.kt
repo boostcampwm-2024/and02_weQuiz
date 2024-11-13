@@ -8,19 +8,27 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.quiz.component.QuestionDescription
 import kr.boostcamp_2024.course.quiz.component.QuestionDetailTopAppBar
 import kr.boostcamp_2024.course.quiz.component.QuestionItems
 import kr.boostcamp_2024.course.quiz.component.QuestionSolution
 import kr.boostcamp_2024.course.quiz.component.QuestionTitle
+import kr.boostcamp_2024.course.quiz.viewmodel.QuestionDetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuestionDetailScreen(onNavigationButtonClick: () -> Unit) {
-    val question = getQuestion()
+fun QuestionDetailScreen(
+    onNavigationButtonClick: () -> Unit,
+    viewModel: QuestionDetailViewModel = hiltViewModel<QuestionDetailViewModel>(),
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
 
     Scaffold(topBar = { QuestionDetailTopAppBar(onNavigationButtonClick = onNavigationButtonClick) }) { paddingValues ->
@@ -31,24 +39,16 @@ fun QuestionDetailScreen(onNavigationButtonClick: () -> Unit) {
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            QuestionTitle(question.title)
+            QuestionTitle(uiState.title)
 
-            QuestionDescription(question.description)
+            QuestionDescription(uiState.description)
 
-            QuestionItems(question.choice, question.answer) {}
+            QuestionItems(uiState.choices, uiState.answer) {}
 
-            QuestionSolution(question.solution)
+            QuestionSolution(uiState.solution)
         }
     }
 }
-
-data class Question(
-    val title: String,
-    val description: String,
-    val solution: String,
-    val answer: Int,
-    val choice: List<String> = emptyList(),
-)
 
 private fun getQuestion(): Question {
     // TODO 뷰모델과 연결하고 임시값 빼기
