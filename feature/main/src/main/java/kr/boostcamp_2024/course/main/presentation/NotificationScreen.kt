@@ -6,43 +6,65 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import kr.boostcamp_2024.course.main.component.Notification
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.boostcamp_2024.course.domain.model.Notification
+import kr.boostcamp_2024.course.domain.model.NotificationWithGroupInfo
 import kr.boostcamp_2024.course.main.component.NotificationItem
 import kr.boostcamp_2024.course.main.component.NotificationTopAppBar
+import kr.boostcamp_2024.course.main.viewmodel.NotificationViewModel
+
+
+@Composable
+fun NotificationScreen(
+    viewModel: NotificationViewModel = hiltViewModel<NotificationViewModel>(),
+    onNavigationButtonClick: () -> Unit,
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val notificationInfos = uiState.notificationWithGroupInfoList
+
+    NotificationScreen(
+        notificationInfos = notificationInfos,
+        onRejectClick = viewModel::deleteInvitation,
+        onAcceptClick = viewModel::acceptInvitation,
+        onNavigationButtonClick = onNavigationButtonClick,
+    )
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationScreen(onNavigationButtonClick: () -> Unit) {
-    val notifications = remember { generateDummyNotifications() } // Todo 뷰모델로 바꿔주기
+fun NotificationScreen(
+    notificationInfos: List<NotificationWithGroupInfo>,
+    onRejectClick: (String) -> Unit,
+    onAcceptClick: (Notification) -> Unit,
+    onNavigationButtonClick: () -> Unit,
+    ) {
 
-    Scaffold(topBar = {
-        NotificationTopAppBar(onNavigationButtonClick = onNavigationButtonClick)
-    }) { paddingValues ->
+    Scaffold(
+        topBar = {
+            NotificationTopAppBar(onNavigationButtonClick = onNavigationButtonClick)
+        },
+    ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            items(notifications.size) { index ->
+            items(notificationInfos.size) { index ->
                 NotificationItem(
-                    notifications[index],
-                    onRejectClick = {},
-                    onAcceptClick = {},
-                ) // API 통신 시 바꿔주기
+                    notificationInfos[index],
+                    onRejectClick = { onRejectClick(notificationInfos[index].notification.id) },
+                    onAcceptClick = { onAcceptClick(notificationInfos[index].notification) },
+                )
             }
         }
     }
 }
 
-// 임시 활용 data 생성 함수
-fun generateDummyNotifications(): List<Notification> {
-    return List(10) {
-        Notification(groupId = 1111)
-    }
-}
 
 @Preview
 @Composable
