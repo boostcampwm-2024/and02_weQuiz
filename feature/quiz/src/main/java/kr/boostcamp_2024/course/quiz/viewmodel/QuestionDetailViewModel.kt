@@ -23,7 +23,9 @@ data class DetailUiState(
 )
 
 @HiltViewModel
-class QuestionDetailViewModel @Inject constructor(private val questionRepository: QuestionRepository) : ViewModel() {
+class QuestionDetailViewModel @Inject constructor(
+    private val questionRepository: QuestionRepository,
+) : ViewModel() {
     private val _uiState = MutableStateFlow(DetailUiState())
     val uiState = _uiState.asStateFlow()
 
