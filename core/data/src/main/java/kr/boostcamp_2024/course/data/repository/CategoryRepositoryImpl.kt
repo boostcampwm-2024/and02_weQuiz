@@ -12,6 +12,15 @@ class CategoryRepositoryImpl @Inject constructor(
 ) : CategoryRepository {
     private val categoryCollectionRef = firestore.collection("Category")
 
+    override suspend fun getCategories(categoryIds: List<String>): Result<List<Category>> =
+        runCatching {
+            categoryIds.map { categoryId ->
+                val document = categoryCollectionRef.document(categoryId).get().await()
+                val response = document.toObject(CategoryDTO::class.java)
+                requireNotNull(response).toVO(categoryId)
+            }
+        }
+
     override suspend fun getCategory(categoryId: String): Result<Category> =
         runCatching {
             val document = categoryCollectionRef.document(categoryId).get().await()
