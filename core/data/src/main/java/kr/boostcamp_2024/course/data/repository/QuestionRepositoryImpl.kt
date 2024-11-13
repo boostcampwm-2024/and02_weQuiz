@@ -1,8 +1,6 @@
 package kr.boostcamp_2024.course.data.repository
 
-import android.provider.SyncStateContract.Helpers.update
 import android.util.Log
-import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -40,9 +38,10 @@ class QuestionRepositoryImpl @Inject constructor(
             )
             userOmrCollectionRef.add(userOmrDTO).await().id
         }
+
     override suspend fun addUserOmrToQuiz(quizId: String, userOmrId: String): Result<Unit> =
         runCatching {
-           quizCollectionRef.document(quizId)
+            quizCollectionRef.document(quizId)
                 .update("user_omrs", FieldValue.arrayUnion(userOmrId))
                 .await()
         }

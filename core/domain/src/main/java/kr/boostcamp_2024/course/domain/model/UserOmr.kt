@@ -4,5 +4,4 @@ data class UserOmr(
     val userId: String,
     val quizId: String,
     val answers: List<Int>,
-    )
-
+)

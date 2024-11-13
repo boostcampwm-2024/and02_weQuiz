@@ -5,4 +5,3 @@ data class UserOmrDTO(
     val quizId: String = "",
     val answers: List<Int> = emptyList(),
 )
-

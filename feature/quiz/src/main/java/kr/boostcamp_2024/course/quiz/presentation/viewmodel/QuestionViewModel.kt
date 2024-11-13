@@ -119,7 +119,7 @@ class QuestionViewModel @Inject constructor(
             Log.d("QuestionViewModel", "Selected answers: $selectedAnswers") // 정답 리스트 로깅
 
             val userOmr = _uiState.value.userOmr.copy(
-                answers = _uiState.value.selectedIndexList.map{ it + 1 }
+                answers = _uiState.value.selectedIndexList.map { it + 1 },
             )
 
             _uiState.update { it.copy(isSubmitting = true) }
@@ -131,7 +131,7 @@ class QuestionViewModel @Inject constructor(
                             _uiState.update { currentState ->
                                 currentState.copy(
                                     isSubmitting = false,
-                                    userOmr = userOmr.copy(userId = userOmrId)
+                                    userOmr = userOmr.copy(userId = userOmrId),
                                 )
                             }
                         }
@@ -140,7 +140,7 @@ class QuestionViewModel @Inject constructor(
                             _uiState.update { currentState ->
                                 currentState.copy(
                                     isSubmitting = false,
-                                    errorMessage = "퀴즈에 응답 추가 실패했습니다."
+                                    errorMessage = "퀴즈에 응답 추가 실패했습니다.",
                                 )
                             }
                         }
@@ -150,7 +150,7 @@ class QuestionViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isSubmitting = false,
-                            errorMessage = "응답 제출에 실패했습니다."
+                            errorMessage = "응답 제출에 실패했습니다.",
                         )
                     }
                 }
