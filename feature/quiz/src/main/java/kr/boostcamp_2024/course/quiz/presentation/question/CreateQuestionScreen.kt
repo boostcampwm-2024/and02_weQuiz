@@ -51,7 +51,7 @@ import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuestionViewModel
 @Composable
 fun CreateQuestionScreen(
     onNavigationButtonClick: () -> Unit,
-    onCreateQuestionSuccess: (String) -> Unit,
+    onCreateQuestionSuccess: () -> Unit,
     viewModel: CreateQuestionViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.createQuestionUiState.collectAsStateWithLifecycle()
@@ -60,9 +60,7 @@ fun CreateQuestionScreen(
 
     LaunchedEffect(uiState) {
         if (uiState.creationSuccess) {
-            uiState.questionKey?.let {
-                onCreateQuestionSuccess(it)
-            }
+            onCreateQuestionSuccess()
         }
         uiState.snackBarMessage?.let { message ->
             snackBarHostState.showSnackbar(message)

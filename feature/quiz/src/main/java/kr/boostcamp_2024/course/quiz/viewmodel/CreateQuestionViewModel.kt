@@ -24,7 +24,6 @@ data class CreateQuestionUiState(
     val isCreateQuestionValid: Boolean = false,
     val snackBarMessage: String? = null,
     val creationSuccess: Boolean = false,
-    val questionKey: String? = null,
 )
 
 @HiltViewModel
@@ -97,7 +96,7 @@ class CreateQuestionViewModel @Inject constructor(
         _createQuestionUiState.update { currentState ->
             currentState.copy(
                 isCreateQuestionValid = currentState.questionCreationInfo.title.isNotBlank() &&
-                    currentState.questionCreationInfo.choices.all { it.isNotBlank() },
+                        currentState.questionCreationInfo.choices.all { it.isNotBlank() },
             )
         }
     }
@@ -107,11 +106,12 @@ class CreateQuestionViewModel @Inject constructor(
         viewModelScope.launch {
             questionRepository.createQuestion(createQuestionUiState.value.questionCreationInfo)
                 .onSuccess { questionKey ->
+                    // todo: 퀴즈에 문제 저장
+
                     _createQuestionUiState.update { currentState ->
                         currentState.copy(
                             isLoading = false,
                             creationSuccess = true,
-                            questionKey = questionKey,
                         )
                     }
                 }.onFailure { exception ->
