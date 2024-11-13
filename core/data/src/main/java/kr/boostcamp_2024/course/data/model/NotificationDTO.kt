@@ -17,4 +17,3 @@ data class NotificationDTO(
         groupId = requireNotNull(groupId),
     )
 }
-

@@ -11,6 +11,7 @@ class NotificationRepositoryImpl @Inject constructor(
     firestore: FirebaseFirestore,
 ) : NotificationRepository {
     private val notificationCollectionRef = firestore.collection("Notification")
+
     override suspend fun getNotifications(userId: String): Result<List<Notification>> =
         runCatching {
             val notifications = mutableListOf<Notification>()
@@ -29,4 +30,3 @@ class NotificationRepositoryImpl @Inject constructor(
             notificationCollectionRef.document(notificationId).delete().await()
         }
 }
-

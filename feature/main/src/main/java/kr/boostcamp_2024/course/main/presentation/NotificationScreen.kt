@@ -17,7 +17,6 @@ import kr.boostcamp_2024.course.main.component.NotificationItem
 import kr.boostcamp_2024.course.main.component.NotificationTopAppBar
 import kr.boostcamp_2024.course.main.viewmodel.NotificationViewModel
 
-
 @Composable
 fun NotificationScreen(
     viewModel: NotificationViewModel = hiltViewModel<NotificationViewModel>(),
@@ -34,7 +33,6 @@ fun NotificationScreen(
     )
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationScreen(
@@ -42,7 +40,7 @@ fun NotificationScreen(
     onRejectClick: (String) -> Unit,
     onAcceptClick: (Notification) -> Unit,
     onNavigationButtonClick: () -> Unit,
-    ) {
+) {
 
     Scaffold(
         topBar = {
@@ -65,9 +63,22 @@ fun NotificationScreen(
     }
 }
 
-
 @Preview
 @Composable
 private fun NotificationScreenPreview() {
-    NotificationScreen {}
+    NotificationScreen(
+        notificationInfos = listOf(
+            NotificationWithGroupInfo(
+                notification = Notification(
+                    id = "1",
+                    groupId = "1",
+                    userid = "1",
+                ),
+                studyGroupName = "스터디 이름",
+            ),
+        ),
+        onRejectClick = {},
+        onAcceptClick = {},
+        onNavigationButtonClick = {},
+    )
 }

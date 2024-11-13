@@ -19,8 +19,6 @@ data class NotificationUiState(
     val notificationWithGroupInfoList: List<NotificationWithGroupInfo> = emptyList(),
 )
 
-
-
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
@@ -83,4 +81,3 @@ class NotificationViewModel @Inject constructor(
         }
     }
 }
-

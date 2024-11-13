@@ -1,7 +1,5 @@
 package kr.boostcamp_2024.course.main.component
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
@@ -109,9 +106,3 @@ fun NotificationItem(
 
     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 }
-
-//// 임시 활용 data class
-//data class Notification(
-//    val notificationId: Int = 0,
-//    val groupId: Int,
-//)

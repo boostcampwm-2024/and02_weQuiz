@@ -4,4 +4,3 @@ data class NotificationWithGroupInfo(
     val notification: Notification,
     val studyGroupName: String,
 )
-
