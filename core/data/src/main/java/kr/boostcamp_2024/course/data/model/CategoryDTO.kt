@@ -11,11 +11,11 @@ data class CategoryDTO(
     var categoryImageUrl: String? = null,
     val quizzes: List<String>? = null,
 ) {
-    fun toVO(categoryId: String): Category = Category(
+    fun toVO(categoryId: String) = Category(
         id = categoryId,
         name = requireNotNull(name),
         description = description,
         categoryImageUrl = categoryImageUrl,
-        quizzes = emptyList(),
+        quizzes = requireNotNull(quizzes),
     )
 }
