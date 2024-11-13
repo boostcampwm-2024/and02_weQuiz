@@ -43,7 +43,7 @@ import kr.boostcamp_2024.course.login.presentation.component.PasswordTextField
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
-    loginViewModel: LoginViewModel = hiltViewModel()
+    loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     val loginUiState by loginViewModel.loginUiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -61,7 +61,7 @@ fun LoginScreen(
     LoginScreen(
         snackBarHostState,
         loginViewModel::loginForExperience,
-        loginViewModel::setNewSnackBarMessage
+        loginViewModel::setNewSnackBarMessage,
     )
 }
 
@@ -84,13 +84,13 @@ private fun LoginScreen(
                     bottom = innerPadding.calculateBottomPadding(),
                 ),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             LoginGuideImageAndText()
             LoginContent()
             LoginButtons(
                 onLoginSuccess = onLoginSuccess,
-                showSnackBar = setNewSnackBarMessage
+                showSnackBar = setNewSnackBarMessage,
             )
         }
     }
@@ -106,7 +106,7 @@ fun LoginGuideImageAndText() {
             painter = painterResource(R.drawable.img_app_logo),
             modifier = Modifier.width(300.dp),
             contentDescription = null,
-            contentScale = ContentScale.FillWidth
+            contentScale = ContentScale.FillWidth,
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -141,12 +141,12 @@ fun LoginContent() {
             label = stringResource(R.string.txt_login_email_label),
             text = "",
             onTextChanged = { /* todo: 이메일 입력 처리 */ },
-            placeholder = stringResource(R.string.txt_login_email_placeholder)
+            placeholder = stringResource(R.string.txt_login_email_placeholder),
         )
 
         PasswordTextField(
             password = password,
-            onPasswordChanged = { password = it }
+            onPasswordChanged = { password = it },
         )
     }
 }
@@ -154,21 +154,21 @@ fun LoginContent() {
 @Composable
 fun LoginButtons(
     onLoginSuccess: () -> Unit,
-    showSnackBar: (String) -> Unit
+    showSnackBar: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Button(
             onClick = {
                 /* todo: 로그인 처리 */
                 showSnackBar("추후 제공될 기능입니다.")
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text(text = stringResource(R.string.btn_sign_in))
         }
@@ -177,7 +177,7 @@ fun LoginButtons(
                 /* todo: 회원가입 처리 */
                 showSnackBar("추후 제공될 기능입니다.")
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text(text = stringResource(R.string.btn_sign_up))
         }
@@ -201,7 +201,7 @@ fun LoginScreenPreview() {
         LoginScreen(
             snackBarHostState = SnackbarHostState(),
             onLoginSuccess = {},
-            setNewSnackBarMessage = { }
+            setNewSnackBarMessage = { },
         )
     }
 }

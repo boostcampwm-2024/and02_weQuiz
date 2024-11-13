@@ -14,13 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import kr.boostcamp_2024.course.study.R
 
-
 @Composable
 fun TitleTextField(
     titleText: String,
     onTitleTextChange: (String) -> Unit,
     onClearTitleText: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
         TextField(
@@ -36,7 +35,7 @@ fun TitleTextField(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Cancel,
-                contentDescription = stringResource(R.string.des_clear_text)
+                contentDescription = stringResource(R.string.des_clear_text),
             )
         }
     }

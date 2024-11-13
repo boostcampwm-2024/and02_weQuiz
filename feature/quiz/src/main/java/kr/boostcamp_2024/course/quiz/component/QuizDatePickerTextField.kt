@@ -29,16 +29,16 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizDatePickerTextField(
-    onDateSelected: (String) -> Unit
+    quizDate: String,
+    onDateSelected: (String) -> Unit,
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf("") }
 
     Box {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = selectedDate,
-            onValueChange = { onDateSelected(it) },
+            value = quizDate,
+            onValueChange = { /* no-op */ },
             label = {
                 Text(text = stringResource(R.string.txt_quiz_date_picker))
             },
@@ -47,16 +47,16 @@ fun QuizDatePickerTextField(
                 IconButton(onClick = { showDatePicker = true }) {
                     Icon(
                         imageVector = Icons.Default.Today,
-                        contentDescription = stringResource(R.string.btn_show_date_picker)
+                        contentDescription = stringResource(R.string.btn_show_date_picker),
                     )
                 }
-            }
+            },
         )
 
         if (showDatePicker) {
             DatePickerModal(
-                onDateSelected = { selectedDate = it?.let { convertMillisToDate(it) } ?: "" },
-                onDismiss = { showDatePicker = false }
+                onDateSelected = { onDateSelected(it?.let { convertMillisToDate(it) } ?: "") },
+                onDismiss = { showDatePicker = false },
             )
         }
     }
@@ -66,7 +66,7 @@ fun QuizDatePickerTextField(
 @Composable
 private fun DatePickerModal(
     onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val datePickerState = rememberDatePickerState()
 
@@ -84,7 +84,7 @@ private fun DatePickerModal(
             TextButton(onClick = onDismiss) {
                 Text(text = stringResource(R.string.txt_dialog_dismiss))
             }
-        }
+        },
     ) {
         DatePicker(state = datePickerState)
     }
@@ -98,5 +98,8 @@ private fun convertMillisToDate(millis: Long): String {
 @Preview(showBackground = true)
 @Composable
 fun QuizDatePickerTextFieldPreview() {
-    QuizDatePickerTextField(onDateSelected = {})
+    QuizDatePickerTextField(
+        quizDate = "",
+        onDateSelected = {},
+    )
 }

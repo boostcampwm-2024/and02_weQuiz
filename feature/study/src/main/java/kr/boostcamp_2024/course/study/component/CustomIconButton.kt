@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 fun CustomIconButton(
     onClicked: () -> Unit,
     imageVector: ImageVector,
-    description: String? = null
+    description: String? = null,
 ) {
     IconButton(onClick = onClicked) {
         Icon(imageVector = imageVector, contentDescription = description)

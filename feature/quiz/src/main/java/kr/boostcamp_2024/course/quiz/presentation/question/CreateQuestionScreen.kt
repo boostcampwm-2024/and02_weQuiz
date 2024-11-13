@@ -46,7 +46,7 @@ import kr.boostcamp_2024.course.quiz.presentation.component.WeQuizTextField
 fun CreateQuestionScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionSuccess: () -> Unit,
-    viewModel: CreateQuestionViewModel = hiltViewModel<CreateQuestionViewModel>()
+    viewModel: CreateQuestionViewModel = hiltViewModel<CreateQuestionViewModel>(),
 ) {
     val createQuestionState by viewModel.createQuestionState.collectAsStateWithLifecycle()
     val isCreateQuestionValid by viewModel.isCreateQuestionValid.collectAsStateWithLifecycle()
@@ -56,31 +56,31 @@ fun CreateQuestionScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = R.string.top_app_bar_create_question)
+                        text = stringResource(id = R.string.top_app_bar_create_question),
                     )
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = onNavigationButtonClick
+                        onClick = onNavigationButtonClick,
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.des_btn_back)
+                            contentDescription = stringResource(id = R.string.des_btn_back),
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { innerPadding ->
         val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .verticalScroll(scrollState)
+                .verticalScroll(scrollState),
         ) {
             CreateQuestionGuideContent(
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
             CreateQuestionContent(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -89,14 +89,14 @@ fun CreateQuestionScreen(
                 solution = createQuestionState.solution,
                 onTitleChanged = viewModel::onTitleChanged,
                 onDescriptionChanged = viewModel::onDescriptionChanged,
-                onSolutionChanged = viewModel::onSolutionChanged
+                onSolutionChanged = viewModel::onSolutionChanged,
             )
             CreateChoiceItems(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 choices = createQuestionState.choices,
                 selectedChoiceNum = createQuestionState.answer,
                 updateChoiceText = viewModel::onChoiceTextChanged,
-                updateSelectedChoiceNum = viewModel::onSelectedChoiceNumChanged
+                updateSelectedChoiceNum = viewModel::onSelectedChoiceNumChanged,
             )
             Button(
                 modifier = Modifier
@@ -109,7 +109,7 @@ fun CreateQuestionScreen(
                 },
             ) {
                 Text(
-                    text = stringResource(id = R.string.btn_create_question)
+                    text = stringResource(id = R.string.btn_create_question),
                 )
             }
         }
@@ -118,13 +118,13 @@ fun CreateQuestionScreen(
 
 @Composable
 fun CreateQuestionGuideContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Image(
             painter = painterResource(id = R.drawable.img_clock_character),
@@ -136,13 +136,13 @@ fun CreateQuestionGuideContent(
         )
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+            verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             ChatBubble(
-                text = stringResource(id = R.string.txt_create_question_guide1)
+                text = stringResource(id = R.string.txt_create_question_guide1),
             )
             ChatBubble(
-                text = stringResource(id = R.string.txt_create_question_guide2)
+                text = stringResource(id = R.string.txt_create_question_guide2),
             )
         }
     }
@@ -156,31 +156,31 @@ fun CreateQuestionContent(
     solution: String? = null,
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
-    onSolutionChanged: (String) -> Unit
+    onSolutionChanged: (String) -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         WeQuizTextField(
             label = stringResource(id = R.string.txt_question_title_label),
             text = title,
             onTextChanged = onTitleChanged,
-            placeholder = stringResource(id = R.string.txt_question_title_placeholder)
+            placeholder = stringResource(id = R.string.txt_question_title_placeholder),
         )
         WeQuizTextField(
             label = stringResource(id = R.string.txt_question_content_label),
             text = description,
             onTextChanged = onDescriptionChanged,
             placeholder = stringResource(id = R.string.txt_question_content_placeholder),
-            minLine = 6
+            minLine = 6,
         )
         WeQuizTextField(
             label = stringResource(id = R.string.txt_question_description_label),
             text = solution ?: "",
             onTextChanged = onSolutionChanged,
             placeholder = stringResource(id = R.string.txt_question_description_placeholder),
-            minLine = 6
+            minLine = 6,
         )
     }
 }
@@ -191,21 +191,21 @@ fun CreateChoiceItems(
     choices: List<String>,
     selectedChoiceNum: Int,
     updateChoiceText: (Int, String) -> Unit,
-    updateSelectedChoiceNum: (Int) -> Unit
+    updateSelectedChoiceNum: (Int) -> Unit,
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         choices.forEachIndexed { index, choiceText ->
             ChoiceItem(
                 text = choiceText,
                 onTextChanged = { updateChoiceText(index, it) },
                 isSelected = selectedChoiceNum == index,
-                onSelected = { updateSelectedChoiceNum(index) }
+                onSelected = { updateSelectedChoiceNum(index) },
             )
         }
     }
@@ -217,16 +217,16 @@ fun ChoiceItem(
     text: String,
     onTextChanged: (String) -> Unit,
     isSelected: Boolean,
-    onSelected: (Boolean) -> Unit
+    onSelected: (Boolean) -> Unit,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         RadioButton(
             selected = isSelected,
             onClick = {
                 onSelected(!isSelected)
-            }
+            },
         )
         OutlinedTextField(
             value = text,
@@ -235,20 +235,19 @@ fun ChoiceItem(
             textStyle = MaterialTheme.typography.bodyLarge,
             trailingIcon = {
                 IconButton(
-                    onClick = { onTextChanged("") }
+                    onClick = { onTextChanged("") },
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.outline_cancel_on_surface_variant),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        contentDescription = stringResource(id = R.string.des_clear_text)
+                        contentDescription = stringResource(id = R.string.des_clear_text),
                     )
                 }
             },
-            placeholder = { Text(stringResource(id = R.string.txt_question_choice_placeholder)) }
+            placeholder = { Text(stringResource(id = R.string.txt_question_choice_placeholder)) },
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

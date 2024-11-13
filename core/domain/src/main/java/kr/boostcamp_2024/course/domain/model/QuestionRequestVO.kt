@@ -5,5 +5,5 @@ data class QuestionRequestVO(
     val description: String,
     val solution: String?,
     val answer: Int,
-    val choices: List<String>
+    val choices: List<String>,
 )
