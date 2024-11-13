@@ -21,10 +21,10 @@ class QuizViewModel @Inject constructor() : ViewModel() {
                 "AP60qaPeHDfwJ7OGZygb",
                 "VNsXOZvL9K85Nl0j8B00",
                 "4TiUsbbveB7ruRVxPGae",
-                "acLeak1Zooy6RIvyOOXc"
+                "acLeak1Zooy6RIvyOOXc",
             ),
-            userOmrs = emptyList()
-        )
+            userOmrs = emptyList(),
+        ),
     )
 
     val quizState = _quizState.asStateFlow()
