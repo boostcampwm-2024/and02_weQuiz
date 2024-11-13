@@ -48,7 +48,7 @@ import kr.boostcamp_2024.course.quiz.viewmodel.QuizViewModel
 fun QuizScreen(
     viewModel: QuizViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
-    onCreateQuestionButtonClick: () -> Unit,
+    onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: () -> Unit,
 ) {
     // 매개변수에 hiltViewModel()
@@ -73,7 +73,7 @@ fun QuizScreen(
     quizCategory: String,
     quizQuestionCount: Int,
     onNavigationButtonClick: () -> Unit,
-    onCreateQuestionButtonClick: () -> Unit,
+    onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: () -> Unit,
 ) {
     // TODO: startTime으로 계산
@@ -181,7 +181,7 @@ fun QuizScreen(
                 // CreateQuestionButton & StartQuizButton
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { onCreateQuestionButtonClick() },
+                    onClick = { onCreateQuestionButtonClick("2k1QrCuOUHLERgQAmMqg") },
                     enabled = canCreateQuestion,
                 ) {
                     when (canCreateQuestion) {

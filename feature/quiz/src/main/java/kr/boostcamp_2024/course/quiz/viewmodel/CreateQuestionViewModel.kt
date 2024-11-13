@@ -101,7 +101,7 @@ class CreateQuestionViewModel @Inject constructor(
         }
     }
 
-    fun createQuestion() {
+    fun createQuestion(quizId: String) {
         setLoadingState(true)
         viewModelScope.launch {
             questionRepository.createQuestion(createQuestionUiState.value.questionCreationInfo)
