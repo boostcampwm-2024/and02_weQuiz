@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import kotlinx.serialization.json.JsonNull.content
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.study.R
@@ -43,7 +42,7 @@ fun CategoryItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         QuizCountBadge(category.categoryImageUrl, quizCount)
-        DetailStudyDescription(category.name, content, profileImgUrl, author)
+        DetailStudyDescription(category.name, category.description ?: stringResource(R.string.txt_detail_study_no_category_description), profileImgUrl, author)
     }
 }
 

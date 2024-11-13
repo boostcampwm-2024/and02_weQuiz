@@ -59,6 +59,7 @@ fun DetailStudyScreen(
         currentGroup = uiState.currentGroup,
         categories = uiState.categories,
         users = uiState.users,
+        owner = uiState.owner,
         isLoading = uiState.isLoading,
         errorMessage = uiState.errorMessage,
         onErrorMessageShown = viewModel::shownErrorMessage,
@@ -75,6 +76,7 @@ fun DetailStudyScreen(
     currentGroup: StudyGroup?,
     categories: List<Category>,
     users: List<User>,
+    owner: User?,
     isLoading: Boolean,
     errorMessage: String?,
     onErrorMessageShown: () -> Unit,
@@ -152,7 +154,7 @@ fun DetailStudyScreen(
                 .padding(innerPadding),
         ) {
             when (selectedScreenIndex) {
-                0 -> CategoryListScreen(currentGroup, categories, onCreateCategoryButtonClick, onCategoryClick)
+                0 -> CategoryListScreen(owner, currentGroup, categories, onCreateCategoryButtonClick, onCategoryClick)
                 1 -> GroupListScreen(currentGroup, users, onRemoveStudyGroupMemberButtonClick)
             }
         }

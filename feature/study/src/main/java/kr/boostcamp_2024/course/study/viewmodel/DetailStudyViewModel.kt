@@ -23,6 +23,7 @@ data class DetailStudyUiState(
     val errorMessage: String? = null,
     val categories: List<Category> = emptyList(),
     val users: List<User> = emptyList(),
+    val owner: User? = null,
 )
 
 
@@ -45,10 +46,12 @@ class DetailStudyViewModel @Inject constructor(
             // TODO: getCurrentGroup
             studyGroupRepository.getStudyGroup("Jn1m6Pr8B3a9gfZvNLKB")
                 .onSuccess { currentGroup ->
+                    val ownerId = currentGroup.ownerId
                     val categoryIds = currentGroup.categories
                     val userIds = currentGroup.users
                     loadCategories(currentGroup, categoryIds)
                     loadUsers(currentGroup, userIds)
+                    loadOwner(currentGroup, ownerId)
                 }.onFailure {
                     Log.e("DetailStudyViewModel", "Failed to load study group", it)
                     _uiState.update {
@@ -102,6 +105,29 @@ class DetailStudyViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             errorMessage = "유저 로드에 실패했습니다.",
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun loadOwner(currentGroup: StudyGroup, ownerId: String) {
+        viewModelScope.launch {
+            userRepository.getUser(ownerId)
+                .onSuccess { owner ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            currentGroup = currentGroup,
+                            owner = owner,
+                        )
+                    }
+                }.onFailure {
+                    Log.e("DetailStudyViewModel", "Failed to load users", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = "카테고리 생성자 로드에 실패했습니다.",
                         )
                     }
                 }

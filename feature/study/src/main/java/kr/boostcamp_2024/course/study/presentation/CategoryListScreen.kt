@@ -11,16 +11,17 @@ import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.StudyGroup
+import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.CategoryItem
 import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 
 @Composable
-// TODO : categories 적용하기
-fun CategoryListScreen(currentGroup: StudyGroup?, categories: List<Category>, createCategoryClick: () -> Unit, categoryItemClick: () -> Unit) {
+fun CategoryListScreen(owner: User?, currentGroup: StudyGroup?, categories: List<Category>, createCategoryClick: () -> Unit, categoryItemClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -32,15 +33,15 @@ fun CategoryListScreen(currentGroup: StudyGroup?, categories: List<Category>, cr
             title = R.string.property_tab_category_text,
             currentGroup = currentGroup ?: StudyGroup("", "", "", "", 0, "", emptyList(), emptyList()),
         )
-        CategoryLazyColumn(categories, categoryItemClick)
+        CategoryLazyColumn(owner, categories, categoryItemClick)
     }
 }
 
 @Composable
-fun CategoryLazyColumn(categories: List<Category>, categoryItemClick: () -> Unit) {
+fun CategoryLazyColumn(owner: User?, categories: List<Category>, categoryItemClick: () -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         itemsIndexed(items = categories, key = { _, category -> category.id }) { index, category ->
-            CategoryItem(categoryItemClick, categories.size, category, "", "")
+            CategoryItem(categoryItemClick, categories.size, category, owner?.profileUrl, owner?.name ?: stringResource(R.string.txt_detail_study_no_category_owner))
             if (index < categories.size) {
                 HorizontalDivider()
             }
