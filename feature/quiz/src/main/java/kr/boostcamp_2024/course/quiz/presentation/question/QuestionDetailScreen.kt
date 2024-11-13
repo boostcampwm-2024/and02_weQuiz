@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.quiz.component.QuestionDescription
 import kr.boostcamp_2024.course.quiz.component.QuestionDetailTopAppBar
@@ -22,13 +23,34 @@ import kr.boostcamp_2024.course.quiz.component.QuestionSolution
 import kr.boostcamp_2024.course.quiz.component.QuestionTitle
 import kr.boostcamp_2024.course.quiz.viewmodel.QuestionDetailViewModel
 
+@Composable
+fun QuestionDetailScreen(
+    viewModel: QuestionDetailViewModel = hiltViewModel<QuestionDetailViewModel>(),
+    onNavigationButtonClick: () -> Unit,
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    QuestionDetailScreen(
+        title = uiState.title,
+        description = uiState.description,
+        choices = uiState.choices,
+        answer = uiState.answer,
+        solution = uiState.solution,
+        onNavigationButtonClick = onNavigationButtonClick,
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestionDetailScreen(
     onNavigationButtonClick: () -> Unit,
-    viewModel: QuestionDetailViewModel = hiltViewModel<QuestionDetailViewModel>(),
+    title: String,
+    description: String,
+    choices: List<String>,
+    answer: Int,
+    solution: String,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val scrollState = rememberScrollState()
 
     Scaffold(topBar = { QuestionDetailTopAppBar(onNavigationButtonClick = onNavigationButtonClick) }) { paddingValues ->
@@ -39,18 +61,18 @@ fun QuestionDetailScreen(
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            QuestionTitle(uiState.title)
+            QuestionTitle(title)
 
-            QuestionDescription(uiState.description)
+            QuestionDescription(description)
 
-            QuestionItems(uiState.choices, uiState.answer) {}
+            QuestionItems(choices, answer) {}
 
-            QuestionSolution(uiState.solution)
+            QuestionSolution(solution)
         }
     }
 }
 
-private fun getQuestion(): Question {
+private fun getPreviewQuestion(): Question {
     // TODO 뷰모델과 연결하고 임시값 빼기
     return Question(
         "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
@@ -69,7 +91,15 @@ private fun getQuestion(): Question {
 @Preview
 @Composable
 fun QuestionDetailScreenPreview() {
-    QuestionDetailScreen(
-        onNavigationButtonClick = {},
-    )
+    val question = getPreviewQuestion()
+    WeQuizTheme {
+        QuestionDetailScreen(
+            onNavigationButtonClick = {},
+            title = question.title,
+            description = question.description,
+            choices = question.choices,
+            answer = question.answer,
+            solution = question.solution,
+        )
+    }
 }
