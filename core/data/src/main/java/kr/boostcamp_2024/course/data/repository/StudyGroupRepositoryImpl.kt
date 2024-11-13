@@ -19,7 +19,6 @@ class StudyGroupRepositoryImpl @Inject constructor(
             requireNotNull(response).toVO(studyGroupId)
         }
 
-
     override suspend fun getStudyGroups(studyGroupIds: List<String>): Result<List<StudyGroup>> =
         runCatching {
             studyGroupIds.map { studyGroupIds ->

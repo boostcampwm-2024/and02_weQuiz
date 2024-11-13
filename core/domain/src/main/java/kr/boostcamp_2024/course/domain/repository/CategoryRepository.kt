@@ -5,4 +5,3 @@ import kr.boostcamp_2024.course.domain.model.Category
 interface CategoryRepository {
     suspend fun getCategories(categoryIds: List<String>): Result<List<Category>>
 }
-

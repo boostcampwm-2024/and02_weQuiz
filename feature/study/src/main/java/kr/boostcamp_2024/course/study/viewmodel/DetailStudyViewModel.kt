@@ -26,7 +26,6 @@ data class DetailStudyUiState(
     val owner: User? = null,
 )
 
-
 @HiltViewModel
 class DetailStudyViewModel @Inject constructor(
     private val studyGroupRepository: StudyGroupRepository,
@@ -138,5 +137,3 @@ class DetailStudyViewModel @Inject constructor(
         _uiState.update { it.copy(errorMessage = null) }
     }
 }
-
-

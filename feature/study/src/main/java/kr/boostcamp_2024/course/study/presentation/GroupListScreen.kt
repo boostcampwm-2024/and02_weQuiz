@@ -55,7 +55,8 @@ fun GroupLazyColumn(users: List<User>, removeClick: (String) -> Unit) {
     ) {
         itemsIndexed(items = users, key = { _, user -> user.id }) { index, user ->
             GroupItem(
-                removeClick, user,
+                removeClick,
+                user,
             )
             if (index < 9) {
                 HorizontalDivider()
