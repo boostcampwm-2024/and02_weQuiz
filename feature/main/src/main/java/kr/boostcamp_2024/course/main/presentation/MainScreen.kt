@@ -106,7 +106,7 @@ fun MainScreen(
                     Text(
                         modifier = Modifier.padding(end = 16.dp),
                         text = currentUser?.name ?: "",
-                        style = MaterialTheme.typography.displayMedium,
+                        style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
