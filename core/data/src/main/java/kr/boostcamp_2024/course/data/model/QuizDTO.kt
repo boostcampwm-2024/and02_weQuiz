@@ -17,12 +17,13 @@ data class QuizDTO(
     @set:PropertyName("user_omrs")
     var userOmrs: List<String>? = null,
 ) {
-    fun toVO(): Quiz = Quiz(
-        title = requireNotNull(this.title),
-        description = this.description,
-        startTime = requireNotNull(this.startTime),
-        solveTime = requireNotNull(this.solveTime),
-        questions = requireNotNull(this.questions),
-        userOmrs = requireNotNull(this.userOmrs),
+    fun toVO(quizId: String): Quiz = Quiz(
+        id = quizId,
+        title = requireNotNull(title),
+        description = description,
+        startTime = requireNotNull(startTime),
+        solveTime = requireNotNull(solveTime),
+        questions = requireNotNull(questions),
+        userOmrs = requireNotNull(userOmrs),
     )
 }
