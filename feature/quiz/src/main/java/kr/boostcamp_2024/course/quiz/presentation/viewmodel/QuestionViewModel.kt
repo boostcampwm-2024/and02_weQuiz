@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.UserOmr
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import javax.inject.Inject
 
@@ -22,6 +23,11 @@ data class QuestionUiState(
     val countDownTime: Int = 20,
     val isLoading: Boolean = false,
     val errorMessage: String = "",
+    val userOmr: UserOmr = UserOmr(
+        userId = "BcnL7sXFxXBigOVNSUhQ",
+        quizId = "2k1QrCuOUHLERgQAmMqg",
+        answers = List(10) { -1 },
+    ),
 )
 
 @HiltViewModel
@@ -107,10 +113,47 @@ class QuestionViewModel @Inject constructor(
         }
     }
 
-    fun submitOrExit(onQuizFinished: () -> Unit, onNavigationButtonClick: () -> Unit) {
+    fun submitAnswers() {
         viewModelScope.launch {
-            // TODO: 제출 로직 또는 나가기 로직
-            onQuizFinished() // 또는 onNavigationButtonClick()
+            val selectedAnswers = _uiState.value.selectedIndexList
+            Log.d("QuestionViewModel", "Selected answers: $selectedAnswers") // 정답 리스트 로깅
+
+            val userOmr = _uiState.value.userOmr.copy(
+                answers = _uiState.value.selectedIndexList.map{ it + 1 }
+            )
+
+            _uiState.update { it.copy(isSubmitting = true) }
+
+            questionRepository.submitQuiz(userOmr)
+                .onSuccess { userOmrId ->
+                    questionRepository.addUserOmrToQuiz(userOmr.quizId, userOmrId)
+                        .onSuccess {
+                            _uiState.update { currentState ->
+                                currentState.copy(
+                                    isSubmitting = false,
+                                    userOmr = userOmr.copy(userId = userOmrId)
+                                )
+                            }
+                        }
+                        .onFailure {
+                            Log.e("QuestionViewModel", "userOmrId 업데이트 실패", it)
+                            _uiState.update { currentState ->
+                                currentState.copy(
+                                    isSubmitting = false,
+                                    errorMessage = "퀴즈에 응답 추가 실패했습니다."
+                                )
+                            }
+                        }
+                }
+                .onFailure {
+                    Log.e("QuestionViewModel", "퀴즈 정답 제출 실패", it)
+                    _uiState.update {
+                        it.copy(
+                            isSubmitting = false,
+                            errorMessage = "응답 제출에 실패했습니다."
+                        )
+                    }
+                }
         }
     }
 }
