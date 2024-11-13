@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ data class QuestionUiState(
     val showDialog: Boolean = false,
     val countDownTime: Int = 20,
     val isLoading: Boolean = false,
+    val errorMessage: String = "",
 )
 
 @HiltViewModel
@@ -36,14 +38,33 @@ class QuestionViewModel @Inject constructor(
 
     private fun loadQuestions(questionIds: List<String>) {
         viewModelScope.launch {
-            val result = questionRepository.getQuestions(questionIds)
-            _uiState.value = result.getOrDefault(emptyList()).let { questions ->
-                _uiState.value.copy(
-                    selectedIndexList = List(questions.size) { -1 },
-                    questions = questions,
-                    isLoading = false,
-                )
+            _uiState.update { currentState ->
+                currentState.copy(isLoading = true)
             }
+            questionRepository.getQuestions(questionIds)
+                .onSuccess { questions ->
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            questions = questions,
+                            isLoading = false,
+                        )
+                    }
+                }
+                .onFailure {
+                    Log.e("MainViewModel", "Failed to load study groups", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = "스터디 그룹 로드에 실패했습니다.",
+                        )
+                    }
+                }
+        }
+    }
+
+    fun shownErrorMessage() {
+        _uiState.update { currentState ->
+            currentState.copy(errorMessage = "")
         }
     }
 

@@ -57,4 +57,5 @@
     <string name="des_image_question">System Profile Image</string>
     <string name="des_question_detail_solution_profile">프로필 사진</string>
     <string name="des_question_detail_top_app_bar_navigation_icon">뒤로 가기</string>
+    <string name="btn_prev_question">이전 문제</string>
 </resources>
