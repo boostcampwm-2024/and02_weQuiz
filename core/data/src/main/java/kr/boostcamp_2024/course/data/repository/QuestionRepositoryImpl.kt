@@ -4,8 +4,10 @@ import android.util.Log
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.data.model.QuestionDTO
+import kr.boostcamp_2024.course.data.model.UserOmrDTO
+import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.UserOmr
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import javax.inject.Inject
 
@@ -13,6 +15,7 @@ class QuestionRepositoryImpl @Inject constructor(
     firestore: FirebaseFirestore,
 ) : QuestionRepository {
     private val questionCollectionRef = firestore.collection("Question")
+    private val userOmrCollectionRef = firestore.collection("UserOmr")
 
     override suspend fun getQuestions(questionIds: List<String>): Result<List<Question>> {
         return runCatching {
@@ -24,15 +27,13 @@ class QuestionRepositoryImpl @Inject constructor(
         }
     }
 
-//    override suspend fun submitQuiz(quizSubmission: QuizSubmission): Result<Boolean> {
-//        return runCatching {
-//            val quizDocument = quizCollectionRef.document(quizSubmission.quizId)
-//            val userAnswers = mapOf(
-//                "userId" to quizSubmission.userId,
-//                "answers" to quizSubmission.answers
-//            )
-//            quizDocument.collection("user_omr").add(userAnswers).await()
-//            true
-//        }
-//    }
+    override suspend fun submitQuiz(userOmr: UserOmr): Result<String> =
+        runCatching {
+            val userOmrDTO = UserOmrDTO(
+                userId = userOmr.userId,
+                quizId = userOmr.quizId,
+                answers = userOmr.answers,
+            )
+            userOmrCollectionRef.add(userOmrDTO).await().id
+        }
 }
