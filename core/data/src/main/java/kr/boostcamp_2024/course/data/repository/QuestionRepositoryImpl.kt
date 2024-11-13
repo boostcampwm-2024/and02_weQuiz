@@ -19,15 +19,14 @@ class QuestionRepositoryImpl @Inject constructor(
     private val userOmrCollectionRef = firestore.collection("UserOmr")
     private val quizCollectionRef = firestore.collection("Quiz")
 
-    override suspend fun getQuestions(questionIds: List<String>): Result<List<Question>> {
-        return runCatching {
+    override suspend fun getQuestions(questionIds: List<String>): Result<List<Question>> =
+        runCatching {
             Log.d("QuestionRepositoryImpl", "getQuestions: $questionIds")
             val snapshot = questionCollectionRef.whereIn(FieldPath.documentId(), questionIds).get().await()
             snapshot.documents.mapNotNull { document ->
                 document.toObject(QuestionDTO::class.java)?.toVO()
             }
         }
-    }
 
     override suspend fun submitQuiz(userOmr: UserOmr): Result<String> =
         runCatching {
