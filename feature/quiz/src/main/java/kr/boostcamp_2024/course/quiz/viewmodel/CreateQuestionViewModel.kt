@@ -98,6 +98,7 @@ class CreateQuestionViewModel @Inject constructor(
         _createQuestionUiState.update { currentState ->
             currentState.copy(
                 isCreateQuestionValid = currentState.questionCreationInfo.title.isNotBlank() &&
+                    currentState.questionCreationInfo.description.isNotBlank() &&
                     currentState.questionCreationInfo.choices.all { it.isNotBlank() },
             )
         }
@@ -106,7 +107,11 @@ class CreateQuestionViewModel @Inject constructor(
     fun createQuestion(quizId: String) {
         setLoadingState(true)
         viewModelScope.launch {
-            questionRepository.createQuestion(createQuestionUiState.value.questionCreationInfo)
+            val currentQuestionCreationInfo = createQuestionUiState.value.questionCreationInfo
+            val questionCreationInfo = currentQuestionCreationInfo.copy(
+                solution = if (currentQuestionCreationInfo.solution.isNullOrBlank()) null else currentQuestionCreationInfo.solution,
+            )
+            questionRepository.createQuestion(questionCreationInfo)
                 .onSuccess { questionId ->
                     saveQuestionToQuiz(quizId, questionId)
                 }.onFailure { exception ->
