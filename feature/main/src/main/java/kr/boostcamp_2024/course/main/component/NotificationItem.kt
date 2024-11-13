@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.domain.model.NotificationWithGroupInfo
 import kr.boostcamp_2024.course.main.R
 
@@ -39,18 +40,18 @@ fun NotificationItem(
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
+        // todo: 이미지 넣을 때 추가 수정
+        WeQuizAsyncImage(
             modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape)
-                .background(Color.LightGray),
-        ) // todo: 이미지 넣어야 하는 곳
+                .size(80.dp).clip(CircleShape),
+            imgUrl = null,
+            contentDescription = null,
+        )
 
         Column(
             modifier = Modifier
                 .padding(start = 16.dp),
         ) {
-            // 그룹이름 받아오는것으로 수정
             Text(
                 text = notificationInfo.studyGroupName,
                 style = MaterialTheme.typography.labelMedium,
