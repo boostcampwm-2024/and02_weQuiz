@@ -19,21 +19,15 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.category.R
@@ -56,8 +50,6 @@ fun CategoryScreen(
         categoryImageUrl = null,
         quizzes = listOf("1", "1", "1", "1", "1", "1", "1", "1", "1", "1"),
     )
-
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     Scaffold(
         topBar = {
@@ -105,17 +97,11 @@ fun CategoryScreen(
                 categoryTitle = dummyCategory.name,
                 categoryDescription = dummyCategory.description,
             )
-            QuizTabs(
-                selectedTabIndex = selectedTabIndex,
-                onTabClick = { index -> selectedTabIndex = index },
+            QuizList(
+                modifier = Modifier.weight(1f),
+                quizzes = dummyCategory.quizzes,
+                onQuizClick = onQuizClick,
             )
-            if (selectedTabIndex == 0) {
-                QuizList(
-                    modifier = Modifier.weight(1f),
-                    quizzes = dummyCategory.quizzes,
-                    onQuizClick = onQuizClick,
-                )
-            }
         }
     }
 }
@@ -141,31 +127,6 @@ fun CategoryContent(
                 text = description,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface,
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun QuizTabs(
-    selectedTabIndex: Int,
-    onTabClick: (Int) -> Unit,
-) {
-    val tabs = stringArrayResource(R.array.quiz_tabs)
-    PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
-        tabs.forEachIndexed { index, title ->
-            Tab(
-                modifier = Modifier.padding(top = 8.dp),
-                selected = selectedTabIndex == index,
-                onClick = { onTabClick(index) },
-                text = {
-                    Text(
-                        text = title,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                },
             )
         }
     }
