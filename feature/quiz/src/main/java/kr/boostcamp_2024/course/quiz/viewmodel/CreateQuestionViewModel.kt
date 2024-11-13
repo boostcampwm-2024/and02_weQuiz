@@ -98,7 +98,7 @@ class CreateQuestionViewModel @Inject constructor(
         _createQuestionUiState.update { currentState ->
             currentState.copy(
                 isCreateQuestionValid = currentState.questionCreationInfo.title.isNotBlank() &&
-                    currentState.questionCreationInfo.choices.all { it.isNotBlank() },
+                        currentState.questionCreationInfo.choices.all { it.isNotBlank() },
             )
         }
     }
@@ -119,7 +119,6 @@ class CreateQuestionViewModel @Inject constructor(
     private suspend fun saveQuestionToQuiz(quizId: String, questionId: String) {
         try {
             val quiz = quizRepository.getQuiz(quizId).getOrThrow()
-            Log.d("CreateQuestionViewModel", "quiz: $quiz")
             val newQuestionList = quiz.questions.toMutableList().apply { add(questionId) }
             quizRepository.updateQuizQuestionList(quizId, newQuestionList).getOrThrow()
 
