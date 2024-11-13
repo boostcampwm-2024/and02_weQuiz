@@ -22,13 +22,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,6 +41,7 @@ import kr.boostcamp_2024.course.category.viewModel.CategoryViewModel
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 
@@ -78,10 +82,25 @@ private fun CategoryScreen(
     onQuizClick: () -> Unit,
     setNewSnackBarMessage: (String) -> Unit,
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { /* no - op */ },
+            WeQuizImageLargeTopAppBar(
+                topAppBarImageUrl = category?.categoryImageUrl,
+                scrollBehavior = scrollBehavior,
+                title = {
+                    category?.let {
+                        Text(
+                            modifier = Modifier.padding(end = 16.dp),
+                            text = it.name,
+                            style = MaterialTheme.typography.displaySmall,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                },
                 navigationIcon = {
                     IconButton(
                         onClick = onNavigationButtonClick,
@@ -124,10 +143,7 @@ private fun CategoryScreen(
             Column(
                 modifier = Modifier.padding(innerPadding),
             ) {
-                CategoryContent(
-                    categoryTitle = category.name,
-                    categoryDescription = category.description,
-                )
+
                 QuizList(
                     modifier = Modifier.weight(1f),
                     quizzes = quizList,
@@ -136,32 +152,6 @@ private fun CategoryScreen(
             }
         } else {
             WeQuizCircularProgressIndicator()
-        }
-    }
-}
-
-@Composable
-fun CategoryContent(
-    categoryTitle: String,
-    categoryDescription: String?,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(
-            text = categoryTitle,
-            style = MaterialTheme.typography.displayMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        categoryDescription?.let { description ->
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
         }
     }
 }
