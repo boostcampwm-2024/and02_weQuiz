@@ -29,16 +29,16 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizDatePickerTextField(
+    quizDate: String,
     onDateSelected: (String) -> Unit,
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf("") }
 
     Box {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = selectedDate,
-            onValueChange = { onDateSelected(it) },
+            value = quizDate,
+            onValueChange = { /* no-op */ },
             label = {
                 Text(text = stringResource(R.string.txt_quiz_date_picker))
             },
@@ -55,7 +55,7 @@ fun QuizDatePickerTextField(
 
         if (showDatePicker) {
             DatePickerModal(
-                onDateSelected = { selectedDate = it?.let { convertMillisToDate(it) } ?: "" },
+                onDateSelected = { onDateSelected(it?.let { convertMillisToDate(it) } ?: "") },
                 onDismiss = { showDatePicker = false },
             )
         }
@@ -73,10 +73,12 @@ private fun DatePickerModal(
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
-                onDismiss()
-            }) {
+            TextButton(
+                onClick = {
+                    onDateSelected(datePickerState.selectedDateMillis)
+                    onDismiss()
+                },
+            ) {
                 Text(text = stringResource(R.string.txt_dialog_confirm))
             }
         },
@@ -91,12 +93,15 @@ private fun DatePickerModal(
 }
 
 private fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    val formatter = SimpleDateFormat("yyyy/MM/dd/", Locale.getDefault())
     return formatter.format(Date(millis))
 }
 
 @Preview(showBackground = true)
 @Composable
 fun QuizDatePickerTextFieldPreview() {
-    QuizDatePickerTextField(onDateSelected = {})
+    QuizDatePickerTextField(
+        quizDate = "",
+        onDateSelected = {},
+    )
 }

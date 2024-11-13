@@ -17,6 +17,7 @@ androidExtension.apply {
         add("implementation", libs.findLibrary("androidx.navigation.compose").get())
         add("implementation", libs.findLibrary("kotlinx.serialization.json").get())
         add("implementation",libs.findLibrary("coil").get())
+        add("implementation", libs.findLibrary("preferences.datastore").get())
     }
 }
 
