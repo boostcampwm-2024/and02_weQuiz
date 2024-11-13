@@ -30,10 +30,9 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun deleteStudyGroupUser(userId: String, studyGroupId: String): Result<Unit> {
-        return runCatching {
+    override suspend fun deleteStudyGroupUser(userId: String, studyGroupId: String): Result<Unit> =
+        runCatching {
             val document = userCollectionRef.document(userId)
             document.update("study_groups", FieldValue.arrayRemove(studyGroupId)).await()
         }
-    }
 }
