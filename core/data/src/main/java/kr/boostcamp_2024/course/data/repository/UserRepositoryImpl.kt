@@ -16,7 +16,7 @@ class UserRepositoryImpl @Inject constructor(
         return runCatching {
             val document = userCollectionRef.document(userId).get().await()
             val response = document.toObject(UserDTO::class.java)
-            requireNotNull(response).toVO()
+            requireNotNull(response).toVO(userId)
         }
     }
 
@@ -25,7 +25,7 @@ class UserRepositoryImpl @Inject constructor(
             userIds.map { userIds ->
                 val document = userCollectionRef.document(userIds).get().await()
                 val response = document.toObject(UserDTO::class.java)
-                requireNotNull(response).toVO()
+                requireNotNull(response).toVO(userIds)
             }
         }
 }

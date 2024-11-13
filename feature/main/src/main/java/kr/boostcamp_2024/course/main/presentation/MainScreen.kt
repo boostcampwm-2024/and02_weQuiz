@@ -223,6 +223,7 @@ fun MainScreenPreview() {
     WeQuizTheme {
         MainScreen(
             currentUser = User(
+                id = "123",
                 email = "email@email.com",
                 name = "홍준표",
                 profileUrl = "testUrl",
