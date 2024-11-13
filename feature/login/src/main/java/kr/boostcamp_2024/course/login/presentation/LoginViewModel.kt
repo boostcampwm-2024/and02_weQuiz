@@ -9,12 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
-import kr.boostcamp_2024.course.login.BuildConfig
 import javax.inject.Inject
 
 data class LoginUiState(
-    val isLoginSuccess: Boolean = false,
-    val snackBarMessage: String? = null
+    val isLoginSuccess: Boolean = false, val snackBarMessage: String? = null
 )
 
 @HiltViewModel
@@ -26,15 +24,14 @@ class LoginViewModel @Inject constructor(
 
     fun loginForExperience() {
         viewModelScope.launch {
-            val defaultUserKey = BuildConfig.DEFAULT_USER_KEY
-            authRepository.storeUserKey(defaultUserKey)
-                .onSuccess {
-                    _loginUiState.update { currentState ->
-                        currentState.copy(isLoginSuccess = true)
-                    }
-                }.onFailure {
-                    Log.e("LoginViewModel", "Failed to store user key")
+            val defaultUserKey = "BcnL7sXFxXBigOVNSUhQ"
+            authRepository.storeUserKey(defaultUserKey).onSuccess {
+                _loginUiState.update { currentState ->
+                    currentState.copy(isLoginSuccess = true)
                 }
+            }.onFailure {
+                Log.e("LoginViewModel", "Failed to store user key")
+            }
         }
     }
 
