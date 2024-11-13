@@ -49,7 +49,7 @@ import kr.boostcamp_2024.course.domain.model.Quiz
 fun CategoryScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: () -> Unit,
-    onQuizClick: () -> Unit,
+    onQuizClick: (String, String) -> Unit,
     categoryViewModel: CategoryViewModel = hiltViewModel(),
 ) {
     val categoryUiState = categoryViewModel.categoryUiState.collectAsStateWithLifecycle()
@@ -79,7 +79,7 @@ private fun CategoryScreen(
     quizList: List<Quiz>?,
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: () -> Unit,
-    onQuizClick: () -> Unit,
+    onQuizClick: (String, String) -> Unit,
     setNewSnackBarMessage: (String) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -143,9 +143,9 @@ private fun CategoryScreen(
             Column(
                 modifier = Modifier.padding(innerPadding),
             ) {
-
                 QuizList(
                     modifier = Modifier.weight(1f),
+                    categoryId = category.id,
                     quizzes = quizList,
                     onQuizClick = onQuizClick,
                 )
@@ -159,8 +159,9 @@ private fun CategoryScreen(
 @Composable
 fun QuizList(
     modifier: Modifier = Modifier,
+    categoryId: String,
     quizzes: List<Quiz>?,
-    onQuizClick: () -> Unit,
+    onQuizClick: (String, String) -> Unit,
 ) {
     if (quizzes != null) {
         LazyVerticalGrid(
@@ -174,7 +175,7 @@ fun QuizList(
             ) { quiz ->
                 QuizItem(
                     quiz = quiz,
-                    onQuizClick = onQuizClick,
+                    onQuizClick = { onQuizClick(categoryId, quiz.id) },
                 )
             }
         }
@@ -224,7 +225,7 @@ fun CategoryScreenPreview() {
         CategoryScreen(
             onNavigationButtonClick = {},
             onCreateQuizButtonClick = {},
-            onQuizClick = {},
+            onQuizClick = { _, _ -> },
         )
     }
 }
