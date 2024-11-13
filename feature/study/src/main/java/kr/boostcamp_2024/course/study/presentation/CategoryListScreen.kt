@@ -13,13 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.domain.model.Category
+import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.CategoryItem
 import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 
 @Composable
 // TODO : categories 적용하기
-fun CategoryListScreen(categories: List<Category>, createCategoryClick: () -> Unit, categoryItemClick: () -> Unit) {
+fun CategoryListScreen(currentGroup: StudyGroup?, categories: List<Category>, createCategoryClick: () -> Unit, categoryItemClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -29,6 +30,7 @@ fun CategoryListScreen(categories: List<Category>, createCategoryClick: () -> Un
             onClicked = createCategoryClick,
             imageVector = Icons.Outlined.AddCircle,
             title = R.string.property_tab_category_text,
+            currentGroup = currentGroup ?: StudyGroup("", "", "", "", 0, "", emptyList(), emptyList()),
         )
         CategoryLazyColumn(categories, categoryItemClick)
     }

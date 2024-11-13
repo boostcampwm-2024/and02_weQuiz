@@ -65,7 +65,7 @@ fun DetailStudyScreen(
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateCategoryButtonClick = onCreateCategoryButtonClick,
         onCategoryClick = onCategoryClick,
-        onRemoveStudyGroupMemberButtonClick = { userId -> viewModel.removeStudyGroupMember(userId) },
+        onRemoveStudyGroupMemberButtonClick = { },
     )
 }
 
@@ -152,8 +152,8 @@ fun DetailStudyScreen(
                 .padding(innerPadding),
         ) {
             when (selectedScreenIndex) {
-                0 -> CategoryListScreen(categories, onCreateCategoryButtonClick, onCategoryClick)
-                1 -> GroupListScreen(users, onRemoveStudyGroupMemberButtonClick)
+                0 -> CategoryListScreen(currentGroup, categories, onCreateCategoryButtonClick, onCategoryClick)
+                1 -> GroupListScreen(currentGroup, users, onRemoveStudyGroupMemberButtonClick)
             }
         }
     }
