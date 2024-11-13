@@ -28,7 +28,6 @@ fun ChatBubble(text: String, modifier: Modifier = Modifier) {
                 10.dp,
             ),
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }

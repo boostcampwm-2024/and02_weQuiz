@@ -10,14 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun QuestionTextBox(text: String, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(10.dp))
             .background(Color(0xFFCEE9DD)),
     ) {
         Text(
@@ -27,7 +26,6 @@ fun QuestionTextBox(text: String, modifier: Modifier = Modifier) {
                 vertical = 10.dp,
             ),
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
