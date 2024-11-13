@@ -131,21 +131,26 @@ fun QuizScreen(
                     .align(Alignment.BottomCenter),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                // QuizTitle
-                Text(
-                    text = quiz?.title ?: "",
-                    style = MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
 
-                // QuizDescription
-                Text(
-                    text = quiz?.description ?: "",
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
+                quiz?.let { quiz ->
+                    // QuizTitle
+                    Text(
+                        text = quiz.title,
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+
+                    // QuizDescription
+                    quiz.description?.let { description ->
+                        Text(
+                            text = description,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
+                }
 
                 // QuizChip
                 Row(
