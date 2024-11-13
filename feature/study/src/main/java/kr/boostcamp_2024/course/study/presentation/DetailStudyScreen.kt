@@ -105,8 +105,9 @@ fun DetailStudyScreen(
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
+                        modifier = Modifier.padding(end = 16.dp),
                         text = currentGroup?.name ?: "",
-                        style = MaterialTheme.typography.displaySmall,
+                        style = MaterialTheme.typography.displayMedium,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
