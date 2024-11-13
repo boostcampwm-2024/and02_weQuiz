@@ -190,18 +190,9 @@ fun QuestionScreen(
             onConfirm = {
                 questionViewModel.toggleDialog(false)
                 if (uiState.currentPage == questions.size - 1) {
-                    /*
-                    TODO (제출 버튼 눌렀을 때)
-                     네트워크 통신 진행 - selectedIndexList 전달
-                     통신 완료 후 onQuizFinished() 실행(isSubmitting = false로 변경)
-                     */
+                    questionViewModel.submitAnswers()
                     onQuizFinished()
                 } else {
-                    /*
-                    TODO (나가기 버튼 눌렀을 때)
-                     네트워크 통신 진행 - selectedIndexList 전달
-                     통신 완료 후 onNavigationButtonClick() 실행(isSubmitting = false로 변경)
-                     */
                     onNavigationButtonClick()
                 }
             },
@@ -210,7 +201,7 @@ fun QuestionScreen(
             content = { },
         )
     }
-    if (uiState.errorMessage.isBlank()) {
+    if (uiState.errorMessage.isNotBlank()) {
         LaunchedEffect(uiState.errorMessage) {
             snackbarHostState.showSnackbar(uiState.errorMessage)
             questionViewModel.shownErrorMessage()
