@@ -14,15 +14,15 @@ class QuizRepositoryImpl @Inject constructor(
     private val quizCollectionRef = firestore.collection("Quiz")
 
     override suspend fun getQuiz(quizId: String): Result<Quiz> = runCatching {
-            val document = quizCollectionRef.document(quizId).get().await()
-            val response = document.toObject(QuizDTO::class.java)
-            requireNotNull(response).toVO(quizId)
-        }
+        val document = quizCollectionRef.document(quizId).get().await()
+        val response = document.toObject(QuizDTO::class.java)
+        requireNotNull(response).toVO(quizId)
+    }
 
     override suspend fun updateQuizQuestionList(quizId: String, questionList: List<String>): Result<Unit> = runCatching {
-            val document = quizCollectionRef.document(quizId)
-            document.update("questions", questionList)
-        }
+        val document = quizCollectionRef.document(quizId)
+        document.update("questions", questionList)
+    }
 
     override suspend fun createQuiz(quizCreateInfo: QuizCreationInfo): Result<String> =
         runCatching {
