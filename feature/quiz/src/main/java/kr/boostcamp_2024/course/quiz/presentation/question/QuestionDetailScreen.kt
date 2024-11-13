@@ -7,8 +7,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +40,9 @@ fun QuestionDetailScreen(
         choices = uiState.choices,
         answer = uiState.answer,
         solution = uiState.solution,
+        errorMessage = uiState.errorMessage,
         onNavigationButtonClick = onNavigationButtonClick,
+        onErrorMessageShown = viewModel::shownErrorMessage,
     )
 }
 
@@ -49,11 +55,16 @@ fun QuestionDetailScreen(
     choices: List<String>,
     answer: Int,
     solution: String,
+    errorMessage: String?,
+    onErrorMessageShown: () -> Unit = {},
 ) {
-
+    val snackBarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
 
-    Scaffold(topBar = { QuestionDetailTopAppBar(onNavigationButtonClick = onNavigationButtonClick) }) { paddingValues ->
+    Scaffold(
+        topBar = { QuestionDetailTopAppBar(onNavigationButtonClick = onNavigationButtonClick) },
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -68,6 +79,12 @@ fun QuestionDetailScreen(
             QuestionItems(choices, answer) {}
 
             QuestionSolution(solution)
+        }
+        if (errorMessage != null) {
+            LaunchedEffect(errorMessage) {
+                snackBarHostState.showSnackbar(errorMessage)
+                onErrorMessageShown()
+            }
         }
     }
 }
@@ -100,6 +117,7 @@ fun QuestionDetailScreenPreview() {
             choices = question.choices,
             answer = question.answer,
             solution = question.solution,
+            errorMessage = null,
         )
     }
 }

@@ -18,6 +18,7 @@ data class DetailUiState(
     val answer: Int = 1,
     val choices: List<String> = emptyList(),
     val isLoading: Boolean = false,
+    val errorMessage: String? = null,
     // TODO 출제자 이미지 추가
 )
 
@@ -49,7 +50,10 @@ class QuestionDetailViewModel @Inject constructor(private val questionRepository
                 }
             }.onFailure { throwable ->
                 _uiState.update {
-                    it.copy(isLoading = false)
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = "문제 로딩에 실패하였습니다.",
+                    )
                 }
                 Log.d("DetailViewModel", "loadQuestionDetail: $throwable")
             }
@@ -57,4 +61,10 @@ class QuestionDetailViewModel @Inject constructor(private val questionRepository
         }
     }
 
+    fun shownErrorMessage() {
+        _uiState.update {
+            it.copy(errorMessage = null)
+        }
+
+    }
 }

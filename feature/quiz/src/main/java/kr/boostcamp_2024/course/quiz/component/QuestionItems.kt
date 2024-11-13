@@ -3,7 +3,6 @@ package kr.boostcamp_2024.course.quiz.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 
 @Composable
