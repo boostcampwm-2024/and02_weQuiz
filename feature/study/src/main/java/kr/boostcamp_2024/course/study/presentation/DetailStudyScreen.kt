@@ -65,6 +65,7 @@ fun DetailStudyScreen(
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateCategoryButtonClick = onCreateCategoryButtonClick,
         onCategoryClick = onCategoryClick,
+        onRemoveStudyGroupMemberButtonClick = { userId -> viewModel.removeStudyGroupMember(userId) },
     )
 }
 
@@ -80,6 +81,7 @@ fun DetailStudyScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
     onCategoryClick: () -> Unit,
+    onRemoveStudyGroupMemberButtonClick: (String) -> Unit,
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }
     val screenList = listOf(
@@ -151,7 +153,7 @@ fun DetailStudyScreen(
         ) {
             when (selectedScreenIndex) {
                 0 -> CategoryListScreen(categories, onCreateCategoryButtonClick, onCategoryClick)
-                1 -> GroupListScreen(users)
+                1 -> GroupListScreen(users, onRemoveStudyGroupMemberButtonClick)
             }
         }
     }
