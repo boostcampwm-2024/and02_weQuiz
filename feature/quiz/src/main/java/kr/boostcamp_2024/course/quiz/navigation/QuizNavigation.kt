@@ -1,6 +1,5 @@
 package kr.boostcamp_2024.course.quiz.navigation
 
-import android.annotation.SuppressLint
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable

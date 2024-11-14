@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,21 +41,15 @@ import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
 import kr.boostcamp_2024.course.quiz.presentation.viewmodel.QuestionViewModel
 import kr.boostcamp_2024.course.quiz.utils.timerFormat
-import kr.boostcamp_2024.course.quiz.viewmodel.QuizViewModel
 
 @Composable
 fun QuestionScreen(
-    viewModel: QuizViewModel = hiltViewModel<QuizViewModel>(),
     onNavigationButtonClick: () -> Unit,
     onQuizFinished: () -> Unit,
 ) {
 
-    val quizState by viewModel.quizState.collectAsStateWithLifecycle()
-
     QuestionScreen(
-        questions = quizState.questions,
-        quizTitle = quizState.title,
-        solveTime = quizState.solveTime,
+        questionViewModel = hiltViewModel(),
         onNavigationButtonClick = onNavigationButtonClick,
         onQuizFinished = onQuizFinished,
     )
@@ -62,34 +57,34 @@ fun QuestionScreen(
 
 @Composable
 fun QuestionScreen(
-    questions: List<String>,
-    quizTitle: String,
-    solveTime: Int,
+    questionViewModel: QuestionViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
     onQuizFinished: () -> Unit,
 ) {
-    val questionViewModel = hiltViewModel<QuestionViewModel>()
     val uiState by questionViewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        questionViewModel.initialize(solveTime, questions)
-        questionViewModel.updateTimer()
-    }
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
         LazyColumn {
             item {
-                QuestionTopBar(title = quizTitle) { questionViewModel.toggleDialog(true) }
+                uiState.quiz?.let { QuestionTopBar(title = it.title) { questionViewModel.toggleDialog(true) } }
             }
             item {
                 LinearProgressIndicator(
-                    progress = { (questionViewModel.uiState.value.currentPage + 1) / questions.size.toFloat() },
+                    progress = { (questionViewModel.uiState.value.currentPage + 1) / uiState.questions.size.toFloat() },
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.End),
                 ) {
@@ -98,7 +93,9 @@ fun QuestionScreen(
                         text = "${stringResource(R.string.txt_question_timer)} ${timerFormat(uiState.countDownTime)}",
                     )
                     WeQuizLocalRoundedImage(
-                        modifier = Modifier.size(120.dp).align(Alignment.CenterVertically),
+                        modifier = Modifier
+                            .size(120.dp)
+                            .align(Alignment.CenterVertically),
                         imagePainter = painterResource(id = R.drawable.quiz_system_profile),
                         contentDescription = stringResource(R.string.des_image_question),
                     )
@@ -113,10 +110,12 @@ fun QuestionScreen(
                     userScrollEnabled = false,
                 ) {
                     Column {
-                        QuestionTitleAndDetail(
-                            title = uiState.questions[uiState.currentPage].title,
-                            description = uiState.questions[uiState.currentPage].description,
-                        )
+                        uiState.questions[uiState.currentPage].description?.let { description ->
+                            QuestionTitleAndDetail(
+                                title = uiState.questions[uiState.currentPage].title,
+                                description = description,
+                            )
+                        }
                         Question(
                             questions = uiState.questions[uiState.currentPage].choices,
                             selectedIndex = uiState.selectedIndexList[uiState.currentPage],
@@ -147,7 +146,7 @@ fun QuestionScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = if (uiState.currentPage == questions.size - 1) {
+                    text = if (uiState.currentPage == uiState.questions.size - 1) {
                         stringResource(R.string.txt_question_done)
                     } else {
                         stringResource(R.string.txt_question_next_question)
@@ -176,12 +175,12 @@ fun QuestionScreen(
 
     if (uiState.showDialog) {
         WeQuizBaseDialog(
-            title = if (uiState.currentPage == questions.size - 1) {
+            title = if (uiState.currentPage == uiState.questions.size - 1) {
                 stringResource(R.string.dialog_submit_script)
             } else {
                 stringResource(R.string.dialog_exit_script)
             },
-            confirmTitle = if (uiState.currentPage == questions.size - 1) {
+            confirmTitle = if (uiState.currentPage == uiState.questions.size - 1) {
                 stringResource(R.string.txt_question_submit)
             } else {
                 stringResource(R.string.txt_question_exit)
@@ -189,7 +188,7 @@ fun QuestionScreen(
             dismissTitle = stringResource(R.string.txt_question_cancel),
             onConfirm = {
                 questionViewModel.toggleDialog(false)
-                if (uiState.currentPage == questions.size - 1) {
+                if (uiState.currentPage == uiState.questions.size - 1) {
                     questionViewModel.submitAnswers()
                     onQuizFinished()
                 } else {
@@ -201,9 +200,9 @@ fun QuestionScreen(
             content = { },
         )
     }
-    if (uiState.errorMessage.isNotBlank()) {
-        LaunchedEffect(uiState.errorMessage) {
-            snackbarHostState.showSnackbar(uiState.errorMessage)
+    if (uiState.errorMessageId != null) {
+        LaunchedEffect(uiState.errorMessageId) {
+            snackbarHostState.showSnackbar(context.getString(uiState.errorMessageId!!))
             questionViewModel.shownErrorMessage()
         }
     }
@@ -213,15 +212,6 @@ fun QuestionScreen(
 @Composable
 fun QuestionScreenPreview() {
     QuestionScreen(
-        questions = listOf(
-            "OJSAMgoMx4mwuwyg9JLo",
-            "AP60qaPeHDfwJ7OGZygb",
-            "VNsXOZvL9K85Nl0j8B00",
-            "4TiUsbbveB7ruRVxPGae",
-            "acLeak1Zooy6RIvyOOXc",
-        ),
-        quizTitle = "뿌셔뿌셔 불고기",
-        solveTime = 70,
         onNavigationButtonClick = {},
         onQuizFinished = {},
     )

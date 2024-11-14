@@ -11,9 +11,9 @@ data class QuestionDTO(
 ) {
     fun toVO(): Question = Question(
         title = requireNotNull(title),
-        description = requireNotNull(description),
+        description = description,
         choices = requireNotNull(choices),
         solution = solution ?: "",
         answer = answer ?: -1,
-        )
+    )
 }

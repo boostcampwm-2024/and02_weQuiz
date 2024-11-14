@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.MaterialTheme
@@ -22,13 +21,12 @@ fun Question(
     onOptionSelected: (Int) -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = 16.dp).height(600.dp),
+        modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 100.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         questions.forEachIndexed { index, option ->
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
                     .padding(bottom = 10.dp)
                     .selectable(
                         selected = selectedIndex == index,
