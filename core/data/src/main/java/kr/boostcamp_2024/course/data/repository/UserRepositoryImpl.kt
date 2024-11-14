@@ -36,4 +36,11 @@ class UserRepositoryImpl @Inject constructor(
                 requireNotNull(response).toVO(userId)
             }
         }
+
+    override suspend fun findUserByEmail(email: String): Result<User> =
+        runCatching {
+            val querySnapshot = userCollectionRef.whereEqualTo("email", email).get().await()
+            val response = querySnapshot.documents.firstOrNull()?.toObject(UserDTO::class.java)
+            requireNotNull(response).toVO(querySnapshot.documents.first().id)
+        }
 }

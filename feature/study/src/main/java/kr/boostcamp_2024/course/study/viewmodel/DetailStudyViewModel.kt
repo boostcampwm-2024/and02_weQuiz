@@ -15,6 +15,7 @@ import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
+import kr.boostcamp_2024.course.domain.repository.NotificationRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.study.R
@@ -35,6 +36,7 @@ class DetailStudyViewModel @Inject constructor(
     private val studyGroupRepository: StudyGroupRepository,
     private val userRepository: UserRepository,
     private val categoryRepository: CategoryRepository,
+    private val notificationRepository: NotificationRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val studyGroupId: String = savedStateHandle.toRoute<StudyRoute>().studyGroupId
@@ -49,7 +51,6 @@ class DetailStudyViewModel @Inject constructor(
     private fun loadStudyGroup() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            // TODO: getCurrentGroup
             studyGroupRepository.getStudyGroup(studyGroupId)
                 .onSuccess { currentGroup ->
                     val ownerId = currentGroup.ownerId
@@ -137,6 +138,37 @@ class DetailStudyViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    fun addNotification(groupId: String, email: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            userRepository.findUserByEmail(email).onSuccess {
+                notificationRepository.addNotification(groupId, it.id).onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                        )
+                    }
+                }.onFailure {
+                    Log.e("DetailStudyViewModel", "Failed to add notification", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessageId = R.string.error_message_add_notification,
+                        )
+                    }
+                }
+            }.onFailure {
+                Log.e("DetailStudyViewModel", "Failed to find user", it)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessageId = R.string.error_message_find_user,
+                    )
+                }
+            }
         }
     }
 

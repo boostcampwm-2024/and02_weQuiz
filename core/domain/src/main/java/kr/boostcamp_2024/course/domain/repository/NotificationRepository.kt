@@ -6,4 +6,6 @@ interface NotificationRepository {
     suspend fun getNotifications(userId: String): Result<List<Notification>>
 
     suspend fun deleteNotification(notificationId: String): Result<Unit>
+
+    suspend fun addNotification(groupId: String, userId: String): Result<Unit>
 }
