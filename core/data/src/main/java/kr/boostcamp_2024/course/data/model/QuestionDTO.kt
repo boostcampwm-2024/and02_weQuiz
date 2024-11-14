@@ -10,15 +10,14 @@ data class QuestionDTO(
     val answer: Int? = null,
     val choices: List<String>? = null,
 ) {
-    fun toVO(questionId: String): Question =
-        Question(
-            id = questionId,
-            title = requireNotNull(title),
-            description = requireNotNull(description),
-            solution = solution,
-            answer = requireNotNull(answer),
-            choices = requireNotNull(choices),
-        )
+    fun toVO(questionId: String): Question = Question(
+        id = questionId,
+        title = requireNotNull(title),
+        description = requireNotNull(description),
+        solution = solution,
+        answer = requireNotNull(answer),
+        choices = requireNotNull(choices),
+    )
 }
 
 fun QuestionCreationInfo.toDTO() = QuestionDTO(
