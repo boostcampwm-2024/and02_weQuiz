@@ -86,9 +86,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun onSelectedChoiceNumChanged(changedNum: Int) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = currentState.questionCreationInfo.copy(
-                    answer = changedNum,
-                ),
+                questionCreationInfo = currentState.questionCreationInfo.copy(answer = changedNum),
             )
         }
         checkCreateQuestionValid()
@@ -123,7 +121,7 @@ class CreateQuestionViewModel @Inject constructor(
 
     private suspend fun saveQuestionToQuiz(quizId: String, questionId: String) {
         try {
-            quizRepository.updateQuizQuestionList(quizId, questionId).getOrThrow()
+            quizRepository.addQuestionToQuiz(quizId, questionId).getOrThrow()
 
             _createQuestionUiState.update { currentState ->
                 currentState.copy(

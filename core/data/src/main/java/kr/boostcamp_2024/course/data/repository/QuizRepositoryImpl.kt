@@ -20,7 +20,7 @@ class QuizRepositoryImpl @Inject constructor(
         requireNotNull(response).toVO(quizId)
     }
 
-    override suspend fun updateQuizQuestionList(quizId: String, questionId: String): Result<Unit> = runCatching {
+    override suspend fun addQuestionToQuiz(quizId: String, questionId: String): Result<Unit> = runCatching {
         val document = quizCollectionRef.document(quizId)
         document.update("questions", FieldValue.arrayUnion(questionId)).await()
     }
