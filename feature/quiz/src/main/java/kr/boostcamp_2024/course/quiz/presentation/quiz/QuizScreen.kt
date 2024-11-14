@@ -212,9 +212,9 @@ fun QuizScreen(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { onCreateQuestionButtonClick(quiz.id) },
-                        enabled = quiz.isOpened,
+                        enabled = quiz.isOpened.not(),
                     ) {
-                        when (quiz.isOpened) {
+                        when (quiz.isOpened.not()) {
                             true -> Text(text = stringResource(R.string.txt_open_create_question))
                             false -> Text(text = stringResource(R.string.txt_close_create_question))
                         }
@@ -223,7 +223,7 @@ fun QuizScreen(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { onStartQuizButtonClick(quiz.id) },
-                        enabled = (quiz.isOpened.not() && quiz.questions.isNotEmpty()),
+                        enabled = (quiz.isOpened && quiz.questions.isNotEmpty()),
                     ) {
                         when (quiz.isOpened && quiz.questions.isEmpty()) {
                             true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
