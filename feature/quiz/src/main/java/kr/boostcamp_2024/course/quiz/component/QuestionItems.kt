@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
-
 @Composable
 fun QuestionItems(choice: List<String>, answer: Int, onClick: () -> Unit) {
     Column(modifier = Modifier.selectableGroup()) {
@@ -17,7 +16,7 @@ fun QuestionItems(choice: List<String>, answer: Int, onClick: () -> Unit) {
             RadioTextButton(
                 text = it,
                 selected = selectedType == idx,
-                onclick = onClick
+                onclick = onClick,
             )
         }
     }

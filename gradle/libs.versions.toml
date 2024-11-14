@@ -4,7 +4,7 @@ androidDesugarJdkLibs = "2.1.2"
 
 # kotlin
 coilNetworkOkhttp = "3.0.2"
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 kotlinxSerializationJson = "1.7.3"
 
 # androidx
@@ -13,6 +13,9 @@ lifecycleRuntimeKtx = "2.8.6"
 appcompat = "1.6.1"
 material = "1.10.0"
 jetbrainsKotlinJvm = "2.0.0"
+
+# dataStore
+preferencesDataStore = "1.1.1"
 
 # kotlin symbol processing
 ksp = "2.0.21-1.0.25"
@@ -51,6 +54,8 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+preferences-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "preferencesDataStore" }
 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }

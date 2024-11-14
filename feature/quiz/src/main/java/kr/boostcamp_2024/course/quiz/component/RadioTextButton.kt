@@ -13,13 +13,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun RadioTextButton(
-    text: String, selected: Boolean, onclick: () -> Unit
+    text: String,
+    selected: Boolean,
+    onclick: () -> Unit,
 ) {
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onclick)
+            .clickable(onClick = onclick),
     ) {
         RadioButton(
             selected = selected,
@@ -27,13 +29,13 @@ fun RadioTextButton(
             enabled = false,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .padding(14.dp)
+                .padding(14.dp),
         )
         Text(
             text = text,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .padding(top = 10.dp, bottom = 10.dp, end = 7.dp)
+                .padding(top = 10.dp, bottom = 10.dp, end = 7.dp),
         )
     }
 }

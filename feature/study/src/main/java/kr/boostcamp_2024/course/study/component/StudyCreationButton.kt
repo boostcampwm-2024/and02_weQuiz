@@ -21,9 +21,11 @@ fun StudyCreationButton(onCreateStudySuccess: () -> Unit, modifier: Modifier = M
             .padding(16.dp),
     ) {
         Text(
-            text = stringResource(R.string.txt_study_creation_button), modifier = modifier, style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Medium
-            )
+            text = stringResource(R.string.txt_study_creation_button),
+            modifier = modifier,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Medium,
+            ),
         )
     }
 }

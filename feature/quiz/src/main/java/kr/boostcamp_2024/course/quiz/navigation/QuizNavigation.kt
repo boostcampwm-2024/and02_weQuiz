@@ -39,7 +39,7 @@ fun NavController.navigateQuestionDetail() {
 
 fun NavController.navigateQuestionScreen() {
     navigate(QuestionScreenRoute) {
-        popUpTo(QuizRoute) {
+        popUpTo(QuizRoute::class.java.name) {
             inclusive = true
         }
     }
@@ -51,7 +51,7 @@ fun NavController.navigateQuiz() {
 
 fun NavController.navigateQuizResult() {
     navigate(QuizResultRoute) {
-        popUpTo(QuestionScreenRoute) {
+        popUpTo(QuizRoute::class.java.name) {
             inclusive = true
         }
     }
@@ -65,9 +65,10 @@ fun NavGraphBuilder.quizNavGraph(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionSuccess: () -> Unit,
     onQuizFinished: () -> Unit,
-    onQuizStartButtonClick: () -> Unit,
     onQuestionClick: () -> Unit,
     onCreateQuizSuccess: () -> Unit,
+    onCreateQuestionButtonClick: () -> Unit,
+    onStartQuizButtonClick: () -> Unit,
 ) {
     composable<CreateQuestionRoute> {
         CreateQuestionScreen(
@@ -89,7 +90,8 @@ fun NavGraphBuilder.quizNavGraph(
     composable<QuizRoute> {
         QuizScreen(
             onNavigationButtonClick = onNavigationButtonClick,
-            onQuizStartButtonClick = onQuizStartButtonClick,
+            onCreateQuestionButtonClick = onCreateQuestionButtonClick,
+            onStartQuizButtonClick = onStartQuizButtonClick,
         )
     }
     composable<QuizResultRoute> {
@@ -105,5 +107,3 @@ fun NavGraphBuilder.quizNavGraph(
         )
     }
 }
-
-

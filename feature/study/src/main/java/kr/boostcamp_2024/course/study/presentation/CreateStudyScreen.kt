@@ -23,7 +23,6 @@ import kr.boostcamp_2024.course.study.component.StudyCreationButton
 import kr.boostcamp_2024.course.study.component.StudyCreationGuide
 import kr.boostcamp_2024.course.study.component.TitleTextField
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateStudyScreen(
@@ -41,22 +40,26 @@ fun CreateStudyScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .verticalScroll(scrollState)
+                .verticalScroll(scrollState),
         ) {
             StudyCreationGuide()
 
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
 
-                TitleTextField(titleText = titleText,
+                TitleTextField(
+                    titleText = titleText,
                     onTitleTextChange = { titleText = it },
-                    onClearTitleText = { titleText = "" })
+                    onClearTitleText = { titleText = "" },
+                )
 
-                DescriptionTextField(descriptionText = descriptionText,
+                DescriptionTextField(
+                    descriptionText = descriptionText,
                     onDescriptionTextChange = { descriptionText = it },
-                    onClearDescriptionText = { descriptionText = "" })
+                    onClearDescriptionText = { descriptionText = "" },
+                )
 
                 MembersDropDownMenu()
 
@@ -65,7 +68,6 @@ fun CreateStudyScreen(
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)

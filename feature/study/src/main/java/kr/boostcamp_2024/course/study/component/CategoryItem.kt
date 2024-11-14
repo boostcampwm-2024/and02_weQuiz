@@ -23,30 +23,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun CategoryItem(
     onClicked: () -> Unit,
-    title: String,
-    content: String,
-    author: String,
     quizCount: Int,
-    categoryImgUrl: String? = null,
-    profileImgUrl: String? = null,
+    category: Category,
+    profileImgUrl: String?,
+    author: String,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable(onClick = onClicked),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        QuizCountBadge(categoryImgUrl, quizCount)
-        DetailStudyDescription(title, content, profileImgUrl, author)
+        QuizCountBadge(category.categoryImageUrl, quizCount)
+        DetailStudyDescription(category.name, category.description ?: stringResource(R.string.txt_detail_study_no_category_description), profileImgUrl, author)
     }
 }
-
 
 @Composable
 fun QuizCountBadge(categoryImg: String?, quizCount: Int) {
@@ -58,20 +56,20 @@ fun QuizCountBadge(categoryImg: String?, quizCount: Int) {
                 .fillMaxSize()
                 .clip(MaterialTheme.shapes.extraLarge),
             imgUrl = categoryImg,
-            contentDescription = null
+            contentDescription = null,
         )
         Badge(
             modifier = Modifier
                 .padding(8.dp)
                 .size(24.dp)
                 .align(Alignment.TopEnd),
-            containerColor = MaterialTheme.colorScheme.error
+            containerColor = MaterialTheme.colorScheme.error,
         ) {
             Text(
                 text = quizCount.toString(),
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
     }
@@ -82,19 +80,19 @@ fun DetailStudyDescription(
     title: String,
     content: String,
     profileImg: String? = null,
-    author: String
+    author: String,
 ) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         Text(modifier = Modifier.padding(bottom = 4.dp), text = title, style = MaterialTheme.typography.titleLarge)
         Text(
             text = content,
             style = MaterialTheme.typography.bodyMedium,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
         Spacer(modifier = Modifier.weight(1f))
         AuthorComponent(profileImg, author)
@@ -104,7 +102,7 @@ fun DetailStudyDescription(
 @Composable
 fun AuthorComponent(
     profileImg: String? = null,
-    author: String
+    author: String,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         WeQuizAsyncImage(

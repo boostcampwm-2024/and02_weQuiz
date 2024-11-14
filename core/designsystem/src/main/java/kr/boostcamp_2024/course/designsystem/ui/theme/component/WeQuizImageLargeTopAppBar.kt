@@ -29,7 +29,7 @@ fun WeQuizImageLargeTopAppBar(
 ) {
 
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
 
         var imageHeight by remember { mutableIntStateOf(0) }
@@ -53,7 +53,7 @@ fun WeQuizImageLargeTopAppBar(
                 containerColor = Color.Transparent,
                 scrolledContainerColor = Color.Transparent,
             ),
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
         )
     }
 }

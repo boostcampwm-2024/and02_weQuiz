@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.study.R
 
 @Composable
@@ -25,25 +26,29 @@ fun CustomPropertyTab(
     onClicked: () -> Unit,
     imageVector: ImageVector,
     description: String? = null,
-    @StringRes title: Int
+    @StringRes title: Int,
+    currentGroup: StudyGroup,
 ) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(text = stringResource(title), style = MaterialTheme.typography.titleLarge)
         CustomIconButton(onClicked = onClicked, imageVector = imageVector, description = description)
         Spacer(modifier = Modifier.weight(1f))
-        AssistChip(onClick = {}, label = {
-            Text(
-                modifier = Modifier.padding(start = 8.dp),
-                text = "10명 / 50명",
-                style = MaterialTheme.typography.labelLarge
-            )
-        }, leadingIcon = {
-            Icon(
-                modifier = Modifier.size(18.dp),
-                imageVector = Icons.Filled.AccountCircle,
-                contentDescription = stringResource(R.string.assist_chip_top_bar_detail_study)
-            )
-        }
+        AssistChip(
+            onClick = {},
+            label = {
+                Text(
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = stringResource(R.string.assist_chip_detail_study_group_member_number, currentGroup.users.size, currentGroup.maxUserNum),
+                    style = MaterialTheme.typography.labelLarge,
+                )
+            },
+            leadingIcon = {
+                Icon(
+                    modifier = Modifier.size(18.dp),
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = stringResource(R.string.assist_chip_top_bar_detail_study),
+                )
+            },
         )
     }
 }
