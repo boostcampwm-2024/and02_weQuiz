@@ -9,4 +9,6 @@ interface StudyGroupRepository {
     suspend fun getStudyGroups(studyGroupIds: List<String>): Result<List<StudyGroup>>
 
     suspend fun getStudyGroup(studyGroupId: String): Result<StudyGroup>
+
+    suspend fun getStudyGroupName(studyGroupId: String): Result<String>
 }

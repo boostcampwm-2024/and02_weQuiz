@@ -21,11 +21,11 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<String> =
+    override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<Unit> =
         runCatching {
             val userDocRef = userCollectionRef.document(userId)
             userDocRef.update("study_groups", FieldValue.arrayUnion(studyId)).await()
-            studyId // TODO 성공 반환값 고민하기
+
         }
 
     override suspend fun getUsers(userIds: List<String>): Result<List<User>> =
