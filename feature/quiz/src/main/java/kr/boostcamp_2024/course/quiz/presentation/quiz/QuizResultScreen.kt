@@ -56,20 +56,36 @@ import kotlin.collections.List
 @Composable
 fun QuizResultScreen(
     onNavigationButtonClick: () -> Unit,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
     viewModel: QuizResultViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     QuizResultScreen(
         quizTitle = uiState.quizTitle,
         quizResult = uiState.quizResult,
-        isLoading = uiState.isLoading,
-        errorMessage = uiState.errorMessage,
-        onErrorMessageShown = viewModel::shownErrorMessage,
+        snackbarHostState = snackbarHostState,
         onNavigationButtonClick = onNavigationButtonClick,
         onQuestionClick = onQuestionClick,
     )
+
+    if (uiState.isLoading) {
+        Box {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+            )
+        }
+    }
+
+    uiState.errorMessage?.let { errorMessage ->
+        LaunchedEffect(errorMessage) {
+            snackbarHostState.showSnackbar(errorMessage)
+            viewModel.shownErrorMessage()
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,13 +93,10 @@ fun QuizResultScreen(
 fun QuizResultScreen(
     quizTitle: String?,
     quizResult: QuizResult?,
-    isLoading: Boolean,
-    errorMessage: String?,
-    onErrorMessageShown: () -> Unit,
+    snackbarHostState: SnackbarHostState,
     onNavigationButtonClick: () -> Unit,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -129,23 +142,6 @@ fun QuizResultScreen(
             }
         }
     }
-
-    if (isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
-    }
-
-    if (errorMessage != null) {
-        LaunchedEffect(errorMessage) {
-            snackbarHostState.showSnackbar(errorMessage)
-            onErrorMessageShown()
-        }
-    }
 }
 
 @Composable
@@ -185,7 +181,7 @@ fun QuizResultContent(
 @Composable
 fun QuestionResultListContent(
     questionResults: List<QuestionResult>,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
 ) {
     Text(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -208,13 +204,13 @@ fun QuestionResultListContent(
 @Composable
 fun QuestionResultItem(
     questionResult: QuestionResult,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
 ) {
     Row(
         modifier = Modifier
             .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-            .clickable(onClick = onQuestionClick)
+            .clickable(onClick = { onQuestionClick(questionResult.question.id) })
             .padding(10.dp)
             .fillMaxWidth()
             .height(IntrinsicSize.Min),

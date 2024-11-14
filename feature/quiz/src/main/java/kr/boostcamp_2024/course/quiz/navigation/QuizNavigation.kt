@@ -17,7 +17,9 @@ data class CreateQuestionRoute(
 )
 
 @Serializable
-data object QuestionDetailRoute
+data class QuestionDetailRoute(
+    val questionId: String,
+)
 
 @Serializable
 data class QuestionRoute(
@@ -40,8 +42,8 @@ fun NavController.navigateCreateQuestion(quizId: String) {
     navigate(CreateQuestionRoute(quizId))
 }
 
-fun NavController.navigateQuestionDetail() {
-    navigate(QuestionDetailRoute)
+fun NavController.navigateQuestionDetail(questionId: String) {
+    navigate(QuestionDetailRoute(questionId))
 }
 
 fun NavController.navigateQuestion(quizId: String) {
@@ -72,7 +74,7 @@ fun NavGraphBuilder.quizNavGraph(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionSuccess: () -> Unit,
     onQuizFinished: () -> Unit,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
     onCreateQuizSuccess: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
