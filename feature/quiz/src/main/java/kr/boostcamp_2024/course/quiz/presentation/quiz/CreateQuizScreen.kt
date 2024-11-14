@@ -1,6 +1,7 @@
 package kr.boostcamp_2024.course.quiz.presentation.quiz
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,14 +17,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,17 +61,20 @@ fun CreateQuizScreen(
         quizDate = uiState.quizDate,
         quizSolveTime = uiState.quizSolveTime,
         createQuizButtonEnabled = uiState.isCreateQuizButtonEnabled,
+        isLoading = uiState.isLoading,
+        errorMessage = uiState.errorMessage,
         onQuizTitleChange = viewModel::setQuizTitle,
         onQuizDescriptionChange = viewModel::setQuizDescription,
         onQuizDateChange = viewModel::setQuizDate,
         onQuizSolveTimeChange = viewModel::setQuizSolveTime,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuizButtonClick = viewModel::createQuiz,
+        onErrorMessageShown = viewModel::shownErrorMessage,
     )
 
     if (uiState.isCreateQuizSuccess) {
         LaunchedEffect(Unit) {
-            onCreateQuizSuccess() // TODO: argument to CategoryScreen
+            onCreateQuizSuccess()
         }
     }
 }
@@ -79,13 +87,18 @@ fun CreateQuizScreen(
     quizDate: String,
     quizSolveTime: Float,
     createQuizButtonEnabled: Boolean,
+    isLoading: Boolean,
+    errorMessage: String?,
     onQuizTitleChange: (String) -> Unit,
     onQuizDescriptionChange: (String) -> Unit,
     onQuizDateChange: (String) -> Unit,
     onQuizSolveTimeChange: (Float) -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: () -> Unit,
+    onErrorMessageShown: () -> Unit,
 ) {
+
+    val snackBarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         topBar = {
@@ -102,6 +115,9 @@ fun CreateQuizScreen(
                     }
                 },
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
         },
     ) { innerPadding ->
         Column(
@@ -177,6 +193,23 @@ fun CreateQuizScreen(
             }
         }
     }
+
+    if (isLoading) {
+        Box {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+            )
+        }
+    }
+
+    if (errorMessage != null) {
+        LaunchedEffect(errorMessage) {
+            snackBarHostState.showSnackbar(errorMessage)
+            onErrorMessageShown()
+        }
+    }
 }
 
 @Preview(showBackground = true)
@@ -189,12 +222,15 @@ fun CreateQuizScreenPreview() {
             quizDate = "",
             quizSolveTime = 10f,
             createQuizButtonEnabled = true,
+            isLoading = false,
+            errorMessage = null,
             onQuizTitleChange = {},
             onQuizDescriptionChange = {},
             onQuizDateChange = {},
             onQuizSolveTimeChange = {},
             onNavigationButtonClick = {},
             onCreateQuizButtonClick = {},
+            onErrorMessageShown = {},
         )
     }
 }

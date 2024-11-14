@@ -93,4 +93,8 @@ class CreateQuizViewModel @Inject constructor(
                 }
         }
     }
+
+    fun shownErrorMessage() {
+        _uiState.update { it.copy(errorMessage = null) }
+    }
 }
