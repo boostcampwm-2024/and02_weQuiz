@@ -51,7 +51,7 @@ fun StudyGroupItem(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable(onClick = {onStudyGroupClick(studyGroup.id)}),
+                    .clickable(onClick = { onStudyGroupClick(studyGroup.id) }),
             ) {
                 Text(
                     text = studyGroup.name,
