@@ -6,4 +6,6 @@ interface CategoryRepository {
     suspend fun getCategories(categoryIds: List<String>): Result<List<Category>>
 
     suspend fun getCategory(categoryId: String): Result<Category>
+
+    suspend fun addQuiz(categoryId: String, quizId: String): Result<Unit>
 }

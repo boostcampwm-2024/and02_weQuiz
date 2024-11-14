@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.QuizCreationInfo
+import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.quiz.navigation.CreateQuizRoute
 import javax.inject.Inject
@@ -20,6 +21,8 @@ data class CreateQuizUiState(
     val quizDescription: String = "",
     val quizDate: String = "",
     val quizSolveTime: Float = 10f,
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
     val isCreateQuizSuccess: Boolean = false,
 ) {
     val isCreateQuizButtonEnabled: Boolean
@@ -29,16 +32,13 @@ data class CreateQuizUiState(
 @HiltViewModel
 class CreateQuizViewModel @Inject constructor(
     private val quizRepository: QuizRepository,
+    private val categoryRepository: CategoryRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val categoryId: String = savedStateHandle.toRoute<CreateQuizRoute>().categoryId
 
     private val _uiState = MutableStateFlow(CreateQuizUiState())
     val uiState = _uiState.asStateFlow()
-
-    init {
-        Log.d("CreateQuizViewModel", categoryId)
-    }
 
     fun setQuizTitle(quizTitle: String) {
         _uiState.update { it.copy(quizTitle = quizTitle) }
@@ -58,6 +58,8 @@ class CreateQuizViewModel @Inject constructor(
 
     fun createQuiz() {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
             quizRepository.createQuiz(
                 QuizCreationInfo(
                     quizTitle = uiState.value.quizTitle,
@@ -68,9 +70,27 @@ class CreateQuizViewModel @Inject constructor(
             )
                 .onSuccess { quizId ->
                     Log.d("CreateQuizViewModel", quizId)
-                    _uiState.update { it.copy(isCreateQuizSuccess = true) }
+                    addQuizToCategory(quizId)
                 }
-                .onFailure { /* error */ }
+                .onFailure {
+                    Log.d("CreateQuizViewModel", "Failed to create quiz")
+                    _uiState.update { it.copy(isLoading = false, errorMessage = it.errorMessage) }
+                }
+        }
+    }
+
+    fun addQuizToCategory(quizId: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            categoryRepository.addQuiz(categoryId, quizId)
+                .onSuccess {
+                    _uiState.update { it.copy(isLoading = false, isCreateQuizSuccess = true) }
+                }
+                .onFailure {
+                    Log.d("CreateQuizViewModel", "Failed to add quiz to category")
+                    _uiState.update { it.copy(isLoading = false, errorMessage = it.errorMessage) }
+                }
         }
     }
 }

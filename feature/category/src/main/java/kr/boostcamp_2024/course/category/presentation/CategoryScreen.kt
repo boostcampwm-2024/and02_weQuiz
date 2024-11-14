@@ -50,7 +50,7 @@ fun CategoryScreen(
     onQuizClick: () -> Unit,
 ) {
     val dummyCategory = Category(
-        id = "123",
+        id = "tbaGgtjOlxx7m6ATBGmu",
         name = "안드 마스터",
         description = "안드로이드 마스터가 되어 보아요!!",
         categoryImageUrl = null,
