@@ -20,7 +20,7 @@ data class QuizDTO(
     fun toVO(quizId: String): Quiz = Quiz(
         id = quizId,
         title = requireNotNull(title),
-        description = requireNotNull(description),
+        description = description,
         startTime = requireNotNull(startTime),
         solveTime = requireNotNull(solveTime),
         questions = requireNotNull(questions),

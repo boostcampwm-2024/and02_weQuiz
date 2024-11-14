@@ -1,8 +1,10 @@
 package kr.boostcamp_2024.course.study.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +19,7 @@ import kr.boostcamp_2024.course.domain.repository.NotificationRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.study.R
+import kr.boostcamp_2024.course.study.navigation.StudyRoute
 import javax.inject.Inject
 
 data class DetailStudyUiState(
@@ -34,7 +37,10 @@ class DetailStudyViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val categoryRepository: CategoryRepository,
     private val notificationRepository: NotificationRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+    private val studyGroupId: String = savedStateHandle.toRoute<StudyRoute>().studyGroupId
+
     private val _uiState: MutableStateFlow<DetailStudyUiState> = MutableStateFlow(DetailStudyUiState())
     val uiState: StateFlow<DetailStudyUiState> = _uiState.asStateFlow()
 
@@ -45,89 +51,93 @@ class DetailStudyViewModel @Inject constructor(
     private fun loadStudyGroup() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            // TODO: getCurrentGroup
-            studyGroupRepository.getStudyGroup("Jn1m6Pr8B3a9gfZvNLKB").onSuccess { currentGroup ->
-                val ownerId = currentGroup.ownerId
-                val categoryIds = currentGroup.categories
-                val userIds = currentGroup.users
-                loadCategories(currentGroup, categoryIds)
-                loadUsers(currentGroup, userIds)
-                loadOwner(currentGroup, ownerId)
-            }.onFailure {
-                Log.e("DetailStudyViewModel", "Failed to load study group", it)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessageId = R.string.error_message_load_study_group,
-                    )
+            studyGroupRepository.getStudyGroup(studyGroupId)
+                .onSuccess { currentGroup ->
+                    val ownerId = currentGroup.ownerId
+                    val categoryIds = currentGroup.categories
+                    val userIds = currentGroup.users
+                    loadCategories(currentGroup, categoryIds)
+                    loadUsers(currentGroup, userIds)
+                    loadOwner(currentGroup, ownerId)
+                }.onFailure {
+                    Log.e("DetailStudyViewModel", "Failed to load study group", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessageId = R.string.error_message_load_study_group,
+                        )
+                    }
                 }
-            }
         }
     }
 
     private fun loadCategories(currentGroup: StudyGroup, categoryIds: List<String>) {
         viewModelScope.launch {
-            categoryRepository.getCategories(categoryIds).onSuccess { categories ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        currentGroup = currentGroup,
-                        categories = categories,
-                    )
+            categoryRepository.getCategories(categoryIds)
+                .onSuccess { categories ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            currentGroup = currentGroup,
+                            categories = categories,
+                        )
+                    }
                 }
-            }.onFailure { it ->
-                Log.e("DetailStudyViewModel", "Failed to load categories", it)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessageId = R.string.error_message_load_categories,
-                    )
+                .onFailure { it ->
+                    Log.e("DetailStudyViewModel", "Failed to load categories", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessageId = R.string.error_message_load_categories,
+                        )
+                    }
                 }
-            }
         }
     }
 
     private fun loadUsers(currentGroup: StudyGroup, userIds: List<String>) {
         viewModelScope.launch {
-            userRepository.getUsers(userIds).onSuccess { users ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        currentGroup = currentGroup,
-                        users = users,
-                    )
+            userRepository.getUsers(userIds)
+                .onSuccess { users ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            currentGroup = currentGroup,
+                            users = users,
+                        )
+                    }
+                }.onFailure {
+                    Log.e("DetailStudyViewModel", "Failed to load users", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessageId = R.string.error_message_load_users,
+                        )
+                    }
                 }
-            }.onFailure {
-                Log.e("DetailStudyViewModel", "Failed to load users", it)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessageId = R.string.error_message_load_users,
-                    )
-                }
-            }
         }
     }
 
     private fun loadOwner(currentGroup: StudyGroup, ownerId: String) {
         viewModelScope.launch {
-            userRepository.getUser(ownerId).onSuccess { owner ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        currentGroup = currentGroup,
-                        owner = owner,
-                    )
+            userRepository.getUser(ownerId)
+                .onSuccess { owner ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            currentGroup = currentGroup,
+                            owner = owner,
+                        )
+                    }
+                }.onFailure {
+                    Log.e("DetailStudyViewModel", "Failed to load users", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessageId = R.string.error_message_load_owner,
+                        )
+                    }
                 }
-            }.onFailure {
-                Log.e("DetailStudyViewModel", "Failed to load users", it)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessageId = R.string.error_message_load_owner,
-                    )
-                }
-            }
         }
     }
 
