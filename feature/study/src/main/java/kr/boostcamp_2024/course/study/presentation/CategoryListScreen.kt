@@ -26,7 +26,7 @@ fun CategoryListScreen(
     currentGroup: StudyGroup,
     categories: List<Category>,
     createCategoryClick: (String) -> Unit,
-    categoryItemClick: () -> Unit,
+    categoryItemClick: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -48,7 +48,7 @@ fun CategoryListScreen(
 fun CategoryLazyColumn(
     owner: User?,
     categories: List<Category>,
-    categoryItemClick: () -> Unit,
+    categoryItemClick: (String) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         itemsIndexed(items = categories, key = { _, category -> category.id }) { index, category ->

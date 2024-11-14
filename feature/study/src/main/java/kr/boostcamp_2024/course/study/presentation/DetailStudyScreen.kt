@@ -53,7 +53,7 @@ fun DetailStudyScreen(
     viewModel: DetailStudyViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: (String) -> Unit,
-    onCategoryClick: () -> Unit,
+    onCategoryClick: (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     DetailStudyScreen(
@@ -86,7 +86,7 @@ fun DetailStudyScreen(
     onErrorMessageShown: () -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: (String) -> Unit,
-    onCategoryClick: () -> Unit,
+    onCategoryClick: (String) -> Unit,
     onRemoveStudyGroupMemberButtonClick: (String, String) -> Unit,
     onInviteConfirmButtonClick: (String, String) -> Unit,
 ) {
