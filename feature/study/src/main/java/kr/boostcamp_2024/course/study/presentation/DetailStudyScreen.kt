@@ -52,7 +52,7 @@ import kr.boostcamp_2024.course.study.viewmodel.DetailStudyViewModel
 fun DetailStudyScreen(
     viewModel: DetailStudyViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
-    onCreateCategoryButtonClick: () -> Unit,
+    onCreateCategoryButtonClick: (String) -> Unit,
     onCategoryClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -83,7 +83,7 @@ fun DetailStudyScreen(
     errorMessageId: Int?,
     onErrorMessageShown: () -> Unit,
     onNavigationButtonClick: () -> Unit,
-    onCreateCategoryButtonClick: () -> Unit,
+    onCreateCategoryButtonClick: (String) -> Unit,
     onCategoryClick: () -> Unit,
     onRemoveStudyGroupMemberButtonClick: (String) -> Unit,
     onInviteConfirmButtonClick: (String, String) -> Unit,
@@ -159,27 +159,30 @@ fun DetailStudyScreen(
             SnackbarHost(hostState = snackBarHostState)
         },
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-        ) {
-            when (selectedScreenIndex) {
-                0 -> CategoryListScreen(
-                    owner,
-                    currentGroup,
-                    categories,
-                    onCreateCategoryButtonClick,
-                    onCategoryClick,
-                )
+        if (currentGroup != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+            ) {
+                when (selectedScreenIndex) {
+                    0 -> CategoryListScreen(
+                        owner,
+                        currentGroup,
+                        categories,
+                        onCreateCategoryButtonClick,
+                        onCategoryClick,
+                    )
 
-                1 -> GroupListScreen(
-                    currentGroup,
-                    users,
-                    onRemoveStudyGroupMemberButtonClick,
-                    onInviteConfirmButtonClick,
-                )
+                    1 -> GroupListScreen(
+                        currentGroup,
+                        users,
+                        onRemoveStudyGroupMemberButtonClick,
+                        onInviteConfirmButtonClick,
+                    )
+                }
             }
+
         }
     }
 
