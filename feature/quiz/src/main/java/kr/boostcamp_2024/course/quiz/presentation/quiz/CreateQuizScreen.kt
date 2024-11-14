@@ -27,7 +27,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,32 +48,48 @@ import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuizViewModel
 
 @Composable
 fun CreateQuizScreen(
-    viewModel: CreateQuizViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
     onCreateQuizSuccess: () -> Unit,
+    viewModel: CreateQuizViewModel = hiltViewModel(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     CreateQuizScreen(
-        quizTitle = uiState.quizTitle,
-        quizDescription = uiState.quizDescription,
-        quizDate = uiState.quizDate,
-        quizSolveTime = uiState.quizSolveTime,
-        createQuizButtonEnabled = uiState.isCreateQuizButtonEnabled,
-        isLoading = uiState.isLoading,
-        errorMessage = uiState.errorMessage,
+        quizTitle = uiState.value.quizTitle,
+        quizDescription = uiState.value.quizDescription,
+        quizDate = uiState.value.quizDate,
+        quizSolveTime = uiState.value.quizSolveTime,
+        createQuizButtonEnabled = uiState.value.isCreateQuizButtonEnabled,
+        snackBarHostState = snackBarHostState,
         onQuizTitleChange = viewModel::setQuizTitle,
         onQuizDescriptionChange = viewModel::setQuizDescription,
         onQuizDateChange = viewModel::setQuizDate,
         onQuizSolveTimeChange = viewModel::setQuizSolveTime,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuizButtonClick = viewModel::createQuiz,
-        onErrorMessageShown = viewModel::shownErrorMessage,
     )
 
-    if (uiState.isCreateQuizSuccess) {
+    if (uiState.value.isCreateQuizSuccess) {
         LaunchedEffect(Unit) {
             onCreateQuizSuccess()
+        }
+    }
+
+    if (uiState.value.isLoading) {
+        Box {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+            )
+        }
+    }
+
+    LaunchedEffect(uiState.value.errorMessage) {
+        uiState.value.errorMessage?.let { errorMessage ->
+            snackBarHostState.showSnackbar(errorMessage)
+            viewModel.shownErrorMessage()
         }
     }
 }
@@ -87,18 +102,14 @@ fun CreateQuizScreen(
     quizDate: String,
     quizSolveTime: Float,
     createQuizButtonEnabled: Boolean,
-    isLoading: Boolean,
-    errorMessage: String?,
+    snackBarHostState: SnackbarHostState,
     onQuizTitleChange: (String) -> Unit,
     onQuizDescriptionChange: (String) -> Unit,
     onQuizDateChange: (String) -> Unit,
     onQuizSolveTimeChange: (Float) -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: () -> Unit,
-    onErrorMessageShown: () -> Unit,
 ) {
-
-    val snackBarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         topBar = {
@@ -193,23 +204,6 @@ fun CreateQuizScreen(
             }
         }
     }
-
-    if (isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
-    }
-
-    if (errorMessage != null) {
-        LaunchedEffect(errorMessage) {
-            snackBarHostState.showSnackbar(errorMessage)
-            onErrorMessageShown()
-        }
-    }
 }
 
 @Preview(showBackground = true)
@@ -222,15 +216,13 @@ fun CreateQuizScreenPreview() {
             quizDate = "",
             quizSolveTime = 10f,
             createQuizButtonEnabled = true,
-            isLoading = false,
-            errorMessage = null,
             onQuizTitleChange = {},
             onQuizDescriptionChange = {},
             onQuizDateChange = {},
             onQuizSolveTimeChange = {},
             onNavigationButtonClick = {},
             onCreateQuizButtonClick = {},
-            onErrorMessageShown = {},
+            snackBarHostState = remember { SnackbarHostState() },
         )
     }
 }
