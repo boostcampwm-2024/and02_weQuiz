@@ -42,4 +42,13 @@ class QuizRepositoryImpl @Inject constructor(
             val response = document.toObject(QuizDTO::class.java)
             requireNotNull(response).toVO(quizId)
         }
+
+    override suspend fun getQuizList(quizIdList: List<String>): Result<List<Quiz>> =
+        runCatching {
+            quizIdList.map { quizId ->
+                val document = quizCollectionRef.document(quizId).get().await()
+                val response = document.toObject(QuizDTO::class.java)
+                requireNotNull(response).toVO(quizId)
+            }
+        }
 }

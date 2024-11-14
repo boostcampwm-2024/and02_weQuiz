@@ -24,7 +24,10 @@ data object QuestionDetailRoute
 data object QuestionScreenRoute
 
 @Serializable
-data object QuizRoute
+data class QuizRoute(
+    val categoryId: String,
+    val quizId: String,
+)
 
 @Serializable
 data object QuizResultRoute
@@ -48,8 +51,8 @@ fun NavController.navigateQuestionScreen() {
     }
 }
 
-fun NavController.navigateQuiz() {
-    navigate(QuizRoute)
+fun NavController.navigateQuiz(categoryId: String, quizId: String) {
+    navigate(QuizRoute(categoryId, quizId))
 }
 
 fun NavController.navigateQuizResult() {
