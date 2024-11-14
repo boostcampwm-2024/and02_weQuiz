@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizChatBubble
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
@@ -18,7 +19,7 @@ fun QuestionDescription(description: String) {
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Text(text = stringResource(R.string.txt_question_detail_description), modifier = Modifier, style = MaterialTheme.typography.bodyMedium)
-        ChatBubble(description)
+        WeQuizChatBubble(text = description)
     }
     HorizontalDivider(modifier = Modifier)
 }
