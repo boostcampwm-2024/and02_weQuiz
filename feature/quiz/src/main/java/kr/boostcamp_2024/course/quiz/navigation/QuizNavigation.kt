@@ -19,7 +19,9 @@ data object CreateQuestionRoute
 data object QuestionDetailRoute
 
 @Serializable
-data object QuestionScreenRoute
+data class QuestionScreenRoute(
+    val quizId: String,
+)
 
 @Serializable
 data object QuizRoute
@@ -38,10 +40,11 @@ fun NavController.navigateQuestionDetail() {
     navigate(QuestionDetailRoute)
 }
 
-@SuppressLint("RestrictedApi")
-fun NavController.navigateQuestionScreen() {
-    navigate(QuestionScreenRoute) {
-        popUpTo(QuizRoute) {
+fun NavController.navigateQuestionScreen(
+    quizId: String,
+) {
+    navigate(QuestionScreenRoute(quizId)) {
+        popUpTo(QuizRoute::class.java.name) {
             inclusive = true
         }
     }
@@ -51,10 +54,9 @@ fun NavController.navigateQuiz() {
     navigate(QuizRoute)
 }
 
-@SuppressLint("RestrictedApi")
 fun NavController.navigateQuizResult() {
     navigate(QuizResultRoute) {
-        popUpTo(QuestionScreenRoute) {
+        popUpTo(QuestionScreenRoute::class.java.name) {
             inclusive = true
         }
     }
@@ -71,7 +73,7 @@ fun NavGraphBuilder.quizNavGraph(
     onQuestionClick: () -> Unit,
     onCreateQuizSuccess: () -> Unit,
     onCreateQuestionButtonClick: () -> Unit,
-    onStartQuizButtonClick: () -> Unit,
+    onStartQuizButtonClick: (String) -> Unit,
 ) {
     composable<CreateQuestionRoute> {
         CreateQuestionScreen(
