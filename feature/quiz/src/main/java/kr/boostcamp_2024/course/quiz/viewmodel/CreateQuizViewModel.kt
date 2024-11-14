@@ -24,6 +24,8 @@ data class CreateQuizUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val isCreateQuizSuccess: Boolean = false,
+    val isLoading: Boolean = false,
+    val snackBarMessage: String? = null,
 ) {
     val isCreateQuizButtonEnabled: Boolean
         get() = quizTitle.isNotBlank() && quizDate.isNotBlank() && quizSolveTime > 0
@@ -39,6 +41,7 @@ class CreateQuizViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(CreateQuizUiState())
     val uiState = _uiState.asStateFlow()
+    private val categoryId = savedStateHandle.toRoute<CreateQuizRoute>().categoryId
 
     fun setQuizTitle(quizTitle: String) {
         _uiState.update { it.copy(quizTitle = quizTitle) }
@@ -57,6 +60,7 @@ class CreateQuizViewModel @Inject constructor(
     }
 
     fun createQuiz() {
+        setLoadingState()
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
@@ -67,6 +71,43 @@ class CreateQuizViewModel @Inject constructor(
                     quizDate = uiState.value.quizDate,
                     quizSolveTime = uiState.value.quizSolveTime.toInt(),
                 ),
+            ).onSuccess { quizId ->
+                saveQuizToCategory(quizId)
+            }.onFailure {
+                Log.e("CreateQuizViewModel", it.message, it)
+                setNewSnackBarMessage("퀴즈 생성에 실패했습니다.")
+            }
+        }
+    }
+
+    private suspend fun saveQuizToCategory(quizId: String) {
+        try {
+            categoryRepository.addQuizToCategory(categoryId, quizId).getOrThrow()
+
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    isCreateQuizSuccess = true,
+                )
+            }
+        } catch (exception: Exception) {
+            Log.e("CreateQuizViewModel", exception.message, exception)
+            setNewSnackBarMessage("퀴즈 저장에 실패했습니다.")
+        }
+    }
+
+    private fun setLoadingState() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                isLoading = true,
+            )
+        }
+    }
+
+    fun setNewSnackBarMessage(message: String?) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                snackBarMessage = message,
             )
                 .onSuccess { quizId ->
                     Log.d("CreateQuizViewModel", quizId)

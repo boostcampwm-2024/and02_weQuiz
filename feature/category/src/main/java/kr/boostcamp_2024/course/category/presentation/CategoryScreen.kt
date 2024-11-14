@@ -83,7 +83,8 @@ private fun CategoryScreen(
     onQuizClick: (String, String) -> Unit,
     setNewSnackBarMessage: (String) -> Unit,
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         topBar = {

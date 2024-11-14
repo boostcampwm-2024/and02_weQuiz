@@ -55,23 +55,39 @@ import kr.boostcamp_2024.course.main.viewmodel.MainViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel(),
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyGroupClick: (String) -> Unit,
+    viewModel: MainViewModel = hiltViewModel(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     MainScreen(
         currentUser = uiState.currentUser,
         studyGroups = uiState.studyGroups,
-        isLoading = uiState.isLoading,
-        errorMessage = uiState.errorMessage,
-        onErrorMessageShown = viewModel::shownErrorMessage,
+        snackBarHostState = snackBarHostState,
         onNotificationButtonClick = onNotificationButtonClick,
         onCreateStudyButtonClick = onCreateStudyButtonClick,
         onStudyGroupClick = onStudyGroupClick,
     )
+
+    if (uiState.isLoading) {
+        Box {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+            )
+        }
+    }
+
+    uiState.errorMessage?.let { errorMessage ->
+        LaunchedEffect(errorMessage) {
+            snackBarHostState.showSnackbar(errorMessage)
+            viewModel.shownErrorMessage()
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,9 +95,7 @@ fun MainScreen(
 fun MainScreen(
     currentUser: User?,
     studyGroups: List<StudyGroup>,
-    isLoading: Boolean,
-    errorMessage: String?,
-    onErrorMessageShown: () -> Unit,
+    snackBarHostState: SnackbarHostState,
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyGroupClick: (String) -> Unit,
@@ -89,7 +103,6 @@ fun MainScreen(
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val coroutineScope = rememberCoroutineScope()
-    val snackBarHostState = remember { SnackbarHostState() }
 
     var state by rememberSaveable { mutableIntStateOf(0) }
     val titles = stringArrayResource(R.array.main_tabs_titles)
@@ -180,23 +193,6 @@ fun MainScreen(
             }
         }
     }
-
-    if (isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
-    }
-
-    if (errorMessage != null) {
-        LaunchedEffect(errorMessage) {
-            snackBarHostState.showSnackbar(errorMessage)
-            onErrorMessageShown()
-        }
-    }
 }
 
 @Composable
@@ -240,9 +236,7 @@ fun MainScreenPreview() {
                     categories = emptyList(),
                 ),
             ),
-            isLoading = true,
-            errorMessage = null,
-            onErrorMessageShown = {},
+            snackBarHostState = SnackbarHostState(),
             onNotificationButtonClick = {},
             onCreateStudyButtonClick = {},
             onStudyGroupClick = {},
