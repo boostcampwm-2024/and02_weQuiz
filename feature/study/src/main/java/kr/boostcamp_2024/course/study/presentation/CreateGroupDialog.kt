@@ -15,7 +15,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.study.R
 
 @Composable
-fun CreateGroupDialog(onDismissButtonClick: () -> Unit, onConfirmButtonClick: () -> Unit) {
+fun CreateGroupDialog(onDismissButtonClick: () -> Unit, onConfirmButtonClick: (String, String) -> Unit, groupId: String) {
     var email by remember { mutableStateOf("") }
     val isEmailValid = remember(email) { Patterns.EMAIL_ADDRESS.matcher(email).matches() }
     WeQuizBaseDialog(
@@ -23,7 +23,7 @@ fun CreateGroupDialog(onDismissButtonClick: () -> Unit, onConfirmButtonClick: ()
         dialogImage = painterResource(id = R.drawable.waterfall),
         confirmTitle = stringResource(R.string.btn_dialog_create_group_confirm),
         dismissTitle = stringResource(R.string.btn_dialog_create_group_dismiss),
-        onConfirm = { onConfirmButtonClick() },
+        onConfirm = { onConfirmButtonClick(groupId, email) },
         onDismissRequest = onDismissButtonClick,
         content = {
             WeQuizTextField(
@@ -41,6 +41,6 @@ fun CreateGroupDialog(onDismissButtonClick: () -> Unit, onConfirmButtonClick: ()
 @Composable
 private fun CreateGroupScreenPreview() {
     WeQuizTheme {
-        CreateGroupDialog(onConfirmButtonClick = {}, onDismissButtonClick = {})
+        CreateGroupDialog(onConfirmButtonClick = { email, groupId -> }, onDismissButtonClick = {}, groupId = "1234")
     }
 }
