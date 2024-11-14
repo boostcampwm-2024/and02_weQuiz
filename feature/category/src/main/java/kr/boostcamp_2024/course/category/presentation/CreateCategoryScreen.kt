@@ -51,52 +51,49 @@ fun CreateCategoryScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(text = "카테고리 생성")
-                    //stringResource(R.string.top_app_bar_create_quiz)
+                    Text(text = stringResource(R.string.top_app_bar_create_category))
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigationButtonClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "뒤로 가기"
+                            contentDescription = stringResource(R.string.des_btn_back),
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 WeQuizLocalRoundedImage(
                     modifier = Modifier.size(120.dp),
                     imagePainter = painterResource(R.drawable.sample_profile),
-                    contentDescription = null
+                    contentDescription = null,
                 )
                 WeQuizLeftChatBubble(text = stringResource(R.string.txt_create_category_guide))
             }
 
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 WeQuizTextField(
-                    label = stringResource(R.string.txt_create_category_title_label),
+                    label = stringResource(R.string.txt_create_category_name_label),
                     text = state.categoryTitle,
-                    maxLines = 1,
-                    minLines = 1,
                     onTextChanged = { state = state.copy(categoryTitle = it) },
-                    placeholder = stringResource(R.string.txt_create_category_title_placeholder),
+                    placeholder = stringResource(R.string.txt_create_category_name_placeholder),
                 )
                 WeQuizTextField(
                     label = stringResource(R.string.txt_create_category_des_label),
@@ -108,15 +105,14 @@ fun CreateCategoryScreen(
                 )
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = onCreateCategorySuccess
+                    onClick = onCreateCategorySuccess,
                     /*
                     TODO 카테고리 생성
                     state.categoryDescription
                     state.categoryTitle
-                      */
+                     */
                 ) {
                     Text(text = stringResource(R.string.btn_create_category))
-                    //stringResource(R.string.btn_create_quiz)
                 }
             }
         }
