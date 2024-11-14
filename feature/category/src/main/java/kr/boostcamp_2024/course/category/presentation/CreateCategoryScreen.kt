@@ -49,6 +49,9 @@ fun CreateCategoryScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState) {
+        if (uiState.creationSuccess) {
+            onCreateCategorySuccess()
+        }
         uiState.errorMessage?.let { message ->
             snackbarHostState.showSnackbar(message)
             viewModel.setErrorMessage(null)
@@ -63,7 +66,6 @@ fun CreateCategoryScreen(
         onNameChanged = viewModel::onNameChanged,
         onDescriptionChanged = viewModel::onDescriptionChanged,
         onNavigationButtonClick = onNavigationButtonClick,
-        onCreateCategorySuccess = onCreateCategorySuccess,
         onCreateCategoryButtonClick = viewModel::createCategory,
     )
 }
@@ -78,7 +80,6 @@ fun CreateCategoryScreen(
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onNavigationButtonClick: () -> Unit,
-    onCreateCategorySuccess: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
 ) {
     Scaffold(
