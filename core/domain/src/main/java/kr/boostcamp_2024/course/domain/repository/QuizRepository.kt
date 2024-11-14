@@ -6,7 +6,7 @@ import kr.boostcamp_2024.course.domain.model.QuizCreationInfo
 interface QuizRepository {
     suspend fun getQuiz(quizId: String): Result<Quiz>
 
-    suspend fun updateQuizQuestionList(quizId: String, questionList: List<String>): Result<Unit>
+    suspend fun updateQuizQuestionList(quizId: String, questionId: String): Result<Unit>
 
     suspend fun createQuiz(quizCreateInfo: QuizCreationInfo): Result<String>
 }
