@@ -86,9 +86,9 @@ fun CreateQuizScreen(
         }
     }
 
-    LaunchedEffect(uiState.value.errorMessage) {
-        uiState.value.errorMessage?.let { errorMessage ->
-            snackBarHostState.showSnackbar(errorMessage)
+    LaunchedEffect(uiState.value.snackBarMessage) {
+        uiState.value.snackBarMessage?.let { snackBarMessage ->
+            snackBarHostState.showSnackbar(snackBarMessage)
             viewModel.shownErrorMessage()
         }
     }

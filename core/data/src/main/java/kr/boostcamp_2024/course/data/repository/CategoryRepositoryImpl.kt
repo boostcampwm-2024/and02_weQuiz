@@ -46,7 +46,8 @@ class CategoryRepositoryImpl @Inject constructor(
     override suspend fun addQuiz(categoryId: String, quizId: String): Result<Unit> =
         runCatching {
             categoryCollectionRef.document(categoryId).update("quizzes", FieldValue.arrayUnion(quizId)).await()
-            
+        }
+
     override suspend fun addQuizToCategory(categoryId: String, quizId: String): Result<Unit> =
         runCatching {
             val document = categoryCollectionRef.document(categoryId)

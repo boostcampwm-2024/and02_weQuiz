@@ -21,8 +21,6 @@ data class CreateQuizUiState(
     val quizDescription: String = "",
     val quizDate: String = "",
     val quizSolveTime: Float = 10f,
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null,
     val isCreateQuizSuccess: Boolean = false,
     val isLoading: Boolean = false,
     val snackBarMessage: String? = null,
@@ -41,7 +39,6 @@ class CreateQuizViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(CreateQuizUiState())
     val uiState = _uiState.asStateFlow()
-    private val categoryId = savedStateHandle.toRoute<CreateQuizRoute>().categoryId
 
     fun setQuizTitle(quizTitle: String) {
         _uiState.update { it.copy(quizTitle = quizTitle) }
@@ -105,37 +102,10 @@ class CreateQuizViewModel @Inject constructor(
     }
 
     fun setNewSnackBarMessage(message: String?) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                snackBarMessage = message,
-            )
-                .onSuccess { quizId ->
-                    Log.d("CreateQuizViewModel", quizId)
-                    addQuizToCategory(quizId)
-                }
-                .onFailure {
-                    Log.e("CreateQuizViewModel", "Failed to create quiz")
-                    _uiState.update { it.copy(isLoading = false, errorMessage = "퀴즈 성공를 실패했습니다.") }
-                }
-        }
-    }
-
-    fun addQuizToCategory(quizId: String) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-
-            categoryRepository.addQuiz(categoryId, quizId)
-                .onSuccess {
-                    _uiState.update { it.copy(isLoading = false, isCreateQuizSuccess = true) }
-                }
-                .onFailure {
-                    Log.e("CreateQuizViewModel", "Failed to add quiz to category")
-                    _uiState.update { it.copy(isLoading = false, errorMessage = "퀴즈 추가를 실패했습니다.") }
-                }
-        }
+        _uiState.update { currentState -> currentState.copy(snackBarMessage = message) }
     }
 
     fun shownErrorMessage() {
-        _uiState.update { it.copy(errorMessage = null) }
+        _uiState.update { it.copy(snackBarMessage = null) }
     }
 }
