@@ -52,7 +52,13 @@ fun CategoryLazyColumn(
 ) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         itemsIndexed(items = categories, key = { _, category -> category.id }) { index, category ->
-            CategoryItem(categoryItemClick, categories.size, category, owner?.profileUrl, owner?.name ?: stringResource(R.string.txt_detail_study_no_category_owner))
+            CategoryItem(
+                categoryItemClick,
+                category,
+                category.quizzes.size,
+                owner?.profileUrl,
+                owner?.name ?: stringResource(R.string.txt_detail_study_no_category_owner),
+            )
             if (index < categories.size) {
                 HorizontalDivider()
             }
