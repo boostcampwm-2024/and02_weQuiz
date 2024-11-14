@@ -54,7 +54,7 @@ fun QuizScreen(
     viewModel: QuizViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
-    onStartQuizButtonClick: () -> Unit,
+    onStartQuizButtonClick: (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -80,7 +80,7 @@ fun QuizScreen(
     onErrorMessageShown: () -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
-    onStartQuizButtonClick: () -> Unit,
+    onStartQuizButtonClick: (String) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -210,7 +210,7 @@ fun QuizScreen(
 
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { onStartQuizButtonClick() },
+                        onClick = { onStartQuizButtonClick(quiz.id) },
                         enabled = (quiz.isOpened.not() && quiz.questions.isNotEmpty()),
                     ) {
                         when (quiz.isOpened && quiz.questions.isEmpty()) {

@@ -12,7 +12,5 @@ interface QuizRepository {
 
     suspend fun createQuiz(quizCreateInfo: QuizCreationInfo): Result<String>
 
-    suspend fun getQuiz(quizId: String): Result<Quiz>
-
     suspend fun addUserOmrToQuiz(quizId: String, userOmrId: String): Result<Unit>
 }

@@ -45,8 +45,10 @@ fun NavController.navigateQuestionDetail() {
     navigate(QuestionDetailRoute)
 }
 
-fun NavController.navigateQuestionScreen() {
-    navigate(QuestionScreenRoute) {
+fun NavController.navigateQuestionScreen(
+    quizId: String,
+) {
+    navigate(QuestionScreenRoute(quizId)) {
         popUpTo(QuizRoute::class.java.name) {
             inclusive = true
         }

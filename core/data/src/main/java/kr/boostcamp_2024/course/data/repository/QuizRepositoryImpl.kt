@@ -49,4 +49,11 @@ class QuizRepositoryImpl @Inject constructor(
                 requireNotNull(response).toVO(quizId)
             }
         }
+
+    override suspend fun addUserOmrToQuiz(quizId: String, userOmrId: String): Result<Unit> =
+        runCatching {
+            quizCollectionRef.document(quizId)
+                .update("user_omrs", FieldValue.arrayUnion(userOmrId))
+                .await()
+        }
 }
