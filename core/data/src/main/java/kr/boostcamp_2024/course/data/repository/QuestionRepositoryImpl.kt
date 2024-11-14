@@ -16,6 +16,6 @@ class QuestionRepositoryImpl @Inject constructor(
         runCatching {
             val document = questionCollectionRef.document(questionId).get().await()
             val response = document.toObject(QuestionDTO::class.java)
-            requireNotNull(response).toVO()
+            requireNotNull(response).toVO(questionId)
         }
 }

@@ -11,7 +11,7 @@ fun QuestionItems(choice: List<String>, answer: Int, onClick: () -> Unit) {
         choice.forEachIndexed { idx, it ->
             RadioTextButton(
                 text = it,
-                selected = answer == idx,
+                selected = (answer == idx),
                 onclick = onClick,
             )
         }

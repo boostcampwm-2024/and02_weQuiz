@@ -14,7 +14,7 @@ import javax.inject.Inject
 data class DetailUiState(
     val title: String = "",
     val description: String = "",
-    val solution: String = "",
+    val solution: String? = "",
     val answer: Int = 1,
     val choices: List<String> = emptyList(),
     val isLoading: Boolean = false,
@@ -39,7 +39,6 @@ class QuestionDetailViewModel @Inject constructor(
                 it.copy(isLoading = true)
             }
             questionRepository.getQuestion("YkQXipSR1RGJDfwtcOzS").onSuccess { question ->
-                Log.d("answer", question.answer.toString())
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -57,7 +56,7 @@ class QuestionDetailViewModel @Inject constructor(
                         errorMessage = "문제 로딩에 실패하였습니다.",
                     )
                 }
-                Log.d("DetailViewModel", "loadQuestionDetail: $throwable")
+                Log.e("DetailViewModel", "loadQuestionDetail: $throwable")
             }
 
         }

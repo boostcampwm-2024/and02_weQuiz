@@ -9,11 +9,12 @@ data class QuestionDTO(
     val answer: Int? = null,
     val choices: List<String>? = null,
 ) {
-    fun toVO(): Question =
+    fun toVO(questionId: String): Question =
         Question(
+            id = questionId,
             title = requireNotNull(title),
             description = requireNotNull(description),
-            solution = requireNotNull(solution),
+            solution = solution,
             answer = requireNotNull(answer),
             choices = requireNotNull(choices),
         )

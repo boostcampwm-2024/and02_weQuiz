@@ -54,7 +54,7 @@ fun QuestionDetailScreen(
     description: String,
     choices: List<String>,
     answer: Int,
-    solution: String,
+    solution: String?,
     errorMessage: String?,
     onErrorMessageShown: () -> Unit = {},
 ) {
@@ -92,6 +92,7 @@ fun QuestionDetailScreen(
 private fun getPreviewQuestion(): Question {
     // TODO 뷰모델과 연결하고 임시값 빼기
     return Question(
+        id = "",
         "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
         "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
         "해설이 들어갑니다... 넙적한 건 어쩔 수 없는듯... 들어갈 수 있는 양 모두 들어감. 친구가 해설을 길게 쓴다면 그 내용 다 들어감... 해설이 들어갑니다... 넙적한 건 어쩔 수 없는듯... 들어갈 수 있는 양 모두 들어감. 친구가 해설을 길게 쓴다면 그 내용 다 들어감... ",
