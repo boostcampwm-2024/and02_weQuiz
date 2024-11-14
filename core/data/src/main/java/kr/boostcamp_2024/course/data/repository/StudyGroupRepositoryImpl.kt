@@ -1,6 +1,5 @@
 package kr.boostcamp_2024.course.data.repository
 
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.StudyGroupDTO
@@ -13,7 +12,6 @@ class StudyGroupRepositoryImpl @Inject constructor(
     firestore: FirebaseFirestore,
 ) : StudyGroupRepository {
     private val studyGroupCollectionRef = firestore.collection("StudyGroup")
-    private val userCollectionRef = firestore.collection("User")
 
     override suspend fun addStudyGroup(studyGroupCreationInfo: StudyGroupCreationInfo): Result<String> =
         runCatching {
@@ -30,13 +28,6 @@ class StudyGroupRepositoryImpl @Inject constructor(
 
             val result = document.id
             result
-        }
-
-    override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<String> =
-        runCatching {
-            val userDocRef = userCollectionRef.document(userId)
-            userDocRef.update("study_groups", FieldValue.arrayUnion(studyId)).await()
-            studyId // TODO 성공 반환값 고민하기
         }
 
     override suspend fun getStudyGroup(studyGroupIds: List<String>): Result<List<StudyGroup>> =

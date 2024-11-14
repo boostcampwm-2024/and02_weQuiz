@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
+import kr.boostcamp_2024.course.domain.repository.UserRepository
 import javax.inject.Inject
 
 data class CreateStudyUiState(
@@ -20,44 +21,45 @@ data class CreateStudyUiState(
     val isCreateStudySuccess: Boolean = false,
     val selectedOption: String = "",
     val snackBarMessage: String? = null,
-    val expanded: Boolean = false,
-) // TODO 로그인 기능 구현 후 ownerId 수정
+) { // TODO 로그인 기능 구현 후 ownerId 수정
+    val isCreateStudyButtonEnabled: Boolean
+        get() = name.isNotBlank() && maxUserNum > 0
+}
 
 @HiltViewModel
 class CreateStudyViewModel @Inject constructor(
     private val studyGroupRepository: StudyGroupRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateStudyUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun onCreateStudyGroupClick(
-        onCreateGroupSuccess: () -> Unit,
-    ) {
+    fun createStudyGroupClick() {
         viewModelScope.launch {
-            val studyGroupRequest = StudyGroupCreationInfo(
+            val studyGroupCreationInfo = StudyGroupCreationInfo(
                 name = uiState.value.name,
-                description = uiState.value.description,
+                description = uiState.value.description.takeIf { it.isNotBlank() },
                 maxUserNum = uiState.value.maxUserNum,
                 ownerId = uiState.value.ownerId,
             )
-            val addStudyGroupResult = studyGroupRepository.addStudyGroup(studyGroupRequest)
+            val addStudyGroupResult = studyGroupRepository.addStudyGroup(studyGroupCreationInfo)
             addStudyGroupResult
                 .onSuccess { studyId ->
-                    _uiState.value = uiState.value.copy(isCreateStudySuccess = true)
                     Log.d(
                         "addStudyGroupResult",
                         "성공, $studyId)",
                     )
                     val addStudyGroupToUserResult =
-                        studyGroupRepository.addStudyGroupToUser(uiState.value.ownerId, studyId)
+                        userRepository.addStudyGroupToUser(uiState.value.ownerId, studyId)
                     addStudyGroupToUserResult
                         .onSuccess { result ->
                             Log.d(
                                 "addStudyGroupToUserResult",
                                 "성공, $result)",
                             )
-                            onCreateGroupSuccess()
-                            // TODO Toast 추가
+                            _uiState.update {
+                                it.copy(isCreateStudySuccess = true)
+                            }
                         }
                         .onFailure { throwable ->
                             Log.d(
@@ -73,7 +75,6 @@ class CreateStudyViewModel @Inject constructor(
                         }
                 }.onFailure { throwable ->
                     Log.d("errorMessage", "${throwable.message}")
-                    // TODO 스낵바
                     _uiState.update {
                         it.copy(
                             isCreateStudySuccess = false,
@@ -114,12 +115,4 @@ class CreateStudyViewModel @Inject constructor(
         _uiState.update { it.copy(snackBarMessage = null) }
     }
 
-    fun onExpandedChange(expanded: Boolean) {
-        Log.d("expanded", "$expanded")
-        _uiState.update { it.copy(expanded = expanded) }
-    }
-
-    fun changeExpandedFalse() {
-        _uiState.update { it.copy(expanded = false) }
-    }
 }

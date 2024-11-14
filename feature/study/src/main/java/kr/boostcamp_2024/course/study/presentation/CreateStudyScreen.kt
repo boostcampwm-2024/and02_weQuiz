@@ -42,17 +42,16 @@ fun CreateStudyScreen(
         onTitleTextChange = viewmodel::onNameChanged,
         descriptionText = uiState.description,
         onDescriptionTextChange = viewmodel::onDescriptionChanged,
-        selectedOption = uiState.selectedOption,
         onCreationButtonClick = {
-            viewmodel.onCreateStudyGroupClick(onCreateStudySuccess)
+            viewmodel.createStudyGroupClick()
         },
         snackBarMessage = uiState.snackBarMessage,
         onNavigationButtonClick = onNavigationButtonClick,
-        onOptionSelected = { option -> viewmodel.onOptionSelected(option) },
         onSnackBarShown = { viewmodel.onSnackBarShown() },
-        expanded = uiState.expanded,
-        onExpandedChange = { expanded -> viewmodel.onExpandedChange(expanded) },
-        onDismissRequest = { viewmodel.changeExpandedFalse() },
+        isCreateStudySuccess = uiState.isCreateStudySuccess,
+        onCreateStudySuccess = onCreateStudySuccess,
+        onOptionSelected = { viewmodel.onOptionSelected(option = it) },
+        isCreateStudyButtonEnabled = uiState.isCreateStudyButtonEnabled,
     )
 }
 
@@ -64,18 +63,21 @@ fun CreateStudyScreen(
     onTitleTextChange: (String) -> Unit,
     descriptionText: String,
     onDescriptionTextChange: (String) -> Unit,
-    selectedOption: String,
     snackBarMessage: String?,
     onCreationButtonClick: () -> Unit,
     onSnackBarShown: () -> Unit,
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
-    onDismissRequest: () -> Unit,
+    isCreateStudySuccess: Boolean,
+    onCreateStudySuccess: () -> Unit,
     onOptionSelected: (String) -> Unit,
+    isCreateStudyButtonEnabled: Boolean,
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
+
+    if (isCreateStudySuccess) {
+        onCreateStudySuccess()
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -111,16 +113,13 @@ fun CreateStudyScreen(
                     placeholder = stringResource(R.string.txt_create_study_description_placeholder),
                 )
 
-                MembersDropDownMenu(
-                    expanded = expanded,
-                    onExpandedChange = onExpandedChange,
-                    selectedOption = selectedOption,
-                    onDismissRequest = onDismissRequest,
-                    onOptionSelected = onOptionSelected,
-                )
+                MembersDropDownMenu(onOptionSelected = onOptionSelected)
             }
 
-            StudyCreationButton(onClick = onCreationButtonClick)
+            StudyCreationButton(
+                onStudyCreationButtonClick = onCreationButtonClick,
+                isCreateStudyButtonEnabled = isCreateStudyButtonEnabled,
+            )
             snackBarMessage?.let { message ->
                 LaunchedEffect(message) {
                     snackBarHostState.showSnackbar(message)
@@ -141,14 +140,13 @@ fun CreateStudyScreenPreview() {
             onTitleTextChange = {},
             descriptionText = "",
             onDescriptionTextChange = {},
-            selectedOption = "",
             snackBarMessage = "",
             onCreationButtonClick = {},
             onSnackBarShown = {},
-            expanded = false,
-            onExpandedChange = {},
-            onDismissRequest = {},
             onOptionSelected = {},
+            isCreateStudySuccess = false,
+            onCreateStudySuccess = {},
+            isCreateStudyButtonEnabled = false,
         )
     }
 }

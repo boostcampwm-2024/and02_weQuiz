@@ -9,6 +9,10 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -18,18 +22,17 @@ import kr.boostcamp_2024.course.study.R
 @ExperimentalMaterial3Api
 @Composable
 fun MembersDropDownMenu(
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
-    selectedOption: String,
-    onDismissRequest: () -> Unit,
-    onOptionSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onOptionSelected: (String) -> Unit,
 ) {
+    var expanded by remember { mutableStateOf(false) }
+    val membersDropDownMenuText = stringResource(R.string.txt_members_drop_down_menu)
+    val selectedOption by remember { mutableStateOf(membersDropDownMenuText) }
     val dropDownMenuOptions = stringArrayResource(R.array.drop_down_menu_options)
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = onExpandedChange,
+        onExpandedChange = { expanded = !expanded },
         modifier = modifier,
     ) {
         TextField(
@@ -40,21 +43,24 @@ fun MembersDropDownMenu(
             modifier = Modifier
                 .fillMaxWidth()
                 .menuAnchor(),
-            label = { Text(stringResource(R.string.txt_members_drop_down_menu_label)) },
+            label = { Text(membersDropDownMenuText) },
         )
 
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = onDismissRequest,
+            onDismissRequest = { expanded = false },
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(max = 110.dp),
         ) {
             dropDownMenuOptions.forEach { option ->
-                DropdownMenuItem(text = { Text(option) }, onClick = {
-                    onOptionSelected(option)
-                    onExpandedChange(false)
-                })
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        onOptionSelected(option)
+                        expanded = false
+                    },
+                )
             }
         }
     }
