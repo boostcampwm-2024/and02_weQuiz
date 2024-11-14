@@ -21,7 +21,7 @@ class QuizRepositoryImpl @Inject constructor(
 
     override suspend fun updateQuizQuestionList(quizId: String, questionList: List<String>): Result<Unit> = runCatching {
         val document = quizCollectionRef.document(quizId)
-        document.update("questions", questionList)
+        document.update("questions", questionList).await()
     }
 
     override suspend fun createQuiz(quizCreateInfo: QuizCreationInfo): Result<String> =
