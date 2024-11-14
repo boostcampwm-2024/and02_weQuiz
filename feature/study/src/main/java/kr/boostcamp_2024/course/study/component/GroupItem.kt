@@ -20,7 +20,12 @@ import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.study.R
 
 @Composable
-fun GroupItem(isOwner: Boolean, removeButtonClick: (String) -> Unit, user: User) {
+fun GroupItem(
+    groupId: String?,
+    isOwner: Boolean,
+    removeButtonClick: (String, String) -> Unit,
+    user: User,
+) {
     Row(modifier = Modifier.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
         WeQuizAsyncImage(
             modifier = Modifier
@@ -37,7 +42,13 @@ fun GroupItem(isOwner: Boolean, removeButtonClick: (String) -> Unit, user: User)
             style = MaterialTheme.typography.bodyLarge,
         )
         if (isOwner) {
-            Button(onClick = { removeButtonClick(user.id) }) {
+            Button(
+                onClick = {
+                    if (groupId != null) {
+                        removeButtonClick(user.id, groupId)
+                    }
+                },
+            ) {
                 Icon(
                     painter = painterResource(R.drawable.baseline_remove_24),
                     contentDescription = stringResource(R.string.des_detail_study_remove_group_btn),

@@ -61,6 +61,7 @@ fun DetailStudyScreen(
         categories = uiState.categories,
         users = uiState.users,
         owner = uiState.owner,
+        curUserId = uiState.userId,
         isLoading = uiState.isLoading,
         errorMessageId = uiState.errorMessageId,
         onErrorMessageShown = viewModel::shownErrorMessage,
@@ -78,13 +79,14 @@ fun DetailStudyScreen(
     categories: List<Category>,
     users: List<User>,
     owner: User?,
+    curUserId: String?,
     isLoading: Boolean,
     errorMessageId: Int?,
     onErrorMessageShown: () -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
     onCategoryClick: () -> Unit,
-    onRemoveStudyGroupMemberButtonClick: (String) -> Unit,
+    onRemoveStudyGroupMemberButtonClick: (String, String) -> Unit,
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }
     val screenList = listOf(
@@ -161,7 +163,7 @@ fun DetailStudyScreen(
         ) {
             when (selectedScreenIndex) {
                 0 -> CategoryListScreen(owner, currentGroup, categories, onCreateCategoryButtonClick, onCategoryClick)
-                1 -> GroupListScreen(currentGroup, owner, users, onRemoveStudyGroupMemberButtonClick)
+                1 -> GroupListScreen(currentGroup, owner, curUserId, users, onRemoveStudyGroupMemberButtonClick)
             }
         }
     }

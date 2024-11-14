@@ -29,7 +29,7 @@ import kr.boostcamp_2024.course.main.R
 @Composable
 fun StudyGroupItem(
     studyGroup: StudyGroup,
-    onStudyGroupClick: () -> Unit,
+    onStudyGroupClick: (String) -> Unit,
     onStudyGroupMenuClick: () -> Unit,
 ) {
 
@@ -51,7 +51,7 @@ fun StudyGroupItem(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable(onClick = onStudyGroupClick),
+                    .clickable(onClick = {onStudyGroupClick(studyGroup.id)}),
             ) {
                 Text(
                     text = studyGroup.name,
