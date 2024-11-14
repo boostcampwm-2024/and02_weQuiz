@@ -14,6 +14,12 @@ class QuizRepositoryImpl @Inject constructor(
 ) : QuizRepository {
     private val quizCollectionRef = firestore.collection("Quiz")
 
+    override suspend fun addQuestionToQuiz(quizId: String, questionId: String): Result<Unit> =
+        runCatching {
+            val document = quizCollectionRef.document(quizId)
+            document.update("questions", FieldValue.arrayUnion(questionId)).await()
+        }
+
     override suspend fun createQuiz(quizCreateInfo: QuizCreationInfo): Result<String> =
         runCatching {
             val newQuiz = QuizDTO(
@@ -35,10 +41,12 @@ class QuizRepositoryImpl @Inject constructor(
             requireNotNull(response).toVO(quizId)
         }
 
-    override suspend fun addUserOmrToQuiz(quizId: String, userOmrId: String): Result<Unit> =
+    override suspend fun getQuizList(quizIdList: List<String>): Result<List<Quiz>> =
         runCatching {
-            quizCollectionRef.document(quizId)
-                .update("user_omrs", FieldValue.arrayUnion(userOmrId))
-                .await()
+            quizIdList.map { quizId ->
+                val document = quizCollectionRef.document(quizId).get().await()
+                val response = document.toObject(QuizDTO::class.java)
+                requireNotNull(response).toVO(quizId)
+            }
         }
 }

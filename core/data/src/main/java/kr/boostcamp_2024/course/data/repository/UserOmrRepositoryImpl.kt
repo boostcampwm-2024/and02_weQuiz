@@ -12,6 +12,13 @@ class UserOmrRepositoryImpl @Inject constructor(
 ) : UserOmrRepository {
     private val userOmrCollectionRef = firestore.collection("UserOmr")
 
+    override suspend fun getUserOmr(userOmrId: String): Result<UserOmr> =
+        runCatching {
+            val document = userOmrCollectionRef.document(userOmrId).get().await()
+            val response = document.toObject(UserOmrDTO::class.java)
+            requireNotNull(response).toVO(userOmrId)
+        }
+
     override suspend fun submitQuiz(userOmr: UserOmr): Result<String> =
         runCatching {
             val userOmrDTO = UserOmrDTO(

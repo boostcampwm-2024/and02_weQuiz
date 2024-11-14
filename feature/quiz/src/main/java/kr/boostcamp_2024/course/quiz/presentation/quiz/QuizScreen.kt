@@ -53,8 +53,8 @@ import kr.boostcamp_2024.course.quiz.viewmodel.QuizViewModel
 fun QuizScreen(
     viewModel: QuizViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
-    onCreateQuestionButtonClick: () -> Unit,
-    onStartQuizButtonClick: (String) -> Unit,
+    onCreateQuestionButtonClick: (String) -> Unit,
+    onStartQuizButtonClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -79,8 +79,8 @@ fun QuizScreen(
     errorMessage: String?,
     onErrorMessageShown: () -> Unit,
     onNavigationButtonClick: () -> Unit,
-    onCreateQuestionButtonClick: () -> Unit,
-    onStartQuizButtonClick: (String) -> Unit,
+    onCreateQuestionButtonClick: (String) -> Unit,
+    onStartQuizButtonClick: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -199,7 +199,7 @@ fun QuizScreen(
                 quiz?.let {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { onCreateQuestionButtonClick() },
+                        onClick = { onCreateQuestionButtonClick(quiz.id) },
                         enabled = quiz.isOpened,
                     ) {
                         when (quiz.isOpened) {
@@ -210,7 +210,7 @@ fun QuizScreen(
 
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { onStartQuizButtonClick(quiz.id) },
+                        onClick = { onStartQuizButtonClick() },
                         enabled = (quiz.isOpened.not() && quiz.questions.isNotEmpty()),
                     ) {
                         when (quiz.isOpened && quiz.questions.isEmpty()) {
