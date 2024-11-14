@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.category.viewmodel
+package kr.boostcamp_2024.course.category.viewModel
 
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
