@@ -62,6 +62,7 @@ fun QuizResultScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     QuizResultScreen(
+        quizTitle = uiState.quizTitle,
         quizResult = uiState.quizResult,
         isLoading = uiState.isLoading,
         errorMessage = uiState.errorMessage,
@@ -74,6 +75,7 @@ fun QuizResultScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizResultScreen(
+    quizTitle: String?,
     quizResult: QuizResult?,
     isLoading: Boolean,
     errorMessage: String?,
@@ -87,7 +89,13 @@ fun QuizResultScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = stringResource(R.string.top_app_bar_quiz_result)) },
+                title = {
+                    Text(
+                        text = quizTitle ?: "",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigationButtonClick) {
                         Icon(

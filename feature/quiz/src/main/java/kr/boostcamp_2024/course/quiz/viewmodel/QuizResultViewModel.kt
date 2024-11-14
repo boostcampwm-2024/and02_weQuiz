@@ -19,6 +19,7 @@ import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
 import javax.inject.Inject
 
 data class QuizResultUiState(
+    val quizTitle: String? = null,
     val quizResult: QuizResult? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
@@ -54,6 +55,8 @@ class QuizResultViewModel @Inject constructor(
 
             quizRepository.getQuiz(quizId)
                 .onSuccess { quiz ->
+                    _uiState.update { it.copy(quizTitle = quiz.title) }
+
                     questionRepository.getQuestions(quiz.questions)
                         .onSuccess {
                             _uiState.update { it.copy(isLoading = false) }
