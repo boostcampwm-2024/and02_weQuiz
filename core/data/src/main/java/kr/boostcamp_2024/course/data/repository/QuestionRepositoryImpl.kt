@@ -4,6 +4,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.QuestionDTO
 import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.data.model.toDTO
+import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import javax.inject.Inject
 
@@ -18,4 +20,9 @@ class QuestionRepositoryImpl @Inject constructor(
             val response = document.toObject(QuestionDTO::class.java)
             requireNotNull(response).toVO(questionId)
         }
+        
+    override suspend fun createQuestion(questionCreationInfo: QuestionCreationInfo): Result<String> = runCatching {
+        val document = questionCollectionRef.add(questionCreationInfo.toDTO()).await()
+        document.id
+    }
 }

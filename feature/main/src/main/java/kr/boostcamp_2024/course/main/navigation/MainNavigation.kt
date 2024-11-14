@@ -25,7 +25,7 @@ fun NavGraphBuilder.mainNavGraph(
     onNavigationButtonClick: () -> Unit,
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
-    onStudyGroupClick: () -> Unit,
+    onStudyGroupClick: (String) -> Unit,
 ) {
     composable<MainRoute> {
         MainScreen(
