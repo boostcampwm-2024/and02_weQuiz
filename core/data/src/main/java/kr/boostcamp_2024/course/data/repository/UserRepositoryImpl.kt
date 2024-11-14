@@ -17,7 +17,7 @@ class UserRepositoryImpl @Inject constructor(
         return runCatching {
             val document = userCollectionRef.document(userId).get().await()
             val response = document.toObject(UserDTO::class.java)
-            requireNotNull(response).toVO()
+            requireNotNull(response).toVO(userId)
         }
     }
 
@@ -28,4 +28,12 @@ class UserRepositoryImpl @Inject constructor(
             studyId // TODO 성공 반환값 고민하기
         }
 
+    override suspend fun getUsers(userIds: List<String>): Result<List<User>> =
+        runCatching {
+            userIds.map { userId ->
+                val document = userCollectionRef.document(userId).get().await()
+                val response = document.toObject(UserDTO::class.java)
+                requireNotNull(response).toVO(userId)
+            }
+        }
 }

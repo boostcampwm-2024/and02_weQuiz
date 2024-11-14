@@ -13,7 +13,8 @@ data class UserDTO(
     @set:PropertyName("study_groups")
     var studyGroups: List<String>? = null,
 ) {
-    fun toVO(): User = User(
+    fun toVO(userId: String): User = User(
+        id = userId,
         email = requireNotNull(email),
         name = requireNotNull(name),
         profileUrl = profileUrl,

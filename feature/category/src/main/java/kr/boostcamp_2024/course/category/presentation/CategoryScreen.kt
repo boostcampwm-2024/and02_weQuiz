@@ -50,7 +50,8 @@ fun CategoryScreen(
     onQuizClick: () -> Unit,
 ) {
     val dummyCategory = Category(
-        title = "안드 마스터",
+        id = "123",
+        name = "안드 마스터",
         description = "안드로이드 마스터가 되어 보아요!!",
         categoryImageUrl = null,
         quizzes = listOf("1", "1", "1", "1", "1", "1", "1", "1", "1", "1"),
@@ -101,7 +102,7 @@ fun CategoryScreen(
             modifier = Modifier.padding(innerPadding),
         ) {
             CategoryContent(
-                categoryTitle = dummyCategory.title,
+                categoryTitle = dummyCategory.name,
                 categoryDescription = dummyCategory.description,
             )
             QuizTabs(
@@ -177,6 +178,7 @@ fun QuizList(
     onQuizClick: () -> Unit,
 ) {
     val tmpQuiz = Quiz(
+        id = "1",
         title = "안드로이드 퀴즈",
         description = "안드로이드 퀴즈를 풀어보세요!",
         startTime = "2021-09-01",

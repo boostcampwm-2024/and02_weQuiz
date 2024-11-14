@@ -89,7 +89,7 @@ fun MainScreen(
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     var state by rememberSaveable { mutableIntStateOf(0) }
     val titles = stringArrayResource(R.array.main_tabs_titles)
@@ -137,7 +137,7 @@ fun MainScreen(
             }
         },
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+            SnackbarHost(hostState = snackBarHostState)
         },
     ) { innerPadding ->
 
@@ -170,7 +170,7 @@ fun MainScreen(
                         onStudyGroupClick = onStudyGroupClick,
                         onStudyGroupMenuClick = {
                             coroutineScope.launch {
-                                snackbarHostState.showSnackbar("추후 제공될 기능입니다.")
+                                snackBarHostState.showSnackbar("추후 제공될 기능입니다.")
                             }
                         },
                     )
@@ -194,7 +194,7 @@ fun MainScreen(
 
     if (errorMessage != null) {
         LaunchedEffect(errorMessage) {
-            snackbarHostState.showSnackbar(errorMessage)
+            snackBarHostState.showSnackbar(errorMessage)
             onErrorMessageShown()
         }
     }
@@ -223,6 +223,7 @@ fun MainScreenPreview() {
     WeQuizTheme {
         MainScreen(
             currentUser = User(
+                id = "123",
                 email = "email@email.com",
                 name = "홍준표",
                 profileUrl = "testUrl",
