@@ -13,6 +13,7 @@ import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
+import kr.boostcamp_2024.course.domain.repository.NotificationRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.study.R
@@ -32,6 +33,7 @@ class DetailStudyViewModel @Inject constructor(
     private val studyGroupRepository: StudyGroupRepository,
     private val userRepository: UserRepository,
     private val categoryRepository: CategoryRepository,
+    private val notificationRepository: NotificationRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<DetailStudyUiState> = MutableStateFlow(DetailStudyUiState())
     val uiState: StateFlow<DetailStudyUiState> = _uiState.asStateFlow()
@@ -44,8 +46,7 @@ class DetailStudyViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             // TODO: getCurrentGroup
-            studyGroupRepository.getStudyGroup("Jn1m6Pr8B3a9gfZvNLKB")
-                .onSuccess { currentGroup ->
+            studyGroupRepository.getStudyGroup("Jn1m6Pr8B3a9gfZvNLKB").onSuccess { currentGroup ->
                     val ownerId = currentGroup.ownerId
                     val categoryIds = currentGroup.categories
                     val userIds = currentGroup.users
@@ -66,8 +67,7 @@ class DetailStudyViewModel @Inject constructor(
 
     private fun loadCategories(currentGroup: StudyGroup, categoryIds: List<String>) {
         viewModelScope.launch {
-            categoryRepository.getCategories(categoryIds)
-                .onSuccess { categories ->
+            categoryRepository.getCategories(categoryIds).onSuccess { categories ->
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -75,8 +75,7 @@ class DetailStudyViewModel @Inject constructor(
                             categories = categories,
                         )
                     }
-                }
-                .onFailure { it ->
+                }.onFailure { it ->
                     Log.e("DetailStudyViewModel", "Failed to load categories", it)
                     _uiState.update {
                         it.copy(
@@ -90,8 +89,7 @@ class DetailStudyViewModel @Inject constructor(
 
     private fun loadUsers(currentGroup: StudyGroup, userIds: List<String>) {
         viewModelScope.launch {
-            userRepository.getUsers(userIds)
-                .onSuccess { users ->
+            userRepository.getUsers(userIds).onSuccess { users ->
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -113,8 +111,7 @@ class DetailStudyViewModel @Inject constructor(
 
     private fun loadOwner(currentGroup: StudyGroup, ownerId: String) {
         viewModelScope.launch {
-            userRepository.getUser(ownerId)
-                .onSuccess { owner ->
+            userRepository.getUser(ownerId).onSuccess { owner ->
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -131,6 +128,37 @@ class DetailStudyViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    fun addNotification(groupId: String, email: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            userRepository.findUserByEmail(email).onSuccess {
+                notificationRepository.addNotification(groupId, it.id).onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                        )
+                    }
+                }.onFailure {
+                    Log.e("DetailStudyViewModel", "Failed to add notification", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessageId = R.string.error_message_add_notification,
+                        )
+                    }
+                }
+            }.onFailure {
+                Log.e("DetailStudyViewModel", "Failed to find user", it)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessageId = R.string.error_message_find_user,
+                    )
+                }
+            }
         }
     }
 
