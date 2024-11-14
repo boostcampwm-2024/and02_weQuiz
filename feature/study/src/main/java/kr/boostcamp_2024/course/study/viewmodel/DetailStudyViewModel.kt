@@ -1,8 +1,10 @@
 package kr.boostcamp_2024.course.study.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +18,7 @@ import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.study.R
+import kr.boostcamp_2024.course.study.navigation.StudyRoute
 import javax.inject.Inject
 
 data class DetailStudyUiState(
@@ -32,7 +35,10 @@ class DetailStudyViewModel @Inject constructor(
     private val studyGroupRepository: StudyGroupRepository,
     private val userRepository: UserRepository,
     private val categoryRepository: CategoryRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+    private val studyGroupId: String = savedStateHandle.toRoute<StudyRoute>().studyGroupId
+
     private val _uiState: MutableStateFlow<DetailStudyUiState> = MutableStateFlow(DetailStudyUiState())
     val uiState: StateFlow<DetailStudyUiState> = _uiState.asStateFlow()
 
@@ -44,7 +50,7 @@ class DetailStudyViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             // TODO: getCurrentGroup
-            studyGroupRepository.getStudyGroup("Jn1m6Pr8B3a9gfZvNLKB")
+            studyGroupRepository.getStudyGroup(studyGroupId)
                 .onSuccess { currentGroup ->
                     val ownerId = currentGroup.ownerId
                     val categoryIds = currentGroup.categories

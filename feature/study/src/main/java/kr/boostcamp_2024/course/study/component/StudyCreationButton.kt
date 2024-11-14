@@ -13,12 +13,17 @@ import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.study.R
 
 @Composable
-fun StudyCreationButton(onCreateStudySuccess: () -> Unit, modifier: Modifier = Modifier) {
+fun StudyCreationButton(
+    onStudyCreationButtonClick: () -> Unit,
+    isCreateStudyButtonEnabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
     Button(
-        onClick = onCreateStudySuccess,
+        onClick = onStudyCreationButtonClick,
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
+        enabled = isCreateStudyButtonEnabled,
     ) {
         Text(
             text = stringResource(R.string.txt_study_creation_button),
