@@ -93,7 +93,7 @@ class NotificationViewModel @Inject constructor(
                 }
                 .onFailure { throwable ->
                     Log.e("NotificationViewModel", "실패: $throwable")
-                    _uiState.update { it.copy(snackBarMessage = "알림 삭제 실패.") }
+                    _uiState.update { it.copy(snackBarMessage = "알림 삭제를 실패하였습니다.") }
                 }
         }
     }
@@ -106,7 +106,7 @@ class NotificationViewModel @Inject constructor(
                 }
                 .onFailure { throwable ->
                     Log.e("NotificationViewModel", "실패: $throwable")
-                    _uiState.update { it.copy(snackBarMessage = "알림 수락 실패.") }
+                    _uiState.update { it.copy(snackBarMessage = "알림 수락을 실패하였습니다.") }
                 }
         }
     }
