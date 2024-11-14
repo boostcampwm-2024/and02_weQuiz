@@ -14,20 +14,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,8 +41,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.domain.model.Category
+import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.viewmodel.QuizViewModel
 
@@ -51,14 +56,14 @@ fun QuizScreen(
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: () -> Unit,
 ) {
-    // 매개변수에 hiltViewModel()
-    // 뷰모델에서 받아서 아래에 넣어주기
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     QuizScreen(
-        quizTitle = "퀴즈 제목 들어감",
-        quizDescription = "퀴즈 내용 쏼라 쏼라 퀴즈 내용 쏼라 쏼라 퀴즈 내용 쏼라 쏼라 퀴즈 내용 쏼라 쏼라",
-        quizCategory = "카테고리 들어감",
-        quizQuestionCount = 10,
+        category = uiState.category,
+        quiz = uiState.quiz,
+        isLoading = uiState.isLoading,
+        errorMessage = uiState.errorMessage,
+        onErrorMessageShown = viewModel::shownErrorMessage,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuestionButtonClick = onCreateQuestionButtonClick,
         onStartQuizButtonClick = onStartQuizButtonClick,
@@ -68,17 +73,16 @@ fun QuizScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizScreen(
-    quizTitle: String,
-    quizDescription: String,
-    quizCategory: String,
-    quizQuestionCount: Int,
+    category: Category?,
+    quiz: Quiz?,
+    isLoading: Boolean,
+    errorMessage: String?,
+    onErrorMessageShown: () -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: () -> Unit,
 ) {
-    // TODO: startTime으로 계산
-    // 일단 임시로 여기에
-    var canCreateQuestion by remember { mutableStateOf(true) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -98,6 +102,9 @@ fun QuizScreen(
                 ),
             )
         },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -110,10 +117,10 @@ fun QuizScreen(
                     ),
                 ),
         ) {
-            // TODO: 이미지
+
             WeQuizAsyncImage(
                 modifier = Modifier.fillMaxSize(),
-                imgUrl = "",
+                imgUrl = category?.categoryImageUrl,
                 contentDescription = null,
             )
 
@@ -124,82 +131,112 @@ fun QuizScreen(
                     .align(Alignment.BottomCenter),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                // QuizTitle
-                Text(
-                    text = quizTitle,
-                    style = MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
 
-                // QuizDescription
-                Text(
-                    text = quizDescription,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
+                quiz?.let { quiz ->
+                    // QuizTitle
+                    Text(
+                        text = quiz.title,
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+
+                    // QuizDescription
+                    quiz.description?.let { description ->
+                        Text(
+                            text = description,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
+                }
 
                 // QuizChip
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    ElevatedAssistChip(
-                        onClick = { },
-                        label = {
-                            Text(
-                                text = stringResource(
-                                    R.string.txt_quiz_question_count,
-                                    quizQuestionCount,
-                                ),
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                modifier = Modifier.size(18.dp),
-                                painter = painterResource(R.drawable.edit_24),
-                                contentDescription = null,
-                            )
-                        },
-                    )
-                    ElevatedAssistChip(
-                        onClick = { },
-                        label = {
-                            Text(text = quizCategory)
-                        },
-                        leadingIcon = {
-                            Icon(
-                                modifier = Modifier.size(18.dp),
-                                painter = painterResource(R.drawable.search_24),
-                                contentDescription = null,
-                            )
-                        },
-                    )
+
+                    quiz?.let {
+                        ElevatedAssistChip(
+                            onClick = { /* no-op */ },
+                            label = {
+                                Text(text = stringResource(R.string.txt_quiz_question_count, quiz.questions.size))
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    modifier = Modifier.size(18.dp),
+                                    painter = painterResource(R.drawable.search_24),
+                                    contentDescription = null,
+                                )
+                            },
+                        )
+                    }
+
+                    category?.let {
+                        ElevatedAssistChip(
+                            onClick = { /* no-op */ },
+                            label = {
+                                Text(
+                                    text = category.name,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    modifier = Modifier.size(18.dp),
+                                    painter = painterResource(R.drawable.search_24),
+                                    contentDescription = null,
+                                )
+                            },
+                        )
+                    }
                 }
 
                 // CreateQuestionButton & StartQuizButton
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onCreateQuestionButtonClick("2k1QrCuOUHLERgQAmMqg") },
-                    enabled = canCreateQuestion,
-                ) {
-                    when (canCreateQuestion) {
-                        true -> Text(text = stringResource(R.string.txt_open_create_question))
-                        false -> Text(text = stringResource(R.string.txt_close_create_question))
+                quiz?.let {
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onCreateQuestionButtonClick(quiz.id) },
+                        enabled = quiz.isOpened,
+                    ) {
+                        when (quiz.isOpened) {
+                            true -> Text(text = stringResource(R.string.txt_open_create_question))
+                            false -> Text(text = stringResource(R.string.txt_close_create_question))
+                        }
                     }
-                }
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onStartQuizButtonClick() },
-                    enabled = (canCreateQuestion || quizQuestionCount == 0).not(),
-                ) {
-                    when (canCreateQuestion.not() && quizQuestionCount == 0) {
-                        true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
-                        false -> Text(text = stringResource(R.string.txt_quiz_start))
+
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onStartQuizButtonClick() },
+                        enabled = (quiz.isOpened.not() && quiz.questions.isNotEmpty()),
+                    ) {
+                        when (quiz.isOpened && quiz.questions.isEmpty()) {
+                            true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
+                            false -> Text(text = stringResource(R.string.txt_quiz_start))
+                        }
                     }
                 }
             }
+        }
+    }
+
+    if (isLoading) {
+        Box {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+            )
+        }
+    }
+
+    if (errorMessage != null) {
+        LaunchedEffect(errorMessage) {
+            snackbarHostState.showSnackbar(errorMessage)
+            onErrorMessageShown()
         }
     }
 }
@@ -209,10 +246,25 @@ fun QuizScreen(
 fun QuizStartScreenPreview() {
     WeQuizTheme {
         QuizScreen(
-            quizTitle = "퀴즈 제목 들어감",
-            quizDescription = "퀴즈 내용 쏼라 쏼라 퀴즈 내용 쏼라 쏼라 퀴즈 내용 쏼라 쏼라 퀴즈 내용 쏼라 쏼라 퀴즈 내용 쏼라 쏼라 퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라퀴즈 내용 쏼라 쏼라",
-            quizCategory = "카테고리 들어감",
-            quizQuestionCount = 10,
+            category = Category(
+                id = "id",
+                name = "name",
+                description = "description",
+                categoryImageUrl = "categoryImageUrl",
+                quizzes = emptyList(),
+            ),
+            quiz = Quiz(
+                id = "id",
+                title = "퀴즈 제목임",
+                description = "퀴즈 설명임",
+                startTime = "startTime",
+                solveTime = 60,
+                questions = emptyList(),
+                userOmrs = emptyList(),
+            ),
+            isLoading = false,
+            errorMessage = null,
+            onErrorMessageShown = {},
             onNavigationButtonClick = {},
             onCreateQuestionButtonClick = {},
             onStartQuizButtonClick = {},

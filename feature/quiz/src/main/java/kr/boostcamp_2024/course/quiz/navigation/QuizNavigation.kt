@@ -52,16 +52,16 @@ fun NavController.navigateQuiz() {
     navigate(QuizRoute)
 }
 
-fun NavController.navigateCreateQuiz() {
-    navigate(CreateQuizRoute)
-}
-
 fun NavController.navigateQuizResult() {
-    navigate(QuizResultRoute::class.java.name) {
-        popUpTo(QuestionScreenRoute::class.java.name) {
+    navigate(QuizResultRoute) {
+        popUpTo(QuizRoute::class.java.name) {
             inclusive = true
         }
     }
+}
+
+fun NavController.navigateCreateQuiz() {
+    navigate(CreateQuizRoute)
 }
 
 fun NavGraphBuilder.quizNavGraph(
