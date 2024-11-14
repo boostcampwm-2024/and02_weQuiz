@@ -6,4 +6,6 @@ interface StudyGroupRepository {
     suspend fun getStudyGroups(studyGroupIds: List<String>): Result<List<StudyGroup>>
 
     suspend fun getStudyGroup(studyGroupId: String): Result<StudyGroup>
+
+    suspend fun addCategoryToStudyGroup(studyGroupId: String, categoryId: String): Result<Unit>
 }

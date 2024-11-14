@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.data.repository
 
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.StudyGroupDTO
@@ -26,5 +27,11 @@ class StudyGroupRepositoryImpl @Inject constructor(
                 val response = document.toObject(StudyGroupDTO::class.java)
                 requireNotNull(response).toVO(studyGroupId)
             }
+        }
+
+    override suspend fun addCategoryToStudyGroup(studyGroupId: String, categoryId: String): Result<Unit> =
+        runCatching {
+            val document = studyGroupCollectionRef.document(studyGroupId)
+            document.update("categories", FieldValue.arrayUnion(categoryId)).await()
         }
 }
