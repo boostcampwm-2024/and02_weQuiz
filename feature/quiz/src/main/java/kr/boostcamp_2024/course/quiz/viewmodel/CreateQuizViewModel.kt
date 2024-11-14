@@ -73,8 +73,8 @@ class CreateQuizViewModel @Inject constructor(
                     addQuizToCategory(quizId)
                 }
                 .onFailure {
-                    Log.d("CreateQuizViewModel", "Failed to create quiz")
-                    _uiState.update { it.copy(isLoading = false, errorMessage = it.errorMessage) }
+                    Log.e("CreateQuizViewModel", "Failed to create quiz")
+                    _uiState.update { it.copy(isLoading = false, errorMessage = "퀴즈 성공를 실패했습니다.") }
                 }
         }
     }
@@ -88,8 +88,8 @@ class CreateQuizViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = false, isCreateQuizSuccess = true) }
                 }
                 .onFailure {
-                    Log.d("CreateQuizViewModel", "Failed to add quiz to category")
-                    _uiState.update { it.copy(isLoading = false, errorMessage = it.errorMessage) }
+                    Log.e("CreateQuizViewModel", "Failed to add quiz to category")
+                    _uiState.update { it.copy(isLoading = false, errorMessage = "퀴즈 추가를 실패했습니다.") }
                 }
         }
     }
