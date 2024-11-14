@@ -31,13 +31,14 @@ data class CreateQuizUiState(
 
 @HiltViewModel
 class CreateQuizViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val quizRepository: QuizRepository,
     private val categoryRepository: CategoryRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+    private val categoryId: String = savedStateHandle.toRoute<CreateQuizRoute>().categoryId
+
     private val _uiState = MutableStateFlow(CreateQuizUiState())
     val uiState = _uiState.asStateFlow()
-    private val categoryId = savedStateHandle.toRoute<CreateQuizRoute>().categoryId
 
     fun setQuizTitle(quizTitle: String) {
         _uiState.update { it.copy(quizTitle = quizTitle) }
@@ -58,6 +59,8 @@ class CreateQuizViewModel @Inject constructor(
     fun createQuiz() {
         setLoadingState()
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
             quizRepository.createQuiz(
                 QuizCreationInfo(
                     quizTitle = uiState.value.quizTitle,
@@ -99,10 +102,10 @@ class CreateQuizViewModel @Inject constructor(
     }
 
     fun setNewSnackBarMessage(message: String?) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                snackBarMessage = message,
-            )
-        }
+        _uiState.update { currentState -> currentState.copy(snackBarMessage = message) }
+    }
+
+    fun shownErrorMessage() {
+        _uiState.update { it.copy(snackBarMessage = null) }
     }
 }

@@ -1,6 +1,7 @@
 package kr.boostcamp_2024.course.quiz.presentation.quiz
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,14 +17,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,18 +48,20 @@ import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuizViewModel
 
 @Composable
 fun CreateQuizScreen(
-    viewModel: CreateQuizViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
     onCreateQuizSuccess: () -> Unit,
+    viewModel: CreateQuizViewModel = hiltViewModel(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     CreateQuizScreen(
-        quizTitle = uiState.quizTitle,
-        quizDescription = uiState.quizDescription,
-        quizDate = uiState.quizDate,
-        quizSolveTime = uiState.quizSolveTime,
-        createQuizButtonEnabled = uiState.isCreateQuizButtonEnabled,
+        quizTitle = uiState.value.quizTitle,
+        quizDescription = uiState.value.quizDescription,
+        quizDate = uiState.value.quizDate,
+        quizSolveTime = uiState.value.quizSolveTime,
+        createQuizButtonEnabled = uiState.value.isCreateQuizButtonEnabled,
+        snackBarHostState = snackBarHostState,
         onQuizTitleChange = viewModel::setQuizTitle,
         onQuizDescriptionChange = viewModel::setQuizDescription,
         onQuizDateChange = viewModel::setQuizDate,
@@ -64,9 +70,26 @@ fun CreateQuizScreen(
         onCreateQuizButtonClick = viewModel::createQuiz,
     )
 
-    if (uiState.isCreateQuizSuccess) {
+    if (uiState.value.isCreateQuizSuccess) {
         LaunchedEffect(Unit) {
-            onCreateQuizSuccess() // TODO: argument to CategoryScreen
+            onCreateQuizSuccess()
+        }
+    }
+
+    if (uiState.value.isLoading) {
+        Box {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+            )
+        }
+    }
+
+    LaunchedEffect(uiState.value.snackBarMessage) {
+        uiState.value.snackBarMessage?.let { snackBarMessage ->
+            snackBarHostState.showSnackbar(snackBarMessage)
+            viewModel.shownErrorMessage()
         }
     }
 }
@@ -79,6 +102,7 @@ fun CreateQuizScreen(
     quizDate: String,
     quizSolveTime: Float,
     createQuizButtonEnabled: Boolean,
+    snackBarHostState: SnackbarHostState,
     onQuizTitleChange: (String) -> Unit,
     onQuizDescriptionChange: (String) -> Unit,
     onQuizDateChange: (String) -> Unit,
@@ -102,6 +126,9 @@ fun CreateQuizScreen(
                     }
                 },
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
         },
     ) { innerPadding ->
         Column(
@@ -195,6 +222,7 @@ fun CreateQuizScreenPreview() {
             onQuizSolveTimeChange = {},
             onNavigationButtonClick = {},
             onCreateQuizButtonClick = {},
+            snackBarHostState = remember { SnackbarHostState() },
         )
     }
 }

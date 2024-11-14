@@ -52,6 +52,7 @@ fun CategoryScreen(
     onQuizClick: (String, String) -> Unit,
     categoryViewModel: CategoryViewModel = hiltViewModel(),
 ) {
+
     val categoryUiState = categoryViewModel.categoryUiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -128,7 +129,7 @@ private fun CategoryScreen(
             )
         },
         floatingActionButton = {
-            if (category != null) {
+            category?.id?.let {
                 FloatingActionButton(
                     onClick = { onCreateQuizButtonClick(category.id) },
                     containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
