@@ -15,7 +15,11 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.study.R
 
 @Composable
-fun CreateGroupDialog(onDismissButtonClick: () -> Unit, onConfirmButtonClick: (String, String) -> Unit, groupId: String) {
+fun CreateGroupDialog(
+    onDismissButtonClick: () -> Unit,
+    onConfirmButtonClick: (String, String) -> Unit,
+    groupId: String,
+) {
     var email by remember { mutableStateOf("") }
     val isEmailValid = remember(email) { Patterns.EMAIL_ADDRESS.matcher(email).matches() }
     WeQuizBaseDialog(

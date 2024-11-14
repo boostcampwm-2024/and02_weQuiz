@@ -23,7 +23,12 @@ import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 import kr.boostcamp_2024.course.study.component.GroupItem
 
 @Composable
-fun GroupListScreen(currentGroup: StudyGroup?, users: List<User>, removeClick: (String) -> Unit, inviteClick: (String, String) -> Unit) {
+fun GroupListScreen(
+    currentGroup: StudyGroup?,
+    users: List<User>,
+    removeClick: (String) -> Unit,
+    inviteClick: (String, String) -> Unit,
+) {
     var showDialog by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier

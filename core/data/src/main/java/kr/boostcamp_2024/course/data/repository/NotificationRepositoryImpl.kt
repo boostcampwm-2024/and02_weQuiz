@@ -8,6 +8,7 @@ class NotificationRepositoryImpl @Inject constructor(
     firestore: FirebaseFirestore,
 ) : NotificationRepository {
     private val notificationCollectionRef = firestore.collection("Notification")
+
     override suspend fun addNotification(groupId: String, userId: String): Result<Unit> =
         runCatching {
             val notification = mapOf(

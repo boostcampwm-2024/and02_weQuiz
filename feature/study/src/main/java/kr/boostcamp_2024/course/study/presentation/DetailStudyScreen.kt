@@ -47,7 +47,6 @@ import kr.boostcamp_2024.course.study.navigation.DetailScreenRoute
 import kr.boostcamp_2024.course.study.navigation.GroupScreenRoute
 import kr.boostcamp_2024.course.study.viewmodel.DetailStudyViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailStudyScreen(
     viewModel: DetailStudyViewModel = hiltViewModel(),
@@ -86,7 +85,7 @@ fun DetailStudyScreen(
     onCreateCategoryButtonClick: () -> Unit,
     onCategoryClick: () -> Unit,
     onRemoveStudyGroupMemberButtonClick: (String) -> Unit,
-    onInviteConfirmButtonClick: (String,String) -> Unit,
+    onInviteConfirmButtonClick: (String, String) -> Unit,
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }
     val screenList = listOf(
@@ -162,8 +161,20 @@ fun DetailStudyScreen(
                 .padding(innerPadding),
         ) {
             when (selectedScreenIndex) {
-                0 -> CategoryListScreen(owner, currentGroup, categories, onCreateCategoryButtonClick, onCategoryClick)
-                1 -> GroupListScreen(currentGroup, users, onRemoveStudyGroupMemberButtonClick, onInviteConfirmButtonClick)
+                0 -> CategoryListScreen(
+                    owner,
+                    currentGroup,
+                    categories,
+                    onCreateCategoryButtonClick,
+                    onCategoryClick,
+                )
+
+                1 -> GroupListScreen(
+                    currentGroup,
+                    users,
+                    onRemoveStudyGroupMemberButtonClick,
+                    onInviteConfirmButtonClick,
+                )
             }
         }
     }
