@@ -25,7 +25,7 @@ class LoginViewModel @Inject constructor(
 
     fun loginForExperience() {
         viewModelScope.launch {
-            val defaultUserKey = "BcnL7sXFxXBigOVNSUhQ"
+            val defaultUserKey = "M2PzD8bxVaDAwNrLhr6E"
             authRepository.storeUserKey(defaultUserKey).onSuccess {
                 _loginUiState.update { currentState ->
                     currentState.copy(isLoginSuccess = true)
