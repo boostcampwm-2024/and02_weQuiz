@@ -32,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,18 +57,34 @@ fun QuizResultScreen(
     onNavigationButtonClick: () -> Unit,
     onQuestionClick: () -> Unit,
     viewModel: QuizResultViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     QuizResultScreen(
-        quizTitle = uiState.quizTitle,
-        quizResult = uiState.quizResult,
-        isLoading = uiState.isLoading,
-        errorMessage = uiState.errorMessage,
-        onErrorMessageShown = viewModel::shownErrorMessage,
+        quizTitle = uiState.value.quizTitle,
+        quizResult = uiState.value.quizResult,
+        snackbarHostState = snackbarHostState,
         onNavigationButtonClick = onNavigationButtonClick,
         onQuestionClick = onQuestionClick,
     )
+
+    if (uiState.value.isLoading) {
+        Box {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+            )
+        }
+    }
+
+    uiState.value.errorMessage?.let { errorMessage ->
+        LaunchedEffect(errorMessage) {
+            snackbarHostState.showSnackbar(errorMessage)
+            viewModel.shownErrorMessage()
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,13 +92,10 @@ fun QuizResultScreen(
 fun QuizResultScreen(
     quizTitle: String?,
     quizResult: QuizResult?,
-    isLoading: Boolean,
-    errorMessage: String?,
-    onErrorMessageShown: () -> Unit,
+    snackbarHostState: SnackbarHostState,
     onNavigationButtonClick: () -> Unit,
     onQuestionClick: () -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -127,23 +139,6 @@ fun QuizResultScreen(
                     onQuestionClick = onQuestionClick,
                 )
             }
-        }
-    }
-
-    if (isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
-    }
-
-    if (errorMessage != null) {
-        LaunchedEffect(errorMessage) {
-            snackbarHostState.showSnackbar(errorMessage)
-            onErrorMessageShown()
         }
     }
 }
