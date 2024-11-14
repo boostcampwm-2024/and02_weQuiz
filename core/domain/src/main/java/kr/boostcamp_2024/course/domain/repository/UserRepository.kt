@@ -8,4 +8,6 @@ interface UserRepository {
     suspend fun getUser(userId: String): Result<User>
 
     suspend fun findUserByEmail(email: String): Result<User>
+
+    suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<Unit>
 }
