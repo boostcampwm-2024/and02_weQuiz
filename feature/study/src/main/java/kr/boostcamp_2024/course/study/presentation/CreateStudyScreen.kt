@@ -42,15 +42,13 @@ fun CreateStudyScreen(
         onTitleTextChange = viewmodel::onNameChanged,
         descriptionText = uiState.description,
         onDescriptionTextChange = viewmodel::onDescriptionChanged,
-        onCreationButtonClick = {
-            viewmodel.createStudyGroupClick()
-        },
+        onCreationButtonClick = viewmodel::createStudyGroupClick,
         snackBarMessage = uiState.snackBarMessage,
         onNavigationButtonClick = onNavigationButtonClick,
-        onSnackBarShown = { viewmodel.onSnackBarShown() },
+        onSnackBarShown = viewmodel::onSnackBarShown,
         isCreateStudySuccess = uiState.isCreateStudySuccess,
         onCreateStudySuccess = onCreateStudySuccess,
-        onOptionSelected = { viewmodel.onOptionSelected(option = it) },
+        onOptionSelected = viewmodel::onOptionSelected,
         isCreateStudyButtonEnabled = uiState.isCreateStudyButtonEnabled,
     )
 }
@@ -68,7 +66,7 @@ fun CreateStudyScreen(
     onSnackBarShown: () -> Unit,
     isCreateStudySuccess: Boolean,
     onCreateStudySuccess: () -> Unit,
-    onOptionSelected: (String) -> Unit,
+    onOptionSelected: (Int) -> Unit,
     isCreateStudyButtonEnabled: Boolean,
 ) {
 

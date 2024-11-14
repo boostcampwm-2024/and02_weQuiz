@@ -19,7 +19,6 @@ data class CreateStudyUiState(
     val maxUserNum: Int = 0,
     val ownerId: String = "M2PzD8bxVaDAwNrLhr6E",
     val isCreateStudySuccess: Boolean = false,
-    val selectedOption: String = "",
     val snackBarMessage: String? = null,
 ) { // TODO 로그인 기능 구현 후 ownerId 수정
     val isCreateStudyButtonEnabled: Boolean
@@ -93,21 +92,8 @@ class CreateStudyViewModel @Inject constructor(
         _uiState.update { it.copy(description = description) }
     }
 
-    fun onOptionSelected(option: String) {
-        _uiState.update { it.copy(selectedOption = option) }
-        val maxUserNum = when (option) {
-            "1명" -> 1
-            "2명" -> 2
-            "3명" -> 3
-            "4명" -> 4
-            "5명" -> 5
-            "6명" -> 6
-            "7명" -> 7
-            "8명" -> 8
-            "9명" -> 9
-            "10명" -> 10
-            else -> 0
-        }
+    fun onOptionSelected(option: Int) {
+        val maxUserNum = option + 1
         _uiState.update { it.copy(maxUserNum = maxUserNum) }
     }
 
