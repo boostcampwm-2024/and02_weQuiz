@@ -27,4 +27,13 @@ class UserRepositoryImpl @Inject constructor(
             userDocRef.update("study_groups", FieldValue.arrayUnion(studyId)).await()
             studyId
         }
+
+    override suspend fun getUsers(userIds: List<String>): Result<List<User>> =
+        runCatching {
+            userIds.map { userId ->
+                val document = userCollectionRef.document(userId).get().await()
+                val response = document.toObject(UserDTO::class.java)
+                requireNotNull(response).toVO(userId)
+            }
+        }
 }

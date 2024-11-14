@@ -1,11 +1,11 @@
 package kr.boostcamp_2024.course.study.presentation
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.HorizontalDivider
@@ -16,12 +16,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.domain.model.StudyGroup
+import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 import kr.boostcamp_2024.course.study.component.GroupItem
 
 @Composable
-fun GroupListScreen() {
+fun GroupListScreen(currentGroup: StudyGroup?, users: List<User>, removeClick: (String) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -32,31 +34,30 @@ fun GroupListScreen() {
             onClicked = { showDialog = true },
             imageVector = Icons.Outlined.AddCircle,
             title = R.string.property_tab_group_text,
+            currentGroup = currentGroup ?: StudyGroup("", "", "", "", 0, "", emptyList(), emptyList()),
         )
         if (showDialog) {
-            CreateGroupScreen(
+            CreateGroupDialog(
                 onDismissButtonClick = { showDialog = false },
                 onConfirmButtonClick = { showDialog = false },
             )
         }
-        GroupLazyColumn()
+        GroupLazyColumn(users, removeClick)
     }
 }
 
 @Composable
-fun GroupLazyColumn() {
+fun GroupLazyColumn(users: List<User>, removeClick: (String) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(),
     ) {
-        items(10) { index ->
+        itemsIndexed(items = users, key = { _, user -> user.id }) { index, user ->
             GroupItem(
-                removeButtonClick = { Log.d("Group Screen", "제거됨") },
-                profileImg = null,
-                name = "홍길동",
+                removeClick,
+                user,
             )
-
             if (index < 9) {
                 HorizontalDivider()
             }
