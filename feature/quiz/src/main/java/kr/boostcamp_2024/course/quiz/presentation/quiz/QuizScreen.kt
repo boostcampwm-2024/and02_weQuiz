@@ -28,7 +28,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,23 +50,39 @@ import kr.boostcamp_2024.course.quiz.viewmodel.QuizViewModel
 
 @Composable
 fun QuizScreen(
-    viewModel: QuizViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    viewModel: QuizViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     QuizScreen(
-        category = uiState.category,
-        quiz = uiState.quiz,
-        isLoading = uiState.isLoading,
-        errorMessage = uiState.errorMessage,
-        onErrorMessageShown = viewModel::shownErrorMessage,
+        category = uiState.value.category,
+        quiz = uiState.value.quiz,
+        snackbarHostState = snackbarHostState,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuestionButtonClick = onCreateQuestionButtonClick,
         onStartQuizButtonClick = onStartQuizButtonClick,
     )
+
+    if (uiState.value.isLoading) {
+        Box {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+            )
+        }
+    }
+
+    uiState.value.errorMessage?.let { errorMessage ->
+        LaunchedEffect(errorMessage) {
+            snackbarHostState.showSnackbar(errorMessage)
+            viewModel.shownErrorMessage()
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,14 +90,11 @@ fun QuizScreen(
 fun QuizScreen(
     category: Category?,
     quiz: Quiz?,
-    isLoading: Boolean,
-    errorMessage: String?,
-    onErrorMessageShown: () -> Unit,
+    snackbarHostState: SnackbarHostState,
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -200,9 +212,9 @@ fun QuizScreen(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { onCreateQuestionButtonClick(quiz.id) },
-                        enabled = quiz.isOpened,
+                        enabled = quiz.isOpened.not(),
                     ) {
-                        when (quiz.isOpened) {
+                        when (quiz.isOpened.not()) {
                             true -> Text(text = stringResource(R.string.txt_open_create_question))
                             false -> Text(text = stringResource(R.string.txt_close_create_question))
                         }
@@ -211,7 +223,7 @@ fun QuizScreen(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { onStartQuizButtonClick(quiz.id) },
-                        enabled = (quiz.isOpened.not() && quiz.questions.isNotEmpty()),
+                        enabled = (quiz.isOpened && quiz.questions.isNotEmpty()),
                     ) {
                         when (quiz.isOpened && quiz.questions.isEmpty()) {
                             true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
@@ -220,23 +232,6 @@ fun QuizScreen(
                     }
                 }
             }
-        }
-    }
-
-    if (isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
-    }
-
-    if (errorMessage != null) {
-        LaunchedEffect(errorMessage) {
-            snackbarHostState.showSnackbar(errorMessage)
-            onErrorMessageShown()
         }
     }
 }
@@ -262,9 +257,7 @@ fun QuizStartScreenPreview() {
                 questions = emptyList(),
                 userOmrs = emptyList(),
             ),
-            isLoading = false,
-            errorMessage = null,
-            onErrorMessageShown = {},
+            snackbarHostState = SnackbarHostState(),
             onNavigationButtonClick = {},
             onCreateQuestionButtonClick = {},
             onStartQuizButtonClick = {},

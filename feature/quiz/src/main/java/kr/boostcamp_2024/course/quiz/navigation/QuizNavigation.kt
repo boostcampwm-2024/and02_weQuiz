@@ -3,7 +3,6 @@ package kr.boostcamp_2024.course.quiz.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import kr.boostcamp_2024.course.quiz.presentation.question.CreateQuestionScreen
 import kr.boostcamp_2024.course.quiz.presentation.question.QuestionDetailScreen
@@ -21,7 +20,7 @@ data class CreateQuestionRoute(
 data object QuestionDetailRoute
 
 @Serializable
-data class QuestionScreenRoute(
+data class QuestionRoute(
     val quizId: String,
 )
 
@@ -45,10 +44,8 @@ fun NavController.navigateQuestionDetail() {
     navigate(QuestionDetailRoute)
 }
 
-fun NavController.navigateQuestionScreen(
-    quizId: String,
-) {
-    navigate(QuestionScreenRoute(quizId)) {
+fun NavController.navigateQuestion(quizId: String) {
+    navigate(QuestionRoute(quizId)) {
         popUpTo(QuizRoute::class.java.name) {
             inclusive = true
         }
@@ -61,7 +58,7 @@ fun NavController.navigateQuiz(categoryId: String, quizId: String) {
 
 fun NavController.navigateQuizResult() {
     navigate(QuizResultRoute) {
-        popUpTo(QuestionScreenRoute::class.java.name) {
+        popUpTo(QuizRoute::class.java.name) {
             inclusive = true
         }
     }
@@ -80,10 +77,8 @@ fun NavGraphBuilder.quizNavGraph(
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
 ) {
-    composable<CreateQuestionRoute> { backStackEntry ->
-        val createQuestionRoute = backStackEntry.toRoute<CreateQuestionRoute>()
+    composable<CreateQuestionRoute> {
         CreateQuestionScreen(
-            quizId = createQuestionRoute.quizId,
             onNavigationButtonClick = onNavigationButtonClick,
             onCreateQuestionSuccess = onCreateQuestionSuccess,
         )
@@ -93,7 +88,7 @@ fun NavGraphBuilder.quizNavGraph(
             onNavigationButtonClick = onNavigationButtonClick,
         )
     }
-    composable<QuestionScreenRoute> {
+    composable<QuestionRoute> {
         QuestionScreen(
             onNavigationButtonClick = onNavigationButtonClick,
             onQuizFinished = onQuizFinished,
