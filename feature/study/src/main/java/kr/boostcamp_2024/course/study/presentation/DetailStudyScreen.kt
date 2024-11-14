@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,12 +48,11 @@ import kr.boostcamp_2024.course.study.navigation.DetailScreenRoute
 import kr.boostcamp_2024.course.study.navigation.GroupScreenRoute
 import kr.boostcamp_2024.course.study.viewmodel.DetailStudyViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailStudyScreen(
     viewModel: DetailStudyViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
-    onCreateCategoryButtonClick: () -> Unit,
+    onCreateCategoryButtonClick: (String) -> Unit,
     onCategoryClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -69,6 +69,7 @@ fun DetailStudyScreen(
         onCreateCategoryButtonClick = onCreateCategoryButtonClick,
         onCategoryClick = onCategoryClick,
         onRemoveStudyGroupMemberButtonClick = viewModel::deleteStudyGroupMember,
+        onInviteConfirmButtonClick = viewModel::addNotification,
     )
 }
 
@@ -84,9 +85,10 @@ fun DetailStudyScreen(
     errorMessageId: Int?,
     onErrorMessageShown: () -> Unit,
     onNavigationButtonClick: () -> Unit,
-    onCreateCategoryButtonClick: () -> Unit,
+    onCreateCategoryButtonClick: (String) -> Unit,
     onCategoryClick: () -> Unit,
     onRemoveStudyGroupMemberButtonClick: (String, String) -> Unit,
+    onInviteConfirmButtonClick: (String, String) -> Unit,
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }
     val screenList = listOf(
@@ -106,9 +108,12 @@ fun DetailStudyScreen(
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
+                        modifier = Modifier.padding(end = 16.dp),
                         text = currentGroup?.name ?: "",
                         style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 },
                 topAppBarImageUrl = currentGroup?.studyGroupImageUrl,
@@ -156,14 +161,30 @@ fun DetailStudyScreen(
             SnackbarHost(hostState = snackBarHostState)
         },
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-        ) {
-            when (selectedScreenIndex) {
-                0 -> CategoryListScreen(owner, currentGroup, categories, onCreateCategoryButtonClick, onCategoryClick)
-                1 -> GroupListScreen(currentGroup, owner, curUserId, users, onRemoveStudyGroupMemberButtonClick)
+        if (currentGroup != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+            ) {
+                when (selectedScreenIndex) {
+                    0 -> CategoryListScreen(
+                        owner,
+                        currentGroup,
+                        categories,
+                        onCreateCategoryButtonClick,
+                        onCategoryClick,
+                    )
+
+                    1 -> GroupListScreen(
+                        currentGroup,
+                        owner,
+                        curUserId,
+                        users,
+                        onInviteConfirmButtonClick,
+                        onRemoveStudyGroupMemberButtonClick,
+                    )
+                }
             }
         }
     }

@@ -23,7 +23,8 @@ import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun CustomPropertyTab(
-    onClicked: () -> Unit,
+    studyGroupId: String,
+    onClicked: (String) -> Unit,
     imageVector: ImageVector,
     description: String? = null,
     @StringRes title: Int,
@@ -31,7 +32,11 @@ fun CustomPropertyTab(
 ) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(text = stringResource(title), style = MaterialTheme.typography.titleLarge)
-        CustomIconButton(onClicked = onClicked, imageVector = imageVector, description = description)
+        CustomIconButton(
+            onClicked = { onClicked(studyGroupId) },
+            imageVector = imageVector,
+            description = description,
+        )
         Spacer(modifier = Modifier.weight(1f))
         AssistChip(
             onClick = {},

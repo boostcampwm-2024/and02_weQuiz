@@ -21,6 +21,13 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<Unit> =
+        runCatching {
+            val userDocRef = userCollectionRef.document(userId)
+            userDocRef.update("study_groups", FieldValue.arrayUnion(studyId)).await()
+
+        }
+
     override suspend fun getUsers(userIds: List<String>): Result<List<User>> =
         runCatching {
             userIds.map { userId ->
@@ -34,5 +41,12 @@ class UserRepositoryImpl @Inject constructor(
         runCatching {
             val document = userCollectionRef.document(userId)
             document.update("study_groups", FieldValue.arrayRemove(studyGroupId)).await()
+        }
+
+    override suspend fun findUserByEmail(email: String): Result<User> =
+        runCatching {
+            val querySnapshot = userCollectionRef.whereEqualTo("email", email).get().await()
+            val response = querySnapshot.documents.firstOrNull()?.toObject(UserDTO::class.java)
+            requireNotNull(response).toVO(querySnapshot.documents.first().id)
         }
 }

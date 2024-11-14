@@ -1,6 +1,7 @@
 package kr.boostcamp_2024.course.domain.model
 
-data class QuestionRequestVO(
+data class Question(
+    val id: String,
     val title: String,
     val description: String,
     val solution: String?,

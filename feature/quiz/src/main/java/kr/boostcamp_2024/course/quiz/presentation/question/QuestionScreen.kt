@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.Question
 import kr.boostcamp_2024.course.quiz.component.QuestionChatBubbleRight
@@ -33,11 +34,13 @@ import kr.boostcamp_2024.course.quiz.component.QuestionDialog
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
 import kr.boostcamp_2024.course.quiz.component.RoundImage
+import kr.boostcamp_2024.course.quiz.viewmodel.QuestionViewModel
 
 @Composable
 fun QuestionScreen(
     onNavigationButtonClick: () -> Unit,
     onQuizFinished: () -> Unit,
+    viewModel: QuestionViewModel = hiltViewModel(),
 ) {
     val pagerState = rememberPagerState(
         initialPage = 0,

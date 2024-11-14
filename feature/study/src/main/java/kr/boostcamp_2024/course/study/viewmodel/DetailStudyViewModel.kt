@@ -18,6 +18,7 @@ import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
+import kr.boostcamp_2024.course.domain.repository.NotificationRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.study.R
@@ -36,12 +37,15 @@ data class DetailStudyUiState(
 
 @HiltViewModel
 class DetailStudyViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val studyGroupRepository: StudyGroupRepository,
     private val userRepository: UserRepository,
     private val categoryRepository: CategoryRepository,
     private val authRepository: AuthRepository,
+    private val notificationRepository: NotificationRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+    private val studyGroupId: String = savedStateHandle.toRoute<StudyRoute>().studyGroupId
+
     private val _uiState: MutableStateFlow<DetailStudyUiState> = MutableStateFlow(DetailStudyUiState())
     val uiState: StateFlow<DetailStudyUiState> = _uiState.onStart {
         val studyGroupId = savedStateHandle.toRoute<StudyRoute>().studyGroupId
@@ -57,6 +61,23 @@ class DetailStudyViewModel @Inject constructor(
     private fun loadStudyGroup(studyGroupId: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+            studyGroupRepository.getStudyGroup(studyGroupId)
+                .onSuccess { currentGroup ->
+                    val ownerId = currentGroup.ownerId
+                    val categoryIds = currentGroup.categories
+                    val userIds = currentGroup.users
+                    loadCategories(currentGroup, categoryIds)
+                    loadUsers(currentGroup, userIds)
+                    loadOwner(currentGroup, ownerId)
+                }.onFailure {
+                    Log.e("DetailStudyViewModel", "Failed to load study group", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessageId = R.string.error_message_load_study_group,
+                        )
+                    }
+                }
             getStudyGroup(studyGroupId)
         }
     }
@@ -142,6 +163,37 @@ class DetailStudyViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         errorMessageId = R.string.error_message_load_owner,
+                    )
+                }
+            }
+        }
+    }
+
+    fun addNotification(groupId: String, email: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            userRepository.findUserByEmail(email).onSuccess {
+                notificationRepository.addNotification(groupId, it.id).onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                        )
+                    }
+                }.onFailure {
+                    Log.e("DetailStudyViewModel", "Failed to add notification", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessageId = R.string.error_message_add_notification,
+                        )
+                    }
+                }
+            }.onFailure {
+                Log.e("DetailStudyViewModel", "Failed to find user", it)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessageId = R.string.error_message_find_user,
                     )
                 }
             }

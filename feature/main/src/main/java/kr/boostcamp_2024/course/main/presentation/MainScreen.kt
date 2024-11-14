@@ -104,11 +104,10 @@ fun MainScreen(
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(end = 16.dp),
                         text = currentUser?.name ?: "",
-                        style = MaterialTheme.typography.displayMedium,
+                        style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )

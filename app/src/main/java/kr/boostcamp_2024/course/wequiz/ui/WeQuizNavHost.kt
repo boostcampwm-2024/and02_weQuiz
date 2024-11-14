@@ -15,6 +15,7 @@ import kr.boostcamp_2024.course.main.navigation.navigateMain
 import kr.boostcamp_2024.course.main.navigation.navigateNotification
 import kr.boostcamp_2024.course.quiz.navigation.navigateCreateQuestion
 import kr.boostcamp_2024.course.quiz.navigation.navigateCreateQuiz
+import kr.boostcamp_2024.course.quiz.navigation.navigateQuestion
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuestionDetail
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuiz
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuizResult
@@ -70,7 +71,7 @@ fun WeQuizNavHost(
             onQuestionClick = navController::navigateQuestionDetail,
             onCreateQuizSuccess = navController::navigateUp,
             onCreateQuestionButtonClick = navController::navigateCreateQuestion,
-            onStartQuizButtonClick = navController::navigateQuiz,
+            onStartQuizButtonClick = navController::navigateQuestion,
         )
     }
 }

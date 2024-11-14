@@ -40,13 +40,19 @@ fun StudyGroupItem(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            WeQuizAsyncImage(
+            Row(
                 modifier = Modifier
-                    .size(56.dp)
-                    .clip(MaterialTheme.shapes.large),
-                imgUrl = studyGroup.studyGroupImageUrl,
-                contentDescription = stringResource(R.string.des_img_study_image),
-            )
+                    .weight(1f)
+                    .clickable(onClick = { onStudyGroupClick(studyGroup.id) }),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                WeQuizAsyncImage(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(MaterialTheme.shapes.large),
+                    imgUrl = studyGroup.studyGroupImageUrl,
+                    contentDescription = stringResource(R.string.des_img_study_image),
+                )
 
             Column(
                 modifier = Modifier
@@ -58,23 +64,24 @@ fun StudyGroupItem(
                     style = MaterialTheme.typography.bodyLarge,
                 )
 
-                if (studyGroup.description.isNullOrBlank().not()) {
+                    if (studyGroup.description.isNullOrBlank().not()) {
+                        Text(
+                            text = studyGroup.description!!,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+
                     Text(
-                        text = studyGroup.description!!,
+                        text = stringResource(R.string.txt_study_user_count, studyGroup.users.size),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-
-                Text(
-                    text = stringResource(R.string.txt_study_user_count, studyGroup.users.size),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
             }
 
             IconButton(

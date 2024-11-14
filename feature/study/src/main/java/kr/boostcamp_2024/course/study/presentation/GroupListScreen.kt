@@ -28,6 +28,7 @@ fun GroupListScreen(
     owner: User?,
     curUserId: String?,
     users: List<User>,
+    inviteClick: (String, String) -> Unit,
     removeClick: (String, String) -> Unit,
 ) {
     var showDialog by remember { mutableStateOf(false) }
@@ -38,6 +39,7 @@ fun GroupListScreen(
             .padding(start = 16.dp, end = 16.dp, top = 8.dp),
     ) {
         CustomPropertyTab(
+            studyGroupId = currentGroup?.id ?: "",
             onClicked = { showDialog = true },
             imageVector = Icons.Outlined.AddCircle,
             title = R.string.property_tab_group_text,
@@ -46,7 +48,11 @@ fun GroupListScreen(
         if (showDialog) {
             CreateGroupDialog(
                 onDismissButtonClick = { showDialog = false },
-                onConfirmButtonClick = { showDialog = false },
+                onConfirmButtonClick = { groupId, email ->
+                    inviteClick(groupId, email)
+                    showDialog = false
+                },
+                groupId = currentGroup?.id ?: "",
             )
         }
         GroupLazyColumn(currentGroup?.id, isOwner, users, removeClick)
