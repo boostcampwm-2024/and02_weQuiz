@@ -55,7 +55,7 @@ import kotlin.collections.List
 @Composable
 fun QuizResultScreen(
     onNavigationButtonClick: () -> Unit,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
     viewModel: QuizResultViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -94,7 +94,7 @@ fun QuizResultScreen(
     quizResult: QuizResult?,
     snackbarHostState: SnackbarHostState,
     onNavigationButtonClick: () -> Unit,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
 ) {
 
     Scaffold(
@@ -180,7 +180,7 @@ fun QuizResultContent(
 @Composable
 fun QuestionResultListContent(
     questionResults: List<QuestionResult>,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
 ) {
     Text(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -203,13 +203,13 @@ fun QuestionResultListContent(
 @Composable
 fun QuestionResultItem(
     questionResult: QuestionResult,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
 ) {
     Row(
         modifier = Modifier
             .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-            .clickable(onClick = onQuestionClick)
+            .clickable(onClick = { onQuestionClick(questionResult.question.id) })
             .padding(10.dp)
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
