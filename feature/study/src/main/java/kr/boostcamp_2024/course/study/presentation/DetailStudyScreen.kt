@@ -54,7 +54,7 @@ fun DetailStudyScreen(
     viewModel: DetailStudyViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
-    onCategoryClick: () -> Unit,
+    onCategoryClick: (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     DetailStudyScreen(
@@ -84,7 +84,7 @@ fun DetailStudyScreen(
     onErrorMessageShown: () -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
-    onCategoryClick: () -> Unit,
+    onCategoryClick: (String) -> Unit,
     onRemoveStudyGroupMemberButtonClick: (String) -> Unit,
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }

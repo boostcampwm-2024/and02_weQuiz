@@ -1,8 +1,10 @@
 package kr.boostcamp_2024.course.category.viewModel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -11,6 +13,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.category.navigation.CategoryRoute
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
@@ -25,15 +28,16 @@ data class CategoryUiState(
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
-//    savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val categoryRepository: CategoryRepository,
     private val quizRepository: QuizRepository,
 ) : ViewModel() {
+    private val categoryId: String = savedStateHandle.toRoute<CategoryRoute>().categoryId
     private val _categoryUiState: MutableStateFlow<CategoryUiState> =
         MutableStateFlow(CategoryUiState())
     val categoryUiState: StateFlow<CategoryUiState> = _categoryUiState
         .onStart {
-            loadCategory("bKnDNVc1kOgr5GuAC4CR")
+            loadCategory(categoryId)
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),

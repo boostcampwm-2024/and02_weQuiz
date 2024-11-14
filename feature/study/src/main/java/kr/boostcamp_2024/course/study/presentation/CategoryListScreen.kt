@@ -21,7 +21,7 @@ import kr.boostcamp_2024.course.study.component.CategoryItem
 import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 
 @Composable
-fun CategoryListScreen(owner: User?, currentGroup: StudyGroup?, categories: List<Category>, createCategoryClick: () -> Unit, categoryItemClick: () -> Unit) {
+fun CategoryListScreen(owner: User?, currentGroup: StudyGroup?, categories: List<Category>, createCategoryClick: () -> Unit, categoryItemClick: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -38,7 +38,7 @@ fun CategoryListScreen(owner: User?, currentGroup: StudyGroup?, categories: List
 }
 
 @Composable
-fun CategoryLazyColumn(owner: User?, categories: List<Category>, categoryItemClick: () -> Unit) {
+fun CategoryLazyColumn(owner: User?, categories: List<Category>, categoryItemClick: (String) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         itemsIndexed(items = categories, key = { _, category -> category.id }) { index, category ->
             CategoryItem(categoryItemClick, categories.size, category, owner?.profileUrl, owner?.name ?: stringResource(R.string.txt_detail_study_no_category_owner))

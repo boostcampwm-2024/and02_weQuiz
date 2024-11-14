@@ -8,13 +8,15 @@ import kr.boostcamp_2024.course.category.presentation.CategoryScreen
 import kr.boostcamp_2024.course.category.presentation.CreateCategoryScreen
 
 @Serializable
-data object CategoryRoute
+data class CategoryRoute(
+    val categoryId: String,
+)
 
 @Serializable
 data object CreateCategoryRoute
 
-fun NavController.navigateCategory() {
-    navigate(CategoryRoute)
+fun NavController.navigateCategory(categoryId: String) {
+    navigate(CategoryRoute(categoryId))
 }
 
 fun NavController.navigateCreateCategory() {
