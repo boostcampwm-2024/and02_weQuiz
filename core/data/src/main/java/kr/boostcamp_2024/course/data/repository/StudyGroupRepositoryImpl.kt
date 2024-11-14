@@ -52,4 +52,12 @@ class StudyGroupRepositoryImpl @Inject constructor(
             val document = studyGroupCollectionRef.document(studyGroupId)
             document.update("categories", FieldValue.arrayUnion(categoryId)).await()
         }
+
+    override suspend fun getStudyGroupName(studyGroupId: String): Result<String> =
+        runCatching {
+            val document = studyGroupCollectionRef.document(studyGroupId).get().await()
+            val response = document.toObject(StudyGroupDTO::class.java)
+            val studyGroupName = requireNotNull(response?.name)
+            studyGroupName
+        }
 }

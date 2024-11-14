@@ -21,11 +21,11 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<String> =
+    override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<Unit> =
         runCatching {
             val userDocRef = userCollectionRef.document(userId)
             userDocRef.update("study_groups", FieldValue.arrayUnion(studyId)).await()
-            studyId // TODO 성공 반환값 고민하기
+
         }
 
     override suspend fun getUsers(userIds: List<String>): Result<List<User>> =
@@ -35,5 +35,12 @@ class UserRepositoryImpl @Inject constructor(
                 val response = document.toObject(UserDTO::class.java)
                 requireNotNull(response).toVO(userId)
             }
+        }
+
+    override suspend fun findUserByEmail(email: String): Result<User> =
+        runCatching {
+            val querySnapshot = userCollectionRef.whereEqualTo("email", email).get().await()
+            val response = querySnapshot.documents.firstOrNull()?.toObject(UserDTO::class.java)
+            requireNotNull(response).toVO(querySnapshot.documents.first().id)
         }
 }

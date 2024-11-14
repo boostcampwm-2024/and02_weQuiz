@@ -68,6 +68,7 @@ fun DetailStudyScreen(
         onCreateCategoryButtonClick = onCreateCategoryButtonClick,
         onCategoryClick = onCategoryClick,
         onRemoveStudyGroupMemberButtonClick = { },
+        onInviteConfirmButtonClick = viewModel::addNotification,
     )
 }
 
@@ -85,6 +86,7 @@ fun DetailStudyScreen(
     onCreateCategoryButtonClick: (String) -> Unit,
     onCategoryClick: () -> Unit,
     onRemoveStudyGroupMemberButtonClick: (String) -> Unit,
+    onInviteConfirmButtonClick: (String, String) -> Unit,
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }
     val screenList = listOf(
@@ -164,10 +166,23 @@ fun DetailStudyScreen(
                     .padding(innerPadding),
             ) {
                 when (selectedScreenIndex) {
-                    0 -> CategoryListScreen(owner, currentGroup, categories, onCreateCategoryButtonClick, onCategoryClick)
-                    1 -> GroupListScreen(currentGroup, users, onRemoveStudyGroupMemberButtonClick)
+                    0 -> CategoryListScreen(
+                        owner,
+                        currentGroup,
+                        categories,
+                        onCreateCategoryButtonClick,
+                        onCategoryClick,
+                    )
+
+                    1 -> GroupListScreen(
+                        currentGroup,
+                        users,
+                        onRemoveStudyGroupMemberButtonClick,
+                        onInviteConfirmButtonClick,
+                    )
                 }
             }
+
         }
     }
 
