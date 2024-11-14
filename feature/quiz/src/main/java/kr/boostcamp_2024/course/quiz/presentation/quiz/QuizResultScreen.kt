@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,17 +60,17 @@ fun QuizResultScreen(
     viewModel: QuizResultViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     QuizResultScreen(
-        quizTitle = uiState.value.quizTitle,
-        quizResult = uiState.value.quizResult,
+        quizTitle = uiState.quizTitle,
+        quizResult = uiState.quizResult,
         snackbarHostState = snackbarHostState,
         onNavigationButtonClick = onNavigationButtonClick,
         onQuestionClick = onQuestionClick,
     )
 
-    if (uiState.value.isLoading) {
+    if (uiState.isLoading) {
         Box {
             CircularProgressIndicator(
                 modifier = Modifier
@@ -79,7 +80,7 @@ fun QuizResultScreen(
         }
     }
 
-    uiState.value.errorMessage?.let { errorMessage ->
+    uiState.errorMessage?.let { errorMessage ->
         LaunchedEffect(errorMessage) {
             snackbarHostState.showSnackbar(errorMessage)
             viewModel.shownErrorMessage()
