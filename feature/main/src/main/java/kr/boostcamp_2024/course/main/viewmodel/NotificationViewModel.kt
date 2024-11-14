@@ -5,10 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.Notification
 import kr.boostcamp_2024.course.domain.model.NotificationWithGroupInfo
+import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.NotificationRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
@@ -17,6 +22,7 @@ import javax.inject.Inject
 data class NotificationUiState(
     val isLoading: Boolean = false,
     val notificationWithGroupInfoList: List<NotificationWithGroupInfo> = emptyList(),
+    val snackBarMessage: String? = null,
 )
 
 @HiltViewModel
@@ -24,36 +30,54 @@ class NotificationViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val studyGroupRepository: StudyGroupRepository,
     private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<NotificationUiState> = MutableStateFlow(NotificationUiState())
-    val uiState: MutableStateFlow<NotificationUiState> = _uiState
-
-    init {
-        loadNotifications()
-    }
+    val uiState: StateFlow<NotificationUiState> = _uiState
+        .onStart {
+            loadNotifications()
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            NotificationUiState(),
+        )
 
     private fun loadNotifications() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            notificationRepository.getNotifications("M2PzD8bxVaDAwNrLhr6E")
-                .onSuccess { notifications ->
+            authRepository.getUserKey().onSuccess { userKey ->
+                notificationRepository.getNotifications(userKey)
+                    .onSuccess { notifications ->
+                        val notificationWithStudyGroupNameList = notifications.map {
+                            val studyGroupNameResult = studyGroupRepository.getStudyGroupName(it.groupId)
+                            val notificationWithGroupInfo =
+                                NotificationWithGroupInfo(it, studyGroupNameResult.getOrNull() ?: "")
+                            notificationWithGroupInfo
+                        }
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                notificationWithGroupInfoList = notificationWithStudyGroupNameList,
+                            )
+                        }
 
-                    val notificationWithStudyGroupNameList = notifications.map {
-                        val studyGroupNameResult = studyGroupRepository.getStudyGroupName(it.groupId)
-                        val notificationWithGroupInfo =
-                            NotificationWithGroupInfo(it, studyGroupNameResult.getOrNull() ?: "")
-                        notificationWithGroupInfo
                     }
+                    .onFailure {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                snackBarMessage = "알림을 불러오지 못하였습니다.",
+                            )
+                        }
+                    }
+            }
+                .onFailure {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            notificationWithGroupInfoList = notificationWithStudyGroupNameList,
+                            snackBarMessage = "유저키를 불러오지 못하였습니다.",
                         )
                     }
-
-                }
-                .onFailure {
-                    _uiState.update { it.copy(isLoading = false) }
                 }
         }
     }
@@ -67,7 +91,10 @@ class NotificationViewModel @Inject constructor(
                         currentState.copy(notificationWithGroupInfoList = updatedList)
                     }
                 }
-                .onFailure { Log.d("NotificationViewModel", "실패: $it") }
+                .onFailure { throwable ->
+                    Log.e("NotificationViewModel", "실패: $throwable")
+                    _uiState.update { it.copy(snackBarMessage = "알림 삭제 실패.") }
+                }
         }
     }
 
@@ -77,7 +104,15 @@ class NotificationViewModel @Inject constructor(
                 .onSuccess {
                     deleteInvitation(notification.id)
                 }
-                .onFailure { Log.d("NotificationViewModel", "실패: $it") }
+                .onFailure { throwable ->
+                    Log.e("NotificationViewModel", "실패: $throwable")
+                    _uiState.update { it.copy(snackBarMessage = "알림 수락 실패.") }
+                }
         }
     }
+
+    fun onSnackBarShown() {
+        _uiState.update { it.copy(snackBarMessage = null) }
+    }
+
 }

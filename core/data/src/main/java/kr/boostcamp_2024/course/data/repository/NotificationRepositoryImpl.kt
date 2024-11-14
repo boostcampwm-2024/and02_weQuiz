@@ -18,9 +18,7 @@ class NotificationRepositoryImpl @Inject constructor(
             val snapshot = notificationCollectionRef.whereEqualTo("user_id", userId).get().await()
             for (document in snapshot.documents) {
                 val notification = document.toObject(NotificationDTO::class.java)
-                notification?.let {
-                    notifications.add(it.toVO(document.id))
-                }
+                notifications.add(requireNotNull(notification).toVO(document.id))
             }
             notifications
         }

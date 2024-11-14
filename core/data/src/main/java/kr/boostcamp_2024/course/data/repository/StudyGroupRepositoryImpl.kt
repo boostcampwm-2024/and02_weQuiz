@@ -32,7 +32,7 @@ class StudyGroupRepositoryImpl @Inject constructor(
         runCatching {
             val document = studyGroupCollectionRef.document(studyGroupId).get().await()
             val response = document.toObject(StudyGroupDTO::class.java)
-            val studyGroupName = requireNotNull(requireNotNull(response).name)
+            val studyGroupName = requireNotNull(response?.name)
             studyGroupName
         }
 

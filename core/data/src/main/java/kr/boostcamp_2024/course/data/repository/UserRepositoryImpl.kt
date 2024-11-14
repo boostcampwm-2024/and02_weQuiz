@@ -17,15 +17,15 @@ class UserRepositoryImpl @Inject constructor(
         return runCatching {
             val document = userCollectionRef.document(userId).get().await()
             val response = document.toObject(UserDTO::class.java)
-            requireNotNull(response).toVO()
+            requireNotNull(response).toVO(userId)
         }
     }
 
-    override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<String> =
+    override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<Unit> =
         runCatching {
             val userDocRef = userCollectionRef.document(userId)
             userDocRef.update("study_groups", FieldValue.arrayUnion(studyId)).await()
-            studyId
+
         }
 
     override suspend fun getUsers(userIds: List<String>): Result<List<User>> =

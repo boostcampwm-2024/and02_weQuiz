@@ -3,14 +3,20 @@ package kr.boostcamp_2024.course.main.presentation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.domain.model.Notification
 import kr.boostcamp_2024.course.domain.model.NotificationWithGroupInfo
 import kr.boostcamp_2024.course.main.component.NotificationItem
@@ -24,12 +30,20 @@ fun NotificationScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val notificationInfos = uiState.notificationWithGroupInfoList
+    val snackBarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(uiState) {
+        uiState.snackBarMessage?.let { message ->
+            snackBarHostState.showSnackbar(message)
+            viewModel.onSnackBarShown()
+        }
+    }
 
     NotificationScreen(
         notificationInfos = notificationInfos,
         onRejectClick = viewModel::deleteInvitation,
         onAcceptClick = viewModel::acceptInvitation,
         onNavigationButtonClick = onNavigationButtonClick,
+        snackBarHostState = snackBarHostState,
     )
 }
 
@@ -40,9 +54,10 @@ fun NotificationScreen(
     onRejectClick: (String) -> Unit,
     onAcceptClick: (Notification) -> Unit,
     onNavigationButtonClick: () -> Unit,
+    snackBarHostState: SnackbarHostState,
 ) {
-
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             NotificationTopAppBar(onNavigationButtonClick = onNavigationButtonClick)
         },
@@ -52,11 +67,14 @@ fun NotificationScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            items(notificationInfos.size) { index ->
+            items(
+                items = notificationInfos,
+                key = { it.notification.id },
+            ) { notificationInfo ->
                 NotificationItem(
-                    notificationInfos[index],
-                    onRejectClick = { onRejectClick(notificationInfos[index].notification.id) },
-                    onAcceptClick = { onAcceptClick(notificationInfos[index].notification) },
+                    notificationInfo = notificationInfo,
+                    onRejectClick = { onRejectClick(notificationInfo.notification.id) },
+                    onAcceptClick = { onAcceptClick(notificationInfo.notification) },
                 )
             }
         }
@@ -66,19 +84,22 @@ fun NotificationScreen(
 @Preview
 @Composable
 private fun NotificationScreenPreview() {
-    NotificationScreen(
-        notificationInfos = listOf(
-            NotificationWithGroupInfo(
-                notification = Notification(
-                    id = "1",
-                    groupId = "1",
-                    userid = "1",
+    WeQuizTheme {
+        NotificationScreen(
+            notificationInfos = listOf(
+                NotificationWithGroupInfo(
+                    notification = Notification(
+                        id = "1",
+                        groupId = "1",
+                        userid = "1",
+                    ),
+                    studyGroupName = "스터디 이름",
                 ),
-                studyGroupName = "스터디 이름",
             ),
-        ),
-        onRejectClick = {},
-        onAcceptClick = {},
-        onNavigationButtonClick = {},
-    )
+            onRejectClick = {},
+            onAcceptClick = {},
+            onNavigationButtonClick = {},
+            snackBarHostState = SnackbarHostState(),
+        )
+    }
 }
