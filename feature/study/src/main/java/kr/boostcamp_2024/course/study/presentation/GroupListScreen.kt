@@ -23,7 +23,11 @@ import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 import kr.boostcamp_2024.course.study.component.GroupItem
 
 @Composable
-fun GroupListScreen(currentGroup: StudyGroup?, users: List<User>, removeClick: (String) -> Unit) {
+fun GroupListScreen(
+    currentGroup: StudyGroup,
+    users: List<User>,
+    removeClick: (String) -> Unit,
+) {
     var showDialog by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -31,10 +35,11 @@ fun GroupListScreen(currentGroup: StudyGroup?, users: List<User>, removeClick: (
             .padding(start = 16.dp, end = 16.dp, top = 8.dp),
     ) {
         CustomPropertyTab(
+            studyGroupId = currentGroup.id,
             onClicked = { showDialog = true },
             imageVector = Icons.Outlined.AddCircle,
             title = R.string.property_tab_group_text,
-            currentGroup = currentGroup ?: StudyGroup("", "", "", "", 0, "", emptyList(), emptyList()),
+            currentGroup = currentGroup,
         )
         if (showDialog) {
             CreateGroupDialog(
