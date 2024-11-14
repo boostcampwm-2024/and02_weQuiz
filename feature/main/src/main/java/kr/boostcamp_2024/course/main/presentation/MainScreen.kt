@@ -72,6 +72,10 @@ fun MainScreen(
         onStudyGroupClick = onStudyGroupClick,
     )
 
+    LaunchedEffect(Unit) {
+        viewModel.loadCurrentUser()
+    }
+
     if (uiState.isLoading) {
         Box {
             CircularProgressIndicator(
