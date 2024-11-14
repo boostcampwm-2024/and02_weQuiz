@@ -48,7 +48,7 @@ import kr.boostcamp_2024.course.domain.model.Quiz
 @Composable
 fun CategoryScreen(
     onNavigationButtonClick: () -> Unit,
-    onCreateQuizButtonClick: () -> Unit,
+    onCreateQuizButtonClick: (String) -> Unit,
     onQuizClick: (String, String) -> Unit,
     categoryViewModel: CategoryViewModel = hiltViewModel(),
 ) {
@@ -78,11 +78,12 @@ private fun CategoryScreen(
     category: Category?,
     quizList: List<Quiz>?,
     onNavigationButtonClick: () -> Unit,
-    onCreateQuizButtonClick: () -> Unit,
+    onCreateQuizButtonClick: (String) -> Unit,
     onQuizClick: (String, String) -> Unit,
     setNewSnackBarMessage: (String) -> Unit,
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         topBar = {
@@ -127,15 +128,17 @@ private fun CategoryScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onCreateQuizButtonClick,
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = stringResource(R.string.des_fab_create_quiz),
-                )
+            if (category != null) {
+                FloatingActionButton(
+                    onClick = { onCreateQuizButtonClick(category.id) },
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        tint = MaterialTheme.colorScheme.primary,
+                        contentDescription = stringResource(R.string.des_fab_create_quiz),
+                    )
+                }
             }
         },
     ) { innerPadding ->

@@ -36,7 +36,9 @@ data class QuizRoute(
 data object QuizResultRoute
 
 @Serializable
-data object CreateQuizRoute
+data class CreateQuizRoute(
+    val categoryId: String,
+)
 
 fun NavController.navigateCreateQuestion(quizId: String) {
     navigate(CreateQuestionRoute(quizId))
@@ -66,8 +68,8 @@ fun NavController.navigateQuizResult() {
     }
 }
 
-fun NavController.navigateCreateQuiz() {
-    navigate(CreateQuizRoute)
+fun NavController.navigateCreateQuiz(categoryId: String) {
+    navigate(CreateQuizRoute(categoryId))
 }
 
 fun NavGraphBuilder.quizNavGraph(
