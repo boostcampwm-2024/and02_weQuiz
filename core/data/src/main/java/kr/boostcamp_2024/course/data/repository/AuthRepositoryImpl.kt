@@ -20,14 +20,13 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserKey(): Result<String> {
-        return runCatching {
+    override suspend fun getUserKey(): Result<String> =
+        runCatching {
             val userKey = weQuizDataStore.data.map { preferences ->
                 preferences[USER_KEY] ?: throw IllegalStateException("User key is not stored")
             }.firstOrNull()
             requireNotNull(userKey)
         }
-    }
 
     companion object {
         private val USER_KEY = stringPreferencesKey("user_key")
