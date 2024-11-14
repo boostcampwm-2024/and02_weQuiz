@@ -19,50 +19,89 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.category.R
+import kr.boostcamp_2024.course.category.viewModel.CategoryViewModel
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: (String) -> Unit,
-    onQuizClick: () -> Unit,
+    onQuizClick: (String, String) -> Unit,
+    categoryViewModel: CategoryViewModel = hiltViewModel(),
 ) {
-    val dummyCategory = Category(
-        id = "tbaGgtjOlxx7m6ATBGmu",
-        name = "안드 마스터",
-        description = "안드로이드 마스터가 되어 보아요!!",
-        categoryImageUrl = null,
-        quizzes = listOf("1", "1", "1", "1", "1", "1", "1", "1", "1", "1"),
-    )
 
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val categoryUiState = categoryViewModel.categoryUiState.collectAsStateWithLifecycle()
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        categoryUiState.value.snackBarMessage?.let { message ->
+            snackBarHostState.showSnackbar(message)
+            categoryViewModel.setNewSnackBarMessage(null)
+        }
+    }
+
+    CategoryScreen(
+        category = categoryUiState.value.category,
+        quizList = categoryUiState.value.quizList,
+        onNavigationButtonClick = onNavigationButtonClick,
+        onCreateQuizButtonClick = onCreateQuizButtonClick,
+        onQuizClick = onQuizClick,
+        setNewSnackBarMessage = categoryViewModel::setNewSnackBarMessage,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CategoryScreen(
+    category: Category?,
+    quizList: List<Quiz>?,
+    onNavigationButtonClick: () -> Unit,
+    onCreateQuizButtonClick: (String) -> Unit,
+    onQuizClick: (String, String) -> Unit,
+    setNewSnackBarMessage: (String) -> Unit,
+) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { /* no - op */ },
+            WeQuizImageLargeTopAppBar(
+                topAppBarImageUrl = category?.categoryImageUrl,
+                scrollBehavior = scrollBehavior,
+                title = {
+                    category?.let {
+                        Text(
+                            modifier = Modifier.padding(end = 16.dp),
+                            text = it.name,
+                            style = MaterialTheme.typography.displaySmall,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                },
                 navigationIcon = {
                     IconButton(
                         onClick = onNavigationButtonClick,
@@ -75,7 +114,10 @@ fun CategoryScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = { /* todo: 카테고리 설정 */ },
+                        onClick = {
+                            // todo: 카테고리 설정
+                            setNewSnackBarMessage("추후 제공될 기능입니다.")
+                        },
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
@@ -86,87 +128,33 @@ fun CategoryScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { onCreateQuizButtonClick(dummyCategory.id) },
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = stringResource(R.string.des_fab_create_quiz),
-                )
+            category?.id?.let {
+                FloatingActionButton(
+                    onClick = { onCreateQuizButtonClick(category.id) },
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        tint = MaterialTheme.colorScheme.primary,
+                        contentDescription = stringResource(R.string.des_fab_create_quiz),
+                    )
+                }
             }
         },
     ) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(innerPadding),
-        ) {
-            CategoryContent(
-                categoryTitle = dummyCategory.name,
-                categoryDescription = dummyCategory.description,
-            )
-            QuizTabs(
-                selectedTabIndex = selectedTabIndex,
-                onTabClick = { index -> selectedTabIndex = index },
-            )
-            if (selectedTabIndex == 0) {
+        if (category != null) {
+            Column(
+                modifier = Modifier.padding(innerPadding),
+            ) {
                 QuizList(
                     modifier = Modifier.weight(1f),
-                    quizzes = dummyCategory.quizzes,
+                    categoryId = category.id,
+                    quizzes = quizList,
                     onQuizClick = onQuizClick,
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun CategoryContent(
-    categoryTitle: String,
-    categoryDescription: String?,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(
-            text = categoryTitle,
-            style = MaterialTheme.typography.displayMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        categoryDescription?.let { description ->
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun QuizTabs(
-    selectedTabIndex: Int,
-    onTabClick: (Int) -> Unit,
-) {
-    val tabs = stringArrayResource(R.array.quiz_tabs)
-    PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
-        tabs.forEachIndexed { index, title ->
-            Tab(
-                modifier = Modifier.padding(top = 8.dp),
-                selected = selectedTabIndex == index,
-                onClick = { onTabClick(index) },
-                text = {
-                    Text(
-                        text = title,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                },
-            )
+        } else {
+            WeQuizCircularProgressIndicator()
         }
     }
 }
@@ -174,31 +162,28 @@ fun QuizTabs(
 @Composable
 fun QuizList(
     modifier: Modifier = Modifier,
-    quizzes: List<String>,
-    onQuizClick: () -> Unit,
+    categoryId: String,
+    quizzes: List<Quiz>?,
+    onQuizClick: (String, String) -> Unit,
 ) {
-    val tmpQuiz = Quiz(
-        id = "1",
-        title = "안드로이드 퀴즈",
-        description = "안드로이드 퀴즈를 풀어보세요!",
-        startTime = "2021-09-01",
-        solveTime = 10,
-        questions = emptyList(),
-        userOmrs = emptyList(),
-    )
-
-    LazyVerticalGrid(
-        modifier = modifier.padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        columns = GridCells.Fixed(3),
-    ) {
-        items(quizzes) { quiz ->
-            QuizItem(
-                quiz = tmpQuiz,
-                onQuizClick = onQuizClick,
-            )
-
+    if (quizzes != null) {
+        LazyVerticalGrid(
+            modifier = modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            columns = GridCells.Fixed(3),
+        ) {
+            items(
+                items = quizzes,
+                key = { it.id },
+            ) { quiz ->
+                QuizItem(
+                    quiz = quiz,
+                    onQuizClick = { onQuizClick(categoryId, quiz.id) },
+                )
+            }
         }
+    } else {
+        WeQuizCircularProgressIndicator()
     }
 }
 
@@ -243,7 +228,7 @@ fun CategoryScreenPreview() {
         CategoryScreen(
             onNavigationButtonClick = {},
             onCreateQuizButtonClick = {},
-            onQuizClick = {},
+            onQuizClick = { _, _ -> },
         )
     }
 }

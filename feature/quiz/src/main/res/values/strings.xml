@@ -57,4 +57,9 @@
     <string name="des_image_question">System Profile Image</string>
     <string name="des_question_detail_solution_profile">프로필 사진</string>
     <string name="des_question_detail_top_app_bar_navigation_icon">뒤로 가기</string>
+    <string name="btn_prev_question">이전 문제</string>
+    <string name="err_load_quiz">퀴즈 로드에 실패했습니다.</string>
+    <string name="err_load_questions">문제 로드에 실패했습니다.</string>
+    <string name="err_answer_add">퀴즈에 응답 추가 실패했습니다.</string>
+    <string name="err_answer_add_quiz">응답 제출에 실패했습니다.</string>
 </resources>

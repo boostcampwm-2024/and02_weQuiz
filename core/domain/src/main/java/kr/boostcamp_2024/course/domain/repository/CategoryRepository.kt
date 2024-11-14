@@ -7,5 +7,7 @@ interface CategoryRepository {
 
     suspend fun getCategory(categoryId: String): Result<Category>
 
+    suspend fun createCategory(categoryName: String, categoryDescription: String?): Result<String>
+
     suspend fun addQuiz(categoryId: String, quizId: String): Result<Unit>
 }

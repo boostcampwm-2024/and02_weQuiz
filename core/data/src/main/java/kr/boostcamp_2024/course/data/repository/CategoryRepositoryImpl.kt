@@ -13,21 +13,31 @@ class CategoryRepositoryImpl @Inject constructor(
 ) : CategoryRepository {
     private val categoryCollectionRef = firestore.collection("Category")
 
-    override suspend fun getCategories(categoryIds: List<String>): Result<List<Category>> =
-        runCatching {
-            categoryIds.map { categoryId ->
-                val document = categoryCollectionRef.document(categoryId).get().await()
-                val response = document.toObject(CategoryDTO::class.java)
-                requireNotNull(response).toVO(categoryId)
-            }
-        }
-
-    override suspend fun getCategory(categoryId: String): Result<Category> =
-        runCatching {
+    override suspend fun getCategories(categoryIds: List<String>): Result<List<Category>> = runCatching {
+        categoryIds.map { categoryId ->
             val document = categoryCollectionRef.document(categoryId).get().await()
             val response = document.toObject(CategoryDTO::class.java)
             requireNotNull(response).toVO(categoryId)
         }
+    }
+
+    override suspend fun getCategory(categoryId: String): Result<Category> = runCatching {
+        val document = categoryCollectionRef.document(categoryId).get().await()
+        val response = document.toObject(CategoryDTO::class.java)
+        requireNotNull(response).toVO(categoryId)
+    }
+
+    override suspend fun createCategory(categoryName: String, categoryDescription: String?): Result<String> = runCatching {
+        val newCategory = CategoryDTO(
+            name = categoryName,
+            description = categoryDescription,
+            categoryImageUrl = null,
+            quizzes = emptyList(),
+        )
+
+        val document = categoryCollectionRef.add(newCategory).await()
+        document.id
+    }
 
     override suspend fun addQuiz(categoryId: String, quizId: String): Result<Unit> =
         runCatching {

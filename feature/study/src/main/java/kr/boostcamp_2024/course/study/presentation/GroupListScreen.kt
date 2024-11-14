@@ -23,14 +23,23 @@ import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 import kr.boostcamp_2024.course.study.component.GroupItem
 
 @Composable
-fun GroupListScreen(currentGroup: StudyGroup?, users: List<User>, removeClick: (String) -> Unit) {
+fun GroupListScreen(
+    currentGroup: StudyGroup?,
+    owner: User?,
+    curUserId: String?,
+    users: List<User>,
+    inviteClick: (String, String) -> Unit,
+    removeClick: (String, String) -> Unit,
+) {
     var showDialog by remember { mutableStateOf(false) }
+    val isOwner: Boolean = owner?.id == curUserId
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp, top = 8.dp),
     ) {
         CustomPropertyTab(
+            studyGroupId = currentGroup?.id ?: "",
             onClicked = { showDialog = true },
             imageVector = Icons.Outlined.AddCircle,
             title = R.string.property_tab_group_text,
@@ -39,15 +48,24 @@ fun GroupListScreen(currentGroup: StudyGroup?, users: List<User>, removeClick: (
         if (showDialog) {
             CreateGroupDialog(
                 onDismissButtonClick = { showDialog = false },
-                onConfirmButtonClick = { showDialog = false },
+                onConfirmButtonClick = { groupId, email ->
+                    inviteClick(groupId, email)
+                    showDialog = false
+                },
+                groupId = currentGroup?.id ?: "",
             )
         }
-        GroupLazyColumn(users, removeClick)
+        GroupLazyColumn(currentGroup?.id, isOwner, users, removeClick)
     }
 }
 
 @Composable
-fun GroupLazyColumn(users: List<User>, removeClick: (String) -> Unit) {
+fun GroupLazyColumn(
+    groupId: String?,
+    isOwner: Boolean,
+    users: List<User>,
+    removeClick: (String, String) -> Unit,
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,6 +73,8 @@ fun GroupLazyColumn(users: List<User>, removeClick: (String) -> Unit) {
     ) {
         itemsIndexed(items = users, key = { _, user -> user.id }) { index, user ->
             GroupItem(
+                groupId,
+                isOwner,
                 removeClick,
                 user,
             )

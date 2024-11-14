@@ -11,21 +11,23 @@ import kr.boostcamp_2024.course.study.presentation.DetailStudyScreen
 data object CreateStudyRoute
 
 @Serializable
-data object StudyRoute
+data class StudyRoute(
+    val studyGroupId: String,
+)
 
 fun NavController.navigateCreateStudy() {
     navigate(CreateStudyRoute)
 }
 
-fun NavController.navigateStudy() {
-    navigate(StudyRoute)
+fun NavController.navigateStudy(studyGroupId: String) {
+    navigate(StudyRoute(studyGroupId))
 }
 
 fun NavGraphBuilder.studyNavGraph(
     onNavigationButtonClick: () -> Unit,
     onCreateStudySuccess: () -> Unit,
-    onCreateCategoryButtonClick: () -> Unit,
-    onCategoryClick: () -> Unit,
+    onCategoryClick: (String) -> Unit,
+    onCreateCategoryButtonClick: (String) -> Unit,
 ) {
     composable<CreateStudyRoute> {
         CreateStudyScreen(

@@ -1,7 +1,5 @@
 package kr.boostcamp_2024.course.main.component
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,14 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.domain.model.NotificationWithGroupInfo
 import kr.boostcamp_2024.course.main.R
 
 @Composable
 fun NotificationItem(
-    notification: Notification,
+    notificationInfo: NotificationWithGroupInfo,
     onRejectClick: () -> Unit,
     onAcceptClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -38,20 +37,20 @@ fun NotificationItem(
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
+        // todo: 이미지 넣을 때 추가 수정
+        WeQuizAsyncImage(
             modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape)
-                .background(Color.LightGray),
-        ) // todo: 이미지 넣어야 하는 곳
+                .size(80.dp).clip(CircleShape),
+            imgUrl = null,
+            contentDescription = null,
+        )
 
         Column(
             modifier = Modifier
                 .padding(start = 16.dp),
         ) {
-            // 그룹이름 받아오는것으로 수정
             Text(
-                text = notification.groupId.toString(),
+                text = notificationInfo.studyGroupName,
                 style = MaterialTheme.typography.labelMedium,
             )
             Text(
@@ -107,9 +106,3 @@ fun NotificationItem(
 
     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 }
-
-// 임시 활용 data class
-data class Notification(
-    val notificationId: Int = 0,
-    val groupId: Int,
-)

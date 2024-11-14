@@ -12,16 +12,25 @@ import kr.boostcamp_2024.course.quiz.presentation.quiz.QuizResultScreen
 import kr.boostcamp_2024.course.quiz.presentation.quiz.QuizScreen
 
 @Serializable
-data object CreateQuestionRoute
+data class CreateQuestionRoute(
+    val quizId: String,
+)
 
 @Serializable
-data object QuestionDetailRoute
+data class QuestionDetailRoute(
+    val questionId: String,
+)
 
 @Serializable
-data object QuestionScreenRoute
+data class QuestionRoute(
+    val quizId: String,
+)
 
 @Serializable
-data object QuizRoute
+data class QuizRoute(
+    val categoryId: String,
+    val quizId: String,
+)
 
 @Serializable
 data object QuizResultRoute
@@ -31,24 +40,24 @@ data class CreateQuizRoute(
     val categoryId: String,
 )
 
-fun NavController.navigateCreateQuestion() {
-    navigate(CreateQuestionRoute)
+fun NavController.navigateCreateQuestion(quizId: String) {
+    navigate(CreateQuestionRoute(quizId))
 }
 
-fun NavController.navigateQuestionDetail() {
-    navigate(QuestionDetailRoute)
+fun NavController.navigateQuestionDetail(questionId: String) {
+    navigate(QuestionDetailRoute(questionId))
 }
 
-fun NavController.navigateQuestionScreen() {
-    navigate(QuestionScreenRoute) {
+fun NavController.navigateQuestion(quizId: String) {
+    navigate(QuestionRoute(quizId)) {
         popUpTo(QuizRoute::class.java.name) {
             inclusive = true
         }
     }
 }
 
-fun NavController.navigateQuiz() {
-    navigate(QuizRoute)
+fun NavController.navigateQuiz(categoryId: String, quizId: String) {
+    navigate(QuizRoute(categoryId, quizId))
 }
 
 fun NavController.navigateQuizResult() {
@@ -67,10 +76,10 @@ fun NavGraphBuilder.quizNavGraph(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionSuccess: () -> Unit,
     onQuizFinished: () -> Unit,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
     onCreateQuizSuccess: () -> Unit,
-    onCreateQuestionButtonClick: () -> Unit,
-    onStartQuizButtonClick: () -> Unit,
+    onCreateQuestionButtonClick: (String) -> Unit,
+    onStartQuizButtonClick: (String) -> Unit,
 ) {
     composable<CreateQuestionRoute> {
         CreateQuestionScreen(
@@ -83,7 +92,7 @@ fun NavGraphBuilder.quizNavGraph(
             onNavigationButtonClick = onNavigationButtonClick,
         )
     }
-    composable<QuestionScreenRoute> {
+    composable<QuestionRoute> {
         QuestionScreen(
             onNavigationButtonClick = onNavigationButtonClick,
             onQuizFinished = onQuizFinished,

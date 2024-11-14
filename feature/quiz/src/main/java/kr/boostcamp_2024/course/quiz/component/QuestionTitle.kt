@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizChatBubble
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
@@ -18,6 +19,6 @@ fun QuestionTitle(title: String) {
     ) {
         Text(text = stringResource(R.string.txt_question_detail_title), modifier = Modifier, style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(10.dp))
-        ChatBubble(title)
+        WeQuizChatBubble(text = title)
     }
 }

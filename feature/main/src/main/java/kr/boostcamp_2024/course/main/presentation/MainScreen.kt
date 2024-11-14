@@ -58,7 +58,7 @@ fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
-    onStudyGroupClick: () -> Unit,
+    onStudyGroupClick: (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -84,7 +84,7 @@ fun MainScreen(
     onErrorMessageShown: () -> Unit,
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
-    onStudyGroupClick: () -> Unit,
+    onStudyGroupClick: (String) -> Unit,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -104,11 +104,10 @@ fun MainScreen(
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(end = 16.dp),
                         text = currentUser?.name ?: "",
-                        style = MaterialTheme.typography.displayMedium,
+                        style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -203,7 +202,7 @@ fun MainScreen(
 @Composable
 fun StudyGroupTab(
     studyGroups: List<StudyGroup>,
-    onStudyGroupClick: () -> Unit,
+    onStudyGroupClick: (String) -> Unit,
     onStudyGroupMenuClick: () -> Unit,
 ) {
     LazyColumn {
