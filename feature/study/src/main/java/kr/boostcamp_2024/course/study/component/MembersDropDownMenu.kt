@@ -21,7 +21,10 @@ import kr.boostcamp_2024.course.study.R
 
 @ExperimentalMaterial3Api
 @Composable
-fun MembersDropDownMenu(modifier: Modifier = Modifier) {
+fun MembersDropDownMenu(
+    modifier: Modifier = Modifier,
+    onOptionSelected: (Int) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
     val membersDropDownMenuText = stringResource(R.string.txt_members_drop_down_menu)
     var selectedOption by remember { mutableStateOf(membersDropDownMenuText) }
@@ -40,7 +43,7 @@ fun MembersDropDownMenu(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .menuAnchor(),
-            label = { Text(stringResource(R.string.txt_members_drop_down_menu_label)) },
+            label = { Text(membersDropDownMenuText) },
         )
 
         ExposedDropdownMenu(
@@ -48,13 +51,17 @@ fun MembersDropDownMenu(modifier: Modifier = Modifier) {
             onDismissRequest = { expanded = false },
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(max = 130.dp),
+                .heightIn(max = 110.dp),
         ) {
-            dropDownMenuOptions.forEach { option ->
-                DropdownMenuItem(text = { Text(option) }, onClick = {
-                    selectedOption = option
-                    expanded = false
-                })
+            dropDownMenuOptions.forEachIndexed { index, option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        onOptionSelected(index)
+                        selectedOption = option
+                        expanded = false
+                    },
+                )
             }
         }
     }
