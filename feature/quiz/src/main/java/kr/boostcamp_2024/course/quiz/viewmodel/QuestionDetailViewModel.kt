@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
@@ -33,11 +36,11 @@ class QuestionDetailViewModel @Inject constructor(
     private val questionId: String = savedStateHandle.toRoute<QuestionDetailRoute>().questionId
 
     private val _uiState = MutableStateFlow(DetailUiState())
-    val uiState = _uiState.asStateFlow()
-
-    init {
-        loadQuestionDetail()
-    }
+    val uiState: StateFlow<DetailUiState> = _uiState
+        .onStart {
+            loadQuestionDetail()
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), DetailUiState())
 
     private fun loadQuestionDetail() {
         viewModelScope.launch {

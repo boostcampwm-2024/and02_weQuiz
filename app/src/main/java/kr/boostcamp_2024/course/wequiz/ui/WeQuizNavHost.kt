@@ -13,7 +13,6 @@ import kr.boostcamp_2024.course.login.loginNavGraph
 import kr.boostcamp_2024.course.main.navigation.mainNavGraph
 import kr.boostcamp_2024.course.main.navigation.navigateMain
 import kr.boostcamp_2024.course.main.navigation.navigateNotification
-import kr.boostcamp_2024.course.quiz.navigation.QuizResultRoute
 import kr.boostcamp_2024.course.quiz.navigation.navigateCreateQuestion
 import kr.boostcamp_2024.course.quiz.navigation.navigateCreateQuiz
 import kr.boostcamp_2024.course.quiz.navigation.navigateQuestion
@@ -35,7 +34,7 @@ fun WeQuizNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = QuizResultRoute,
+        startDestination = startDestination,
     ) {
         loginNavGraph(
             onLoginSuccess = {
