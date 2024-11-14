@@ -61,13 +61,14 @@ fun DetailStudyScreen(
         categories = uiState.categories,
         users = uiState.users,
         owner = uiState.owner,
+        curUserId = uiState.userId,
         isLoading = uiState.isLoading,
         errorMessageId = uiState.errorMessageId,
         onErrorMessageShown = viewModel::shownErrorMessage,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateCategoryButtonClick = onCreateCategoryButtonClick,
         onCategoryClick = onCategoryClick,
-        onRemoveStudyGroupMemberButtonClick = { },
+        onRemoveStudyGroupMemberButtonClick = viewModel::deleteStudyGroupMember,
         onInviteConfirmButtonClick = viewModel::addNotification,
     )
 }
@@ -79,13 +80,14 @@ fun DetailStudyScreen(
     categories: List<Category>,
     users: List<User>,
     owner: User?,
+    curUserId: String?,
     isLoading: Boolean,
     errorMessageId: Int?,
     onErrorMessageShown: () -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: (String) -> Unit,
     onCategoryClick: () -> Unit,
-    onRemoveStudyGroupMemberButtonClick: (String) -> Unit,
+    onRemoveStudyGroupMemberButtonClick: (String, String) -> Unit,
     onInviteConfirmButtonClick: (String, String) -> Unit,
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }
@@ -176,13 +178,14 @@ fun DetailStudyScreen(
 
                     1 -> GroupListScreen(
                         currentGroup,
+                        owner,
+                        curUserId,
                         users,
-                        onRemoveStudyGroupMemberButtonClick,
                         onInviteConfirmButtonClick,
+                        onRemoveStudyGroupMemberButtonClick,
                     )
                 }
             }
-
         }
     }
 

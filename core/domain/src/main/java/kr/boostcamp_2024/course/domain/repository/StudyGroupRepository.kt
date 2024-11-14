@@ -13,4 +13,6 @@ interface StudyGroupRepository {
     suspend fun getStudyGroupName(studyGroupId: String): Result<String>
 
     suspend fun addCategoryToStudyGroup(studyGroupId: String, categoryId: String): Result<Unit>
+
+    suspend fun deleteUser(studyGroupId: String, userId: String): Result<Unit>
 }

@@ -24,23 +24,26 @@ import kr.boostcamp_2024.course.study.component.GroupItem
 
 @Composable
 fun GroupListScreen(
-    currentGroup: StudyGroup,
+    currentGroup: StudyGroup?,
+    owner: User?,
+    curUserId: String?,
     users: List<User>,
-    removeClick: (String) -> Unit,
     inviteClick: (String, String) -> Unit,
+    removeClick: (String, String) -> Unit,
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    val isOwner: Boolean = owner?.id == curUserId
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp, top = 8.dp),
     ) {
         CustomPropertyTab(
-            studyGroupId = currentGroup.id,
+            studyGroupId = currentGroup?.id ?: "",
             onClicked = { showDialog = true },
             imageVector = Icons.Outlined.AddCircle,
             title = R.string.property_tab_group_text,
-            currentGroup = currentGroup,
+            currentGroup = currentGroup ?: StudyGroup("", "", "", "", 0, "", emptyList(), emptyList()),
         )
         if (showDialog) {
             CreateGroupDialog(
@@ -49,15 +52,20 @@ fun GroupListScreen(
                     inviteClick(groupId, email)
                     showDialog = false
                 },
-                groupId = currentGroup.id,
+                groupId = currentGroup?.id ?: "",
             )
         }
-        GroupLazyColumn(users, removeClick)
+        GroupLazyColumn(currentGroup?.id, isOwner, users, removeClick)
     }
 }
 
 @Composable
-fun GroupLazyColumn(users: List<User>, removeClick: (String) -> Unit) {
+fun GroupLazyColumn(
+    groupId: String?,
+    isOwner: Boolean,
+    users: List<User>,
+    removeClick: (String, String) -> Unit,
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -65,6 +73,8 @@ fun GroupLazyColumn(users: List<User>, removeClick: (String) -> Unit) {
     ) {
         itemsIndexed(items = users, key = { _, user -> user.id }) { index, user ->
             GroupItem(
+                groupId,
+                isOwner,
                 removeClick,
                 user,
             )

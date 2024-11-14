@@ -54,7 +54,11 @@ fun StudyGroupItem(
                     contentDescription = stringResource(R.string.des_img_study_image),
                 )
 
-                Column {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(onClick = { onStudyGroupClick(studyGroup.id) }),
+                ) {
                     Text(
                         text = studyGroup.name,
                         style = MaterialTheme.typography.bodyLarge,

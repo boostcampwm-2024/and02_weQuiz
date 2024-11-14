@@ -10,4 +10,6 @@ interface UserRepository {
     suspend fun findUserByEmail(email: String): Result<User>
 
     suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<Unit>
+
+    suspend fun deleteStudyGroupUser(userId: String, studyGroupId: String): Result<Unit>
 }
