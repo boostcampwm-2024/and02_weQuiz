@@ -1,11 +1,14 @@
 package kr.boostcamp_2024.course.quiz.presentation.question
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -13,170 +16,201 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.Question
-import kr.boostcamp_2024.course.quiz.component.QuestionChatBubbleRight
-import kr.boostcamp_2024.course.quiz.component.QuestionDialog
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
-import kr.boostcamp_2024.course.quiz.component.RoundImage
-import kr.boostcamp_2024.course.quiz.viewmodel.QuestionViewModel
+import kr.boostcamp_2024.course.quiz.presentation.viewmodel.QuestionViewModel
+import kr.boostcamp_2024.course.quiz.utils.timerFormat
 
 @Composable
 fun QuestionScreen(
     onNavigationButtonClick: () -> Unit,
     onQuizFinished: () -> Unit,
-    viewModel: QuestionViewModel = hiltViewModel(),
 ) {
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        pageCount = { 10 },
+
+    QuestionScreen(
+        questionViewModel = hiltViewModel(),
+        onNavigationButtonClick = onNavigationButtonClick,
+        onQuizFinished = onQuizFinished,
     )
-    var currentPage by remember { mutableIntStateOf(0) }
-    var selectedIndex by remember { mutableIntStateOf(0) }
-    var showDialog by remember { mutableStateOf(false) }
-    var selectedIndexList by remember { mutableStateOf(List(10) { -1 }) }
-    var isSubmitting by remember { mutableStateOf(false) }
-    Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn {
-            item {
-                QuestionTopBar { showDialog = true }
-            }
-            item {
-                LinearProgressIndicator(
-                    progress = { (currentPage + 1) / pagerState.pageCount.toFloat() },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-            item {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    QuestionChatBubbleRight(20, Modifier.align(Alignment.Center))
-                    RoundImage(Modifier.align(Alignment.CenterEnd))
-                }
-            }
-            item {
-                HorizontalPager(
-                    state = pagerState,
-                    userScrollEnabled = false,
-                ) {
-                    Column {
-                        QuestionTitleAndDetail(
-                            // TODO (문제 제목, 설명 받아오기)
-                            title = "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음.",
-                            description = "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음.",
+}
+
+@Composable
+fun QuestionScreen(
+    questionViewModel: QuestionViewModel = hiltViewModel(),
+    onNavigationButtonClick: () -> Unit,
+    onQuizFinished: () -> Unit,
+) {
+    val uiState by questionViewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = { uiState.quiz?.let { QuestionTopBar(title = it.title) { questionViewModel.toggleDialog(true) } } },
+        content = { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(innerPadding),
+            ) {
+                LazyColumn {
+                    item {
+                        LinearProgressIndicator(
+                            progress = { (questionViewModel.uiState.value.currentPage + 1) / uiState.questions.size.toFloat() },
+                            modifier = Modifier.fillMaxWidth(),
                         )
-                        Question(
-                            selectedIndex = selectedIndexList[currentPage],
-                            onOptionSelected = { newIndex ->
-                                selectedIndex = newIndex
-                                selectedIndexList = selectedIndexList.toMutableList().apply {
-                                    this[currentPage] = newIndex
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.End),
+                        ) {
+                            WeQuizRightChatBubble(
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                text = "${stringResource(R.string.txt_question_timer)} ${timerFormat(uiState.countDownTime)}",
+                            )
+                            WeQuizLocalRoundedImage(
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .align(Alignment.CenterVertically),
+                                imagePainter = painterResource(id = R.drawable.quiz_system_profile),
+                                contentDescription = stringResource(R.string.des_image_question),
+                            )
+                        }
+                    }
+                    item {
+                        HorizontalPager(
+                            state = rememberPagerState(
+                                initialPage = uiState.currentPage,
+                                pageCount = { uiState.questions.size },
+                            ),
+                            userScrollEnabled = false,
+                        ) {
+                            Column {
+                                uiState.questions[uiState.currentPage].description.let { description ->
+                                    QuestionTitleAndDetail(
+                                        title = uiState.questions[uiState.currentPage].title,
+                                        description = description,
+                                    )
                                 }
+                                Question(
+                                    questions = uiState.questions[uiState.currentPage].choices,
+                                    selectedIndex = uiState.selectedIndexList[uiState.currentPage],
+                                    onOptionSelected = { newIndex ->
+                                        questionViewModel.selectOption(uiState.currentPage, newIndex)
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .background(Color.Transparent)
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                ) {
+                    Button(
+                        onClick = {
+                            if (uiState.currentPage < uiState.questions.size - 1) {
+                                questionViewModel.nextPage()
+                            } else {
+                                questionViewModel.toggleDialog(true)
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = if (uiState.currentPage == uiState.questions.size - 1) {
+                                stringResource(R.string.txt_question_done)
+                            } else {
+                                stringResource(R.string.txt_question_next_question)
                             },
                         )
                     }
+                    Button(
+                        onClick = {
+                            if (uiState.currentPage > 0) questionViewModel.previousPage()
+                        },
+                        enabled = uiState.currentPage > 0,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 5.dp, bottom = 30.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                        ),
+                    ) {
+                        Text(text = stringResource(R.string.btn_prev_question))
+                    }
                 }
             }
-        }
 
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .background(Color.Transparent)
-                .fillMaxWidth()
-                .padding(10.dp),
-        ) {
-            Button(
-                onClick = {
-                    if (currentPage < pagerState.pageCount - 1) {
-                        currentPage++
+            if (uiState.showDialog) {
+                WeQuizBaseDialog(
+                    title = if (uiState.currentPage == uiState.questions.size - 1) {
+                        stringResource(R.string.dialog_submit_script)
                     } else {
-                        showDialog = true
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = if (currentPage == pagerState.pageCount - 1) {
-                        stringResource(R.string.txt_question_done)
-                    } else {
-                        stringResource(R.string.txt_question_next_question)
+                        stringResource(R.string.dialog_exit_script)
                     },
+                    confirmTitle = if (uiState.currentPage == uiState.questions.size - 1) {
+                        stringResource(R.string.txt_question_submit)
+                    } else {
+                        stringResource(R.string.txt_question_exit)
+                    },
+                    dismissTitle = stringResource(R.string.txt_question_cancel),
+                    onConfirm = {
+                        questionViewModel.toggleDialog(false)
+                        if (uiState.currentPage == uiState.questions.size - 1) {
+                            questionViewModel.submitAnswers()
+                            onQuizFinished()
+                        } else {
+                            onNavigationButtonClick()
+                        }
+                    },
+                    onDismissRequest = { questionViewModel.toggleDialog(false) },
+                    dialogImage = painterResource(id = R.drawable.quiz_system_profile),
+                    content = { },
                 )
             }
-            Button(
-                onClick = {
-                    if (currentPage > 0) {
-                        currentPage--
-                    }
-                },
-                enabled = currentPage > 0,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                    disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
-                ),
-            ) {
-                Text(text = "이전 문제")
-            }
-        }
-    }
-
-    if (showDialog) {
-        QuestionDialog(
-            title = if (currentPage == pagerState.pageCount - 1) {
-                stringResource(R.string.dialog_submit_script)
-            } else {
-                stringResource(R.string.dialog_exit_script)
-            },
-            yesTitle = if (currentPage == pagerState.pageCount - 1) {
-                stringResource(R.string.txt_question_submit)
-            } else {
-                stringResource(R.string.txt_question_exit)
-            },
-            noTitle = stringResource(R.string.txt_question_cancel),
-            onConfirm = {
-                showDialog = false
-                if (currentPage == pagerState.pageCount - 1) {
-                    isSubmitting = true
-                    /*
-                    TODO (제출 버튼 눌렀을 때)
-                    네트워크 통신 진행 - selectedIndexList 전달
-                    통신 완료 후 onQuizFinished() 실행(isSubmitting = false로 변경)
-                     */
-                } else {
-                    isSubmitting = true
-                    /*
-                    TODO (나가기 버튼 눌렀을 때)
-                    네트워크 통신 진행 - selectedIndexList 전달
-                    통신 완료 후 onNavigationButtonClick() 실행(isSubmitting = false로 변경)
-                     */
-                    onNavigationButtonClick()
+            if (uiState.errorMessageId != null) {
+                LaunchedEffect(uiState.errorMessageId) {
+                    snackbarHostState.showSnackbar(context.getString(uiState.errorMessageId!!))
+                    questionViewModel.shownErrorMessage()
                 }
-            },
-            onDismissRequest = { showDialog = false },
-        )
-    }
+            }
+        },
+    )
 }
 
 @Preview(showBackground = true)

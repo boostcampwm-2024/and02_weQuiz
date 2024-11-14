@@ -14,10 +14,11 @@ import kr.boostcamp_2024.course.quiz.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestionTopBar(
+    title: String,
     onShowDialog: () -> Unit,
 ) {
     CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(R.string.top_app_bar_question_title)) },
+        title = { Text(text = title) },
         navigationIcon = {
             IconButton(onClick = onShowDialog) {
                 Icon(

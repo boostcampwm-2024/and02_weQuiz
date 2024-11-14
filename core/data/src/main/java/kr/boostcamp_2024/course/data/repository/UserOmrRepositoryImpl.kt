@@ -18,4 +18,14 @@ class UserOmrRepositoryImpl @Inject constructor(
             val response = document.toObject(UserOmrDTO::class.java)
             requireNotNull(response).toVO(userOmrId)
         }
+
+    override suspend fun submitQuiz(userOmr: UserOmr): Result<String> =
+        runCatching {
+            val userOmrDTO = UserOmrDTO(
+                userId = userOmr.userId,
+                quizId = userOmr.quizId,
+                answers = userOmr.answers,
+            )
+            userOmrCollectionRef.add(userOmrDTO).await().id
+        }
 }

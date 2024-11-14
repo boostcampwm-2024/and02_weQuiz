@@ -30,9 +30,7 @@ class QuizRepositoryImpl @Inject constructor(
                 questions = emptyList(),
                 userOmrs = emptyList(),
             )
-
             val document = quizCollectionRef.add(newQuiz).await()
-
             document.id
         }
 
@@ -50,5 +48,12 @@ class QuizRepositoryImpl @Inject constructor(
                 val response = document.toObject(QuizDTO::class.java)
                 requireNotNull(response).toVO(quizId)
             }
+        }
+
+    override suspend fun addUserOmrToQuiz(quizId: String, userOmrId: String): Result<Unit> =
+        runCatching {
+            quizCollectionRef.document(quizId)
+                .update("user_omrs", FieldValue.arrayUnion(userOmrId))
+                .await()
         }
 }
