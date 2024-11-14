@@ -5,12 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
+import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import javax.inject.Inject
@@ -24,21 +27,40 @@ data class MainUiState(
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val studyGroupRepository: StudyGroupRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
-    val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<MainUiState> = _uiState
+        .onStart {
+            loadCurrentUser()
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), MainUiState())
 
-    init {
-        loadStudyGroups()
-    }
-
-    private fun loadStudyGroups() {
+    fun loadCurrentUser() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            // TODO: getCurrentUser
-            userRepository.getUser("M2PzD8bxVaDAwNrLhr6E")
+
+            authRepository.getUserKey()
+                .onSuccess { currentUser ->
+                    _uiState.update { it.copy(isLoading = false) }
+
+                    loadStudyGroups(currentUser)
+                }
+                .onFailure {
+                    Log.e("MainViewModel", "Failed to load current user", it)
+                    _uiState.update { it.copy(isLoading = false, errorMessage = "로그인한 유저가 없습니다.") }
+                }
+
+        }
+    }
+
+    private fun loadStudyGroups(currentUserId: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            userRepository.getUser(currentUserId)
                 .onSuccess { currentUser ->
                     val studyGroupIds = currentUser.studyGroups
 
