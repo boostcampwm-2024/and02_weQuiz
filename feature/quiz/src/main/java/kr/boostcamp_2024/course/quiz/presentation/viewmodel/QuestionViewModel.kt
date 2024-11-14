@@ -16,12 +16,11 @@ import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.UserOmr
-import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.navigation.QuestionScreenRoute
+import kr.boostcamp_2024.course.quiz.navigation.QuestionRoute
 import javax.inject.Inject
 
 data class QuestionUiState(
@@ -44,7 +43,7 @@ class QuestionViewModel @Inject constructor(
     private val userOmrRepository: UserOmrRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val quizId = savedStateHandle.toRoute<QuestionScreenRoute>().quizId
+    private val quizId = savedStateHandle.toRoute<QuestionRoute>().quizId
     private val _uiState: MutableStateFlow<QuestionUiState> = MutableStateFlow(QuestionUiState())
     val uiState: StateFlow<QuestionUiState> = _uiState
         .onStart {

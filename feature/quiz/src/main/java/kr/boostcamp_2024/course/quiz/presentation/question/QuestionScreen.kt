@@ -16,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,147 +66,151 @@ fun QuestionScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-    ) {
-        LazyColumn {
-            item {
-                uiState.quiz?.let { QuestionTopBar(title = it.title) { questionViewModel.toggleDialog(true) } }
-            }
-            item {
-                LinearProgressIndicator(
-                    progress = { (questionViewModel.uiState.value.currentPage + 1) / uiState.questions.size.toFloat() },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.End),
-                ) {
-                    WeQuizRightChatBubble(
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        text = "${stringResource(R.string.txt_question_timer)} ${timerFormat(uiState.countDownTime)}",
-                    )
-                    WeQuizLocalRoundedImage(
-                        modifier = Modifier
-                            .size(120.dp)
-                            .align(Alignment.CenterVertically),
-                        imagePainter = painterResource(id = R.drawable.quiz_system_profile),
-                        contentDescription = stringResource(R.string.des_image_question),
-                    )
-                }
-            }
-            item {
-                HorizontalPager(
-                    state = rememberPagerState(
-                        initialPage = uiState.currentPage,
-                        pageCount = { uiState.questions.size },
-                    ),
-                    userScrollEnabled = false,
-                ) {
-                    Column {
-                        uiState.questions[uiState.currentPage].description?.let { description ->
-                            QuestionTitleAndDetail(
-                                title = uiState.questions[uiState.currentPage].title,
-                                description = description,
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = { uiState.quiz?.let { QuestionTopBar(title = it.title) { questionViewModel.toggleDialog(true) } } },
+        content = { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(innerPadding),
+            ) {
+                LazyColumn {
+                    item {
+                        LinearProgressIndicator(
+                            progress = { (questionViewModel.uiState.value.currentPage + 1) / uiState.questions.size.toFloat() },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.End),
+                        ) {
+                            WeQuizRightChatBubble(
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                text = "${stringResource(R.string.txt_question_timer)} ${timerFormat(uiState.countDownTime)}",
+                            )
+                            WeQuizLocalRoundedImage(
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .align(Alignment.CenterVertically),
+                                imagePainter = painterResource(id = R.drawable.quiz_system_profile),
+                                contentDescription = stringResource(R.string.des_image_question),
                             )
                         }
-                        Question(
-                            questions = uiState.questions[uiState.currentPage].choices,
-                            selectedIndex = uiState.selectedIndexList[uiState.currentPage],
-                            onOptionSelected = { newIndex ->
-                                questionViewModel.selectOption(uiState.currentPage, newIndex)
+                    }
+                    item {
+                        HorizontalPager(
+                            state = rememberPagerState(
+                                initialPage = uiState.currentPage,
+                                pageCount = { uiState.questions.size },
+                            ),
+                            userScrollEnabled = false,
+                        ) {
+                            Column {
+                                uiState.questions[uiState.currentPage].description.let { description ->
+                                    QuestionTitleAndDetail(
+                                        title = uiState.questions[uiState.currentPage].title,
+                                        description = description,
+                                    )
+                                }
+                                Question(
+                                    questions = uiState.questions[uiState.currentPage].choices,
+                                    selectedIndex = uiState.selectedIndexList[uiState.currentPage],
+                                    onOptionSelected = { newIndex ->
+                                        questionViewModel.selectOption(uiState.currentPage, newIndex)
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .background(Color.Transparent)
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                ) {
+                    Button(
+                        onClick = {
+                            if (uiState.currentPage < uiState.questions.size - 1) {
+                                questionViewModel.nextPage()
+                            } else {
+                                questionViewModel.toggleDialog(true)
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = if (uiState.currentPage == uiState.questions.size - 1) {
+                                stringResource(R.string.txt_question_done)
+                            } else {
+                                stringResource(R.string.txt_question_next_question)
                             },
                         )
                     }
+                    Button(
+                        onClick = {
+                            if (uiState.currentPage > 0) questionViewModel.previousPage()
+                        },
+                        enabled = uiState.currentPage > 0,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 5.dp, bottom = 30.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                        ),
+                    ) {
+                        Text(text = stringResource(R.string.btn_prev_question))
+                    }
                 }
             }
-        }
 
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .background(Color.Transparent)
-                .fillMaxWidth()
-                .padding(10.dp),
-        ) {
-            Button(
-                onClick = {
-                    if (uiState.currentPage < uiState.questions.size - 1) {
-                        questionViewModel.nextPage()
+            if (uiState.showDialog) {
+                WeQuizBaseDialog(
+                    title = if (uiState.currentPage == uiState.questions.size - 1) {
+                        stringResource(R.string.dialog_submit_script)
                     } else {
-                        questionViewModel.toggleDialog(true)
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = if (uiState.currentPage == uiState.questions.size - 1) {
-                        stringResource(R.string.txt_question_done)
-                    } else {
-                        stringResource(R.string.txt_question_next_question)
+                        stringResource(R.string.dialog_exit_script)
                     },
+                    confirmTitle = if (uiState.currentPage == uiState.questions.size - 1) {
+                        stringResource(R.string.txt_question_submit)
+                    } else {
+                        stringResource(R.string.txt_question_exit)
+                    },
+                    dismissTitle = stringResource(R.string.txt_question_cancel),
+                    onConfirm = {
+                        questionViewModel.toggleDialog(false)
+                        if (uiState.currentPage == uiState.questions.size - 1) {
+                            questionViewModel.submitAnswers()
+                            onQuizFinished()
+                        } else {
+                            onNavigationButtonClick()
+                        }
+                    },
+                    onDismissRequest = { questionViewModel.toggleDialog(false) },
+                    dialogImage = painterResource(id = R.drawable.quiz_system_profile),
+                    content = { },
                 )
             }
-            Button(
-                onClick = {
-                    if (uiState.currentPage > 0) questionViewModel.previousPage()
-                },
-                enabled = uiState.currentPage > 0,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 30.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                    disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
-                ),
-            ) {
-                Text(text = stringResource(R.string.btn_prev_question))
-            }
-        }
-    }
-
-    if (uiState.showDialog) {
-        WeQuizBaseDialog(
-            title = if (uiState.currentPage == uiState.questions.size - 1) {
-                stringResource(R.string.dialog_submit_script)
-            } else {
-                stringResource(R.string.dialog_exit_script)
-            },
-            confirmTitle = if (uiState.currentPage == uiState.questions.size - 1) {
-                stringResource(R.string.txt_question_submit)
-            } else {
-                stringResource(R.string.txt_question_exit)
-            },
-            dismissTitle = stringResource(R.string.txt_question_cancel),
-            onConfirm = {
-                questionViewModel.toggleDialog(false)
-                if (uiState.currentPage == uiState.questions.size - 1) {
-                    questionViewModel.submitAnswers()
-                    onQuizFinished()
-                } else {
-                    onNavigationButtonClick()
+            if (uiState.errorMessageId != null) {
+                LaunchedEffect(uiState.errorMessageId) {
+                    snackbarHostState.showSnackbar(context.getString(uiState.errorMessageId!!))
+                    questionViewModel.shownErrorMessage()
                 }
-            },
-            onDismissRequest = { questionViewModel.toggleDialog(false) },
-            dialogImage = painterResource(id = R.drawable.quiz_system_profile),
-            content = { },
-        )
-    }
-    if (uiState.errorMessageId != null) {
-        LaunchedEffect(uiState.errorMessageId) {
-            snackbarHostState.showSnackbar(context.getString(uiState.errorMessageId!!))
-            questionViewModel.shownErrorMessage()
-        }
-    }
+            }
+        },
+    )
 }
 
 @Preview(showBackground = true)
