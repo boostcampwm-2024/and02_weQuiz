@@ -27,12 +27,13 @@ data class CreateCategoryUiState(
 
 @HiltViewModel
 class CreateCategoryViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val categoryRepository: CategoryRepository,
     private val studyGroupRepository: StudyGroupRepository,
 ) : ViewModel() {
     private val _createCategoryUiState: MutableStateFlow<CreateCategoryUiState> = MutableStateFlow(CreateCategoryUiState())
     val createCategoryUiState: StateFlow<CreateCategoryUiState> = _createCategoryUiState.asStateFlow()
+    private val studyGroupId = savedStateHandle.toRoute<CreateCategoryRoute>().studyGroupId
 
     fun createCategory() {
         setLoading()
@@ -51,8 +52,7 @@ class CreateCategoryViewModel @Inject constructor(
 
     private suspend fun saveCategoryToStudyGroup(categoryId: String) {
         try {
-            val createCategoryRoute = savedStateHandle.toRoute<CreateCategoryRoute>()
-            studyGroupRepository.addCategoryToStudyGroup(createCategoryRoute.studyGroupId, categoryId).getOrThrow()
+            studyGroupRepository.addCategoryToStudyGroup(studyGroupId, categoryId).getOrThrow()
 
             _createCategoryUiState.update { currentState ->
                 currentState.copy(
