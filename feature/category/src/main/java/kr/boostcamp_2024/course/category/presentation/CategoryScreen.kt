@@ -46,7 +46,7 @@ import kr.boostcamp_2024.course.domain.model.Quiz
 @Composable
 fun CategoryScreen(
     onNavigationButtonClick: () -> Unit,
-    onCreateQuizButtonClick: () -> Unit,
+    onCreateQuizButtonClick: (String) -> Unit,
     onQuizClick: () -> Unit,
 ) {
     val dummyCategory = Category(
@@ -87,7 +87,7 @@ fun CategoryScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onCreateQuizButtonClick,
+                onClick = { onCreateQuizButtonClick(dummyCategory.id) },
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             ) {
                 Icon(
