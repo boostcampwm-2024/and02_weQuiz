@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.category.R
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLeftChatBubble
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
@@ -98,19 +99,14 @@ fun CreateCategoryScreen(
                 WeQuizTextField(
                     label = stringResource(R.string.txt_create_category_des_label),
                     text = state.categoryDescription,
-                    maxLines = 99,
-                    minLines = 1,
+                    maxLines = 6,
+                    minLines = 6,
                     onTextChanged = { state = state.copy(categoryDescription = it) },
                     placeholder = stringResource(R.string.txt_create_category_des_placeholder),
                 )
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onCreateCategorySuccess,
-                    /*
-                    TODO 카테고리 생성
-                    state.categoryDescription
-                    state.categoryTitle
-                     */
                 ) {
                     Text(text = stringResource(R.string.btn_create_category))
                 }
@@ -122,8 +118,10 @@ fun CreateCategoryScreen(
 @Preview(showBackground = true)
 @Composable
 fun CreateCategoryScreenPreview() {
-    CreateCategoryScreen(
-        onNavigationButtonClick = {},
-        onCreateCategorySuccess = {},
-    )
+    WeQuizTheme {
+        CreateCategoryScreen(
+            onNavigationButtonClick = {},
+            onCreateCategorySuccess = {},
+        )
+    }
 }
