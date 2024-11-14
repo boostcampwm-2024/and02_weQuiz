@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.data.repository
 
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.UserDTO
@@ -16,7 +17,23 @@ class UserRepositoryImpl @Inject constructor(
         return runCatching {
             val document = userCollectionRef.document(userId).get().await()
             val response = document.toObject(UserDTO::class.java)
-            requireNotNull(response).toVO()
+            requireNotNull(response).toVO(userId)
         }
     }
+
+    override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<String> =
+        runCatching {
+            val userDocRef = userCollectionRef.document(userId)
+            userDocRef.update("study_groups", FieldValue.arrayUnion(studyId)).await()
+            studyId // TODO 성공 반환값 고민하기
+        }
+
+    override suspend fun getUsers(userIds: List<String>): Result<List<User>> =
+        runCatching {
+            userIds.map { userId ->
+                val document = userCollectionRef.document(userId).get().await()
+                val response = document.toObject(UserDTO::class.java)
+                requireNotNull(response).toVO(userId)
+            }
+        }
 }

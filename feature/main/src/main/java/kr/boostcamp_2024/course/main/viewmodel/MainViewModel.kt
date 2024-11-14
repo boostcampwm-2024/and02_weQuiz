@@ -42,7 +42,7 @@ class MainViewModel @Inject constructor(
                 .onSuccess { currentUser ->
                     val studyGroupIds = currentUser.studyGroups
 
-                    studyGroupRepository.getStudyGroup(studyGroupIds)
+                    studyGroupRepository.getStudyGroups(studyGroupIds)
                         .onSuccess { studyGroups ->
                             _uiState.update {
                                 it.copy(

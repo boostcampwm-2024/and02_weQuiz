@@ -73,10 +73,12 @@ private fun DatePickerModal(
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
-                onDismiss()
-            }) {
+            TextButton(
+                onClick = {
+                    onDateSelected(datePickerState.selectedDateMillis)
+                    onDismiss()
+                },
+            ) {
                 Text(text = stringResource(R.string.txt_dialog_confirm))
             }
         },
@@ -91,7 +93,7 @@ private fun DatePickerModal(
 }
 
 private fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    val formatter = SimpleDateFormat("yyyy/MM/dd/", Locale.getDefault())
     return formatter.format(Date(millis))
 }
 
