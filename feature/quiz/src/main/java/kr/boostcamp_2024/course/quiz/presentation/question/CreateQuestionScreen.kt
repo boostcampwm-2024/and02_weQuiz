@@ -50,7 +50,6 @@ import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuestionViewModel
 
 @Composable
 fun CreateQuestionScreen(
-    quizId: String,
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionSuccess: () -> Unit,
     viewModel: CreateQuestionViewModel = hiltViewModel(),
@@ -70,7 +69,6 @@ fun CreateQuestionScreen(
     }
 
     CreateQuestionScreen(
-        quizId = quizId,
         uiState = uiState,
         snackBarHostState = snackBarHostState,
         focusRequester = focusRequester,
@@ -87,7 +85,6 @@ fun CreateQuestionScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateQuestionScreen(
-    quizId: String,
     uiState: CreateQuestionUiState,
     focusRequester: FocusRequester,
     snackBarHostState: SnackbarHostState,
@@ -97,7 +94,7 @@ fun CreateQuestionScreen(
     onNavigationButtonClick: () -> Unit,
     onChoiceTextChanged: (Int, String) -> Unit,
     onSelectedChoiceNumChanged: (Int) -> Unit,
-    onCreateQuestionButtonClick: (String) -> Unit,
+    onCreateQuestionButtonClick: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -169,9 +166,7 @@ fun CreateQuestionScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
                         enabled = uiState.isCreateQuestionValid,
-                        onClick = {
-                            onCreateQuestionButtonClick(quizId)
-                        },
+                        onClick = onCreateQuestionButtonClick,
                     ) {
                         Text(
                             text = stringResource(id = R.string.btn_create_question),
@@ -224,7 +219,6 @@ fun CreateQuestionGuideContent(
 fun CreateQuestionScreenPreview() {
     WeQuizTheme {
         CreateQuestionScreen(
-            quizId = "quizId",
             onNavigationButtonClick = {},
             onCreateQuestionSuccess = {},
         )
