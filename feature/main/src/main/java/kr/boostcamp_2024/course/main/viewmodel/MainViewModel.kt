@@ -43,10 +43,16 @@ class MainViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             authRepository.getUserKey()
-                .onSuccess { currentUser ->
-                    _uiState.update { it.copy(isLoading = false) }
+                .onSuccess { currentUserId ->
 
-                    loadStudyGroups(currentUser)
+                    userRepository.getUser(currentUserId)
+                        .onSuccess { currentUser ->
+                            loadStudyGroups(currentUser)
+                        }
+                        .onFailure {
+                            Log.e("MainViewModel", "Failed to load user", it)
+                            _uiState.update { it.copy(isLoading = false, errorMessage = "유저 로드에 실패했습니다.") }
+                        }
                 }
                 .onFailure {
                     Log.e("MainViewModel", "Failed to load current user", it)
@@ -56,37 +62,29 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun loadStudyGroups(currentUserId: String) {
+    private fun loadStudyGroups(currentUser: User) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+            val studyGroupIds = currentUser.studyGroups
 
-            userRepository.getUser(currentUserId)
-                .onSuccess { currentUser ->
-                    val studyGroupIds = currentUser.studyGroups
-
-                    studyGroupRepository.getStudyGroups(studyGroupIds)
-                        .onSuccess { studyGroups ->
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    currentUser = currentUser,
-                                    studyGroups = studyGroups,
-                                )
-                            }
-                        }
-                        .onFailure {
-                            Log.e("MainViewModel", "Failed to load study groups", it)
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    errorMessage = "스터디 그룹 로드에 실패했습니다.",
-                                )
-                            }
-                        }
+            studyGroupRepository.getStudyGroups(studyGroupIds)
+                .onSuccess { studyGroups ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            currentUser = currentUser,
+                            studyGroups = studyGroups,
+                        )
+                    }
                 }
                 .onFailure {
-                    Log.e("MainViewModel", "Failed to load user", it)
-                    _uiState.update { it.copy(isLoading = false, errorMessage = "유저 로드에 실패했습니다.") }
+                    Log.e("MainViewModel", "Failed to load study groups", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = "스터디 그룹 로드에 실패했습니다.",
+                        )
+                    }
                 }
         }
     }
