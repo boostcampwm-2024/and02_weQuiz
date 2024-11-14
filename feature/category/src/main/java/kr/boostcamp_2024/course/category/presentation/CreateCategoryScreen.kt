@@ -58,6 +58,7 @@ fun CreateCategoryScreen(
     CreateCategoryScreen(
         name = uiState.categoryName,
         description = uiState.categoryDescription,
+        isCategoryCreationValid = uiState.isCategoryCreationValid,
         snackbarHostState = snackbarHostState,
         onNameChanged = viewModel::onNameChanged,
         onDescriptionChanged = viewModel::onDescriptionChanged,
@@ -72,6 +73,7 @@ fun CreateCategoryScreen(
 fun CreateCategoryScreen(
     name: String,
     description: String,
+    isCategoryCreationValid: Boolean,
     snackbarHostState: SnackbarHostState,
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
@@ -141,6 +143,7 @@ fun CreateCategoryScreen(
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onCreateCategoryButtonClick,
+                    enabled = isCategoryCreationValid,
                 ) {
                     Text(text = stringResource(R.string.btn_create_category))
                 }
