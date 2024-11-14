@@ -13,7 +13,7 @@ class QuestionRepositoryImpl @Inject constructor(
     firestore: FirebaseFirestore,
 ) : QuestionRepository {
     private val questionCollectionRef = firestore.collection("Question")
-
+    
     override suspend fun getQuestions(questionIds: List<String>): Result<List<Question>> =
         runCatching {
             questionIds.map { questionId ->
@@ -22,7 +22,13 @@ class QuestionRepositoryImpl @Inject constructor(
                 requireNotNull(response).toVO(questionId)
             }
         }
-
+        
+    override suspend fun getQuestion(questionId: String): Result<Question> = runCatching {
+        val document = questionCollectionRef.document(questionId).get().await()
+        val response = document.toObject(QuestionDTO::class.java)
+        requireNotNull(response).toVO(questionId)
+    }
+    
     override suspend fun createQuestion(questionCreationInfo: QuestionCreationInfo): Result<String> = runCatching {
         val document = questionCollectionRef.add(questionCreationInfo.toDTO()).await()
         document.id

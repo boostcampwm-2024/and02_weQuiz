@@ -19,10 +19,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizChatBubble
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
-fun QuestionSolution(solution: String) {
+fun QuestionSolution(solution: String?) {
     Column {
         Text(
             text = stringResource(R.string.txt_question_detail_solution),
@@ -31,8 +32,8 @@ fun QuestionSolution(solution: String) {
         )
         Spacer(modifier = Modifier.height(10.dp))
         Row(modifier = Modifier) {
-            ChatBubble(
-                solution,
+            WeQuizChatBubble(
+                text = solution ?: "",
                 modifier = Modifier.weight(1f),
             )
 

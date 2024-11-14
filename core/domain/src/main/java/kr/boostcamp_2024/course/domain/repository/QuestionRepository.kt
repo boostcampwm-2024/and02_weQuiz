@@ -4,7 +4,10 @@ import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
 
 interface QuestionRepository {
+  
     suspend fun getQuestions(questionIds: List<String>): Result<List<Question>>
+
+    suspend fun getQuestion(questionId: String): Result<Question>
 
     suspend fun createQuestion(
         questionCreationInfo: QuestionCreationInfo,
