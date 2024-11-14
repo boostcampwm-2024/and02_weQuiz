@@ -17,36 +17,71 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.category.R
+import kr.boostcamp_2024.course.category.viewModel.CreateCategoryViewModel
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLeftChatBubble
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 
-data class CategoryState(
-    val categoryTitle: String = "",
-    val categoryDescription: String = "",
-)
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateCategoryScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateCategorySuccess: () -> Unit,
+    viewModel: CreateCategoryViewModel = hiltViewModel(),
 ) {
-    var state by remember { mutableStateOf(CategoryState()) }
+    val uiState by viewModel.createCategoryUiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(uiState) {
+        if (uiState.creationSuccess) {
+            onCreateCategorySuccess()
+        }
+        uiState.errorMessage?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            viewModel.setErrorMessage(null)
+        }
+    }
+
+    CreateCategoryScreen(
+        name = uiState.categoryName,
+        description = uiState.categoryDescription,
+        isCategoryCreationValid = uiState.isCategoryCreationValid,
+        snackbarHostState = snackbarHostState,
+        onNameChanged = viewModel::onNameChanged,
+        onDescriptionChanged = viewModel::onDescriptionChanged,
+        onNavigationButtonClick = onNavigationButtonClick,
+        onCreateCategoryButtonClick = viewModel::createCategory,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateCategoryScreen(
+    name: String,
+    description: String,
+    isCategoryCreationValid: Boolean,
+    snackbarHostState: SnackbarHostState,
+    onNameChanged: (String) -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onNavigationButtonClick: () -> Unit,
+    onCreateCategoryButtonClick: () -> Unit,
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -62,6 +97,9 @@ fun CreateCategoryScreen(
                     }
                 },
             )
+        },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
         },
     ) { innerPadding ->
         Column(
@@ -91,26 +129,22 @@ fun CreateCategoryScreen(
             ) {
                 WeQuizTextField(
                     label = stringResource(R.string.txt_create_category_name_label),
-                    text = state.categoryTitle,
-                    onTextChanged = { state = state.copy(categoryTitle = it) },
+                    text = name,
+                    onTextChanged = onNameChanged,
                     placeholder = stringResource(R.string.txt_create_category_name_placeholder),
                 )
                 WeQuizTextField(
                     label = stringResource(R.string.txt_create_category_des_label),
-                    text = state.categoryDescription,
-                    maxLines = 99,
-                    minLines = 1,
-                    onTextChanged = { state = state.copy(categoryDescription = it) },
+                    text = description,
+                    maxLines = 6,
+                    minLines = 6,
+                    onTextChanged = onDescriptionChanged,
                     placeholder = stringResource(R.string.txt_create_category_des_placeholder),
                 )
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = onCreateCategorySuccess,
-                    /*
-                    TODO 카테고리 생성
-                    state.categoryDescription
-                    state.categoryTitle
-                     */
+                    onClick = onCreateCategoryButtonClick,
+                    enabled = isCategoryCreationValid,
                 ) {
                     Text(text = stringResource(R.string.btn_create_category))
                 }
@@ -122,8 +156,10 @@ fun CreateCategoryScreen(
 @Preview(showBackground = true)
 @Composable
 fun CreateCategoryScreenPreview() {
-    CreateCategoryScreen(
-        onNavigationButtonClick = {},
-        onCreateCategorySuccess = {},
-    )
+    WeQuizTheme {
+        CreateCategoryScreen(
+            onNavigationButtonClick = {},
+            onCreateCategorySuccess = {},
+        )
+    }
 }

@@ -35,8 +35,7 @@ class CategoryViewModel @Inject constructor(
     private val categoryId: String = savedStateHandle.toRoute<CategoryRoute>().categoryId
     private val _categoryUiState: MutableStateFlow<CategoryUiState> =
         MutableStateFlow(CategoryUiState())
-    val categoryUiState: StateFlow<CategoryUiState> = _categoryUiState
-        .onStart {
+    val categoryUiState: StateFlow<CategoryUiState> = _categoryUiState.onStart {
             loadCategory(categoryId)
         }.stateIn(
             viewModelScope,
@@ -46,10 +45,11 @@ class CategoryViewModel @Inject constructor(
 
     private fun loadCategory(categoryId: String) {
         viewModelScope.launch {
-            categoryRepository.getCategory(categoryId)
-                .onSuccess { category ->
+            categoryRepository.getCategory(categoryId).onSuccess { category ->
                     _categoryUiState.update {
-                        it.copy(category = category)
+                        it.copy(
+                            category = category,
+                        )
                     }
                     loadQuizList(category.quizzes)
                 }.onFailure {
@@ -61,8 +61,7 @@ class CategoryViewModel @Inject constructor(
 
     private fun loadQuizList(quizIdList: List<String>) {
         viewModelScope.launch {
-            quizRepository.getQuizList(quizIdList)
-                .onSuccess { quizList ->
+            quizRepository.getQuizList(quizIdList).onSuccess { quizList ->
                     _categoryUiState.update {
                         it.copy(quizList = quizList)
                     }

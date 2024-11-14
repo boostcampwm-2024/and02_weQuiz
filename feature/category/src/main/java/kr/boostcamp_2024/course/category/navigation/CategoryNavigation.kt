@@ -13,14 +13,18 @@ data class CategoryRoute(
 )
 
 @Serializable
-data object CreateCategoryRoute
+data class CreateCategoryRoute(
+    val studyGroupId: String,
+)
 
 fun NavController.navigateCategory(categoryId: String) {
     navigate(CategoryRoute(categoryId))
 }
 
-fun NavController.navigateCreateCategory() {
-    navigate(CreateCategoryRoute)
+fun NavController.navigateCreateCategory(
+    studyGroupId: String,
+) {
+    navigate(CreateCategoryRoute(studyGroupId))
 }
 
 fun NavGraphBuilder.categoryNavGraph(

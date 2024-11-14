@@ -29,24 +29,29 @@ data class QuizUiState(
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val categoryRepository: CategoryRepository,
     private val quizRepository: QuizRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(QuizUiState())
-    val uiState: StateFlow<QuizUiState> = _uiState.onStart {
-        val quizRoute = savedStateHandle.toRoute<QuizRoute>()
-        loadCategory(quizRoute.categoryId)
-        loadQuiz(quizRoute.quizId)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000L),
-        QuizUiState(),
-    )
+    private val quizRoute = savedStateHandle.toRoute<QuizRoute>()
+    private val categoryId = quizRoute.categoryId
+    private val quizId = quizRoute.quizId
 
-    private fun loadCategory(categoryId: String) {
+    private val _uiState = MutableStateFlow(QuizUiState())
+    val uiState: StateFlow<QuizUiState> = _uiState
+        .onStart {
+            loadCategory()
+            loadQuiz()
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            QuizUiState(),
+        )
+
+    private fun loadCategory() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+
             categoryRepository.getCategory(categoryId)
                 .onSuccess { category ->
                     _uiState.update { it.copy(isLoading = false, category = category) }
@@ -58,9 +63,10 @@ class QuizViewModel @Inject constructor(
         }
     }
 
-    private fun loadQuiz(quizId: String) {
+    private fun loadQuiz() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+
             quizRepository.getQuiz(quizId)
                 .onSuccess { quiz ->
                     _uiState.update { it.copy(isLoading = false, quiz = quiz) }

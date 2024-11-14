@@ -21,24 +21,35 @@ import kr.boostcamp_2024.course.study.component.CategoryItem
 import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 
 @Composable
-fun CategoryListScreen(owner: User?, currentGroup: StudyGroup?, categories: List<Category>, createCategoryClick: () -> Unit, categoryItemClick: (String) -> Unit) {
+fun CategoryListScreen(
+    owner: User?,
+    currentGroup: StudyGroup,
+    categories: List<Category>,
+    createCategoryClick: (String) -> Unit,
+    categoryItemClick: (String) -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp, top = 8.dp),
     ) {
         CustomPropertyTab(
+            studyGroupId = currentGroup.id,
             onClicked = createCategoryClick,
             imageVector = Icons.Outlined.AddCircle,
             title = R.string.property_tab_category_text,
-            currentGroup = currentGroup ?: StudyGroup("", "", "", "", 0, "", emptyList(), emptyList()),
+            currentGroup = currentGroup,
         )
         CategoryLazyColumn(owner, categories, categoryItemClick)
     }
 }
 
 @Composable
-fun CategoryLazyColumn(owner: User?, categories: List<Category>, categoryItemClick: (String) -> Unit) {
+fun CategoryLazyColumn(
+    owner: User?,
+    categories: List<Category>,
+    categoryItemClick: (String) -> Unit,
+) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         itemsIndexed(items = categories, key = { _, category -> category.id }) { index, category ->
             CategoryItem(categoryItemClick, categories.size, category, owner?.profileUrl, owner?.name ?: stringResource(R.string.txt_detail_study_no_category_owner))
