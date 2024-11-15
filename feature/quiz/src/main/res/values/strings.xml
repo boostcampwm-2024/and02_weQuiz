@@ -45,7 +45,7 @@
     <string name="txt_question_description_placeholder">해설을 입력해주세요.</string>
     <string name="txt_question_choice_placeholder">객관식 내용을 입력해주세요.</string>
     <string name="btn_create_question">문제 출제</string>
-     <string name="txt_quiz_question_count">총 %d문제</string>
+    <string name="txt_quiz_question_count">총 %d문제</string>
     <string name="txt_open_create_question">문제 출제</string>
     <string name="txt_close_create_question">문제 출제가 마감되었습니다.</string>
     <string name="txt_quiz_start">퀴즈 시작</string>
@@ -62,4 +62,5 @@
     <string name="err_load_questions">문제 로드에 실패했습니다.</string>
     <string name="err_answer_add">퀴즈에 응답 추가 실패했습니다.</string>
     <string name="err_answer_add_quiz">응답 제출에 실패했습니다.</string>
+    <string name="err_load_current_user">로그인한 유저가 없습니다.</string>
 </resources>

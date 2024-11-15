@@ -24,7 +24,7 @@ fun CreateGroupDialog(
     val isEmailValid = remember(email) { Patterns.EMAIL_ADDRESS.matcher(email).matches() }
     WeQuizBaseDialog(
         title = stringResource(R.string.dialog_create_group_title),
-        dialogImage = painterResource(id = R.drawable.waterfall),
+        dialogImage = painterResource(id = R.drawable.member_invite_character),
         confirmTitle = stringResource(R.string.btn_dialog_create_group_confirm),
         dismissTitle = stringResource(R.string.btn_dialog_create_group_dismiss),
         onConfirm = { onConfirmButtonClick(groupId, email) },

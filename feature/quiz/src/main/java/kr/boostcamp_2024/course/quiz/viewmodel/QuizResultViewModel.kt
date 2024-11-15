@@ -1,8 +1,10 @@
 package kr.boostcamp_2024.course.quiz.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,6 +18,7 @@ import kr.boostcamp_2024.course.domain.model.QuizResult
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
+import kr.boostcamp_2024.course.quiz.navigation.QuizResultRoute
 import javax.inject.Inject
 
 data class QuizResultUiState(
@@ -30,8 +33,9 @@ class QuizResultViewModel @Inject constructor(
     private val quizRepository: QuizRepository,
     private val questionRepository: QuestionRepository,
     private val userOmrRepository: UserOmrRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val userOmrId = "4PxcQeA4mGtEiUXoffn4"
+    private val userOmrId: String = savedStateHandle.toRoute<QuizResultRoute>().userOmrId
 
     private val userOmrAnswers = MutableStateFlow<List<Int>>(emptyList()) // 사용자 답지
     private val questions = MutableStateFlow<List<Question>>(emptyList()) // 퀴즈 리스트
