@@ -132,6 +132,7 @@ fun LoginGuideImageAndText() {
 @Composable
 fun LoginContent() {
     var password by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.padding(top = 10.dp),
@@ -139,8 +140,8 @@ fun LoginContent() {
     ) {
         WeQuizTextField(
             label = stringResource(R.string.txt_login_email_label),
-            text = "",
-            onTextChanged = { /* todo: 이메일 입력 처리 */ },
+            text = email,
+            onTextChanged = { email = it },
             placeholder = stringResource(R.string.txt_login_email_placeholder),
         )
 
