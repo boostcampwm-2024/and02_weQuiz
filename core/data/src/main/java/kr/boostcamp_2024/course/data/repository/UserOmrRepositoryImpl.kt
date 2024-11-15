@@ -4,6 +4,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.UserOmrDTO
 import kr.boostcamp_2024.course.domain.model.UserOmr
+import kr.boostcamp_2024.course.domain.model.UserOmrCreationInfo
 import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
 import javax.inject.Inject
 
@@ -19,12 +20,12 @@ class UserOmrRepositoryImpl @Inject constructor(
             requireNotNull(response).toVO(userOmrId)
         }
 
-    override suspend fun submitQuiz(userOmr: UserOmr): Result<String> =
+    override suspend fun submitQuiz(userOmrCreationInfo: UserOmrCreationInfo): Result<String> =
         runCatching {
             val userOmrDTO = UserOmrDTO(
-                userId = userOmr.userId,
-                quizId = userOmr.quizId,
-                answers = userOmr.answers,
+                userId = userOmrCreationInfo.userId,
+                quizId = userOmrCreationInfo.quizId,
+                answers = userOmrCreationInfo.answers,
             )
             userOmrCollectionRef.add(userOmrDTO).await().id
         }

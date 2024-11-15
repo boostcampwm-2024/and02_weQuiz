@@ -33,7 +33,9 @@ data class QuizRoute(
 )
 
 @Serializable
-data object QuizResultRoute
+data class QuizResultRoute(
+    val userOmrId: String,
+)
 
 @Serializable
 data class CreateQuizRoute(
@@ -49,23 +51,16 @@ fun NavController.navigateQuestionDetail(questionId: String) {
 }
 
 fun NavController.navigateQuestion(quizId: String) {
-    navigate(QuestionRoute(quizId)) {
-        popUpTo(QuizRoute::class.java.name) {
-            inclusive = true
-        }
-    }
+    navigate(QuestionRoute(quizId))
 }
 
 fun NavController.navigateQuiz(categoryId: String, quizId: String) {
     navigate(QuizRoute(categoryId, quizId))
 }
 
-fun NavController.navigateQuizResult() {
-    navigate(QuizResultRoute) {
-        popUpTo(QuizRoute::class.java.name) {
-            inclusive = true
-        }
-    }
+fun NavController.navigateQuizResult(userOmrId: String) {
+    popBackStack()
+    navigate(QuizResultRoute(userOmrId))
 }
 
 fun NavController.navigateCreateQuiz(categoryId: String) {
@@ -75,7 +70,7 @@ fun NavController.navigateCreateQuiz(categoryId: String) {
 fun NavGraphBuilder.quizNavGraph(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionSuccess: () -> Unit,
-    onQuizFinished: () -> Unit,
+    onQuizFinished: (String) -> Unit,
     onQuestionClick: (String) -> Unit,
     onCreateQuizSuccess: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
