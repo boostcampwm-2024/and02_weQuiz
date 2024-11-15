@@ -21,6 +21,7 @@ import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun GroupItem(
+    ownerId: String?,
     groupId: String?,
     isOwner: Boolean,
     removeButtonClick: (String, String) -> Unit,
@@ -41,7 +42,7 @@ fun GroupItem(
             text = user.name,
             style = MaterialTheme.typography.bodyLarge,
         )
-        if (isOwner) {
+        if (isOwner && ownerId != user.id) {
             Button(
                 onClick = {
                     if (groupId != null) {
