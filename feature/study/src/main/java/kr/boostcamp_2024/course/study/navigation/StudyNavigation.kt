@@ -8,15 +8,17 @@ import kr.boostcamp_2024.course.study.presentation.CreateStudyScreen
 import kr.boostcamp_2024.course.study.presentation.DetailStudyScreen
 
 @Serializable
-data object CreateStudyRoute
+data class CreateStudyRoute(
+    val studyGroupId: String? = null,
+)
 
 @Serializable
 data class StudyRoute(
     val studyGroupId: String,
 )
 
-fun NavController.navigateCreateStudy() {
-    navigate(CreateStudyRoute)
+fun NavController.navigateCreateStudy(studyGroupId: String? = null) {
+    navigate(CreateStudyRoute(studyGroupId))
 }
 
 fun NavController.navigateStudy(studyGroupId: String) {

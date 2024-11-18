@@ -1,8 +1,10 @@
 package kr.boostcamp_2024.course.study
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,6 +16,7 @@ import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
+import kr.boostcamp_2024.course.study.navigation.CreateStudyRoute
 import javax.inject.Inject
 
 data class CreateStudyUiState(
@@ -33,11 +36,18 @@ class CreateStudyViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val studyGroupRepository: StudyGroupRepository,
     private val userRepository: UserRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+    private val studyGroupId: String? = savedStateHandle.toRoute<CreateStudyRoute>().studyGroupId
+
     private val _uiState = MutableStateFlow(CreateStudyUiState())
     val uiState = _uiState.onStart {
         loadCurrentUserId()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), CreateStudyUiState())
+
+    init {
+        Log.d("studyGroupId", "$studyGroupId")
+    }
 
     fun loadCurrentUserId() {
         viewModelScope.launch {

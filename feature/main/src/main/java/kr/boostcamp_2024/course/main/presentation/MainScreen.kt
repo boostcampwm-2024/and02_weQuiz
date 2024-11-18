@@ -58,6 +58,7 @@ fun MainScreen(
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyGroupClick: (String) -> Unit,
+    onEditStudyButtonClick: (String) -> Unit,
     viewModel: MainViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -69,7 +70,7 @@ fun MainScreen(
         snackBarHostState = snackBarHostState,
         onNotificationButtonClick = onNotificationButtonClick,
         onCreateStudyButtonClick = onCreateStudyButtonClick,
-        onEditStudyGroupClick = {},
+        onEditStudyGroupClick = onEditStudyButtonClick,
         onDeleteStudyGroupClick = viewModel::deleteStudyGroup,
         onLeaveStudyGroupClick = viewModel::deleteUserFromStudyGroup,
         onStudyGroupClick = onStudyGroupClick,
