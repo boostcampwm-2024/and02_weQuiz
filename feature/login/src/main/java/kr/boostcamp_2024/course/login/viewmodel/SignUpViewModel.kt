@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.login.viewmodel
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ data class SignUpUiState(
         profileImage = null,
     ),
     val isSignUpValid: Boolean = false,
+    val isEmailValid: Boolean = true,
 )
 
 @HiltViewModel
@@ -31,6 +33,7 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
             )
         }
         checkIsSignUpValid()
+        checkIsEmailValid()
     }
 
     fun onPasswordChanged(password: String) {
@@ -63,7 +66,15 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
         val currentState = _signUpUiState.value
         val isSignUpValid = currentState.userCreationInfo.email.isNotBlank() &&
             currentState.userCreationInfo.password.isNotBlank() &&
-            currentState.userCreationInfo.nickName.isNotBlank()
+            currentState.userCreationInfo.nickName.isNotBlank() &&
+            currentState.isEmailValid
         _signUpUiState.update { currentState.copy(isSignUpValid = isSignUpValid) }
+    }
+
+    private fun checkIsEmailValid() {
+        val currentState = _signUpUiState.value
+        val isEmailValid = currentState.userCreationInfo.email.isNotBlank() &&
+            Patterns.EMAIL_ADDRESS.matcher(currentState.userCreationInfo.email).matches()
+        _signUpUiState.update { currentState.copy(isEmailValid = isEmailValid) }
     }
 }

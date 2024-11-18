@@ -110,6 +110,7 @@ private fun SignupScreen(
                     onPasswordChanged = onPasswordChanged,
                     onNickNameChanged = onNickNameChanged,
                     onProfileUriChanged = onProfileUriChanged,
+                    isEmailValid = uiState.isEmailValid,
                 )
             }
             item {
@@ -132,6 +133,7 @@ fun SignUpContent(
     onPasswordChanged: (String) -> Unit,
     onNickNameChanged: (String) -> Unit,
     onProfileUriChanged: (String) -> Unit,
+    isEmailValid: Boolean,
 ) {
     val photoPickerLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia(),
@@ -164,6 +166,7 @@ fun SignUpContent(
         WeQuizTextField(
             label = stringResource(R.string.txt_login_email_label),
             text = email,
+            isError = isEmailValid.not(),
             onTextChanged = onEmailChanged,
             placeholder = stringResource(R.string.txt_login_email_placeholder),
         )
