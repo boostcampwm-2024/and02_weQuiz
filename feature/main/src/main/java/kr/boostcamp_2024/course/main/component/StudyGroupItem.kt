@@ -30,10 +30,12 @@ import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.domain.model.StudyGroup
+import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.main.R
 
 @Composable
 fun StudyGroupItem(
+    currentUser: User?,
     studyGroup: StudyGroup,
     onStudyGroupClick: (String) -> Unit,
     onEditStudyGroupClick: (String) -> Unit,
@@ -101,24 +103,28 @@ fun StudyGroupItem(
                     contentDescription = stringResource(R.string.des_btn_study_menu),
                 )
 
-                DropdownMenu(
-                    expanded = isExpanded,
-                    onDismissRequest = { isExpanded = false },
-                ) {
-                    DropdownMenuItem(
-                        text = { Text(text = "수정") },
-                        onClick = {
-                            onEditStudyGroupClick(studyGroup.id)
-                            isExpanded = false
-                        },
-                    )
-                    DropdownMenuItem(
-                        text = { Text(text = "나가기") },
-                        onClick = {
-                            onEditStudyGroupClick(studyGroup.id)
-                            isExpanded = false
-                        },
-                    )
+                currentUser?.let { user ->
+                    DropdownMenu(
+                        expanded = isExpanded,
+                        onDismissRequest = { isExpanded = false },
+                    ) {
+                        if (user.id == studyGroup.ownerId) {
+                            DropdownMenuItem(
+                                text = { Text(text = stringResource(R.string.txt_study_group_menu_edit)) },
+                                onClick = {
+                                    onEditStudyGroupClick(studyGroup.id)
+                                    isExpanded = false
+                                },
+                            )
+                        }
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(R.string.txt_study_group_menu_leave)) },
+                            onClick = {
+                                onLeaveStudyGroupClick(studyGroup.id)
+                                isExpanded = false
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -132,6 +138,13 @@ fun StudyGroupItem(
 fun StudyGroupItemPreview() {
     WeQuizTheme {
         StudyGroupItem(
+            currentUser = User(
+                id = "123",
+                email = "email@email.com",
+                name = "오징어",
+                profileUrl = "testUrl",
+                studyGroups = listOf(),
+            ),
             studyGroup = StudyGroup(
                 id = "1234",
                 name = "일본어 스터디",
