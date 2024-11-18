@@ -45,6 +45,7 @@
     <string name="error_message_delete_study_group_member">스터디 그룹의 멤버 삭제가 실패했습니다.</string>
     <string name="error_message_add_notification">알림 추가가 실패했습니다.</string>
     <string name="error_message_find_user">유저 조회에 실패했습니다.</string>
+    <string name="error_message_delete_study_group">스터디 그룹에서 나가지 못했습니다.</string>
     <string-array name="drop_down_menu_options">
         <item>1명</item>
         <item>2명</item>
