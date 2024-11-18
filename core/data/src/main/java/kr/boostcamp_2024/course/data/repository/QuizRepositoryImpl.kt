@@ -56,4 +56,11 @@ class QuizRepositoryImpl @Inject constructor(
                 .update("user_omrs", FieldValue.arrayUnion(userOmrId))
                 .await()
         }
+
+    override suspend fun deleteQuizzes(quizIds: List<String>): Result<Unit> =
+        runCatching {
+            quizIds.forEach { quizId ->
+                quizCollectionRef.document(quizId).delete().await()
+            }
+        }
 }

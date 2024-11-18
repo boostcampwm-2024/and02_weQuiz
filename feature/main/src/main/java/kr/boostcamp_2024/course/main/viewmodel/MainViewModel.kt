@@ -14,7 +14,11 @@ import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
+import kr.boostcamp_2024.course.domain.repository.CategoryRepository
+import kr.boostcamp_2024.course.domain.repository.QuestionRepository
+import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
+import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -30,6 +34,10 @@ class MainViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val studyGroupRepository: StudyGroupRepository,
+    private val categoryRepository: CategoryRepository,
+    private val quizRepository: QuizRepository,
+    private val questionRepository: QuestionRepository,
+    private val userOmrRepository: UserOmrRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState
@@ -112,15 +120,74 @@ class MainViewModel @Inject constructor(
          */
 
         uiState.value.currentUser?.let { user ->
-            when (studyGroup.id == user.id) {
-                true -> removeStudyGroup()
+            when (studyGroup.ownerId == user.id) {
+                true -> removeStudyGroup(studyGroup)
                 false -> removeUserFromStudyGroup(user.id, studyGroup.id)
             }
         }
     }
 
-    private fun removeStudyGroup() {
-
+    private fun removeStudyGroup(studyGroup: StudyGroup) {
+        viewModelScope.launch {
+            categoryRepository.getCategories(studyGroup.categories)
+                .onSuccess { categories ->
+                    quizRepository.getQuizList(categories.flatMap { it.quizzes })
+                        .onSuccess { quizzes ->
+                            questionRepository.deleteQuestions(quizzes.flatMap { it.questions })
+                                .onSuccess {
+                                    userOmrRepository.deleteUserOmrs(quizzes.flatMap { it.userOmrs })
+                                        .onSuccess {
+                                            quizRepository.deleteQuizzes(quizzes.map { it.id })
+                                                .onSuccess {
+                                                    categoryRepository.deleteCategories(categories.map { it.id })
+                                                        .onSuccess {
+                                                            userRepository.deleteStudyGroupUsers(studyGroup.users, studyGroup.id)
+                                                                .onSuccess {
+                                                                    studyGroupRepository.deleteStudyGroup(studyGroup.id)
+                                                                        .onSuccess {
+                                                                            Log.d("MainViewModel", "스터디 그룹 삭제 완료")
+                                                                            loadCurrentUser() // 스터디 그룹 최신화
+                                                                        }
+                                                                        .onFailure {
+                                                                            Log.e("MainViewModel", "Failed to remove study group", it)
+                                                                            _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                                                                        }
+                                                                }
+                                                                .onFailure {
+                                                                    Log.e("MainViewModel", "Failed to remove users from study group", it)
+                                                                    _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                                                                }
+                                                        }
+                                                        .onFailure {
+                                                            Log.e("MainViewModel", "Failed to remove categories from study group", it)
+                                                            _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                                                        }
+                                                }
+                                                .onFailure {
+                                                    Log.e("MainViewModel", "Failed to remove quizzes from study group", it)
+                                                    _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                                                }
+                                        }
+                                        .onFailure {
+                                            Log.e("MainViewModel", "Failed to remove userOmr from study group", it)
+                                            _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                                        }
+                                }
+                                .onFailure {
+                                    Log.e("MainViewModel", "Failed to remove questions from study group", it)
+                                    _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                                }
+                        }
+                        .onFailure {
+                            Log.e("MainViewModel", "Failed to remove quizzes from study group", it)
+                            _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                        }
+                }
+                .onFailure {
+                    Log.e("MainViewModel", "Failed to remove categories from study group", it)
+                    _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                }
+        }
     }
 
     private fun removeUserFromStudyGroup(userId: String, studyGroupId: String) {
