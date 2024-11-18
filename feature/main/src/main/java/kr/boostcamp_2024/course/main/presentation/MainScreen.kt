@@ -181,6 +181,7 @@ fun MainScreen(
             when (state) {
                 0 -> {
                     StudyGroupTab(
+                        currentUser = currentUser,
                         studyGroups = studyGroups,
                         onStudyGroupClick = onStudyGroupClick,
                         onEditStudyGroupClick = onEditStudyGroupClick,
@@ -197,6 +198,7 @@ fun MainScreen(
 
 @Composable
 fun StudyGroupTab(
+    currentUser: User?,
     studyGroups: List<StudyGroup>,
     onStudyGroupClick: (String) -> Unit,
     onEditStudyGroupClick: (String) -> Unit,
@@ -205,6 +207,7 @@ fun StudyGroupTab(
     LazyColumn {
         items(items = studyGroups, key = { it.id }) { studyGroup ->
             StudyGroupItem(
+                currentUser = currentUser,
                 studyGroup = studyGroup,
                 onStudyGroupClick = onStudyGroupClick,
                 onEditStudyGroupClick = onEditStudyGroupClick,
