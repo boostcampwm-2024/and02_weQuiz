@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.category.viewModel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -23,6 +24,7 @@ data class CreateCategoryUiState(
     val isCategoryCreationValid: Boolean = false,
     val creationSuccess: Boolean = false,
     val errorMessage: String? = null,
+    val categoryImageUrl: String? = null,
 )
 
 @HiltViewModel
@@ -41,6 +43,7 @@ class CreateCategoryViewModel @Inject constructor(
             categoryRepository.createCategory(
                 _createCategoryUiState.value.categoryName,
                 _createCategoryUiState.value.categoryDescription.takeIf { it.isNotBlank() },
+                _createCategoryUiState.value.categoryImageUrl,
             ).onSuccess { categoryId ->
                 saveCategoryToStudyGroup(categoryId)
             }.onFailure {
@@ -97,6 +100,12 @@ class CreateCategoryViewModel @Inject constructor(
             currentState.copy(
                 isCategoryCreationValid = currentState.categoryName.isNotBlank(),
             )
+        }
+    }
+
+    fun onImageUriChanged(uri: Uri?) {
+        _createCategoryUiState.update {
+            it.copy(categoryImageUrl = uri.toString())
         }
     }
 }
