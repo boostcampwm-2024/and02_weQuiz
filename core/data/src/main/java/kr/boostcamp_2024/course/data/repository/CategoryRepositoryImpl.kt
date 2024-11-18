@@ -31,11 +31,12 @@ class CategoryRepositoryImpl @Inject constructor(
     override suspend fun createCategory(
         categoryName: String,
         categoryDescription: String?,
+        categoryImageUrl: String?,
     ): Result<String> = runCatching {
         val newCategory = CategoryDTO(
             name = categoryName,
             description = categoryDescription,
-            categoryImageUrl = null,
+            categoryImageUrl = categoryImageUrl,
             quizzes = emptyList(),
         )
 
