@@ -44,51 +44,59 @@ import kr.boostcamp_2024.course.study.component.StudySubmitButton
 @Composable
 fun CreateStudyScreen(
     viewmodel: CreateStudyViewModel = hiltViewModel<CreateStudyViewModel>(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onNavigationButtonClick: () -> Unit,
-    onCreateStudySuccess: () -> Unit,
+    onSubmitStudySuccess: () -> Unit,
 ) {
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
 
     CreateStudyScreen(
         isEditMode = uiState.isEditMode,
         titleText = uiState.name,
-        onTitleTextChange = viewmodel::onNameChanged,
         descriptionText = uiState.description,
-        onDescriptionTextChange = viewmodel::onDescriptionChanged,
         groupMemberNumber = uiState.maxUserNum,
-        onGroupMemberNumberChange = viewmodel::onGroupMemberNumberChanged,
-        onCreationButtonClick = viewmodel::createStudyGroupClick,
-        snackBarMessage = uiState.snackBarMessage,
-        onNavigationButtonClick = onNavigationButtonClick,
-        onSnackBarShown = viewmodel::onSnackBarShown,
-        isCreateStudySuccess = uiState.isCreateStudySuccess,
-        onCreateStudySuccess = onCreateStudySuccess,
         canSubmitStudy = uiState.canSubmitStudy,
-        onStudyImgUriChanged = { },
+        snackBarHostState = snackBarHostState,
+        onNavigationButtonClick = onNavigationButtonClick,
+        onTitleTextChange = viewmodel::onNameChanged,
+        onDescriptionTextChange = viewmodel::onDescriptionChanged,
+        onMaxUserNumChange = viewmodel::onMaxUserNumChange,
+        onStudyEditButtonClick = viewmodel::updateStudyGroup,
+        onCreationButtonClick = viewmodel::createStudyGroupClick,
+        onStudyImgUriChanged = {},
     )
+
+    if (uiState.isSubmitStudySuccess) {
+        LaunchedEffect(Unit) {
+            onSubmitStudySuccess()
+        }
+    }
+
+    uiState.snackBarMessage?.let { message ->
+        LaunchedEffect(message) {
+            snackBarHostState.showSnackbar(message)
+            viewmodel.onSnackBarShown()
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateStudyScreen(
     isEditMode: Boolean,
-    onNavigationButtonClick: () -> Unit,
     titleText: String,
-    onTitleTextChange: (String) -> Unit,
     descriptionText: String,
-    onDescriptionTextChange: (String) -> Unit,
     groupMemberNumber: String,
-    onGroupMemberNumberChange: (String) -> Unit,
-    snackBarMessage: String?,
-    onCreationButtonClick: () -> Unit,
-    onSnackBarShown: () -> Unit,
-    isCreateStudySuccess: Boolean,
-    onCreateStudySuccess: () -> Unit,
     canSubmitStudy: Boolean,
+    snackBarHostState: SnackbarHostState,
+    onNavigationButtonClick: () -> Unit,
+    onTitleTextChange: (String) -> Unit,
+    onDescriptionTextChange: (String) -> Unit,
+    onMaxUserNumChange: (String) -> Unit,
+    onStudyEditButtonClick: () -> Unit,
+    onCreationButtonClick: () -> Unit,
     onStudyImgUriChanged: (String) -> Unit,
 ) {
-
-    val snackBarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -96,18 +104,14 @@ fun CreateStudyScreen(
         },
     )
 
-    if (isCreateStudySuccess) {
-        onCreateStudySuccess()
-    }
-
     Scaffold(
-        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             CreateStudyTopAppBar(
                 isEditMode = isEditMode,
                 onNavigationButtonClick = onNavigationButtonClick,
             )
         },
+        snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -152,7 +156,7 @@ fun CreateStudyScreen(
                 WeQuizValidateTextField(
                     label = stringResource(R.string.txt_create_study_group_member_number_label),
                     text = groupMemberNumber,
-                    onTextChanged = onGroupMemberNumberChange,
+                    onTextChanged = onMaxUserNumChange,
                     placeholder = stringResource(R.string.txt_create_study_group_member_number_placeholder),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     validFun = ::isValidateNumber,
@@ -162,17 +166,10 @@ fun CreateStudyScreen(
 
             StudySubmitButton(
                 isEditMode = isEditMode,
-                onStudyEditButtonClick = onCreationButtonClick,
+                onStudyEditButtonClick = onStudyEditButtonClick,
                 onStudyCreateButtonClick = onCreationButtonClick,
                 canSubmitStudy = canSubmitStudy,
             )
-
-            snackBarMessage?.let { message ->
-                LaunchedEffect(message) {
-                    snackBarHostState.showSnackbar(message)
-                    onSnackBarShown()
-                }
-            }
         }
     }
 }
@@ -188,21 +185,19 @@ fun isValidateNumber(inputNumber: String): Boolean {
 fun CreateStudyScreenPreview() {
     WeQuizTheme {
         CreateStudyScreen(
-            onNavigationButtonClick = {},
-            titleText = "",
-            onTitleTextChange = {},
-            descriptionText = "",
-            onDescriptionTextChange = {},
-            groupMemberNumber = "",
-            onGroupMemberNumberChange = {},
-            snackBarMessage = "",
-            onCreationButtonClick = {},
-            onSnackBarShown = {},
-            isCreateStudySuccess = false,
-            onCreateStudySuccess = {},
-            canSubmitStudy = false,
-            onStudyImgUriChanged = {},
             isEditMode = false,
+            titleText = "",
+            descriptionText = "",
+            groupMemberNumber = "",
+            canSubmitStudy = false,
+            snackBarHostState = remember { SnackbarHostState() },
+            onNavigationButtonClick = {},
+            onTitleTextChange = {},
+            onDescriptionTextChange = {},
+            onMaxUserNumChange = {},
+            onStudyEditButtonClick = {},
+            onCreationButtonClick = {},
+            onStudyImgUriChanged = {},
         )
     }
 }

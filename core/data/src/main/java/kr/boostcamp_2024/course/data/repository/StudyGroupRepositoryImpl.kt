@@ -6,6 +6,7 @@ import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.StudyGroupDTO
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
+import kr.boostcamp_2024.course.domain.model.StudyGroupUpdatedInfo
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import javax.inject.Inject
 
@@ -66,5 +67,15 @@ class StudyGroupRepositoryImpl @Inject constructor(
             val response = document.toObject(StudyGroupDTO::class.java)
             val studyGroupName = requireNotNull(response?.name)
             studyGroupName
+        }
+
+    override suspend fun updateStudyGroup(studyGroupId: String, updatedInfo: StudyGroupUpdatedInfo): Result<Unit> =
+        runCatching {
+            val updatedInfoMap = hashMapOf<String, Any?>(
+                "name" to updatedInfo.name,
+                "description" to updatedInfo.description,
+                "max_user_num" to updatedInfo.maxUserNum,
+            )
+            studyGroupCollectionRef.document(studyGroupId).update(updatedInfoMap).await()
         }
 }

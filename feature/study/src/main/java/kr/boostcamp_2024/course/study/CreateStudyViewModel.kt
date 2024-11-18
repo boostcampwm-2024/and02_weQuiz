@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
+import kr.boostcamp_2024.course.domain.model.StudyGroupUpdatedInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
@@ -25,7 +26,7 @@ data class CreateStudyUiState(
     val description: String = "",
     val maxUserNum: String = "",
     val currentUserId: String? = null,
-    val isCreateStudySuccess: Boolean = false,
+    val isSubmitStudySuccess: Boolean = false,
     val snackBarMessage: String? = null,
 ) {
     val canSubmitStudy: Boolean
@@ -98,6 +99,28 @@ class CreateStudyViewModel @Inject constructor(
         }
     }
 
+    fun updateStudyGroup() {
+        viewModelScope.launch {
+            studyGroupId?.let {
+                val studyGroupUpdatedInfo = StudyGroupUpdatedInfo(
+                    name = uiState.value.name,
+                    description = uiState.value.description.takeIf { it.isNotBlank() },
+                    maxUserNum = uiState.value.maxUserNum.toInt(),
+                )
+
+                studyGroupRepository.updateStudyGroup(it, studyGroupUpdatedInfo)
+                    .onSuccess {
+                        _uiState.update { it.copy(isSubmitStudySuccess = true) }
+                        Log.d("MainViewModel", "Successfully updated study group")
+                    }
+                    .onFailure {
+                        Log.e("MainViewModel", "Failed to update study group", it)
+                        _uiState.update { it.copy(snackBarMessage = "스터디 그룹 업데이트 실패") }
+                    }
+            }
+        }
+    }
+
     fun addStudyGroup(currentUserId: String, studyGroupCreationInfo: StudyGroupCreationInfo) {
         viewModelScope.launch {
             studyGroupRepository.addStudyGroup(studyGroupCreationInfo).onSuccess { studyId ->
@@ -115,7 +138,7 @@ class CreateStudyViewModel @Inject constructor(
         viewModelScope.launch {
             userRepository.addStudyGroupToUser(currentUserId, studyId).onSuccess { result ->
                 Log.d("addStudyGroupToUserResult", "성공, $result)")
-                _uiState.update { it.copy(isCreateStudySuccess = true) }
+                _uiState.update { it.copy(isSubmitStudySuccess = true) }
             }.onFailure { throwable ->
                 Log.d("addStudyGroupToUserResult", "실패, ${throwable.message})")
                 _uiState.update { it.copy(snackBarMessage = "스터디 그룹 생성 실패") }
@@ -131,7 +154,7 @@ class CreateStudyViewModel @Inject constructor(
         _uiState.update { it.copy(description = description) }
     }
 
-    fun onGroupMemberNumberChanged(groupMemberNumber: String) {
+    fun onMaxUserNumChange(groupMemberNumber: String) {
         _uiState.update { it.copy(maxUserNum = groupMemberNumber) }
     }
 
