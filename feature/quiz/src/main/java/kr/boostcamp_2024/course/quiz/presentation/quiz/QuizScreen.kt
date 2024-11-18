@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -126,7 +125,7 @@ fun QuizScreen(
                     IconButton(onClick = { isSettingMenuExpanded = true }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = "퀴즈 수정 삭제",
+                            contentDescription = stringResource(R.string.des_quiz_screen_top_app_bar_action_icon),
                         )
                     }
                     DropdownMenu(
@@ -134,7 +133,7 @@ fun QuizScreen(
                         onDismissRequest = { isSettingMenuExpanded = false },
                     ) {
                         DropdownMenuItem(
-                            text = { Text("수정") },
+                            text = { Text(stringResource(R.string.txt_edit_quiz_drop_down_menu_item)) },
                             onClick = {
                                 category?.let { category ->
                                     quiz?.let { quiz ->
@@ -146,7 +145,7 @@ fun QuizScreen(
                         )
 
                         DropdownMenuItem(
-                            text = { Text("퀴즈 제거") },
+                            text = { Text(stringResource(R.string.txt_delete_quiz_drop_down_menu_item)) },
                             onClick = {
                                 isSettingMenuExpanded = false
                             },

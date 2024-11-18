@@ -64,4 +64,7 @@
     <string name="err_answer_add_quiz">응답 제출에 실패했습니다.</string>
     <string name="err_load_current_user">로그인한 유저가 없습니다.</string>
     <string name="btn_edit_quiz">퀴즈 수정</string>
+    <string name="des_quiz_screen_top_app_bar_action_icon">퀴즈 수정 삭제 메뉴 액션</string>
+    <string name="txt_edit_quiz_drop_down_menu_item">수정</string>
+    <string name="txt_delete_quiz_drop_down_menu_item">퀴즈 제거</string>
 </resources>
