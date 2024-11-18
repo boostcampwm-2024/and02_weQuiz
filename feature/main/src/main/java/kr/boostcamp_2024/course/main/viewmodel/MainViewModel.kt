@@ -99,20 +99,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun editStudyGroup(studyGroupId: String) {
-
-    }
-
-    fun leaveStudyGroup(studyGroup: StudyGroup) {
-        uiState.value.currentUser?.let { user ->
-            when (studyGroup.ownerId == user.id) {
-                true -> removeStudyGroup(studyGroup)
-                false -> removeUserFromStudyGroup(user.id, studyGroup.id)
-            }
-        }
-    }
-
-    private fun removeStudyGroup(studyGroup: StudyGroup) {
+    fun deleteStudyGroup(studyGroup: StudyGroup) {
         viewModelScope.launch {
             categoryRepository.getCategories(studyGroup.categories)
                 .onSuccess { categories ->
@@ -182,23 +169,25 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun removeUserFromStudyGroup(userId: String, studyGroupId: String) {
-        viewModelScope.launch {
-            userRepository.deleteStudyGroupUser(userId, studyGroupId)
-                .onSuccess {
-                    studyGroupRepository.deleteUser(studyGroupId, userId)
-                        .onSuccess {
-                            loadCurrentUser()
-                        }
-                        .onFailure {
-                            Log.e("MainViewModel", "Failed to remove user from study group", it)
-                            _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
-                        }
-                }
-                .onFailure {
-                    Log.e("MainViewModel", "Failed to remove user from study group", it)
-                    _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
-                }
+    fun deleteUserFromStudyGroup(studyGroupId: String) {
+        uiState.value.currentUser?.let { user ->
+            viewModelScope.launch {
+                userRepository.deleteStudyGroupUser(user.id, studyGroupId)
+                    .onSuccess {
+                        studyGroupRepository.deleteUser(studyGroupId, user.id)
+                            .onSuccess {
+                                loadCurrentUser()
+                            }
+                            .onFailure {
+                                Log.e("MainViewModel", "Failed to remove user from study group", it)
+                                _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                            }
+                    }
+                    .onFailure {
+                        Log.e("MainViewModel", "Failed to remove user from study group", it)
+                        _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                    }
+            }
         }
     }
 

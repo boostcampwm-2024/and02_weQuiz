@@ -11,6 +11,7 @@
     <string name="des_btn_study_menu">스터디 메뉴</string>
     <string name="txt_study_user_count">인원: %1$s명</string>
     <string name="txt_study_group_menu_edit">수정</string>
+    <string name="txt_study_group_menu_delete">스터디 제거</string>
     <string name="txt_study_group_menu_leave">나가기</string>
     <string-array name="main_tabs_titles">
         <item>참여 스터디</item>

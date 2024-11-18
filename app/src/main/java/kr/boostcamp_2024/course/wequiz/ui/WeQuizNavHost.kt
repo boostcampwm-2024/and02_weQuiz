@@ -55,6 +55,8 @@ fun WeQuizNavHost(
             onCreateStudySuccess = navController::navigateUp,
             onCreateCategoryButtonClick = navController::navigateCreateCategory,
             onCategoryClick = navController::navigateCategory,
+            onDeleteStudyGroupSuccess = navController::navigateUp,
+            onLeaveStudyGroupSuccess = navController::navigateUp,
         )
 
         categoryNavGraph(
