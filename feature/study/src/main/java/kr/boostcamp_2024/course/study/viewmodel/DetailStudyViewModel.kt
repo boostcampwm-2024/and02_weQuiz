@@ -37,6 +37,7 @@ data class DetailStudyUiState(
     val owner: User? = null,
     val userId: String? = null,
     val isDeleteStudyGroupSuccess: Boolean = false,
+    val isLeaveStudyGroupSuccess: Boolean = false,
 )
 
 @HiltViewModel
@@ -336,7 +337,7 @@ class DetailStudyViewModel @Inject constructor(
                 .onSuccess {
                     studyGroupRepository.deleteUser(studyGroupId, userId)
                         .onSuccess {
-                            loadCurrentUser()
+                            _uiState.update { it.copy(isLeaveStudyGroupSuccess = true) }
                         }
                         .onFailure {
                             Log.e("MainViewModel", "Failed to remove user from study group", it)

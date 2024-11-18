@@ -55,6 +55,7 @@ fun DetailStudyScreen(
     onCreateCategoryButtonClick: (String) -> Unit,
     onCategoryClick: (String) -> Unit,
     onDetailStudyGroupSuccess: () -> Unit,
+    onLeaveStudyGroupSuccess: () -> Unit,
     viewModel: DetailStudyViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -98,6 +99,12 @@ fun DetailStudyScreen(
     if (uiState.isDeleteStudyGroupSuccess) {
         LaunchedEffect(Unit) {
             onDetailStudyGroupSuccess()
+        }
+    }
+
+    if (uiState.isLeaveStudyGroupSuccess) {
+        LaunchedEffect(Unit) {
+            onLeaveStudyGroupSuccess()
         }
     }
 }
