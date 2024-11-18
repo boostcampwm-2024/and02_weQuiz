@@ -50,6 +50,7 @@ import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuizViewModel
 fun CreateQuizScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuizSuccess: () -> Unit,
+    onEditQuizSuccess: () -> Unit,
     viewModel: CreateQuizViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -61,6 +62,7 @@ fun CreateQuizScreen(
         quizDate = uiState.value.quizDate,
         quizSolveTime = uiState.value.quizSolveTime,
         createQuizButtonEnabled = uiState.value.isCreateQuizButtonEnabled,
+        isEditing = uiState.value.isEditing,
         snackBarHostState = snackBarHostState,
         onQuizTitleChange = viewModel::setQuizTitle,
         onQuizDescriptionChange = viewModel::setQuizDescription,
@@ -68,11 +70,18 @@ fun CreateQuizScreen(
         onQuizSolveTimeChange = viewModel::setQuizSolveTime,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuizButtonClick = viewModel::createQuiz,
+        onEditButtonClick = viewModel::editQuiz,
     )
 
     if (uiState.value.isCreateQuizSuccess) {
         LaunchedEffect(Unit) {
             onCreateQuizSuccess()
+        }
+    }
+
+    if (uiState.value.isEditQuizSuccess) {
+        LaunchedEffect(Unit) {
+            onEditQuizSuccess()
         }
     }
 
@@ -102,6 +111,7 @@ fun CreateQuizScreen(
     quizDate: String,
     quizSolveTime: Float,
     createQuizButtonEnabled: Boolean,
+    isEditing: Boolean,
     snackBarHostState: SnackbarHostState,
     onQuizTitleChange: (String) -> Unit,
     onQuizDescriptionChange: (String) -> Unit,
@@ -109,6 +119,7 @@ fun CreateQuizScreen(
     onQuizSolveTimeChange: (Float) -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: () -> Unit,
+    onEditButtonClick: () -> Unit,
 ) {
 
     Scaffold(
@@ -193,14 +204,24 @@ fun CreateQuizScreen(
                 valueRange = 10f..100f,
                 onValueChange = { onQuizSolveTimeChange(it) },
             )
-
-            // CreateButton
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = onCreateQuizButtonClick,
-                enabled = createQuizButtonEnabled,
-            ) {
-                Text(text = stringResource(R.string.btn_create_quiz))
+            if (isEditing) {
+                // EditButton
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = onEditButtonClick,
+                    enabled = createQuizButtonEnabled,
+                ) {
+                    Text(text = stringResource(R.string.btn_edit_quiz))
+                }
+            } else {
+                // CreateButton
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = onCreateQuizButtonClick,
+                    enabled = createQuizButtonEnabled,
+                ) {
+                    Text(text = stringResource(R.string.btn_create_quiz))
+                }
             }
         }
     }
@@ -216,12 +237,14 @@ fun CreateQuizScreenPreview() {
             quizDate = "",
             quizSolveTime = 10f,
             createQuizButtonEnabled = true,
+            isEditing = false,
             onQuizTitleChange = {},
             onQuizDescriptionChange = {},
             onQuizDateChange = {},
             onQuizSolveTimeChange = {},
             onNavigationButtonClick = {},
             onCreateQuizButtonClick = {},
+            onEditButtonClick = {},
             snackBarHostState = remember { SnackbarHostState() },
         )
     }

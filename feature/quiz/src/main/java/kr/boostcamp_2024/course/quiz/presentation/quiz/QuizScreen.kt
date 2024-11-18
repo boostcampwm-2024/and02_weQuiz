@@ -13,8 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,7 +32,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,11 +60,15 @@ fun QuizScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
+    onSettingMenuClick: (String, String) -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     viewModel: QuizViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.initViewModel()
+    }
     QuizScreen(
         category = uiState.value.category,
         quiz = uiState.value.quiz,
@@ -65,6 +76,7 @@ fun QuizScreen(
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuestionButtonClick = onCreateQuestionButtonClick,
         onStartQuizButtonClick = onStartQuizButtonClick,
+        onSettingMenuClick = onSettingMenuClick,
     )
 
     if (uiState.value.isLoading) {
@@ -94,8 +106,9 @@ fun QuizScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
+    onSettingMenuClick: (String, String) -> Unit,
 ) {
-
+    var isSettingMenuExpanded by remember { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -106,6 +119,37 @@ fun QuizScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = null,
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { isSettingMenuExpanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "퀴즈 수정 삭제",
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = isSettingMenuExpanded,
+                        onDismissRequest = { isSettingMenuExpanded = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("수정") },
+                            onClick = {
+                                category?.let { category ->
+                                    quiz?.let { quiz ->
+                                        onSettingMenuClick(category.id, quiz.id)
+                                    }
+                                    isSettingMenuExpanded = false
+                                }
+                            },
+                        )
+
+                        DropdownMenuItem(
+                            text = { Text("퀴즈 제거") },
+                            onClick = {
+                                isSettingMenuExpanded = false
+                            },
                         )
                     }
                 },
@@ -208,6 +252,7 @@ fun QuizScreen(
                 }
 
                 // CreateQuestionButton & StartQuizButton
+
                 quiz?.let {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
@@ -261,6 +306,7 @@ fun QuizStartScreenPreview() {
             onNavigationButtonClick = {},
             onCreateQuestionButtonClick = {},
             onStartQuizButtonClick = {},
+            onSettingMenuClick = { _, _ -> },
         )
     }
 }

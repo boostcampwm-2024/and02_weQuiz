@@ -40,6 +40,7 @@ data class QuizResultRoute(
 @Serializable
 data class CreateQuizRoute(
     val categoryId: String,
+    val quizId: String? = null,
 )
 
 fun NavController.navigateCreateQuestion(quizId: String) {
@@ -63,8 +64,8 @@ fun NavController.navigateQuizResult(userOmrId: String) {
     navigate(QuizResultRoute(userOmrId))
 }
 
-fun NavController.navigateCreateQuiz(categoryId: String) {
-    navigate(CreateQuizRoute(categoryId))
+fun NavController.navigateCreateQuiz(categoryId: String, quizId: String? = null) {
+    navigate(CreateQuizRoute(categoryId, quizId))
 }
 
 fun NavGraphBuilder.quizNavGraph(
@@ -75,6 +76,8 @@ fun NavGraphBuilder.quizNavGraph(
     onCreateQuizSuccess: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
+    onSettingMenuClick: (String, String) -> Unit,
+    onEditQuizSuccess: () -> Unit,
 ) {
     composable<CreateQuestionRoute> {
         CreateQuestionScreen(
@@ -98,6 +101,7 @@ fun NavGraphBuilder.quizNavGraph(
             onNavigationButtonClick = onNavigationButtonClick,
             onCreateQuestionButtonClick = onCreateQuestionButtonClick,
             onStartQuizButtonClick = onStartQuizButtonClick,
+            onSettingMenuClick = onSettingMenuClick,
         )
     }
     composable<QuizResultRoute> {
@@ -110,6 +114,7 @@ fun NavGraphBuilder.quizNavGraph(
         CreateQuizScreen(
             onNavigationButtonClick = onNavigationButtonClick,
             onCreateQuizSuccess = onCreateQuizSuccess,
+            onEditQuizSuccess = onEditQuizSuccess,
         )
     }
 }

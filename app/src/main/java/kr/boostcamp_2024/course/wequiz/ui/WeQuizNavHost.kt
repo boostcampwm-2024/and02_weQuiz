@@ -72,6 +72,8 @@ fun WeQuizNavHost(
             onCreateQuizSuccess = navController::navigateUp,
             onCreateQuestionButtonClick = navController::navigateCreateQuestion,
             onStartQuizButtonClick = navController::navigateQuestion,
+            onSettingMenuClick = navController::navigateCreateQuiz,
+            onEditQuizSuccess = navController::navigateUp,
         )
     }
 }

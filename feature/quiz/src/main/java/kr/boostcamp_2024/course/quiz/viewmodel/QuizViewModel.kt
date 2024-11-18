@@ -7,10 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.Category
@@ -39,14 +36,19 @@ class QuizViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(QuizUiState())
     val uiState: StateFlow<QuizUiState> = _uiState
-        .onStart {
-            loadCategory()
-            loadQuiz()
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
-            QuizUiState(),
-        )
+
+//        .onStart {
+//            loadCategory()
+//            loadQuiz()
+//        }.stateIn(
+//            viewModelScope,
+//            SharingStarted.WhileSubscribed(5000L),
+//            QuizUiState(),
+//        )
+    fun initViewModel() {
+        loadCategory()
+        loadQuiz()
+    }
 
     private fun loadCategory() {
         viewModelScope.launch {

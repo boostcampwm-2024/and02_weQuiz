@@ -63,4 +63,5 @@
     <string name="err_answer_add">퀴즈에 응답 추가 실패했습니다.</string>
     <string name="err_answer_add_quiz">응답 제출에 실패했습니다.</string>
     <string name="err_load_current_user">로그인한 유저가 없습니다.</string>
+    <string name="btn_edit_quiz">퀴즈 수정</string>
 </resources>

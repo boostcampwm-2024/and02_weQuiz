@@ -56,4 +56,18 @@ class QuizRepositoryImpl @Inject constructor(
                 .update("user_omrs", FieldValue.arrayUnion(userOmrId))
                 .await()
         }
+
+    override suspend fun editQuiz(quizId: String, quizCreateInfo: QuizCreationInfo): Result<Unit> =
+        runCatching {
+            val updatedData = mapOf(
+                "title" to quizCreateInfo.quizTitle,
+                "description" to quizCreateInfo.quizDescription,
+                "startTime" to quizCreateInfo.quizDate,
+                "solveTime" to quizCreateInfo.quizSolveTime,
+            )
+
+            quizCollectionRef.document(quizId)
+                .update(updatedData)
+                .await()
+        }
 }
