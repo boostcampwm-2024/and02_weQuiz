@@ -61,9 +61,8 @@ fun WeQuizValidateTextField(
                 text = errorMessage,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp),
             )
         }
     }
 }
-
