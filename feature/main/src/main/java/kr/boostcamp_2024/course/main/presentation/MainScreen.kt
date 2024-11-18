@@ -31,7 +31,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -70,8 +69,9 @@ fun MainScreen(
         snackBarHostState = snackBarHostState,
         onNotificationButtonClick = onNotificationButtonClick,
         onCreateStudyButtonClick = onCreateStudyButtonClick,
-        onEditStudyGroupClick = viewModel::editStudyGroup,
-        onLeaveStudyGroupClick = viewModel::leaveStudyGroup,
+        onEditStudyGroupClick = {},
+        onDeleteStudyGroupClick = viewModel::deleteStudyGroup,
+        onLeaveStudyGroupClick = viewModel::deleteUserFromStudyGroup,
         onStudyGroupClick = onStudyGroupClick,
     )
 
@@ -91,6 +91,10 @@ fun MainScreen(
             viewModel.shownErrorMessage()
         }
     }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadCurrentUser()
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,12 +106,12 @@ fun MainScreen(
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onEditStudyGroupClick: (String) -> Unit,
-    onLeaveStudyGroupClick: (StudyGroup) -> Unit,
+    onDeleteStudyGroupClick: (StudyGroup) -> Unit,
+    onLeaveStudyGroupClick: (String) -> Unit,
     onStudyGroupClick: (String) -> Unit,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    val coroutineScope = rememberCoroutineScope()
 
     var state by rememberSaveable { mutableIntStateOf(0) }
     val titles = stringArrayResource(R.array.main_tabs_titles)
@@ -187,6 +191,7 @@ fun MainScreen(
                         studyGroups = studyGroups,
                         onStudyGroupClick = onStudyGroupClick,
                         onEditStudyGroupClick = onEditStudyGroupClick,
+                        onDeleteStudyGroupClick = onDeleteStudyGroupClick,
                         onLeaveStudyGroupClick = onLeaveStudyGroupClick,
                     )
                 }
@@ -204,15 +209,17 @@ fun StudyGroupTab(
     studyGroups: List<StudyGroup>,
     onStudyGroupClick: (String) -> Unit,
     onEditStudyGroupClick: (String) -> Unit,
-    onLeaveStudyGroupClick: (StudyGroup) -> Unit,
+    onDeleteStudyGroupClick: (StudyGroup) -> Unit,
+    onLeaveStudyGroupClick: (String) -> Unit,
 ) {
     LazyColumn {
         items(items = studyGroups, key = { it.id }) { studyGroup ->
             StudyGroupItem(
-                currentUser = currentUser,
+                isOwner = (studyGroup.ownerId == currentUser?.id),
                 studyGroup = studyGroup,
                 onStudyGroupClick = onStudyGroupClick,
                 onEditStudyGroupClick = onEditStudyGroupClick,
+                onDeleteStudyGroupClick = onDeleteStudyGroupClick,
                 onLeaveStudyGroupClick = onLeaveStudyGroupClick,
             )
         }
@@ -253,6 +260,7 @@ fun MainScreenPreview() {
             onNotificationButtonClick = {},
             onCreateStudyButtonClick = {},
             onStudyGroupClick = {},
+            onDeleteStudyGroupClick = {},
         )
     }
 }

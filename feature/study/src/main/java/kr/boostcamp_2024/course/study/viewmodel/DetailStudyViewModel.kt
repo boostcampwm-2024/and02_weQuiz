@@ -36,6 +36,7 @@ data class DetailStudyUiState(
     val users: List<User> = emptyList(),
     val owner: User? = null,
     val userId: String? = null,
+    val isDeleteStudyGroupSuccess: Boolean = false,
 )
 
 @HiltViewModel
@@ -254,86 +255,82 @@ class DetailStudyViewModel @Inject constructor(
         }
     }
 
-    fun leaveStudyGroup(studyGroup: StudyGroup) {
-        uiState.value.userId?.let { user ->
-            when (studyGroup.ownerId == user) {
-                true -> removeStudyGroup(studyGroup)
-                false -> removeUserFromStudyGroup(user, studyGroup.id)
+    fun deleteStudyGroup() {
+        uiState.value.currentGroup?.let { studyGroup ->
+            viewModelScope.launch {
+                categoryRepository.getCategories(studyGroup.categories)
+                    .onSuccess { categories ->
+                        quizRepository.getQuizList(categories.flatMap { it.quizzes })
+                            .onSuccess { quizzes ->
+                                questionRepository.deleteQuestions(quizzes.flatMap { it.questions })
+                                    .onSuccess {
+                                        userOmrRepository.deleteUserOmrs(quizzes.flatMap { it.userOmrs })
+                                            .onSuccess {
+                                                quizRepository.deleteQuizzes(quizzes.map { it.id })
+                                                    .onSuccess {
+                                                        categoryRepository.deleteCategories(categories.map { it.id })
+                                                            .onSuccess {
+                                                                notificationRepository.deleteNotification(notificationId = studyGroup.id)
+                                                                    .onSuccess {
+                                                                        userRepository.deleteStudyGroupUsers(studyGroup.users, studyGroup.id)
+                                                                            .onSuccess {
+                                                                                studyGroupRepository.deleteStudyGroup(studyGroup.id)
+                                                                                    .onSuccess {
+                                                                                        Log.d("DetailStudyViewModel", "스터디 그룹 삭제 완료")
+                                                                                        _uiState.update { it.copy(isDeleteStudyGroupSuccess = true) }
+                                                                                    }
+                                                                                    .onFailure {
+                                                                                        Log.e("DetailStudyViewModel", "Failed to remove study group", it)
+                                                                                        _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
+                                                                                    }
+                                                                            }
+                                                                            .onFailure {
+                                                                                Log.e("DetailStudyViewModel", "Failed to remove users from study group", it)
+                                                                                _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
+                                                                            }
+                                                                    }
+                                                                    .onFailure {
+                                                                        Log.e("DetailStudyViewModel", "Failed to remove notification", it)
+                                                                        _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
+                                                                    }
+                                                            }
+                                                            .onFailure {
+                                                                Log.e("DetailStudyViewModel", "Failed to remove categories from study group", it)
+                                                                _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
+                                                            }
+                                                    }
+                                                    .onFailure {
+                                                        Log.e("DetailStudyViewModel", "Failed to remove quizzes from study group", it)
+                                                        _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
+                                                    }
+                                            }
+                                            .onFailure {
+                                                Log.e("DetailStudyViewModel", "Failed to remove userOmr from study group", it)
+                                                _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
+                                            }
+                                    }
+                                    .onFailure {
+                                        Log.e("DetailStudyViewModel", "Failed to remove questions from study group", it)
+                                        _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
+                                    }
+                            }
+                            .onFailure {
+                                Log.e("DetailStudyViewModel", "Failed to remove quizzes from study group", it)
+                                _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
+                            }
+                    }
+                    .onFailure {
+                        Log.e("DetailStudyViewModel", "Failed to remove categories from study group", it)
+                        _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
+                    }
             }
         }
     }
 
-    private fun removeStudyGroup(studyGroup: StudyGroup) {
-        viewModelScope.launch {
-            categoryRepository.getCategories(studyGroup.categories)
-                .onSuccess { categories ->
-                    quizRepository.getQuizList(categories.flatMap { it.quizzes })
-                        .onSuccess { quizzes ->
-                            questionRepository.deleteQuestions(quizzes.flatMap { it.questions })
-                                .onSuccess {
-                                    userOmrRepository.deleteUserOmrs(quizzes.flatMap { it.userOmrs })
-                                        .onSuccess {
-                                            quizRepository.deleteQuizzes(quizzes.map { it.id })
-                                                .onSuccess {
-                                                    categoryRepository.deleteCategories(categories.map { it.id })
-                                                        .onSuccess {
-                                                            notificationRepository.deleteNotification(notificationId = studyGroup.id)
-                                                                .onSuccess {
-                                                                    userRepository.deleteStudyGroupUsers(studyGroup.users, studyGroup.id)
-                                                                        .onSuccess {
-                                                                            studyGroupRepository.deleteStudyGroup(studyGroup.id)
-                                                                                .onSuccess {
-                                                                                    Log.d("MainViewModel", "스터디 그룹 삭제 완료")
-                                                                                    loadCurrentUser() // 스터디 그룹 최신화
-                                                                                }
-                                                                                .onFailure {
-                                                                                    Log.e("MainViewModel", "Failed to remove study group", it)
-                                                                                    _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
-                                                                                }
-                                                                        }
-                                                                        .onFailure {
-                                                                            Log.e("MainViewModel", "Failed to remove users from study group", it)
-                                                                            _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
-                                                                        }
-                                                                }
-                                                                .onFailure {
-                                                                    Log.e("MainViewModel", "Failed to remove notification", it)
-                                                                    _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
-                                                                }
-                                                        }
-                                                        .onFailure {
-                                                            Log.e("MainViewModel", "Failed to remove categories from study group", it)
-                                                            _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
-                                                        }
-                                                }
-                                                .onFailure {
-                                                    Log.e("MainViewModel", "Failed to remove quizzes from study group", it)
-                                                    _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
-                                                }
-                                        }
-                                        .onFailure {
-                                            Log.e("MainViewModel", "Failed to remove userOmr from study group", it)
-                                            _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
-                                        }
-                                }
-                                .onFailure {
-                                    Log.e("MainViewModel", "Failed to remove questions from study group", it)
-                                    _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
-                                }
-                        }
-                        .onFailure {
-                            Log.e("MainViewModel", "Failed to remove quizzes from study group", it)
-                            _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
-                        }
-                }
-                .onFailure {
-                    Log.e("MainViewModel", "Failed to remove categories from study group", it)
-                    _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
-                }
-        }
-    }
+    fun deleteUserFromStudyGroup() {
+        val userId = uiState.value.userId ?: return
+        val studyGroupId = uiState.value.currentGroup?.id ?: return
 
-    private fun removeUserFromStudyGroup(userId: String, studyGroupId: String) {
         viewModelScope.launch {
             userRepository.deleteStudyGroupUser(userId, studyGroupId)
                 .onSuccess {
