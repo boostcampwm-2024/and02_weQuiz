@@ -15,4 +15,5 @@
     <string name="des_btn_back">뒤로가기</string>
     <string name="des_btn_settings">카테고리 설정</string>
     <string name="des_fab_create_quiz">퀴즈 생성</string>
+    <string name="des_category_image">카테고리 이미지</string>
 </resources>

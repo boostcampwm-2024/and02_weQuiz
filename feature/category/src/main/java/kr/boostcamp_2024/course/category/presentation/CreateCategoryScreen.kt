@@ -1,13 +1,17 @@
 package kr.boostcamp_2024.course.category.presentation
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -24,19 +28,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import kr.boostcamp_2024.course.category.R
 import kr.boostcamp_2024.course.category.viewModel.CreateCategoryViewModel
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLeftChatBubble
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 
 @Composable
@@ -47,6 +50,14 @@ fun CreateCategoryScreen(
 ) {
     val uiState by viewModel.createCategoryUiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            uri?.let {
+                viewModel.onImageUriChanged(it)
+            }
+        },
+    )
 
     LaunchedEffect(uiState) {
         if (uiState.creationSuccess) {
@@ -61,12 +72,14 @@ fun CreateCategoryScreen(
     CreateCategoryScreen(
         name = uiState.categoryName,
         description = uiState.categoryDescription,
+        categoryImageUrl = uiState.categoryImageUrl,
         isCategoryCreationValid = uiState.isCategoryCreationValid,
         snackbarHostState = snackbarHostState,
         onNameChanged = viewModel::onNameChanged,
         onDescriptionChanged = viewModel::onDescriptionChanged,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateCategoryButtonClick = viewModel::createCategory,
+        onImagePickClick = { photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
     )
 }
 
@@ -81,6 +94,8 @@ fun CreateCategoryScreen(
     onDescriptionChanged: (String) -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
+    onImagePickClick: () -> Unit,
+    categoryImageUrl: String?,
 ) {
     Scaffold(
         topBar = {
@@ -108,21 +123,17 @@ fun CreateCategoryScreen(
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState()),
         ) {
-            Row(
+            AsyncImage(
+                model = categoryImageUrl ?: R.drawable.default_profile_image, // URL이 없으면 기본 이미지
+                contentDescription = stringResource(R.string.des_category_image),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                WeQuizLocalRoundedImage(
-                    modifier = Modifier.size(120.dp),
-                    imagePainter = painterResource(R.drawable.sample_profile),
-                    contentDescription = null,
-                )
-                WeQuizLeftChatBubble(text = stringResource(R.string.txt_create_category_guide))
-            }
-
+                    .height(148.dp)
+                    .padding(horizontal = 16.dp, vertical = 10.dp)
+                    .clip(RoundedCornerShape(18.dp))
+                    .clickable(onClick = onImagePickClick),
+                contentScale = ContentScale.Crop,
+            )
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
