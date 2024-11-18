@@ -93,8 +93,54 @@ class MainViewModel @Inject constructor(
 
     }
 
-    fun leaveStudyGroup(studyGroupId: String) {
+    fun leaveStudyGroup(studyGroup: StudyGroup) {
+        /*
+        if(그룹장)
+        1. 그룹 정보 가져오기
+        2. 각 카테고리 정보 가져오기
+        3. 각 카테고리의 각 퀴즈 정보 가져오기
+        3. 각 퀴즈의 각 문제 가져와서 지우기
+        4. 각 퀴즈의 각 userOmr 가져와서 지우기
+        5. 각 퀴즈 지우기
+        6. 각 카테고리 지우기
+        7. 각 그룹원 돌면서 그룹 지우기
+        8. 그룹 지우기
 
+        else
+        1. 유저 정보에서 그룹 지우기
+        2. 그룹에서 유저 지우기
+         */
+
+        uiState.value.currentUser?.let { user ->
+            when (studyGroup.id == user.id) {
+                true -> removeStudyGroup()
+                false -> removeUserFromStudyGroup(user.id, studyGroup.id)
+            }
+        }
+    }
+
+    private fun removeStudyGroup() {
+
+    }
+
+    private fun removeUserFromStudyGroup(userId: String, studyGroupId: String) {
+        viewModelScope.launch {
+            userRepository.deleteStudyGroupUser(userId, studyGroupId)
+                .onSuccess {
+                    studyGroupRepository.deleteUser(studyGroupId, userId)
+                        .onSuccess {
+                            loadCurrentUser()
+                        }
+                        .onFailure {
+                            Log.e("MainViewModel", "Failed to remove user from study group", it)
+                            _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                        }
+                }
+                .onFailure {
+                    Log.e("MainViewModel", "Failed to remove user from study group", it)
+                    _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                }
+        }
     }
 
     fun shownErrorMessage() {
