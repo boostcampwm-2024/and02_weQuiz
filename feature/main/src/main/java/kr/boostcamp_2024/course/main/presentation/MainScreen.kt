@@ -100,7 +100,7 @@ fun MainScreen(
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onEditStudyGroupClick: (String) -> Unit,
-    onLeaveStudyGroupClick: (String) -> Unit,
+    onLeaveStudyGroupClick: (StudyGroup) -> Unit,
     onStudyGroupClick: (String) -> Unit,
 ) {
     val scrollBehavior =
@@ -202,7 +202,7 @@ fun StudyGroupTab(
     studyGroups: List<StudyGroup>,
     onStudyGroupClick: (String) -> Unit,
     onEditStudyGroupClick: (String) -> Unit,
-    onLeaveStudyGroupClick: (String) -> Unit,
+    onLeaveStudyGroupClick: (StudyGroup) -> Unit,
 ) {
     LazyColumn {
         items(items = studyGroups, key = { it.id }) { studyGroup ->

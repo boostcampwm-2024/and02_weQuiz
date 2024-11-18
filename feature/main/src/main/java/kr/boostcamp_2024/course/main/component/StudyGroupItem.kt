@@ -39,7 +39,7 @@ fun StudyGroupItem(
     studyGroup: StudyGroup,
     onStudyGroupClick: (String) -> Unit,
     onEditStudyGroupClick: (String) -> Unit,
-    onLeaveStudyGroupClick: (String) -> Unit,
+    onLeaveStudyGroupClick: (StudyGroup) -> Unit,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -120,7 +120,7 @@ fun StudyGroupItem(
                         DropdownMenuItem(
                             text = { Text(text = stringResource(R.string.txt_study_group_menu_leave)) },
                             onClick = {
-                                onLeaveStudyGroupClick(studyGroup.id)
+                                onLeaveStudyGroupClick(studyGroup)
                                 isExpanded = false
                             },
                         )
