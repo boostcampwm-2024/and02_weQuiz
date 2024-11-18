@@ -19,13 +19,13 @@ import javax.inject.Inject
 data class CreateStudyUiState(
     val name: String = "",
     val description: String = "",
-    val maxUserNum: Int = 0,
+    val groupMemberNumber: String = "",
     val currentUserId: String? = null,
     val isCreateStudySuccess: Boolean = false,
     val snackBarMessage: String? = null,
 ) { // TODO 로그인 기능 구현 후 ownerId 수정
     val isCreateStudyButtonEnabled: Boolean
-        get() = name.isNotBlank() && maxUserNum > 0
+        get() = (name.isNotBlank() && groupMemberNumber.isNotBlank() && groupMemberNumber.toInt() in 2..50)
 }
 
 @HiltViewModel
@@ -35,24 +35,20 @@ class CreateStudyViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateStudyUiState())
-    val uiState = _uiState
-        .onStart {
-            loadCurrentUserId()
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), CreateStudyUiState())
+    val uiState = _uiState.onStart {
+        loadCurrentUserId()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), CreateStudyUiState())
 
     fun loadCurrentUserId() {
         viewModelScope.launch {
 
-            authRepository.getUserKey()
-                .onSuccess { currentUser ->
+            authRepository.getUserKey().onSuccess { currentUser ->
 
-                    _uiState.update { it.copy(currentUserId = currentUser) }
-                }
-                .onFailure {
-                    Log.e("MainViewModel", "Failed to load current user", it)
-                    _uiState.update { it.copy(snackBarMessage = "로그인한 유저가 없습니다.") }
-                }
+                _uiState.update { it.copy(currentUserId = currentUser) }
+            }.onFailure {
+                Log.e("MainViewModel", "Failed to load current user", it)
+                _uiState.update { it.copy(snackBarMessage = "로그인한 유저가 없습니다.") }
+            }
 
         }
     }
@@ -63,7 +59,7 @@ class CreateStudyViewModel @Inject constructor(
                 val studyGroupCreationInfo = StudyGroupCreationInfo(
                     name = uiState.value.name,
                     description = uiState.value.description.takeIf { it.isNotBlank() },
-                    maxUserNum = uiState.value.maxUserNum,
+                    maxUserNum = uiState.value.groupMemberNumber.toInt(),
                     ownerId = id,
                 )
 
@@ -74,29 +70,26 @@ class CreateStudyViewModel @Inject constructor(
 
     fun addStudyGroup(currentUserId: String, studyGroupCreationInfo: StudyGroupCreationInfo) {
         viewModelScope.launch {
-            studyGroupRepository.addStudyGroup(studyGroupCreationInfo)
-                .onSuccess { studyId ->
-                    Log.d("addStudyGroupResult", "성공, $studyId)")
-                    addStudyGroupToUser(currentUserId, studyId)
+            studyGroupRepository.addStudyGroup(studyGroupCreationInfo).onSuccess { studyId ->
+                Log.d("addStudyGroupResult", "성공, $studyId)")
+                addStudyGroupToUser(currentUserId, studyId)
 
-                }.onFailure { throwable ->
-                    Log.d("errorMessage", "${throwable.message}")
-                    _uiState.update { it.copy(snackBarMessage = "스터디 그룹 생성 실패") }
-                }
+            }.onFailure { throwable ->
+                Log.d("errorMessage", "${throwable.message}")
+                _uiState.update { it.copy(snackBarMessage = "스터디 그룹 생성 실패") }
+            }
         }
     }
 
     fun addStudyGroupToUser(currentUserId: String, studyId: String) {
         viewModelScope.launch {
-            userRepository.addStudyGroupToUser(currentUserId, studyId)
-                .onSuccess { result ->
-                    Log.d("addStudyGroupToUserResult", "성공, $result)")
-                    _uiState.update { it.copy(isCreateStudySuccess = true) }
-                }
-                .onFailure { throwable ->
-                    Log.d("addStudyGroupToUserResult", "실패, ${throwable.message})")
-                    _uiState.update { it.copy(snackBarMessage = "스터디 그룹 생성 실패") }
-                }
+            userRepository.addStudyGroupToUser(currentUserId, studyId).onSuccess { result ->
+                Log.d("addStudyGroupToUserResult", "성공, $result)")
+                _uiState.update { it.copy(isCreateStudySuccess = true) }
+            }.onFailure { throwable ->
+                Log.d("addStudyGroupToUserResult", "실패, ${throwable.message})")
+                _uiState.update { it.copy(snackBarMessage = "스터디 그룹 생성 실패") }
+            }
         }
     }
 
@@ -108,13 +101,11 @@ class CreateStudyViewModel @Inject constructor(
         _uiState.update { it.copy(description = description) }
     }
 
-    fun onOptionSelected(option: Int) {
-        val maxUserNum = option + 1
-        _uiState.update { it.copy(maxUserNum = maxUserNum) }
+    fun onGroupMemberNumberChanged(groupMemberNumber: String) {
+        _uiState.update { it.copy(groupMemberNumber = groupMemberNumber) }
     }
 
     fun onSnackBarShown() {
         _uiState.update { it.copy(snackBarMessage = null) }
     }
-
 }
