@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.login
+package kr.boostcamp_2024.course.login.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable

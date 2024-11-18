@@ -39,6 +39,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatB
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.login.R
 import kr.boostcamp_2024.course.login.presentation.component.PasswordTextField
+import kr.boostcamp_2024.course.login.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
