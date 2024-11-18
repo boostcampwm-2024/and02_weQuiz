@@ -16,10 +16,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -27,25 +27,42 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.login.R
 import kr.boostcamp_2024.course.login.presentation.component.PasswordTextField
+import kr.boostcamp_2024.course.login.viewmodel.SignUpUiState
+import kr.boostcamp_2024.course.login.viewmodel.SignUpViewModel
 
 @Composable
 fun SignUpScreen(
     onSignUpSuccess: () -> Unit,
     onNavigationButtonClick: () -> Unit,
+    viewModel: SignUpViewModel = hiltViewModel(),
 ) {
+    val uiState by viewModel.signUpUiState.collectAsStateWithLifecycle()
+
     SignupScreen(
-        onSignUpSuccess,
-        onNavigationButtonClick,
+        uiState = uiState,
+        onEmailChanged = viewModel::onEmailChanged,
+        onPasswordChanged = viewModel::onPasswordChanged,
+        onNickNameChanged = viewModel::onNickNameChanged,
+        onProfileUriChanged = viewModel::onProfileUriChanged,
+        onSignUpSuccess = onSignUpSuccess,
+        onNavigationButtonClick = onNavigationButtonClick,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SignupScreen(
+    uiState: SignUpUiState,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onNickNameChanged: (String) -> Unit,
+    onProfileUriChanged: (String) -> Unit,
     onSignUpSuccess: () -> Unit,
     onNavigationButtonClick: () -> Unit,
 ) {
@@ -81,10 +98,20 @@ private fun SignupScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             item {
-                SignUpContent()
+                SignUpContent(
+                    email = uiState.userCreationInfo.email,
+                    password = uiState.userCreationInfo.password,
+                    nickName = uiState.userCreationInfo.nickName,
+                    profileUri = uiState.userCreationInfo.profileImage,
+                    onEmailChanged = onEmailChanged,
+                    onPasswordChanged = onPasswordChanged,
+                    onNickNameChanged = onNickNameChanged,
+                    onProfileUriChanged = onProfileUriChanged,
+                )
             }
             item {
                 SignUpButtons(
+                    isSignUpValid = uiState.isSignUpValid,
                     onSignUpSuccess = onSignUpSuccess,
                 )
             }
@@ -93,7 +120,16 @@ private fun SignupScreen(
 }
 
 @Composable
-fun SignUpContent() {
+fun SignUpContent(
+    email: String,
+    password: String,
+    nickName: String,
+    profileUri: String?,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onNickNameChanged: (String) -> Unit,
+    onProfileUriChanged: (String) -> Unit,
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp),
     ) {
@@ -103,7 +139,7 @@ fun SignUpContent() {
                 .height(148.dp)
                 .clip(shape = MaterialTheme.shapes.large)
                 .clickable(enabled = true) {
-                    // todo: photo picker
+                    // todo: 이미지 선택
                 },
             painter = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_photo_picker),
             contentDescription = stringResource(R.string.des_img_photo_picker),
@@ -112,20 +148,20 @@ fun SignUpContent() {
 
         WeQuizTextField(
             label = stringResource(R.string.txt_login_email_label),
-            text = "",
-            onTextChanged = {},
+            text = email,
+            onTextChanged = onEmailChanged,
             placeholder = stringResource(R.string.txt_login_email_placeholder),
         )
 
         PasswordTextField(
-            password = "",
-            onPasswordChanged = {},
+            password = password,
+            onPasswordChanged = onPasswordChanged,
         )
 
         WeQuizTextField(
             label = stringResource(R.string.txt_sign_up_nick_name),
-            text = "",
-            onTextChanged = {},
+            text = nickName,
+            onTextChanged = onNickNameChanged,
             placeholder = stringResource(R.string.txt_sign_up_nick_name_placeholder),
         )
     }
@@ -133,28 +169,31 @@ fun SignUpContent() {
 
 @Composable
 fun SignUpButtons(
+    isSignUpValid: Boolean,
     onSignUpSuccess: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         Button(
-            onClick = {},
+            onClick = onSignUpSuccess,
             modifier = Modifier.fillMaxWidth(),
+            enabled = isSignUpValid,
         ) {
             Text(
                 text = stringResource(R.string.btn_sign_up),
             )
         }
 
-        OutlinedButton(
-            onClick = {},
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(
-                text = stringResource(R.string.btn_sign_up_cancel),
-            )
-        }
+        // todo: 회원 탈퇴
+//        OutlinedButton(
+//            onClick = {},
+//            modifier = Modifier.fillMaxWidth(),
+//        ) {
+//            Text(
+//                text = stringResource(R.string.btn_sign_up_cancel),
+//            )
+//        }
     }
 }
 
