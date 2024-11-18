@@ -20,15 +20,16 @@ import kr.boostcamp_2024.course.study.navigation.CreateStudyRoute
 import javax.inject.Inject
 
 data class CreateStudyUiState(
+    val isEditMode: Boolean = false,
     val name: String = "",
     val description: String = "",
-    val groupMemberNumber: String = "",
+    val maxUserNum: String = "",
     val currentUserId: String? = null,
     val isCreateStudySuccess: Boolean = false,
     val snackBarMessage: String? = null,
-) { // TODO 로그인 기능 구현 후 ownerId 수정
-    val isCreateStudyButtonEnabled: Boolean
-        get() = (name.isNotBlank() && groupMemberNumber.isNotBlank() && groupMemberNumber.toInt() in 2..50)
+) {
+    val canSubmitStudy: Boolean
+        get() = (name.isNotBlank() && maxUserNum.isNotBlank() && maxUserNum.toInt() in 2..50)
 }
 
 @HiltViewModel
@@ -41,13 +42,11 @@ class CreateStudyViewModel @Inject constructor(
     private val studyGroupId: String? = savedStateHandle.toRoute<CreateStudyRoute>().studyGroupId
 
     private val _uiState = MutableStateFlow(CreateStudyUiState())
-    val uiState = _uiState.onStart {
-        loadCurrentUserId()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), CreateStudyUiState())
-
-    init {
-        Log.d("studyGroupId", "$studyGroupId")
-    }
+    val uiState = _uiState
+        .onStart {
+            loadCurrentUserId()
+            loadStudyGroup()
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), CreateStudyUiState())
 
     fun loadCurrentUserId() {
         viewModelScope.launch {
@@ -63,13 +62,34 @@ class CreateStudyViewModel @Inject constructor(
         }
     }
 
+    fun loadStudyGroup() {
+        viewModelScope.launch {
+            studyGroupId?.let {
+                studyGroupRepository.getStudyGroup(it)
+                    .onSuccess { studyGroup ->
+                        _uiState.update {
+                            it.copy(
+                                isEditMode = true,
+                                name = studyGroup.name,
+                                description = studyGroup.description ?: "",
+                                maxUserNum = studyGroup.maxUserNum.toString(),
+                            )
+                        }
+                    }.onFailure {
+                        Log.e("MainViewModel", "Failed to load study group", it)
+                        _uiState.update { it.copy(snackBarMessage = "스터디 그룹 로드 실패") }
+                    }
+            }
+        }
+    }
+
     fun createStudyGroupClick() {
         viewModelScope.launch {
             uiState.value.currentUserId?.let { id ->
                 val studyGroupCreationInfo = StudyGroupCreationInfo(
                     name = uiState.value.name,
                     description = uiState.value.description.takeIf { it.isNotBlank() },
-                    maxUserNum = uiState.value.groupMemberNumber.toInt(),
+                    maxUserNum = uiState.value.maxUserNum.toInt(),
                     ownerId = id,
                 )
 
@@ -112,7 +132,7 @@ class CreateStudyViewModel @Inject constructor(
     }
 
     fun onGroupMemberNumberChanged(groupMemberNumber: String) {
-        _uiState.update { it.copy(groupMemberNumber = groupMemberNumber) }
+        _uiState.update { it.copy(maxUserNum = groupMemberNumber) }
     }
 
     fun onSnackBarShown() {

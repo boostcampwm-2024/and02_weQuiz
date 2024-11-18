@@ -39,7 +39,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTe
 import kr.boostcamp_2024.course.study.CreateStudyViewModel
 import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.CreateStudyTopAppBar
-import kr.boostcamp_2024.course.study.component.StudyCreationButton
+import kr.boostcamp_2024.course.study.component.StudySubmitButton
 
 @Composable
 fun CreateStudyScreen(
@@ -50,11 +50,12 @@ fun CreateStudyScreen(
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
 
     CreateStudyScreen(
+        isEditMode = uiState.isEditMode,
         titleText = uiState.name,
         onTitleTextChange = viewmodel::onNameChanged,
         descriptionText = uiState.description,
         onDescriptionTextChange = viewmodel::onDescriptionChanged,
-        groupMemberNumber = uiState.groupMemberNumber,
+        groupMemberNumber = uiState.maxUserNum,
         onGroupMemberNumberChange = viewmodel::onGroupMemberNumberChanged,
         onCreationButtonClick = viewmodel::createStudyGroupClick,
         snackBarMessage = uiState.snackBarMessage,
@@ -62,7 +63,7 @@ fun CreateStudyScreen(
         onSnackBarShown = viewmodel::onSnackBarShown,
         isCreateStudySuccess = uiState.isCreateStudySuccess,
         onCreateStudySuccess = onCreateStudySuccess,
-        isCreateStudyButtonEnabled = uiState.isCreateStudyButtonEnabled,
+        canSubmitStudy = uiState.canSubmitStudy,
         onStudyImgUriChanged = { },
     )
 }
@@ -70,6 +71,7 @@ fun CreateStudyScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateStudyScreen(
+    isEditMode: Boolean,
     onNavigationButtonClick: () -> Unit,
     titleText: String,
     onTitleTextChange: (String) -> Unit,
@@ -82,7 +84,7 @@ fun CreateStudyScreen(
     onSnackBarShown: () -> Unit,
     isCreateStudySuccess: Boolean,
     onCreateStudySuccess: () -> Unit,
-    isCreateStudyButtonEnabled: Boolean,
+    canSubmitStudy: Boolean,
     onStudyImgUriChanged: (String) -> Unit,
 ) {
 
@@ -101,7 +103,10 @@ fun CreateStudyScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
-            CreateStudyTopAppBar(onNavigationButtonClick = onNavigationButtonClick)
+            CreateStudyTopAppBar(
+                isEditMode = isEditMode,
+                onNavigationButtonClick = onNavigationButtonClick,
+            )
         },
     ) { paddingValues ->
         Column(
@@ -155,10 +160,13 @@ fun CreateStudyScreen(
                 )
             }
 
-            StudyCreationButton(
-                onStudyCreationButtonClick = onCreationButtonClick,
-                isCreateStudyButtonEnabled = isCreateStudyButtonEnabled,
+            StudySubmitButton(
+                isEditMode = isEditMode,
+                onStudyEditButtonClick = onCreationButtonClick,
+                onStudyCreateButtonClick = onCreationButtonClick,
+                canSubmitStudy = canSubmitStudy,
             )
+
             snackBarMessage?.let { message ->
                 LaunchedEffect(message) {
                     snackBarHostState.showSnackbar(message)
@@ -192,8 +200,9 @@ fun CreateStudyScreenPreview() {
             onSnackBarShown = {},
             isCreateStudySuccess = false,
             onCreateStudySuccess = {},
-            isCreateStudyButtonEnabled = false,
+            canSubmitStudy = false,
             onStudyImgUriChanged = {},
+            isEditMode = false,
         )
     }
 }

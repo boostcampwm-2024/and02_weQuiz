@@ -52,6 +52,8 @@
     <string name="txt_create_study_group_member_number_label">인원</string>
     <string name="txt_create_study_group_member_number_placeholder">최대 인원은 몇 명인가요?</string>
     <string name="txt_create_study_group_number_error_message">2에서 50 사이의 정수를 입력해주세요.</string>
+    <string name="txt_edit_study_top_app_bar">스터디 수정</string>
+    <string name="txt_study_edition_button">스터디 수정</string>
     <string-array name="drop_down_menu_options">
         <item>1명</item>
         <item>2명</item>

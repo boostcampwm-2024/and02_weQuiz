@@ -54,8 +54,9 @@ fun DetailStudyScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: (String) -> Unit,
     onCategoryClick: (String) -> Unit,
-    onDetailStudyGroupSuccess: () -> Unit,
+    onDeleteStudyGroupSuccess: () -> Unit,
     onLeaveStudyGroupSuccess: () -> Unit,
+    onEditStudyGroupButtonClick: (String) -> Unit,
     viewModel: DetailStudyViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -73,7 +74,7 @@ fun DetailStudyScreen(
         onCategoryClick = onCategoryClick,
         onRemoveStudyGroupMemberButtonClick = viewModel::deleteStudyGroupMember,
         onInviteConfirmButtonClick = viewModel::addNotification,
-        onEditStudyGroupClick = {},
+        onEditStudyGroupClick = onEditStudyGroupButtonClick,
         onDeleteStudyGroupClick = viewModel::deleteStudyGroup,
         onLeaveStudyGroupClick = viewModel::deleteUserFromStudyGroup,
     )
@@ -98,7 +99,7 @@ fun DetailStudyScreen(
 
     if (uiState.isDeleteStudyGroupSuccess) {
         LaunchedEffect(Unit) {
-            onDetailStudyGroupSuccess()
+            onDeleteStudyGroupSuccess()
         }
     }
 
@@ -123,7 +124,7 @@ fun DetailStudyScreen(
     onCategoryClick: (String) -> Unit,
     onRemoveStudyGroupMemberButtonClick: (String, String) -> Unit,
     onInviteConfirmButtonClick: (String, String) -> Unit,
-    onEditStudyGroupClick: () -> Unit,
+    onEditStudyGroupClick: (String) -> Unit,
     onDeleteStudyGroupClick: () -> Unit,
     onLeaveStudyGroupClick: () -> Unit,
 ) {
@@ -160,7 +161,7 @@ fun DetailStudyScreen(
                     currentGroup?.let {
                         StudyDropDownMenu(
                             isOwner = (owner?.id == currentUserId),
-                            onEditStudyGroupClick = onEditStudyGroupClick,
+                            onEditStudyGroupClick = { onEditStudyGroupClick(currentGroup.id) },
                             onDeleteStudyGroupClick = onDeleteStudyGroupClick,
                             onLeaveStudyGroupClick = onLeaveStudyGroupClick,
                         )

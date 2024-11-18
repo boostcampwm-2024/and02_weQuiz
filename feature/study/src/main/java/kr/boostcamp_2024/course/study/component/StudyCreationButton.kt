@@ -13,20 +13,28 @@ import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.study.R
 
 @Composable
-fun StudyCreationButton(
-    onStudyCreationButtonClick: () -> Unit,
-    isCreateStudyButtonEnabled: Boolean,
+fun StudySubmitButton(
+    isEditMode: Boolean,
+    onStudyEditButtonClick: () -> Unit,
+    onStudyCreateButtonClick: () -> Unit,
+    canSubmitStudy: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Button(
-        onClick = onStudyCreationButtonClick,
+        onClick = when (isEditMode) {
+            true -> onStudyEditButtonClick
+            false -> onStudyCreateButtonClick
+        },
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
-        enabled = isCreateStudyButtonEnabled,
+        enabled = canSubmitStudy,
     ) {
         Text(
-            text = stringResource(R.string.txt_study_creation_button),
+            text = when (isEditMode) {
+                true -> stringResource(R.string.txt_study_edition_button)
+                false -> stringResource(R.string.txt_study_creation_button)
+            },
             modifier = modifier,
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontWeight = FontWeight.Medium,
