@@ -10,6 +10,7 @@ import kr.boostcamp_2024.course.category.navigation.navigateCategory
 import kr.boostcamp_2024.course.category.navigation.navigateCreateCategory
 import kr.boostcamp_2024.course.login.navigation.LoginRoute
 import kr.boostcamp_2024.course.login.navigation.loginNavGraph
+import kr.boostcamp_2024.course.login.navigation.navigationSignUp
 import kr.boostcamp_2024.course.main.navigation.mainNavGraph
 import kr.boostcamp_2024.course.main.navigation.navigateMain
 import kr.boostcamp_2024.course.main.navigation.navigateNotification
@@ -37,10 +38,13 @@ fun WeQuizNavHost(
         startDestination = startDestination,
     ) {
         loginNavGraph(
+            onNavigationButtonClick = navController::navigateUp,
             onLoginSuccess = {
                 navController.popBackStack() // 로그인 시 로그인 화면 제거, 추후 수정 필요
                 navController.navigateMain()
             },
+            onSignUpButtonClick = navController::navigationSignUp,
+            onSignUpSuccess = navController::navigateUp,
         )
 
         mainNavGraph(
