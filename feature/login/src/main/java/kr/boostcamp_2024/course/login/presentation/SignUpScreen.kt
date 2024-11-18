@@ -1,5 +1,8 @@
 package kr.boostcamp_2024.course.login.presentation
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -130,6 +133,16 @@ fun SignUpContent(
     onNickNameChanged: (String) -> Unit,
     onProfileUriChanged: (String) -> Unit,
 ) {
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia(),
+    ) { uri ->
+        try {
+            // todo: 갤러리 이미지 처리
+        } catch (e: Exception) {
+            // todo: 갤러리 예외 처리
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp),
     ) {
@@ -139,7 +152,9 @@ fun SignUpContent(
                 .height(148.dp)
                 .clip(shape = MaterialTheme.shapes.large)
                 .clickable(enabled = true) {
-                    // todo: 이미지 선택
+                    photoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                    )
                 },
             painter = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_photo_picker),
             contentDescription = stringResource(R.string.des_img_photo_picker),
