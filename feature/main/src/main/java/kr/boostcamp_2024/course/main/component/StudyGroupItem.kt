@@ -9,12 +9,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -24,14 +30,18 @@ import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.domain.model.StudyGroup
+import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.main.R
 
 @Composable
 fun StudyGroupItem(
+    currentUser: User?,
     studyGroup: StudyGroup,
     onStudyGroupClick: (String) -> Unit,
-    onStudyGroupMenuClick: () -> Unit,
+    onEditStudyGroupClick: (String) -> Unit,
+    onLeaveStudyGroupClick: (StudyGroup) -> Unit,
 ) {
+    var isExpanded by remember { mutableStateOf(false) }
 
     Column {
         Row(
@@ -86,12 +96,36 @@ fun StudyGroupItem(
 
             IconButton(
                 modifier = Modifier.size(24.dp),
-                onClick = onStudyGroupMenuClick,
+                onClick = { isExpanded = isExpanded.not() },
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = stringResource(R.string.des_btn_study_menu),
                 )
+
+                currentUser?.let { user ->
+                    DropdownMenu(
+                        expanded = isExpanded,
+                        onDismissRequest = { isExpanded = false },
+                    ) {
+                        if (user.id == studyGroup.ownerId) {
+                            DropdownMenuItem(
+                                text = { Text(text = stringResource(R.string.txt_study_group_menu_edit)) },
+                                onClick = {
+                                    onEditStudyGroupClick(studyGroup.id)
+                                    isExpanded = false
+                                },
+                            )
+                        }
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(R.string.txt_study_group_menu_leave)) },
+                            onClick = {
+                                onLeaveStudyGroupClick(studyGroup)
+                                isExpanded = false
+                            },
+                        )
+                    }
+                }
             }
         }
 
@@ -104,6 +138,13 @@ fun StudyGroupItem(
 fun StudyGroupItemPreview() {
     WeQuizTheme {
         StudyGroupItem(
+            currentUser = User(
+                id = "123",
+                email = "email@email.com",
+                name = "오징어",
+                profileUrl = "testUrl",
+                studyGroups = listOf(),
+            ),
             studyGroup = StudyGroup(
                 id = "1234",
                 name = "일본어 스터디",
@@ -115,7 +156,8 @@ fun StudyGroupItemPreview() {
                 categories = emptyList(),
             ),
             onStudyGroupClick = {},
-            onStudyGroupMenuClick = {},
+            onEditStudyGroupClick = {},
+            onLeaveStudyGroupClick = {},
         )
     }
 }

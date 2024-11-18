@@ -33,4 +33,11 @@ class QuestionRepositoryImpl @Inject constructor(
         val document = questionCollectionRef.add(questionCreationInfo.toDTO()).await()
         document.id
     }
+
+    override suspend fun deleteQuestions(questionIds: List<String>): Result<Unit> = runCatching {
+        questionIds.forEach { questionId ->
+            questionCollectionRef.document(questionId).delete().await()
+        }
+        return Result.success(Unit)
+    }
 }
