@@ -9,12 +9,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -30,8 +36,10 @@ import kr.boostcamp_2024.course.main.R
 fun StudyGroupItem(
     studyGroup: StudyGroup,
     onStudyGroupClick: (String) -> Unit,
-    onStudyGroupMenuClick: () -> Unit,
+    onEditStudyGroupClick: (String) -> Unit,
+    onLeaveStudyGroupClick: (String) -> Unit,
 ) {
+    var isExpanded by remember { mutableStateOf(false) }
 
     Column {
         Row(
@@ -86,12 +94,32 @@ fun StudyGroupItem(
 
             IconButton(
                 modifier = Modifier.size(24.dp),
-                onClick = onStudyGroupMenuClick,
+                onClick = { isExpanded = isExpanded.not() },
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = stringResource(R.string.des_btn_study_menu),
                 )
+
+                DropdownMenu(
+                    expanded = isExpanded,
+                    onDismissRequest = { isExpanded = false },
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "수정") },
+                        onClick = {
+                            onEditStudyGroupClick(studyGroup.id)
+                            isExpanded = false
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "나가기") },
+                        onClick = {
+                            onEditStudyGroupClick(studyGroup.id)
+                            isExpanded = false
+                        },
+                    )
+                }
             }
         }
 
@@ -115,7 +143,8 @@ fun StudyGroupItemPreview() {
                 categories = emptyList(),
             ),
             onStudyGroupClick = {},
-            onStudyGroupMenuClick = {},
+            onEditStudyGroupClick = {},
+            onLeaveStudyGroupClick = {},
         )
     }
 }

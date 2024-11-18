@@ -89,6 +89,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun editStudyGroup(studyGroupId: String) {
+
+    }
+
+    fun leaveStudyGroup(studyGroupId: String) {
+
+    }
+
     fun shownErrorMessage() {
         _uiState.update { it.copy(errorMessage = null) }
     }
