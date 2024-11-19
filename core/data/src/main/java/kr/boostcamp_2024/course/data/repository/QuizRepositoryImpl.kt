@@ -29,6 +29,7 @@ class QuizRepositoryImpl @Inject constructor(
                 solveTime = quizCreateInfo.quizSolveTime,
                 questions = emptyList(),
                 userOmrs = emptyList(),
+                quizImageUrl = quizCreateInfo.quizImageUrl,
             )
             val document = quizCollectionRef.add(newQuiz).await()
             document.id
@@ -62,10 +63,10 @@ class QuizRepositoryImpl @Inject constructor(
             val updatedData = mapOf(
                 "title" to quizCreateInfo.quizTitle,
                 "description" to quizCreateInfo.quizDescription,
-                "startTime" to quizCreateInfo.quizDate,
-                "solveTime" to quizCreateInfo.quizSolveTime,
+                "start_time" to quizCreateInfo.quizDate,
+                "solve_time" to quizCreateInfo.quizSolveTime,
+                "quiz_image_url" to quizCreateInfo.quizImageUrl,
             )
-
             quizCollectionRef.document(quizId)
                 .update(updatedData)
                 .await()

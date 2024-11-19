@@ -15,6 +15,7 @@ import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
+import kr.boostcamp_2024.course.domain.repository.StorageRepository
 import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
 import kr.boostcamp_2024.course.quiz.navigation.QuizRoute
 import javax.inject.Inject
@@ -33,6 +34,7 @@ class QuizViewModel @Inject constructor(
     private val quizRepository: QuizRepository,
     private val userOmrRepository: UserOmrRepository,
     private val questionRepository: QuestionRepository,
+    private val storageRepository: StorageRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val quizRoute = savedStateHandle.toRoute<QuizRoute>()
@@ -100,12 +102,27 @@ class QuizViewModel @Inject constructor(
                                 .onSuccess {
                                     quizRepository.deleteQuiz(quiz.id)
                                         .onSuccess {
-                                            _uiState.update {
-                                                it.copy(
-                                                    isLoading = false,
-                                                    isDeleted = true,
-                                                )
+                                            quiz.quizImageUrl?.let { quizImageUrl ->
+                                                storageRepository.deleteImage(quizImageUrl)
+                                                    .onSuccess {
+                                                        _uiState.update {
+                                                            it.copy(
+                                                                isLoading = false,
+                                                                isDeleted = true,
+                                                            )
+                                                        }
+                                                    }
+                                                    .onFailure {
+                                                        Log.e("QuizViewModel", "Failed to delete quiz image", it)
+                                                        _uiState.update {
+                                                            it.copy(
+                                                                isLoading = false,
+                                                                errorMessage = "퀴즈 이미지 삭제에 실패하였습니다.",
+                                                            )
+                                                        }
+                                                    }
                                             }
+
                                         }
                                         .onFailure {
                                             Log.e("QuizViewModel", "Failed to delete quiz", it)

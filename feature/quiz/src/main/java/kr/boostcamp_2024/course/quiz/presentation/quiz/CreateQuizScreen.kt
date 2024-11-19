@@ -1,7 +1,9 @@
 package kr.boostcamp_2024.course.quiz.presentation.quiz
 
-import android.util.Log
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,6 +50,7 @@ import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuizDatePickerTextField
 import kr.boostcamp_2024.course.quiz.component.QuizSolveTimeSlider
 import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuizViewModel
+import java.io.ByteArrayOutputStream
 
 @Composable
 fun CreateQuizScreen(
@@ -65,6 +70,7 @@ fun CreateQuizScreen(
         createQuizButtonEnabled = uiState.value.isCreateQuizButtonEnabled,
         isEditing = uiState.value.isEditing,
         snackBarHostState = snackBarHostState,
+        defaultImageUrl = uiState.value.defaultImageUrl,
         onQuizTitleChange = viewModel::setQuizTitle,
         onQuizDescriptionChange = viewModel::setQuizDescription,
         onQuizDateChange = viewModel::setQuizDate,
@@ -72,6 +78,8 @@ fun CreateQuizScreen(
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuizButtonClick = viewModel::createQuiz,
         onEditButtonClick = viewModel::editQuiz,
+        currentImage = uiState.value.currentImage,
+        onCurrentStudyImageChanged = viewModel::changeCurrentStudyImage,
     )
 
     if (uiState.value.isCreateQuizSuccess) {
@@ -113,7 +121,9 @@ fun CreateQuizScreen(
     quizSolveTime: Float,
     createQuizButtonEnabled: Boolean,
     isEditing: Boolean,
+    currentImage: ByteArray?,
     snackBarHostState: SnackbarHostState,
+    defaultImageUrl: String?,
     onQuizTitleChange: (String) -> Unit,
     onQuizDescriptionChange: (String) -> Unit,
     onQuizDateChange: (String) -> Unit,
@@ -121,7 +131,21 @@ fun CreateQuizScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: () -> Unit,
     onEditButtonClick: () -> Unit,
+    onCurrentStudyImageChanged: (ByteArray) -> Unit,
 ) {
+    val context = LocalContext.current
+    val photoPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+            val data = baos.toByteArray()
+            onCurrentStudyImageChanged(data)
+
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -174,15 +198,18 @@ fun CreateQuizScreen(
 //            }
 
             AsyncImage(
-                model = R.drawable.image_guide,
+                model = currentImage ?: defaultImageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 70.dp, vertical = 5.dp)
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(18.dp))
-                    .clickable(onClick = {}),
+                    .clickable(onClick = { photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }),
                 contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.image_guide),
+                error = painterResource(R.drawable.image_guide),
+                fallback = painterResource(R.drawable.image_guide),
             )
 
             // QuizInfo
@@ -253,6 +280,7 @@ fun CreateQuizScreenPreview() {
             quizSolveTime = 10f,
             createQuizButtonEnabled = true,
             isEditing = false,
+            currentImage = null,
             onQuizTitleChange = {},
             onQuizDescriptionChange = {},
             onQuizDateChange = {},
@@ -261,6 +289,8 @@ fun CreateQuizScreenPreview() {
             onCreateQuizButtonClick = {},
             onEditButtonClick = {},
             snackBarHostState = remember { SnackbarHostState() },
+            onCurrentStudyImageChanged = {},
+            defaultImageUrl = null,
         )
     }
 }

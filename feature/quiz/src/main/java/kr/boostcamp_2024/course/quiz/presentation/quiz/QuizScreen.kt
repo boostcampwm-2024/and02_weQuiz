@@ -54,12 +54,12 @@ fun QuizScreen(
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.initViewModel()
-    }
-
     if (uiState.value.isDeleted) {
         onQuizDeleted() // 삭제되면 뒤로가기
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.initViewModel()
     }
 
     QuizScreen(
@@ -127,7 +127,7 @@ fun QuizScreen(
 
             WeQuizAsyncImage(
                 modifier = Modifier.fillMaxSize(),
-                imgUrl = category?.categoryImageUrl,
+                imgUrl = quiz?.quizImageUrl,
                 contentDescription = null,
             )
 
@@ -252,6 +252,7 @@ fun QuizStartScreenPreview() {
                 solveTime = 60,
                 questions = emptyList(),
                 userOmrs = emptyList(),
+                quizImageUrl = "quizImageUrl",
             ),
             snackbarHostState = SnackbarHostState(),
             onNavigationButtonClick = {},

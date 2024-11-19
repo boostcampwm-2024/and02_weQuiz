@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.QuizCreationInfo
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
+import kr.boostcamp_2024.course.domain.repository.StorageRepository
 import kr.boostcamp_2024.course.quiz.navigation.CreateQuizRoute
 import javax.inject.Inject
 
@@ -24,6 +25,8 @@ data class CreateQuizUiState(
     val quizDescription: String = "",
     val quizDate: String = "",
     val quizSolveTime: Float = 10f,
+    val defaultImageUrl: String? = null,
+    val currentImage: ByteArray? = null,
     val isCreateQuizSuccess: Boolean = false,
     val isLoading: Boolean = false,
     val snackBarMessage: String? = null,
@@ -38,6 +41,7 @@ data class CreateQuizUiState(
 class CreateQuizViewModel @Inject constructor(
     private val quizRepository: QuizRepository,
     private val categoryRepository: CategoryRepository,
+    private val storageRepository: StorageRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val categoryId: String = savedStateHandle.toRoute<CreateQuizRoute>().categoryId
@@ -66,6 +70,7 @@ class CreateQuizViewModel @Inject constructor(
                                 quizSolveTime = quiz.solveTime.toFloat(),
                                 isEditing = true,
                                 isLoading = false,
+                                defaultImageUrl = quiz.quizImageUrl,
                             )
                         }
                     }
@@ -107,6 +112,9 @@ class CreateQuizViewModel @Inject constructor(
                     quizDescription = uiState.value.quizDescription.takeIf { it.isNotBlank() },
                     quizDate = uiState.value.quizDate,
                     quizSolveTime = uiState.value.quizSolveTime.toInt(),
+                    quizImageUrl = uiState.value.currentImage?.let { imageByteArray ->
+                        storageRepository.uploadImage(imageByteArray).getOrNull()
+                    },
                 ),
             ).onSuccess { quizId ->
                 saveQuizToCategory(quizId)
@@ -144,13 +152,22 @@ class CreateQuizViewModel @Inject constructor(
     fun editQuiz() {
         quizId?.let { id ->
             setLoadingState()
-            val quizCreationInfo = QuizCreationInfo(
-                quizTitle = uiState.value.quizTitle,
-                quizDescription = uiState.value.quizDescription.takeIf { it.isNotBlank() },
-                quizDate = uiState.value.quizDate,
-                quizSolveTime = uiState.value.quizSolveTime.toInt(),
-            )
             viewModelScope.launch {
+                val downloadUrl = uiState.value.currentImage?.let { imageByteArray ->
+                    uiState.value.defaultImageUrl?.let { defaultUri ->
+                        storageRepository.deleteImage(defaultUri)
+                    }
+                    storageRepository.uploadImage(imageByteArray).getOrNull()
+                } ?: uiState.value.defaultImageUrl
+
+                val quizCreationInfo = QuizCreationInfo(
+                    quizTitle = uiState.value.quizTitle,
+                    quizDescription = uiState.value.quizDescription.takeIf { it.isNotBlank() },
+                    quizDate = uiState.value.quizDate,
+                    quizSolveTime = uiState.value.quizSolveTime.toInt(),
+                    quizImageUrl = downloadUrl,
+                )
+
                 quizRepository.editQuiz(id, quizCreationInfo)
                     .onSuccess {
                         _uiState.update {
@@ -174,6 +191,11 @@ class CreateQuizViewModel @Inject constructor(
 
     fun shownErrorMessage() {
         _uiState.update { it.copy(snackBarMessage = null) }
+    }
+
+    fun changeCurrentStudyImage(bytes: ByteArray) {
+        _uiState.update { it.copy(currentImage = bytes) }
+
     }
 
 }
