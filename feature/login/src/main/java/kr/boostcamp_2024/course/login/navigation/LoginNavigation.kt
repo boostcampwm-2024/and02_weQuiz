@@ -11,7 +11,9 @@ import kr.boostcamp_2024.course.login.presentation.SignUpScreen
 data object LoginRoute
 
 @Serializable
-data class SignUpRoute(val userId: String?)
+data class SignUpRoute(
+    val userId: String?,
+)
 
 fun NavController.navigationSignUp(userId: String? = null) {
     navigate(SignUpRoute(userId))
