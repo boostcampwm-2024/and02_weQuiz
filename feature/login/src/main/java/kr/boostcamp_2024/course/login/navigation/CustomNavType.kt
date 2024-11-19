@@ -15,13 +15,11 @@ object CustomNavType {
             return Json.decodeFromString(bundle.getString(key) ?: return null)
         }
 
-        override fun parseValue(value: String): UserUiModel {
-            return Json.decodeFromString(Uri.decode(value))
-        }
+        override fun parseValue(value: String): UserUiModel =
+            Json.decodeFromString(Uri.decode(value))
 
-        override fun serializeAsValue(value: UserUiModel): String {
-            return Uri.encode(Json.encodeToString(value))
-        }
+        override fun serializeAsValue(value: UserUiModel): String =
+            Uri.encode(Json.encodeToString(value))
 
         override fun put(bundle: Bundle, key: String, value: UserUiModel) {
             bundle.putString(key, Json.encodeToString(value))

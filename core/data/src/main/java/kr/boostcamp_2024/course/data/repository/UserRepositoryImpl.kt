@@ -14,8 +14,8 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
     private val userCollectionRef = firestore.collection("User")
 
-    override suspend fun addUser(userId: String, userCreationInfo: UserCreationInfo): Result<Unit> {
-        return runCatching {
+    override suspend fun addUser(userId: String, userCreationInfo: UserCreationInfo): Result<Unit> =
+        runCatching {
             userCollectionRef.document(userId).set(
                 UserDTO(
                     email = userCreationInfo.email,
@@ -25,15 +25,13 @@ class UserRepositoryImpl @Inject constructor(
                 ),
             ).await()
         }
-    }
 
-    override suspend fun getUser(userId: String): Result<User> {
-        return runCatching {
+    override suspend fun getUser(userId: String): Result<User> =
+        runCatching {
             val document = userCollectionRef.document(userId).get().await()
             val response = document.toObject(UserDTO::class.java)
             requireNotNull(response).toVO(userId)
         }
-    }
 
     override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<Unit> =
         runCatching {
