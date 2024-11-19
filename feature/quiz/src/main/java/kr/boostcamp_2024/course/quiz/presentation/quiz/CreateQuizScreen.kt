@@ -143,7 +143,6 @@ fun CreateQuizScreen(
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
             val data = baos.toByteArray()
             onCurrentStudyImageChanged(data)
-
         }
     }
 
@@ -179,24 +178,6 @@ fun CreateQuizScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            // Character Guide
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.spacedBy(10.dp),
-//            ) {
-//                WeQuizLocalRoundedImage(
-//                    modifier = Modifier
-//                        .size(120.dp)
-//                        .clip(CircleShape),
-//                    imagePainter = painterResource(R.drawable.sample_profile),
-//                    contentDescription = null,
-//                )
-//                WeQuizLeftChatBubble(
-//                    text = stringResource(R.string.txt_create_quiz_guide),
-//                )
-//            }
-
             AsyncImage(
                 model = currentImage ?: defaultImageUrl,
                 contentDescription = null,
