@@ -38,4 +38,3 @@ class UserOmrRepositoryImpl @Inject constructor(
             }
         }
 }
-

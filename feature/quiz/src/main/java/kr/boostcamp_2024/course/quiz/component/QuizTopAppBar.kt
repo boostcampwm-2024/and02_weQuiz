@@ -22,7 +22,6 @@ import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.quiz.R
 
-
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun QuizTopAppBar(

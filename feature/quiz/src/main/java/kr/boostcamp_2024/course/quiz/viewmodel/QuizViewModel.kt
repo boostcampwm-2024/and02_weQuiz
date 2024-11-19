@@ -134,10 +134,7 @@ class QuizViewModel @Inject constructor(
                                     errorMessage = "퀴즈 문제 삭제에 실패했습니다.",
                                 )
                             }
-
-
                         }
-
                 }
                 .onFailure {
                     Log.e("QuizViewModel", "Failed to delete quiz from category", it)
@@ -147,9 +144,7 @@ class QuizViewModel @Inject constructor(
                             errorMessage = "카테고리에서 퀴즈를 삭제하는데 실패했습니다.",
                         )
                     }
-
                 }
         }
     }
 }
-

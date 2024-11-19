@@ -1,17 +1,16 @@
 package kr.boostcamp_2024.course.quiz.presentation.quiz
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -31,15 +30,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLeftChatBubble
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuizDatePickerTextField
@@ -126,7 +124,11 @@ fun CreateQuizScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.top_app_bar_create_quiz))
+                    if (isEditing) {
+                        Text(text = stringResource(R.string.top_app_bar_edit_quiz))
+                    } else {
+                        Text(text = stringResource(R.string.top_app_bar_create_quiz))
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigationButtonClick) {
@@ -151,24 +153,34 @@ fun CreateQuizScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             // Character Guide
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                WeQuizLocalRoundedImage(
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape),
-                    imagePainter = painterResource(R.drawable.sample_profile),
-                    contentDescription = null,
-                )
-                WeQuizLeftChatBubble(
-                    text = stringResource(R.string.txt_create_quiz_guide),
-                )
-            }
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.spacedBy(10.dp),
+//            ) {
+//                WeQuizLocalRoundedImage(
+//                    modifier = Modifier
+//                        .size(120.dp)
+//                        .clip(CircleShape),
+//                    imagePainter = painterResource(R.drawable.sample_profile),
+//                    contentDescription = null,
+//                )
+//                WeQuizLeftChatBubble(
+//                    text = stringResource(R.string.txt_create_quiz_guide),
+//                )
+//            }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            AsyncImage(
+                model = R.drawable.image_guide,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 70.dp, vertical = 5.dp)
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(18.dp))
+                    .clickable(onClick = {}),
+                contentScale = ContentScale.Crop,
+            )
 
             // QuizInfo
             // Title

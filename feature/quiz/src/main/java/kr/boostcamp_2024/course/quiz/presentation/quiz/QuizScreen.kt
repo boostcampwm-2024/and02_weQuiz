@@ -57,9 +57,10 @@ fun QuizScreen(
         viewModel.initViewModel()
     }
 
-    if (uiState.value.isDeleted){
-        onNavigationButtonClick() // 삭제되면 뒤로가기
-    }
+    if (uiState.value.isDeleted)
+        {
+            onNavigationButtonClick() // 삭제되면 뒤로가기
+        }
 
     QuizScreen(
         category = uiState.value.category,

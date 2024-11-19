@@ -67,4 +67,5 @@
     <string name="des_quiz_screen_top_app_bar_action_icon">퀴즈 수정 삭제 메뉴 액션</string>
     <string name="txt_edit_quiz_drop_down_menu_item">수정</string>
     <string name="txt_delete_quiz_drop_down_menu_item">퀴즈 제거</string>
+    <string name="top_app_bar_edit_quiz">퀴즈 수정</string>
 </resources>
