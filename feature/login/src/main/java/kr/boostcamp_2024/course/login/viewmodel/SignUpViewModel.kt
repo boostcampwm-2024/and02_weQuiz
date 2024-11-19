@@ -13,9 +13,8 @@ import javax.inject.Inject
 data class SignUpUiState(
     val userCreationInfo: UserCreationInfo = UserCreationInfo(
         email = "",
-        password = "",
-        nickName = "",
-        profileImage = null,
+        name = "",
+        profileImageUrl = null,
     ),
     val isSignUpValid: Boolean = false,
     val isEmailValid: Boolean = true,
@@ -36,19 +35,10 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
         checkIsEmailValid()
     }
 
-    fun onPasswordChanged(password: String) {
+    fun onNameChanged(nickName: String) {
         _signUpUiState.update { currentState ->
             currentState.copy(
-                userCreationInfo = currentState.userCreationInfo.copy(password = password),
-            )
-        }
-        checkIsSignUpValid()
-    }
-
-    fun onNickNameChanged(nickName: String) {
-        _signUpUiState.update { currentState ->
-            currentState.copy(
-                userCreationInfo = currentState.userCreationInfo.copy(nickName = nickName),
+                userCreationInfo = currentState.userCreationInfo.copy(name = nickName),
             )
         }
         checkIsSignUpValid()
@@ -57,7 +47,7 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
     fun onProfileUriChanged(profileUri: String) {
         _signUpUiState.update { currentState ->
             currentState.copy(
-                userCreationInfo = currentState.userCreationInfo.copy(profileImage = profileUri),
+                userCreationInfo = currentState.userCreationInfo.copy(profileImageUrl = profileUri),
             )
         }
     }
@@ -65,8 +55,7 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
     private fun checkIsSignUpValid() {
         val currentState = _signUpUiState.value
         val isSignUpValid = currentState.userCreationInfo.email.isNotBlank() &&
-            currentState.userCreationInfo.password.isNotBlank() &&
-            currentState.userCreationInfo.nickName.isNotBlank() &&
+            currentState.userCreationInfo.name.isNotBlank() &&
             currentState.isEmailValid
         _signUpUiState.update { currentState.copy(isSignUpValid = isSignUpValid) }
     }

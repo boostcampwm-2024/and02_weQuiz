@@ -35,7 +35,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.login.R
-import kr.boostcamp_2024.course.login.presentation.component.PasswordTextField
 import kr.boostcamp_2024.course.login.viewmodel.SignUpUiState
 import kr.boostcamp_2024.course.login.viewmodel.SignUpViewModel
 
@@ -50,8 +49,7 @@ fun SignUpScreen(
     SignupScreen(
         uiState = uiState,
         onEmailChanged = viewModel::onEmailChanged,
-        onPasswordChanged = viewModel::onPasswordChanged,
-        onNickNameChanged = viewModel::onNickNameChanged,
+        onNameChanged = viewModel::onNameChanged,
         onProfileUriChanged = viewModel::onProfileUriChanged,
         onSignUpSuccess = onSignUpSuccess,
         onNavigationButtonClick = onNavigationButtonClick,
@@ -63,8 +61,7 @@ fun SignUpScreen(
 private fun SignupScreen(
     uiState: SignUpUiState,
     onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
-    onNickNameChanged: (String) -> Unit,
+    onNameChanged: (String) -> Unit,
     onProfileUriChanged: (String) -> Unit,
     onSignUpSuccess: () -> Unit,
     onNavigationButtonClick: () -> Unit,
@@ -103,12 +100,10 @@ private fun SignupScreen(
             item {
                 SignUpContent(
                     email = uiState.userCreationInfo.email,
-                    password = uiState.userCreationInfo.password,
-                    nickName = uiState.userCreationInfo.nickName,
-                    profileUri = uiState.userCreationInfo.profileImage,
+                    name = uiState.userCreationInfo.name,
+                    profileUri = uiState.userCreationInfo.profileImageUrl,
                     onEmailChanged = onEmailChanged,
-                    onPasswordChanged = onPasswordChanged,
-                    onNickNameChanged = onNickNameChanged,
+                    onNameChanged = onNameChanged,
                     onProfileUriChanged = onProfileUriChanged,
                     isEmailValid = uiState.isEmailValid,
                 )
@@ -126,12 +121,10 @@ private fun SignupScreen(
 @Composable
 fun SignUpContent(
     email: String,
-    password: String,
-    nickName: String,
+    name: String,
     profileUri: String?,
     onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
-    onNickNameChanged: (String) -> Unit,
+    onNameChanged: (String) -> Unit,
     onProfileUriChanged: (String) -> Unit,
     isEmailValid: Boolean,
 ) {
@@ -171,15 +164,10 @@ fun SignUpContent(
             placeholder = stringResource(R.string.txt_login_email_placeholder),
         )
 
-        PasswordTextField(
-            password = password,
-            onPasswordChanged = onPasswordChanged,
-        )
-
         WeQuizTextField(
             label = stringResource(R.string.txt_sign_up_nick_name),
-            text = nickName,
-            onTextChanged = onNickNameChanged,
+            text = name,
+            onTextChanged = onNameChanged,
             placeholder = stringResource(R.string.txt_sign_up_nick_name_placeholder),
         )
     }
