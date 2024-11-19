@@ -38,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.login.R
 import kr.boostcamp_2024.course.login.viewmodel.SignUpUiState
@@ -58,6 +59,9 @@ fun SignUpScreen(
             snackBarHostState.showSnackbar(context.getString(it))
             viewModel.setNewSnackBarMessage(null)
         }
+        if (uiState.isSignUpSuccess) {
+            onSignUpSuccess()
+        }
     }
 
     SignupScreen(
@@ -66,8 +70,8 @@ fun SignUpScreen(
         onEmailChanged = viewModel::onEmailChanged,
         onNameChanged = viewModel::onNameChanged,
         onProfileUriChanged = viewModel::onProfileUriChanged,
-        onSignUpSuccess = onSignUpSuccess,
         onNavigationButtonClick = onNavigationButtonClick,
+        onSignUpButtonClick = viewModel::signUp,
         setNewSnackBarMessage = viewModel::setNewSnackBarMessage,
     )
 }
@@ -80,8 +84,8 @@ private fun SignupScreen(
     onEmailChanged: (String) -> Unit,
     onNameChanged: (String) -> Unit,
     onProfileUriChanged: (String) -> Unit,
-    onSignUpSuccess: () -> Unit,
     onNavigationButtonClick: () -> Unit,
+    onSignUpButtonClick: () -> Unit,
     setNewSnackBarMessage: (Int) -> Unit,
 ) {
     Scaffold(
@@ -131,9 +135,12 @@ private fun SignupScreen(
             item {
                 SignUpButtons(
                     isSignUpValid = uiState.isSignUpValid,
-                    onSignUpSuccess = onSignUpSuccess,
+                    onSignUpButtonClick = onSignUpButtonClick,
                 )
             }
+        }
+        if (uiState.isLoading) {
+            WeQuizCircularProgressIndicator()
         }
     }
 }
@@ -202,13 +209,13 @@ fun SignUpContent(
 @Composable
 fun SignUpButtons(
     isSignUpValid: Boolean,
-    onSignUpSuccess: () -> Unit,
+    onSignUpButtonClick: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         Button(
-            onClick = onSignUpSuccess,
+            onClick = onSignUpButtonClick,
             modifier = Modifier.fillMaxWidth(),
             enabled = isSignUpValid,
         ) {
