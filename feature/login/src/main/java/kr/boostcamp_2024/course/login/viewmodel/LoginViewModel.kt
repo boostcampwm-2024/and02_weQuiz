@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.login.presentation
+package kr.boostcamp_2024.course.login.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
