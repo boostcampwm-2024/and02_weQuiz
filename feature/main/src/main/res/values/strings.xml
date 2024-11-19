@@ -10,6 +10,9 @@
     <string name="des_img_study_image">스터디 이미지</string>
     <string name="des_btn_study_menu">스터디 메뉴</string>
     <string name="txt_study_user_count">인원: %1$s명</string>
+    <string name="top_app_bar_nav_btn">마이 페이지 아이콘 버튼</string>
+    <string name="txt_main_menu_edit">수정</string>
+    <string name="txt_main_menu_logout">로그아웃</string>
     <string-array name="main_tabs_titles">
         <item>참여 스터디</item>
         <item>보관함</item>

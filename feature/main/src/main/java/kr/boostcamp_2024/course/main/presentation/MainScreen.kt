@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.main.presentation
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,6 +52,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLarge
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.main.R
+import kr.boostcamp_2024.course.main.component.MainDropDownMenu
 import kr.boostcamp_2024.course.main.component.StudyGroupItem
 import kr.boostcamp_2024.course.main.viewmodel.MainViewModel
 
@@ -60,6 +64,8 @@ fun MainScreen(
     onStudyGroupClick: (String) -> Unit,
     viewModel: MainViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    onEditUserClick: () -> Unit,
+    onLogOutClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -70,6 +76,8 @@ fun MainScreen(
         onNotificationButtonClick = onNotificationButtonClick,
         onCreateStudyButtonClick = onCreateStudyButtonClick,
         onStudyGroupClick = onStudyGroupClick,
+        onEditUserClick = onEditUserClick,
+        onLogOutClick = onLogOutClick,
     )
 
     if (uiState.isLoading) {
@@ -99,11 +107,12 @@ fun MainScreen(
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyGroupClick: (String) -> Unit,
+    onEditUserClick: () -> Unit,
+    onLogOutClick: () -> Unit,
 ) {
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val coroutineScope = rememberCoroutineScope()
-
+    var isExpanded by remember { mutableStateOf(false) }
     var state by rememberSaveable { mutableIntStateOf(0) }
     val titles = stringArrayResource(R.array.main_tabs_titles)
 
@@ -123,6 +132,26 @@ fun MainScreen(
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { isExpanded = true }) {
+                        Icon(
+                            imageVector = Icons.Filled.AccountCircle,
+                            contentDescription = stringResource(R.string.top_app_bar_nav_btn),
+                        )
+                    }
+                    MainDropDownMenu(
+                        isExpanded = isExpanded,
+                        onDismissRequest = { isExpanded = false },
+                        onEditUserClick = {
+                            onEditUserClick()
+                            Log.d("zzz", "수정 클릭됨 $isExpanded")
+                        },
+                        onLogOutClick = {
+                            onLogOutClick()
+                            Log.d("zzz", "로그아웃 클릭됨 $isExpanded")
+                        },
                     )
                 },
                 actions = {
@@ -195,23 +224,6 @@ fun MainScreen(
     }
 }
 
-@Composable
-fun StudyGroupTab(
-    studyGroups: List<StudyGroup>,
-    onStudyGroupClick: (String) -> Unit,
-    onStudyGroupMenuClick: () -> Unit,
-) {
-    LazyColumn {
-        items(items = studyGroups, key = { it.id }) { studyGroup ->
-            StudyGroupItem(
-                studyGroup = studyGroup,
-                onStudyGroupClick = onStudyGroupClick,
-                onStudyGroupMenuClick = onStudyGroupMenuClick,
-            )
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
@@ -240,6 +252,25 @@ fun MainScreenPreview() {
             onNotificationButtonClick = {},
             onCreateStudyButtonClick = {},
             onStudyGroupClick = {},
+            onEditUserClick = {},
+            onLogOutClick = {},
         )
+    }
+}
+
+@Composable
+fun StudyGroupTab(
+    studyGroups: List<StudyGroup>,
+    onStudyGroupClick: (String) -> Unit,
+    onStudyGroupMenuClick: () -> Unit,
+) {
+    LazyColumn {
+        items(items = studyGroups, key = { it.id }) { studyGroup ->
+            StudyGroupItem(
+                studyGroup = studyGroup,
+                onStudyGroupClick = onStudyGroupClick,
+                onStudyGroupMenuClick = onStudyGroupMenuClick,
+            )
+        }
     }
 }

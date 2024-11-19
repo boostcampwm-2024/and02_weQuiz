@@ -32,6 +32,8 @@ fun NavGraphBuilder.mainNavGraph(
             onNotificationButtonClick = onNotificationButtonClick,
             onCreateStudyButtonClick = onCreateStudyButtonClick,
             onStudyGroupClick = onStudyGroupClick,
+            onEditUserClick = {},
+            onLogOutClick = {},
         )
     }
     composable<NotificationRoute> {
