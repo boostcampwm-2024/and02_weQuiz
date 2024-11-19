@@ -4,4 +4,6 @@ interface StorageRepository {
     suspend fun uploadImage(imageByteArray: ByteArray): Result<String>
 
     suspend fun deleteImage(imageUrl: String): Result<Unit>
+
+    suspend fun deleteImages(imageUrls: List<String>): Result<Unit>
 }

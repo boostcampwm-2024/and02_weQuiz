@@ -18,6 +18,7 @@ import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.NotificationRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
+import kr.boostcamp_2024.course.domain.repository.StorageRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
@@ -40,6 +41,7 @@ class MainViewModel @Inject constructor(
     private val questionRepository: QuestionRepository,
     private val userOmrRepository: UserOmrRepository,
     private val notificationRepository: NotificationRepository,
+    private val storageRepository: StorageRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState
@@ -111,60 +113,74 @@ class MainViewModel @Inject constructor(
                                         .onSuccess {
                                             quizRepository.deleteQuizzes(quizzes.map { it.id })
                                                 .onSuccess {
-                                                    categoryRepository.deleteCategories(categories.map { it.id })
+                                                    storageRepository.deleteImages(categories.map { it.categoryImageUrl }.filterNotNull())
                                                         .onSuccess {
-                                                            notificationRepository.deleteNotification(notificationId = studyGroup.id)
+                                                            categoryRepository.deleteCategories(categories.map { it.id })
                                                                 .onSuccess {
-                                                                    userRepository.deleteStudyGroupUsers(studyGroup.users, studyGroup.id)
+                                                                    notificationRepository.deleteNotification(notificationId = studyGroup.id)
                                                                         .onSuccess {
-                                                                            studyGroupRepository.deleteStudyGroup(studyGroup.id)
+                                                                            storageRepository.deleteImages(studyGroup.studyGroupImageUrl?.let { listOf(it) } ?: emptyList())
                                                                                 .onSuccess {
-                                                                                    Log.d("MainViewModel", "스터디 그룹 삭제 완료")
-                                                                                    loadCurrentUser() // 스터디 그룹 최신화
+                                                                                    userRepository.deleteStudyGroupUsers(studyGroup.users, studyGroup.id)
+                                                                                        .onSuccess {
+                                                                                            studyGroupRepository.deleteStudyGroup(studyGroup.id)
+                                                                                                .onSuccess {
+                                                                                                    Log.d("MainViewModel", "스터디 그룹 삭제 완료")
+                                                                                                    loadCurrentUser() // 스터디 그룹 최신화
+                                                                                                }
+                                                                                                .onFailure {
+                                                                                                    Log.e("MainViewModel", "Failed to remove study group", it)
+                                                                                                    _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                                                                                                }
+                                                                                        }
+                                                                                        .onFailure {
+                                                                                            Log.e("MainViewModel", "Failed to remove users from study group", it)
+                                                                                            _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                                                                                        }
                                                                                 }
                                                                                 .onFailure {
-                                                                                    Log.e("MainViewModel", "Failed to remove study group", it)
+                                                                                    Log.e("MainViewModel", "Failed to remove study group image", it)
                                                                                     _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
                                                                                 }
                                                                         }
                                                                         .onFailure {
-                                                                            Log.e("MainViewModel", "Failed to remove users from study group", it)
+                                                                            Log.e("MainViewModel", "Failed to remove notification", it)
                                                                             _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
                                                                         }
                                                                 }
                                                                 .onFailure {
-                                                                    Log.e("MainViewModel", "Failed to remove notification", it)
+                                                                    Log.e("MainViewModel", "Failed to remove categories from study group", it)
                                                                     _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
                                                                 }
                                                         }
                                                         .onFailure {
-                                                            Log.e("MainViewModel", "Failed to remove categories from study group", it)
+                                                            Log.e("MainViewModel", "Failed to remove categories images from study group", it)
+                                                            _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
+                                                        }
+                                                        .onFailure {
+                                                            Log.e("MainViewModel", "Failed to remove quizzes from study group", it)
                                                             _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
                                                         }
                                                 }
                                                 .onFailure {
-                                                    Log.e("MainViewModel", "Failed to remove quizzes from study group", it)
+                                                    Log.e("MainViewModel", "Failed to remove userOmr from study group", it)
                                                     _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
                                                 }
                                         }
                                         .onFailure {
-                                            Log.e("MainViewModel", "Failed to remove userOmr from study group", it)
+                                            Log.e("MainViewModel", "Failed to remove questions from study group", it)
                                             _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
                                         }
                                 }
                                 .onFailure {
-                                    Log.e("MainViewModel", "Failed to remove questions from study group", it)
+                                    Log.e("MainViewModel", "Failed to remove quizzes from study group", it)
                                     _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
                                 }
                         }
                         .onFailure {
-                            Log.e("MainViewModel", "Failed to remove quizzes from study group", it)
+                            Log.e("MainViewModel", "Failed to remove categories from study group", it)
                             _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
                         }
-                }
-                .onFailure {
-                    Log.e("MainViewModel", "Failed to remove categories from study group", it)
-                    _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
                 }
         }
     }

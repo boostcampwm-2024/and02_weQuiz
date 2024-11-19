@@ -21,6 +21,7 @@ import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.NotificationRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
+import kr.boostcamp_2024.course.domain.repository.StorageRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
@@ -50,6 +51,7 @@ class DetailStudyViewModel @Inject constructor(
     private val quizRepository: QuizRepository,
     private val questionRepository: QuestionRepository,
     private val userOmrRepository: UserOmrRepository,
+    private val storageRepository: StorageRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val studyGroupId: String = savedStateHandle.toRoute<StudyRoute>().studyGroupId
@@ -269,34 +271,49 @@ class DetailStudyViewModel @Inject constructor(
                                             .onSuccess {
                                                 quizRepository.deleteQuizzes(quizzes.map { it.id })
                                                     .onSuccess {
-                                                        categoryRepository.deleteCategories(categories.map { it.id })
+                                                        storageRepository.deleteImages(categories.map { it.categoryImageUrl }.filterNotNull())
                                                             .onSuccess {
-                                                                notificationRepository.deleteNotification(notificationId = studyGroup.id)
+                                                                categoryRepository.deleteCategories(categories.map { it.id })
                                                                     .onSuccess {
-                                                                        userRepository.deleteStudyGroupUsers(studyGroup.users, studyGroup.id)
+                                                                        notificationRepository.deleteNotification(notificationId = studyGroup.id)
                                                                             .onSuccess {
-                                                                                studyGroupRepository.deleteStudyGroup(studyGroup.id)
+                                                                                storageRepository.deleteImages(studyGroup.studyGroupImageUrl?.let { listOf(it) } ?: emptyList())
                                                                                     .onSuccess {
-                                                                                        Log.d("DetailStudyViewModel", "스터디 그룹 삭제 완료")
-                                                                                        _uiState.update { it.copy(isDeleteStudyGroupSuccess = true) }
+                                                                                        userRepository.deleteStudyGroupUsers(studyGroup.users, studyGroup.id)
+                                                                                            .onSuccess {
+                                                                                                studyGroupRepository.deleteStudyGroup(studyGroup.id)
+                                                                                                    .onSuccess {
+                                                                                                        Log.d("DetailStudyViewModel", "스터디 그룹 삭제 완료")
+                                                                                                        _uiState.update { it.copy(isDeleteStudyGroupSuccess = true) }
+                                                                                                    }
+                                                                                                    .onFailure {
+                                                                                                        Log.e("DetailStudyViewModel", "Failed to remove study group", it)
+                                                                                                        _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
+                                                                                                    }
+                                                                                            }
+                                                                                            .onFailure {
+                                                                                                Log.e("DetailStudyViewModel", "Failed to remove users from study group", it)
+                                                                                                _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
+                                                                                            }
                                                                                     }
                                                                                     .onFailure {
-                                                                                        Log.e("DetailStudyViewModel", "Failed to remove study group", it)
+                                                                                        Log.e("MainViewModel", "Failed to remove study group image", it)
                                                                                         _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
                                                                                     }
                                                                             }
                                                                             .onFailure {
-                                                                                Log.e("DetailStudyViewModel", "Failed to remove users from study group", it)
+                                                                                Log.e("DetailStudyViewModel", "Failed to remove notification", it)
                                                                                 _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
                                                                             }
                                                                     }
                                                                     .onFailure {
-                                                                        Log.e("DetailStudyViewModel", "Failed to remove notification", it)
+                                                                        Log.e("DetailStudyViewModel", "Failed to remove categories from study group", it)
                                                                         _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
                                                                     }
+
                                                             }
                                                             .onFailure {
-                                                                Log.e("DetailStudyViewModel", "Failed to remove categories from study group", it)
+                                                                Log.e("MainViewModel", "Failed to remove categories images from study group", it)
                                                                 _uiState.update { it.copy(errorMessageId = R.string.error_message_delete_study_group) }
                                                             }
                                                     }

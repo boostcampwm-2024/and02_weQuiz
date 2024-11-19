@@ -26,6 +26,14 @@ class StorageRepositoryImpl @Inject constructor(
         fileRef.delete().await()
     }
 
+    override suspend fun deleteImages(imageUrls: List<String>): Result<Unit> = runCatching {
+        imageUrls.forEach { imageUrl ->
+            val filePath = extractPathFromUrl(imageUrl)
+            val fileRef = storageRef.child(filePath)
+            fileRef.delete().await()
+        }
+    }
+
     private fun extractPathFromUrl(imageUrl: String): String {
         val startIndex = imageUrl.indexOf("o/") + 2
         val endIndex = imageUrl.indexOf("?")
