@@ -1,9 +1,11 @@
 package kr.boostcamp_2024.course.study.presentation
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,21 +27,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
 import kr.boostcamp_2024.course.study.CreateStudyViewModel
 import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.CreateStudyTopAppBar
 import kr.boostcamp_2024.course.study.component.StudySubmitButton
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 @Composable
 fun CreateStudyScreen(
@@ -52,6 +59,7 @@ fun CreateStudyScreen(
 
     CreateStudyScreen(
         isEditMode = uiState.isEditMode,
+        studyImageUri = uiState.imageUri,
         titleText = uiState.name,
         descriptionText = uiState.description,
         groupMemberNumber = uiState.maxUserNum,
@@ -63,7 +71,7 @@ fun CreateStudyScreen(
         onMaxUserNumChange = viewmodel::onMaxUserNumChange,
         onStudyEditButtonClick = viewmodel::updateStudyGroup,
         onCreationButtonClick = viewmodel::createStudyGroupClick,
-        onStudyImgUriChanged = {},
+        onStudyImgUriChanged = viewmodel::onImageUriChanged,
     )
 
     if (uiState.isSubmitStudySuccess) {
@@ -84,6 +92,7 @@ fun CreateStudyScreen(
 @Composable
 fun CreateStudyScreen(
     isEditMode: Boolean,
+    studyImageUri: String?,
     titleText: String,
     descriptionText: String,
     groupMemberNumber: String,
@@ -97,12 +106,24 @@ fun CreateStudyScreen(
     onCreationButtonClick: () -> Unit,
     onStudyImgUriChanged: (String) -> Unit,
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val photoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { imageUri ->
-        },
-    )
+    val photoPickerLauncher = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
+        if (uri != null) {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+
+            val tempFile = File.createTempFile("resized_image", ".jpg", context.cacheDir)
+            val fileOutputStream = FileOutputStream(tempFile)
+            fileOutputStream.write(baos.toByteArray())
+            fileOutputStream.close()
+
+            onStudyImgUriChanged(tempFile.toUri().toString())
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -119,18 +140,20 @@ fun CreateStudyScreen(
                 .padding(paddingValues)
                 .verticalScroll(scrollState),
         ) {
-            Image(
+            WeQuizAsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(148.dp)
                     .padding(vertical = 10.dp, horizontal = 16.dp)
                     .clip(shape = RoundedCornerShape(18.dp))
                     .clickable(enabled = true) {
-                        photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        photoPickerLauncher.launch(PickVisualMediaRequest(ImageOnly))
                     },
-                painter = painterResource(R.drawable.img_photo_picker),
+                imgUrl = studyImageUri,
                 contentDescription = "스터디 배경 이미지",
-                contentScale = ContentScale.FillWidth,
+                placeholder = painterResource(R.drawable.img_photo_picker),
+                error = painterResource(R.drawable.img_photo_picker),
+                fallback = painterResource(R.drawable.img_photo_picker),
             )
 
             Column(
@@ -186,6 +209,7 @@ fun CreateStudyScreenPreview() {
     WeQuizTheme {
         CreateStudyScreen(
             isEditMode = false,
+            studyImageUri = null,
             titleText = "",
             descriptionText = "",
             groupMemberNumber = "",

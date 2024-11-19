@@ -22,6 +22,7 @@ import javax.inject.Inject
 
 data class CreateStudyUiState(
     val isEditMode: Boolean = false,
+    val imageUri: String? = null,
     val name: String = "",
     val description: String = "",
     val maxUserNum: String = "",
@@ -156,6 +157,10 @@ class CreateStudyViewModel @Inject constructor(
 
     fun onMaxUserNumChange(groupMemberNumber: String) {
         _uiState.update { it.copy(maxUserNum = groupMemberNumber) }
+    }
+
+    fun onImageUriChanged(imageUri: String) {
+        _uiState.update { it.copy(imageUri = imageUri) }
     }
 
     fun onSnackBarShown() {
