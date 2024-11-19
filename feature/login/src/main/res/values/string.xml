@@ -27,7 +27,8 @@
     <string name="des_clear_text">텍스트 지우기</string>
     <string name="des_google_login">구글 로그인</string>
     <!--  error   -->
-    <string name="error_login">로그인에 실패하셨습니다.</string>
+    <string name="error_login">로그인에 실패했습니다.</string>
+    <string name="error_photo_picker">사진 로드에 실패했습니다.</string>
     <!--  web client id  -->
     <string name="web_client_id"> 735245765717-mdpc20cc8rs37lmfh8qfnqn0h814ldf2.apps.googleusercontent.com</string>
 </resources>

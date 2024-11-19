@@ -21,6 +21,7 @@ data class SignUpUiState(
     ),
     val isSignUpValid: Boolean = false,
     val isEmailValid: Boolean = true,
+    val snackBarMessage: Int? = null,
 )
 
 @HiltViewModel
@@ -39,6 +40,8 @@ class SignUpViewModel @Inject constructor(
                 name = userUiModel.name,
                 profileImageUrl = userUiModel.profileImageUrl,
             ),
+            isEmailValid = Patterns.EMAIL_ADDRESS.matcher(userUiModel.email).matches(),
+            isSignUpValid = userUiModel.email.isNotBlank() && userUiModel.name.isNotBlank(),
         ),
     )
     val signUpUiState: StateFlow<SignUpUiState> = _signUpUiState.asStateFlow()
@@ -83,5 +86,11 @@ class SignUpViewModel @Inject constructor(
         val isEmailValid = currentState.userCreationInfo.email.isNotBlank() &&
             Patterns.EMAIL_ADDRESS.matcher(currentState.userCreationInfo.email).matches()
         _signUpUiState.update { currentState.copy(isEmailValid = isEmailValid) }
+    }
+
+    fun setNewSnackBarMessage(message: Int?) {
+        _signUpUiState.update {
+            it.copy(snackBarMessage = message)
+        }
     }
 }
