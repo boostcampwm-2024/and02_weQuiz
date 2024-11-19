@@ -175,8 +175,8 @@ class SignUpViewModel @Inject constructor(
         return baos.toByteArray()
     }
 
-    private fun downloadImage(urlString: String): InputStream? {
-        return try {
+    private fun downloadImage(urlString: String): InputStream? =
+        try {
             val url = URL(urlString)
             val connection = url.openConnection() as HttpURLConnection
             connection.doInput = true
@@ -190,7 +190,6 @@ class SignUpViewModel @Inject constructor(
             Log.e("SignUpViewModel", "Failed to download image", e)
             null
         }
-    }
 
     private fun setLoading() {
         _signUpUiState.update {
