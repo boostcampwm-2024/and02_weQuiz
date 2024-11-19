@@ -33,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
@@ -45,8 +44,6 @@ import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.CreateStudyTopAppBar
 import kr.boostcamp_2024.course.study.component.StudySubmitButton
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 
 @Composable
 fun CreateStudyScreen(
@@ -59,7 +56,8 @@ fun CreateStudyScreen(
 
     CreateStudyScreen(
         isEditMode = uiState.isEditMode,
-        studyImageUri = uiState.imageUri,
+        defaultStudyImageUri = uiState.defaultImageUri,
+        currentStudyImage = uiState.currentImage,
         titleText = uiState.name,
         descriptionText = uiState.description,
         groupMemberNumber = uiState.maxUserNum,
@@ -71,7 +69,7 @@ fun CreateStudyScreen(
         onMaxUserNumChange = viewmodel::onMaxUserNumChange,
         onStudyEditButtonClick = viewmodel::updateStudyGroup,
         onCreationButtonClick = viewmodel::createStudyGroupClick,
-        onStudyImgUriChanged = viewmodel::onImageUriChanged,
+        onCurrentStudyImageChanged = viewmodel::onImageByteArrayChanged,
     )
 
     if (uiState.isSubmitStudySuccess) {
@@ -92,7 +90,8 @@ fun CreateStudyScreen(
 @Composable
 fun CreateStudyScreen(
     isEditMode: Boolean,
-    studyImageUri: String?,
+    defaultStudyImageUri: String?,
+    currentStudyImage: ByteArray?,
     titleText: String,
     descriptionText: String,
     groupMemberNumber: String,
@@ -104,7 +103,7 @@ fun CreateStudyScreen(
     onMaxUserNumChange: (String) -> Unit,
     onStudyEditButtonClick: () -> Unit,
     onCreationButtonClick: () -> Unit,
-    onStudyImgUriChanged: (String) -> Unit,
+    onCurrentStudyImageChanged: (ByteArray) -> Unit,
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -115,13 +114,9 @@ fun CreateStudyScreen(
 
             val baos = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+            val data = baos.toByteArray()
 
-            val tempFile = File.createTempFile("resized_image", ".jpg", context.cacheDir)
-            val fileOutputStream = FileOutputStream(tempFile)
-            fileOutputStream.write(baos.toByteArray())
-            fileOutputStream.close()
-
-            onStudyImgUriChanged(tempFile.toUri().toString())
+            onCurrentStudyImageChanged(data)
         }
     }
 
@@ -149,7 +144,7 @@ fun CreateStudyScreen(
                     .clickable(enabled = true) {
                         photoPickerLauncher.launch(PickVisualMediaRequest(ImageOnly))
                     },
-                imgUrl = studyImageUri,
+                imgUrl = currentStudyImage ?: defaultStudyImageUri,
                 contentDescription = "스터디 배경 이미지",
                 placeholder = painterResource(R.drawable.img_photo_picker),
                 error = painterResource(R.drawable.img_photo_picker),
@@ -209,7 +204,8 @@ fun CreateStudyScreenPreview() {
     WeQuizTheme {
         CreateStudyScreen(
             isEditMode = false,
-            studyImageUri = null,
+            defaultStudyImageUri = null,
+            currentStudyImage = null,
             titleText = "",
             descriptionText = "",
             groupMemberNumber = "",
@@ -221,7 +217,7 @@ fun CreateStudyScreenPreview() {
             onMaxUserNumChange = {},
             onStudyEditButtonClick = {},
             onCreationButtonClick = {},
-            onStudyImgUriChanged = {},
+            onCurrentStudyImageChanged = {},
         )
     }
 }

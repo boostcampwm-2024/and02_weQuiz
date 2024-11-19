@@ -25,7 +25,8 @@ import kotlin.String
 data class CreateStudyUiState(
     val isLoading: Boolean = false,
     val isEditMode: Boolean = false,
-    val imageUri: String? = null,
+    val defaultImageUri: String? = null,
+    val currentImage: ByteArray? = null,
     val name: String = "",
     val description: String = "",
     val maxUserNum: String = "",
@@ -56,13 +57,14 @@ class CreateStudyViewModel @Inject constructor(
 
     fun loadCurrentUserId() {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
 
             authRepository.getUserKey().onSuccess { currentUser ->
 
-                _uiState.update { it.copy(currentUserId = currentUser) }
+                _uiState.update { it.copy(isLoading = false, currentUserId = currentUser) }
             }.onFailure {
                 Log.e("MainViewModel", "Failed to load current user", it)
-                _uiState.update { it.copy(snackBarMessage = "로그인한 유저가 없습니다.") }
+                _uiState.update { it.copy(isLoading = false, snackBarMessage = "로그인한 유저가 없습니다.") }
             }
 
         }
@@ -70,13 +72,16 @@ class CreateStudyViewModel @Inject constructor(
 
     fun loadStudyGroup() {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
             studyGroupId?.let {
                 studyGroupRepository.getStudyGroup(it)
                     .onSuccess { studyGroup ->
                         _uiState.update {
                             it.copy(
+                                isLoading = false,
                                 isEditMode = true,
-                                imageUri = studyGroup.studyGroupImageUrl,
+                                defaultImageUri = studyGroup.studyGroupImageUrl,
                                 name = studyGroup.name,
                                 description = studyGroup.description ?: "",
                                 maxUserNum = studyGroup.maxUserNum.toString(),
@@ -97,8 +102,8 @@ class CreateStudyViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             uiState.value.currentUserId?.let { id ->
-                val downloadUrl = uiState.value.imageUri?.let { imageUrl ->
-                    storageRepository.uploadImage(imageUrl).getOrNull()
+                val downloadUrl = uiState.value.currentImage?.let { imageByteArray ->
+                    storageRepository.uploadImage(imageByteArray).getOrNull()
                 }
 
                 val studyGroupCreationInfo = StudyGroupCreationInfo(
@@ -120,7 +125,19 @@ class CreateStudyViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             studyGroupId?.let {
+                Log.d("MainViewModel", "${uiState.value.currentImage}")
+
+                val downloadUrl = uiState.value.currentImage?.let { imageByteArray ->
+                    uiState.value.defaultImageUri?.let { defaultUri ->
+                        storageRepository.deleteImage(defaultUri)
+                    }
+                    storageRepository.uploadImage(imageByteArray).getOrNull()
+                } ?: uiState.value.defaultImageUri
+
+                Log.d("MainViewModel", "$downloadUrl")
+
                 val studyGroupUpdatedInfo = StudyGroupUpdatedInfo(
+                    studyGroupImageUrl = downloadUrl,
                     name = uiState.value.name,
                     description = uiState.value.description.takeIf { it.isNotBlank() },
                     maxUserNum = uiState.value.maxUserNum.toInt(),
@@ -128,8 +145,8 @@ class CreateStudyViewModel @Inject constructor(
 
                 studyGroupRepository.updateStudyGroup(it, studyGroupUpdatedInfo)
                     .onSuccess {
-                        _uiState.update { it.copy(isLoading = true, isSubmitStudySuccess = true) }
                         Log.d("MainViewModel", "Successfully updated study group")
+                        _uiState.update { it.copy(isLoading = true, isSubmitStudySuccess = true) }
                     }
                     .onFailure {
                         Log.e("MainViewModel", "Failed to update study group", it)
@@ -156,10 +173,10 @@ class CreateStudyViewModel @Inject constructor(
         viewModelScope.launch {
             userRepository.addStudyGroupToUser(currentUserId, studyId).onSuccess { result ->
                 Log.d("addStudyGroupToUserResult", "성공, $result)")
-                _uiState.update { it.copy(isSubmitStudySuccess = true) }
+                _uiState.update { it.copy(isLoading = false, isSubmitStudySuccess = true) }
             }.onFailure { throwable ->
                 Log.d("addStudyGroupToUserResult", "실패, ${throwable.message})")
-                _uiState.update { it.copy(snackBarMessage = "스터디 그룹 생성 실패") }
+                _uiState.update { it.copy(isLoading = false, snackBarMessage = "스터디 그룹 생성 실패") }
             }
         }
     }
@@ -176,8 +193,8 @@ class CreateStudyViewModel @Inject constructor(
         _uiState.update { it.copy(maxUserNum = groupMemberNumber) }
     }
 
-    fun onImageUriChanged(imageUri: String) {
-        _uiState.update { it.copy(imageUri = imageUri) }
+    fun onImageByteArrayChanged(imageByteArray: ByteArray) {
+        _uiState.update { it.copy(currentImage = imageByteArray) }
     }
 
     fun onSnackBarShown() {

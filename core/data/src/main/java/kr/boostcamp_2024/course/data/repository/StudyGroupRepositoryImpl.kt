@@ -73,6 +73,7 @@ class StudyGroupRepositoryImpl @Inject constructor(
     override suspend fun updateStudyGroup(studyGroupId: String, updatedInfo: StudyGroupUpdatedInfo): Result<Unit> =
         runCatching {
             val updatedInfoMap = hashMapOf<String, Any?>(
+                "study_group_image_url" to updatedInfo.studyGroupImageUrl,
                 "name" to updatedInfo.name,
                 "description" to updatedInfo.description,
                 "max_user_num" to updatedInfo.maxUserNum,
