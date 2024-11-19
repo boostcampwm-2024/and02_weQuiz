@@ -26,6 +26,7 @@ fun WeQuizTextField(
     placeholder: String,
     minLines: Int = 1,
     maxLines: Int = 1,
+    isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
@@ -38,6 +39,7 @@ fun WeQuizTextField(
         placeholder = { Text(placeholder) },
         minLines = minLines,
         maxLines = maxLines,
+        isError = isError,
         trailingIcon = {
             IconButton(
                 onClick = { onTextChanged("") },

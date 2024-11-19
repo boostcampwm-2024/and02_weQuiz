@@ -55,12 +55,19 @@ fun GroupListScreen(
                 groupId = currentGroup?.id ?: "",
             )
         }
-        GroupLazyColumn(currentGroup?.id, isOwner, users, removeClick)
+        GroupLazyColumn(
+            owner,
+            currentGroup?.id,
+            isOwner,
+            users,
+            removeClick,
+        )
     }
 }
 
 @Composable
 fun GroupLazyColumn(
+    owner: User?,
     groupId: String?,
     isOwner: Boolean,
     users: List<User>,
@@ -73,6 +80,7 @@ fun GroupLazyColumn(
     ) {
         itemsIndexed(items = users, key = { _, user -> user.id }) { index, user ->
             GroupItem(
+                owner?.id,
                 groupId,
                 isOwner,
                 removeClick,
