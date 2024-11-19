@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.UserDTO
 import kr.boostcamp_2024.course.domain.model.User
+import kr.boostcamp_2024.course.domain.model.UserCreationInfo
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -12,6 +13,19 @@ class UserRepositoryImpl @Inject constructor(
     firestore: FirebaseFirestore,
 ) : UserRepository {
     private val userCollectionRef = firestore.collection("User")
+
+    override suspend fun addUser(userId: String, userCreationInfo: UserCreationInfo): Result<Unit> {
+        return runCatching {
+            userCollectionRef.document(userId).set(
+                UserDTO(
+                    email = userCreationInfo.email,
+                    name = userCreationInfo.name,
+                    profileUrl = userCreationInfo.profileImageUrl,
+                    studyGroups = emptyList(),
+                ),
+            ).await()
+        }
+    }
 
     override suspend fun getUser(userId: String): Result<User> {
         return runCatching {
