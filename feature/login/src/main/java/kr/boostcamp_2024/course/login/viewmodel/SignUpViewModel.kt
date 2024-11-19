@@ -11,11 +11,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kr.boostcamp_2024.course.domain.model.UserCreationInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
@@ -24,6 +26,9 @@ import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.login.R
 import kr.boostcamp_2024.course.login.model.UserUiModel
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import javax.inject.Inject
 
 data class SignUpUiState(
@@ -110,7 +115,9 @@ class SignUpViewModel @Inject constructor(
     fun signUp() {
         setLoading()
         viewModelScope.launch {
-            val imageByteArray = signUpUiState.value.userCreationInfo.profileImageUrl?.let { uriToByteArray(Uri.parse(it)) }
+            val imageByteArray = withContext(Dispatchers.IO) {
+                signUpUiState.value.userCreationInfo.profileImageUrl?.let { uriToByteArray(Uri.parse(it)) }
+            }
             val downloadUrl = uploadImage(imageByteArray)
             val userCreationInfo = UserCreationInfo(
                 email = signUpUiState.value.userCreationInfo.email,
@@ -156,12 +163,33 @@ class SignUpViewModel @Inject constructor(
     private fun uriToByteArray(
         uri: Uri,
     ): ByteArray {
-        val inputStream = context.contentResolver.openInputStream(uri)
+        val inputStream = if (uri.scheme == "http" || uri.scheme == "https") {
+            downloadImage(uri.toString())
+        } else {
+            context.contentResolver.openInputStream(uri)
+        }
         val bitmap = BitmapFactory.decodeStream(inputStream)
 
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
         return baos.toByteArray()
+    }
+
+    private fun downloadImage(urlString: String): InputStream? {
+        return try {
+            val url = URL(urlString)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.doInput = true
+            connection.connect()
+            if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+                connection.inputStream
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("SignUpViewModel", "Failed to download image", e)
+            null
+        }
     }
 
     private fun setLoading() {
