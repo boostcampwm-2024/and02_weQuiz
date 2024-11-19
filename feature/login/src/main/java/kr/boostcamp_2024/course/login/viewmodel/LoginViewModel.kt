@@ -9,7 +9,10 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
@@ -31,11 +34,31 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
     private val _loginUiState: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState())
     val loginUiState: StateFlow<LoginUiState> = _loginUiState
+        .onStart {
+            checkExistedUser()
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            LoginUiState(),
+        )
 
     fun loginForExperience() {
         viewModelScope.launch {
             val defaultUserKey = "M2PzD8bxVaDAwNrLhr6E"
             saveUserKey(defaultUserKey)
+        }
+    }
+
+    private fun checkExistedUser() {
+        viewModelScope.launch {
+            authRepository.getUserKey()
+                .onSuccess {
+                    _loginUiState.update { currentState ->
+                        currentState.copy(isLoginSuccess = true)
+                    }
+                }.onFailure {
+                    Log.e("LoginViewModel", "Failed to get user key")
+                }
         }
     }
 
