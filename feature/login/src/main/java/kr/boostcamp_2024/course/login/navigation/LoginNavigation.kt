@@ -13,10 +13,6 @@ data object LoginRoute
 @Serializable
 data class SignUpRoute(val userId: String?)
 
-// fun NavController.navigationLogin() {
-//    navigate(LoginRoute)
-// }
-
 fun NavController.navigationSignUp(userId: String? = null) {
     navigate(SignUpRoute(userId))
 }
