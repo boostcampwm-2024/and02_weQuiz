@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,6 +21,9 @@ private val Context.weQuizDataStore: DataStore<Preferences> by preferencesDataSt
 object AppModule {
     @Provides
     fun provideFirebaseFireStore() = Firebase.firestore
+
+    @Provides
+    fun provideFirebaseStorage() = Firebase.storage
 
     @Provides
     fun provideWeQuizDataStore(
