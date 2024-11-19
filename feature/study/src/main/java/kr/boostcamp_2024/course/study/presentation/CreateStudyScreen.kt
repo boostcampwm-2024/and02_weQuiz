@@ -9,15 +9,15 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -133,14 +133,16 @@ fun CreateStudyScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(horizontal = 16.dp)
                 .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             WeQuizAsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(148.dp)
-                    .padding(vertical = 10.dp, horizontal = 16.dp)
-                    .clip(shape = RoundedCornerShape(18.dp))
+                    .padding(horizontal = 70.dp)
+                    .aspectRatio(1f)
+                    .clip(shape = MaterialTheme.shapes.large)
                     .clickable(enabled = true) {
                         photoPickerLauncher.launch(PickVisualMediaRequest(ImageOnly))
                     },
@@ -151,36 +153,31 @@ fun CreateStudyScreen(
                 fallback = painterResource(R.drawable.img_photo_picker),
             )
 
-            Column(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                WeQuizTextField(
-                    label = stringResource(R.string.txt_create_study_title_text_field_label),
-                    text = titleText,
-                    onTextChanged = onTitleTextChange,
-                    placeholder = stringResource(R.string.txt_create_study_title_text_field_placeholder),
-                )
+            WeQuizTextField(
+                label = stringResource(R.string.txt_create_study_title_text_field_label),
+                text = titleText,
+                onTextChanged = onTitleTextChange,
+                placeholder = stringResource(R.string.txt_create_study_title_text_field_placeholder),
+            )
 
-                WeQuizTextField(
-                    label = stringResource(R.string.txt_create_study_description_label),
-                    text = descriptionText,
-                    minLines = 6,
-                    maxLines = 6,
-                    onTextChanged = onDescriptionTextChange,
-                    placeholder = stringResource(R.string.txt_create_study_description_placeholder),
-                )
+            WeQuizTextField(
+                label = stringResource(R.string.txt_create_study_description_label),
+                text = descriptionText,
+                minLines = 6,
+                maxLines = 6,
+                onTextChanged = onDescriptionTextChange,
+                placeholder = stringResource(R.string.txt_create_study_description_placeholder),
+            )
 
-                WeQuizValidateTextField(
-                    label = stringResource(R.string.txt_create_study_group_member_number_label),
-                    text = groupMemberNumber,
-                    onTextChanged = onMaxUserNumChange,
-                    placeholder = stringResource(R.string.txt_create_study_group_member_number_placeholder),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    validFun = ::isValidateNumber,
-                    errorMessage = stringResource(R.string.txt_create_study_group_number_error_message),
-                )
-            }
+            WeQuizValidateTextField(
+                label = stringResource(R.string.txt_create_study_group_member_number_label),
+                text = groupMemberNumber,
+                onTextChanged = onMaxUserNumChange,
+                placeholder = stringResource(R.string.txt_create_study_group_member_number_placeholder),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                validFun = ::isValidateNumber,
+                errorMessage = stringResource(R.string.txt_create_study_group_number_error_message),
+            )
 
             StudySubmitButton(
                 isEditMode = isEditMode,

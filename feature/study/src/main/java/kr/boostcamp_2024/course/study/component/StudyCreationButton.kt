@@ -1,7 +1,6 @@
 package kr.boostcamp_2024.course.study.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -9,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.study.R
 
 @Composable
@@ -25,9 +23,7 @@ fun StudySubmitButton(
             true -> onStudyEditButtonClick
             false -> onStudyCreateButtonClick
         },
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = modifier.fillMaxWidth(),
         enabled = canSubmitStudy,
     ) {
         Text(
