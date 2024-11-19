@@ -70,4 +70,10 @@ class QuizRepositoryImpl @Inject constructor(
                 .update(updatedData)
                 .await()
         }
+
+    override suspend fun deleteQuiz(quizId: String): Result<Unit> {
+        return runCatching {
+            quizCollectionRef.document(quizId).delete().await()
+        }
+    }
 }

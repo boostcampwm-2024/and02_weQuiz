@@ -11,33 +11,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedAssistChip
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -52,6 +39,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.quiz.R
+import kr.boostcamp_2024.course.quiz.component.QuizTopAppBar
 import kr.boostcamp_2024.course.quiz.viewmodel.QuizViewModel
 
 @Composable
@@ -68,6 +56,11 @@ fun QuizScreen(
     LaunchedEffect(Unit) {
         viewModel.initViewModel()
     }
+
+    if (uiState.value.isDeleted){
+        onNavigationButtonClick() // 삭제되면 뒤로가기
+    }
+
     QuizScreen(
         category = uiState.value.category,
         quiz = uiState.value.quiz,
@@ -76,6 +69,7 @@ fun QuizScreen(
         onCreateQuestionButtonClick = onCreateQuestionButtonClick,
         onStartQuizButtonClick = onStartQuizButtonClick,
         onSettingMenuClick = onSettingMenuClick,
+        onDeleteMenuClick = viewModel::deleteQuiz,
     )
 
     if (uiState.value.isLoading) {
@@ -96,7 +90,6 @@ fun QuizScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizScreen(
     category: Category?,
@@ -106,56 +99,14 @@ fun QuizScreen(
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
     onSettingMenuClick: (String, String) -> Unit,
+    onDeleteMenuClick: (String, Quiz) -> Unit,
 ) {
-    var isSettingMenuExpanded by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(onClick = onNavigationButtonClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = null,
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { isSettingMenuExpanded = true }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(R.string.des_quiz_screen_top_app_bar_action_icon),
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = isSettingMenuExpanded,
-                        onDismissRequest = { isSettingMenuExpanded = false },
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.txt_edit_quiz_drop_down_menu_item)) },
-                            onClick = {
-                                category?.let { category ->
-                                    quiz?.let { quiz ->
-                                        onSettingMenuClick(category.id, quiz.id)
-                                    }
-                                    isSettingMenuExpanded = false
-                                }
-                            },
-                        )
-
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.txt_delete_quiz_drop_down_menu_item)) },
-                            onClick = {
-                                isSettingMenuExpanded = false
-                            },
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                ),
-            )
+            QuizTopAppBar(onNavigationButtonClick, category, quiz, onSettingMenuClick, onDeleteMenuClick)
+            // 300줄 넘어서 분리
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -306,6 +257,7 @@ fun QuizStartScreenPreview() {
             onCreateQuestionButtonClick = {},
             onStartQuizButtonClick = {},
             onSettingMenuClick = { _, _ -> },
+            onDeleteMenuClick = { _, _ -> },
         )
     }
 }

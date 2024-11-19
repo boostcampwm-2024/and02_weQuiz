@@ -11,4 +11,6 @@ interface QuestionRepository {
     suspend fun createQuestion(
         questionCreationInfo: QuestionCreationInfo,
     ): Result<String>
+
+    suspend fun deleteQuestions(questions: List<String>): Result<Unit>
 }

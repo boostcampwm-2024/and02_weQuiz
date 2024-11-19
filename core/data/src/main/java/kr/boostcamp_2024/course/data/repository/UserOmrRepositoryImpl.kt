@@ -29,4 +29,13 @@ class UserOmrRepositoryImpl @Inject constructor(
             )
             userOmrCollectionRef.add(userOmrDTO).await().id
         }
+
+    override suspend fun deleteUserOmr(quizId: String): Result<Unit> =
+        runCatching {
+            val querySnapshot = userOmrCollectionRef.whereEqualTo("quiz_id", quizId).get().await()
+            querySnapshot.documents.forEach { document ->
+                document.reference.delete().await()
+            }
+        }
 }
+
