@@ -121,6 +121,11 @@ class QuizViewModel @Inject constructor(
                                                             )
                                                         }
                                                     }
+                                            } ?: _uiState.update {
+                                                it.copy(
+                                                    isLoading = false,
+                                                    isDeleted = true,
+                                                )
                                             }
 
                                         }
