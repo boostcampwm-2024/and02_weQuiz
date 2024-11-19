@@ -78,6 +78,7 @@ fun NavGraphBuilder.quizNavGraph(
     onStartQuizButtonClick: (String) -> Unit,
     onSettingMenuClick: (String, String) -> Unit,
     onEditQuizSuccess: () -> Unit,
+    onQuizDeleted: () -> Unit,
 ) {
     composable<CreateQuestionRoute> {
         CreateQuestionScreen(
@@ -102,6 +103,7 @@ fun NavGraphBuilder.quizNavGraph(
             onCreateQuestionButtonClick = onCreateQuestionButtonClick,
             onStartQuizButtonClick = onStartQuizButtonClick,
             onSettingMenuClick = onSettingMenuClick,
+            onQuizDeleted = onQuizDeleted,
         )
     }
     composable<QuizResultRoute> {
