@@ -108,4 +108,10 @@ class LoginViewModel @Inject constructor(
             currentState.copy(snackBarMessage = message)
         }
     }
+
+    fun resetUserState() {
+        _loginUiState.update { currentState ->
+            currentState.copy(userInfo = null, isNewUser = false)
+        }
+    }
 }

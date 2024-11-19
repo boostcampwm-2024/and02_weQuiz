@@ -66,6 +66,7 @@ fun LoginScreen(
         }
         if (loginUiState.isNewUser) {
             val userInfo = requireNotNull(loginUiState.userInfo)
+            loginViewModel.resetUserState()
             onSignUp(userInfo)
         }
     }
