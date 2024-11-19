@@ -52,6 +52,7 @@ fun WeQuizNavHost(
             onNotificationButtonClick = navController::navigateNotification,
             onCreateStudyButtonClick = navController::navigateCreateStudy,
             onStudyGroupClick = navController::navigateStudy,
+            onEditUserClick = navController::navigationSignUp,
         )
 
         studyNavGraph(

@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +36,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.login.R
-import kr.boostcamp_2024.course.login.presentation.component.PasswordTextField
 import kr.boostcamp_2024.course.login.viewmodel.SignUpUiState
 import kr.boostcamp_2024.course.login.viewmodel.SignUpViewModel
 
@@ -46,16 +46,21 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.signUpUiState.collectAsStateWithLifecycle()
-
     SignupScreen(
         uiState = uiState,
         onEmailChanged = viewModel::onEmailChanged,
-        onPasswordChanged = viewModel::onPasswordChanged,
         onNickNameChanged = viewModel::onNickNameChanged,
         onProfileUriChanged = viewModel::onProfileUriChanged,
-        onSignUpSuccess = onSignUpSuccess,
         onNavigationButtonClick = onNavigationButtonClick,
+        onEditButtonClick = viewModel::updateUser,
+        onSignUpButtonClick = viewModel::addUser,
     )
+
+    LaunchedEffect(uiState.isSubmitSuccess) {
+        if (uiState.isSubmitSuccess) {
+            onSignUpSuccess()
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,18 +68,21 @@ fun SignUpScreen(
 private fun SignupScreen(
     uiState: SignUpUiState,
     onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
     onNickNameChanged: (String) -> Unit,
     onProfileUriChanged: (String) -> Unit,
-    onSignUpSuccess: () -> Unit,
     onNavigationButtonClick: () -> Unit,
+    onEditButtonClick: () -> Unit,
+    onSignUpButtonClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.top_app_bar_sign_up),
+                        text = when (uiState.isEditMode) {
+                            true -> "회원 수정"
+                            false -> stringResource(R.string.top_app_bar_sign_up)
+                        },
                     )
                 },
                 navigationIcon = {
@@ -91,23 +99,20 @@ private fun SignupScreen(
         },
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = innerPadding.calculateBottomPadding(),
-                ),
+            modifier = Modifier.padding(
+                top = innerPadding.calculateTopPadding(),
+                start = 16.dp,
+                end = 16.dp,
+                bottom = innerPadding.calculateBottomPadding(),
+            ),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             item {
                 SignUpContent(
                     email = uiState.userCreationInfo.email,
-                    password = uiState.userCreationInfo.password,
                     nickName = uiState.userCreationInfo.nickName,
-                    profileUri = uiState.userCreationInfo.profileImage,
+                    profileUri = uiState.userCreationInfo.profileImageUrl,
                     onEmailChanged = onEmailChanged,
-                    onPasswordChanged = onPasswordChanged,
                     onNickNameChanged = onNickNameChanged,
                     onProfileUriChanged = onProfileUriChanged,
                     isEmailValid = uiState.isEmailValid,
@@ -115,8 +120,9 @@ private fun SignupScreen(
             }
             item {
                 SignUpButtons(
-                    isSignUpValid = uiState.isSignUpValid,
-                    onSignUpSuccess = onSignUpSuccess,
+                    isSignUpValid = uiState.isSignUpButtonEnabled,
+                    onSignUpSuccess = if (uiState.isEditMode) onEditButtonClick else onSignUpButtonClick,
+                    isEditMode = uiState.isEditMode,
                 )
             }
         }
@@ -126,11 +132,9 @@ private fun SignupScreen(
 @Composable
 fun SignUpContent(
     email: String,
-    password: String,
     nickName: String,
     profileUri: String?,
     onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
     onNickNameChanged: (String) -> Unit,
     onProfileUriChanged: (String) -> Unit,
     isEmailValid: Boolean,
@@ -171,11 +175,6 @@ fun SignUpContent(
             placeholder = stringResource(R.string.txt_login_email_placeholder),
         )
 
-        PasswordTextField(
-            password = password,
-            onPasswordChanged = onPasswordChanged,
-        )
-
         WeQuizTextField(
             label = stringResource(R.string.txt_sign_up_nick_name),
             text = nickName,
@@ -189,6 +188,7 @@ fun SignUpContent(
 fun SignUpButtons(
     isSignUpValid: Boolean,
     onSignUpSuccess: () -> Unit,
+    isEditMode: Boolean,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -199,7 +199,10 @@ fun SignUpButtons(
             enabled = isSignUpValid,
         ) {
             Text(
-                text = stringResource(R.string.btn_sign_up),
+                text = when (isEditMode) {
+                    true -> "회원 정보 수정"
+                    false -> stringResource(R.string.btn_sign_up)
+                },
             )
         }
 

@@ -1,30 +1,109 @@
 package kr.boostcamp_2024.course.login.viewmodel
 
+import android.util.Log
 import android.util.Patterns
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.UserCreationInfo
+import kr.boostcamp_2024.course.domain.repository.UserRepository
+import kr.boostcamp_2024.course.login.navigation.SignUpRoute
 import javax.inject.Inject
 
 data class SignUpUiState(
     val userCreationInfo: UserCreationInfo = UserCreationInfo(
         email = "",
-        password = "",
         nickName = "",
-        profileImage = null,
+        profileImageUrl = null,
+        studyGroups = emptyList(),
     ),
-    val isSignUpValid: Boolean = false,
-    val isEmailValid: Boolean = true,
-)
+    val isEditMode: Boolean = false,
+    val isSubmitSuccess: Boolean = false,
+) {
+    val isSignUpButtonEnabled: Boolean
+        get() = userCreationInfo.email.isNotBlank() &&
+            userCreationInfo.nickName.isNotBlank() &&
+            isEmailValid
+    val isEmailValid: Boolean
+        get() = userCreationInfo.email.isNotBlank() &&
+            Patterns.EMAIL_ADDRESS.matcher(userCreationInfo.email)
+                .matches()
+}
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor() : ViewModel() {
+class SignUpViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    savedStateHandle: SavedStateHandle,
+) : ViewModel() {
     private val _signUpUiState: MutableStateFlow<SignUpUiState> = MutableStateFlow(SignUpUiState())
-    val signUpUiState: StateFlow<SignUpUiState> = _signUpUiState.asStateFlow()
+    val signUpUiState: StateFlow<SignUpUiState> = _signUpUiState.onStart {
+        loadUser()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), SignUpUiState())
+    private val userId = savedStateHandle.toRoute<SignUpRoute>().userId
+
+    private fun loadUser() {
+        viewModelScope.launch {
+            if (userId != null) {
+                userRepository.getUser(userId).onSuccess {
+                    _signUpUiState.update { currentState ->
+                        currentState.copy(
+                            userCreationInfo = currentState.userCreationInfo.copy(
+                                email = it.email,
+                                nickName = it.name,
+                                profileImageUrl = it.profileUrl,
+                            ),
+                            isEditMode = true,
+                        )
+                    }
+                }.onFailure {
+                    Log.e("MainViewModel", "Failed to load user", it)
+                }
+            }
+        }
+    }
+
+    fun addUser() {
+        viewModelScope.launch {
+            if (userId != null) {
+                userRepository.addUser(userId, _signUpUiState.value.userCreationInfo).onSuccess {
+                    _signUpUiState.update {
+                        it.copy(isSubmitSuccess = true)
+                    }
+                }.onFailure {
+                    Log.e("MainViewModel", "Failed to add user")
+                    _signUpUiState.update {
+                        it.copy(isSubmitSuccess = false)
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateUser() {
+        viewModelScope.launch {
+            if (userId != null) {
+                userRepository.updateUser(userId, _signUpUiState.value.userCreationInfo).onSuccess {
+                    _signUpUiState.update {
+                        it.copy(isSubmitSuccess = true)
+                    }
+                }.onFailure {
+                    Log.e("MainViewModel", "Failed to update user")
+                    _signUpUiState.update {
+                        it.copy(isSubmitSuccess = false)
+                    }
+                }
+            }
+        }
+    }
 
     fun onEmailChanged(email: String) {
         _signUpUiState.update { currentState ->
@@ -32,17 +111,6 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
                 userCreationInfo = currentState.userCreationInfo.copy(email = email),
             )
         }
-        checkIsSignUpValid()
-        checkIsEmailValid()
-    }
-
-    fun onPasswordChanged(password: String) {
-        _signUpUiState.update { currentState ->
-            currentState.copy(
-                userCreationInfo = currentState.userCreationInfo.copy(password = password),
-            )
-        }
-        checkIsSignUpValid()
     }
 
     fun onNickNameChanged(nickName: String) {
@@ -51,30 +119,13 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
                 userCreationInfo = currentState.userCreationInfo.copy(nickName = nickName),
             )
         }
-        checkIsSignUpValid()
     }
 
     fun onProfileUriChanged(profileUri: String) {
         _signUpUiState.update { currentState ->
             currentState.copy(
-                userCreationInfo = currentState.userCreationInfo.copy(profileImage = profileUri),
+                userCreationInfo = currentState.userCreationInfo.copy(profileImageUrl = profileUri),
             )
         }
-    }
-
-    private fun checkIsSignUpValid() {
-        val currentState = _signUpUiState.value
-        val isSignUpValid = currentState.userCreationInfo.email.isNotBlank() &&
-            currentState.userCreationInfo.password.isNotBlank() &&
-            currentState.userCreationInfo.nickName.isNotBlank() &&
-            currentState.isEmailValid
-        _signUpUiState.update { currentState.copy(isSignUpValid = isSignUpValid) }
-    }
-
-    private fun checkIsEmailValid() {
-        val currentState = _signUpUiState.value
-        val isEmailValid = currentState.userCreationInfo.email.isNotBlank() &&
-            Patterns.EMAIL_ADDRESS.matcher(currentState.userCreationInfo.email).matches()
-        _signUpUiState.update { currentState.copy(isEmailValid = isEmailValid) }
     }
 }

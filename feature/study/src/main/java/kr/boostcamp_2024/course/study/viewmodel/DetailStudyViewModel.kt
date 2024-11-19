@@ -44,8 +44,6 @@ class DetailStudyViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val studyGroupId: String = savedStateHandle.toRoute<StudyRoute>().studyGroupId
-
     private val _uiState: MutableStateFlow<DetailStudyUiState> = MutableStateFlow(DetailStudyUiState())
     val uiState: StateFlow<DetailStudyUiState> = _uiState.onStart {
         val studyGroupId = savedStateHandle.toRoute<StudyRoute>().studyGroupId

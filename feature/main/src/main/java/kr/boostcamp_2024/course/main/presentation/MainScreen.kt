@@ -64,7 +64,7 @@ fun MainScreen(
     onStudyGroupClick: (String) -> Unit,
     viewModel: MainViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    onEditUserClick: () -> Unit,
+    onEditUserClick: (String) -> Unit,
     onLogOutClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -107,7 +107,7 @@ fun MainScreen(
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyGroupClick: (String) -> Unit,
-    onEditUserClick: () -> Unit,
+    onEditUserClick: (String) -> Unit,
     onLogOutClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -145,8 +145,9 @@ fun MainScreen(
                         isExpanded = isExpanded,
                         onDismissRequest = { isExpanded = false },
                         onEditUserClick = {
-                            onEditUserClick()
-                            Log.d("zzz", "수정 클릭됨 $isExpanded")
+                            if (currentUser?.id != null) {
+                                onEditUserClick(currentUser.id)
+                            }
                         },
                         onLogOutClick = {
                             onLogOutClick()

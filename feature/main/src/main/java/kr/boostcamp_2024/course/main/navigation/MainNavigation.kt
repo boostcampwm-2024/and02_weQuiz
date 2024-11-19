@@ -26,13 +26,14 @@ fun NavGraphBuilder.mainNavGraph(
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyGroupClick: (String) -> Unit,
+    onEditUserClick: (String) -> Unit,
 ) {
     composable<MainRoute> {
         MainScreen(
             onNotificationButtonClick = onNotificationButtonClick,
             onCreateStudyButtonClick = onCreateStudyButtonClick,
             onStudyGroupClick = onStudyGroupClick,
-            onEditUserClick = {},
+            onEditUserClick = onEditUserClick,
             onLogOutClick = {},
         )
     }
