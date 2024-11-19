@@ -7,6 +7,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.credentails)
+    implementation(libs.credentails.play.services.auth)
+    implementation(libs.google.id)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
