@@ -15,12 +15,15 @@ import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
 import kr.boostcamp_2024.course.domain.model.StudyGroupUpdatedInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
+import kr.boostcamp_2024.course.domain.repository.StorageRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.study.navigation.CreateStudyRoute
 import javax.inject.Inject
+import kotlin.String
 
 data class CreateStudyUiState(
+    val isLoading: Boolean = false,
     val isEditMode: Boolean = false,
     val imageUri: String? = null,
     val name: String = "",
@@ -39,6 +42,7 @@ class CreateStudyViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val studyGroupRepository: StudyGroupRepository,
     private val userRepository: UserRepository,
+    private val storageRepository: StorageRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val studyGroupId: String? = savedStateHandle.toRoute<CreateStudyRoute>().studyGroupId
@@ -72,6 +76,7 @@ class CreateStudyViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isEditMode = true,
+                                imageUri = studyGroup.studyGroupImageUrl,
                                 name = studyGroup.name,
                                 description = studyGroup.description ?: "",
                                 maxUserNum = studyGroup.maxUserNum.toString(),
@@ -79,29 +84,41 @@ class CreateStudyViewModel @Inject constructor(
                         }
                     }.onFailure {
                         Log.e("MainViewModel", "Failed to load study group", it)
-                        _uiState.update { it.copy(snackBarMessage = "스터디 그룹 로드 실패") }
+                        _uiState.update { it.copy(isLoading = false, snackBarMessage = "스터디 그룹 로드 실패") }
                     }
             }
         }
     }
 
     fun createStudyGroupClick() {
+        if (uiState.value.isLoading) return
+
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
             uiState.value.currentUserId?.let { id ->
+                val downloadUrl = uiState.value.imageUri?.let { imageUrl ->
+                    storageRepository.uploadImage(imageUrl).getOrNull()
+                }
+
                 val studyGroupCreationInfo = StudyGroupCreationInfo(
+                    studyGroupImageUrl = downloadUrl,
                     name = uiState.value.name,
                     description = uiState.value.description.takeIf { it.isNotBlank() },
                     maxUserNum = uiState.value.maxUserNum.toInt(),
                     ownerId = id,
                 )
-
                 addStudyGroup(id, studyGroupCreationInfo)
             }
         }
     }
 
     fun updateStudyGroup() {
+        if (uiState.value.isLoading) return
+
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
             studyGroupId?.let {
                 val studyGroupUpdatedInfo = StudyGroupUpdatedInfo(
                     name = uiState.value.name,
@@ -111,12 +128,12 @@ class CreateStudyViewModel @Inject constructor(
 
                 studyGroupRepository.updateStudyGroup(it, studyGroupUpdatedInfo)
                     .onSuccess {
-                        _uiState.update { it.copy(isSubmitStudySuccess = true) }
+                        _uiState.update { it.copy(isLoading = true, isSubmitStudySuccess = true) }
                         Log.d("MainViewModel", "Successfully updated study group")
                     }
                     .onFailure {
                         Log.e("MainViewModel", "Failed to update study group", it)
-                        _uiState.update { it.copy(snackBarMessage = "스터디 그룹 업데이트 실패") }
+                        _uiState.update { it.copy(isLoading = true, snackBarMessage = "스터디 그룹 업데이트 실패") }
                     }
             }
         }
@@ -130,7 +147,7 @@ class CreateStudyViewModel @Inject constructor(
 
             }.onFailure { throwable ->
                 Log.d("errorMessage", "${throwable.message}")
-                _uiState.update { it.copy(snackBarMessage = "스터디 그룹 생성 실패") }
+                _uiState.update { it.copy(isLoading = false, snackBarMessage = "스터디 그룹 생성 실패") }
             }
         }
     }

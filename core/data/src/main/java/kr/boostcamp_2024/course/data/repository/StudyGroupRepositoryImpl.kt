@@ -18,6 +18,7 @@ class StudyGroupRepositoryImpl @Inject constructor(
     override suspend fun addStudyGroup(studyGroupCreationInfo: StudyGroupCreationInfo): Result<String> =
         runCatching {
             val request = StudyGroupDTO(
+                studyGroupImageUrl = studyGroupCreationInfo.studyGroupImageUrl,
                 name = studyGroupCreationInfo.name,
                 description = studyGroupCreationInfo.description,
                 maxUserNum = studyGroupCreationInfo.maxUserNum,
