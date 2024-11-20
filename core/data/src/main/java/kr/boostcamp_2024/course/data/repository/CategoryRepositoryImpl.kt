@@ -66,15 +66,13 @@ class CategoryRepositoryImpl @Inject constructor(
         categoryName: String,
         categoryDescription: String?,
         categoryImageUrl: String?,
-    ): Result<Unit> {
-        return runCatching {
-            categoryCollectionRef.document(categoryId).update(
-                mapOf(
-                    "name" to categoryName,
-                    "description" to categoryDescription,
-                    "category_image_url" to categoryImageUrl,
-                ),
-            ).await()
-        }
+    ): Result<Unit> = runCatching {
+        categoryCollectionRef.document(categoryId).update(
+            mapOf(
+                "name" to categoryName,
+                "description" to categoryDescription,
+                "category_image_url" to categoryImageUrl,
+            ),
+        ).await()
     }
 }

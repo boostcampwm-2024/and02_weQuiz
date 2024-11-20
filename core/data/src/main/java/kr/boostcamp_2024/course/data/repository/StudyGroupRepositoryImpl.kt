@@ -4,8 +4,8 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.StudyGroupDTO
-import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
 import kr.boostcamp_2024.course.domain.model.StudyGroup
+import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import javax.inject.Inject
 
@@ -50,12 +50,11 @@ class StudyGroupRepositoryImpl @Inject constructor(
         document.update("users", FieldValue.arrayRemove(userId)).await()
     }
 
-    override suspend fun deleteCategory(studyGroupId: String, categoryId: String): Result<Unit> {
-        return runCatching {
+    override suspend fun deleteCategory(studyGroupId: String, categoryId: String): Result<Unit> =
+        runCatching {
             val document = studyGroupCollectionRef.document(studyGroupId)
             document.update("categories", FieldValue.arrayRemove(categoryId)).await()
         }
-    }
 
     override suspend fun addCategoryToStudyGroup(studyGroupId: String, categoryId: String): Result<Unit> =
         runCatching {
