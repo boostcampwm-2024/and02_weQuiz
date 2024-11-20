@@ -63,7 +63,7 @@ class CreateStudyViewModel @Inject constructor(
 
                 _uiState.update { it.copy(isLoading = false, currentUserId = currentUser) }
             }.onFailure {
-                Log.e("MainViewModel", "Failed to load current user", it)
+                Log.e("CreateStudyViewModel", "Failed to load current user", it)
                 _uiState.update { it.copy(isLoading = false, snackBarMessage = "로그인한 유저가 없습니다.") }
             }
 
@@ -88,8 +88,13 @@ class CreateStudyViewModel @Inject constructor(
                             )
                         }
                     }.onFailure {
-                        Log.e("MainViewModel", "Failed to load study group", it)
-                        _uiState.update { it.copy(isLoading = false, snackBarMessage = "스터디 그룹 로드 실패") }
+                        Log.e("CreateStudyViewModel", "Failed to load study group", it)
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                snackBarMessage = "스터디 그룹 로드 실패",
+                            )
+                        }
                     }
             }
         }
@@ -125,16 +130,12 @@ class CreateStudyViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             studyGroupId?.let {
-                Log.d("MainViewModel", "${uiState.value.currentImage}")
-
                 val downloadUrl = uiState.value.currentImage?.let { imageByteArray ->
                     uiState.value.defaultImageUri?.let { defaultUri ->
                         storageRepository.deleteImage(defaultUri)
                     }
                     storageRepository.uploadImage(imageByteArray).getOrNull()
                 } ?: uiState.value.defaultImageUri
-
-                Log.d("MainViewModel", "$downloadUrl")
 
                 val studyGroupUpdatedInfo = StudyGroupUpdatedInfo(
                     studyGroupImageUrl = downloadUrl,
@@ -150,7 +151,12 @@ class CreateStudyViewModel @Inject constructor(
                     }
                     .onFailure {
                         Log.e("MainViewModel", "Failed to update study group", it)
-                        _uiState.update { it.copy(isLoading = true, snackBarMessage = "스터디 그룹 업데이트 실패") }
+                        _uiState.update {
+                            it.copy(
+                                isLoading = true,
+                                snackBarMessage = "스터디 그룹 업데이트 실패",
+                            )
+                        }
                     }
             }
         }
@@ -163,7 +169,7 @@ class CreateStudyViewModel @Inject constructor(
                 addStudyGroupToUser(currentUserId, studyId)
 
             }.onFailure { throwable ->
-                Log.d("errorMessage", "${throwable.message}")
+                Log.e("errorMessage", "${throwable.message}")
                 _uiState.update { it.copy(isLoading = false, snackBarMessage = "스터디 그룹 생성 실패") }
             }
         }
@@ -175,7 +181,7 @@ class CreateStudyViewModel @Inject constructor(
                 Log.d("addStudyGroupToUserResult", "성공, $result)")
                 _uiState.update { it.copy(isLoading = false, isSubmitStudySuccess = true) }
             }.onFailure { throwable ->
-                Log.d("addStudyGroupToUserResult", "실패, ${throwable.message})")
+                Log.e("addStudyGroupToUserResult", "실패, ${throwable.message})")
                 _uiState.update { it.copy(isLoading = false, snackBarMessage = "스터디 그룹 생성 실패") }
             }
         }

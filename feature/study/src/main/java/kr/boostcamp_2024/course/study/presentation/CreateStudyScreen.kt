@@ -166,7 +166,7 @@ fun CreateStudyScreen(
                         photoPickerLauncher.launch(PickVisualMediaRequest(ImageOnly))
                     },
                 imgUrl = currentStudyImage ?: defaultStudyImageUri,
-                contentDescription = "스터디 배경 이미지",
+                contentDescription = stringResource(R.string.des_study_group_image),
                 placeholder = painterResource(R.drawable.img_photo_picker),
                 error = painterResource(R.drawable.img_photo_picker),
                 fallback = painterResource(R.drawable.img_photo_picker),
