@@ -41,10 +41,4 @@ class QuestionRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteQuestions(questions: List<String>): Result<Unit> =
-        runCatching {
-            questions.forEach { questionId ->
-                questionCollectionRef.document(questionId).delete().await()
-            }
-        }
 }
