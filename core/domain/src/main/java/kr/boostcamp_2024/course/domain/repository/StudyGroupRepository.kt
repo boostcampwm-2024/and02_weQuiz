@@ -1,7 +1,8 @@
 package kr.boostcamp_2024.course.domain.repository
 
-import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
 import kr.boostcamp_2024.course.domain.model.StudyGroup
+import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
+import kr.boostcamp_2024.course.domain.model.StudyGroupUpdatedInfo
 
 interface StudyGroupRepository {
     suspend fun addStudyGroup(studyGroupCreationInfo: StudyGroupCreationInfo): Result<String>
@@ -17,4 +18,8 @@ interface StudyGroupRepository {
     suspend fun deleteUser(studyGroupId: String, userId: String): Result<Unit>
 
     suspend fun deleteCategory(studyGroupId: String, categoryId: String): Result<Unit>
+
+    suspend fun deleteStudyGroup(studyGroupId: String): Result<Unit>
+
+    suspend fun updateStudyGroup(studyGroupId: String, updateInfo: StudyGroupUpdatedInfo): Result<Unit>
 }

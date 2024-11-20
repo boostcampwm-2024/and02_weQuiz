@@ -43,7 +43,7 @@ fun WeQuizNavHost(
                 navController.popBackStack() // 로그인 시 로그인 화면 제거, 추후 수정 필요
                 navController.navigateMain()
             },
-            onSignUpButtonClick = navController::navigationSignUp,
+            onSignUp = navController::navigationSignUp,
             onSignUpSuccess = navController::navigateUp,
         )
 
@@ -52,13 +52,17 @@ fun WeQuizNavHost(
             onNotificationButtonClick = navController::navigateNotification,
             onCreateStudyButtonClick = navController::navigateCreateStudy,
             onStudyGroupClick = navController::navigateStudy,
+            onEditStudyButtonClick = navController::navigateCreateStudy,
         )
 
         studyNavGraph(
             onNavigationButtonClick = navController::navigateUp,
-            onCreateStudySuccess = navController::navigateUp,
+            onSubmitStudySuccess = navController::navigateUp,
             onCreateCategoryButtonClick = navController::navigateCreateCategory,
             onCategoryClick = navController::navigateCategory,
+            onDeleteStudyGroupSuccess = navController::navigateUp,
+            onLeaveStudyGroupSuccess = navController::navigateUp,
+            onEditStudyGroupButtonClick = navController::navigateCreateStudy,
         )
 
         categoryNavGraph(
@@ -77,6 +81,9 @@ fun WeQuizNavHost(
             onCreateQuizSuccess = navController::navigateUp,
             onCreateQuestionButtonClick = navController::navigateCreateQuestion,
             onStartQuizButtonClick = navController::navigateQuestion,
+            onSettingMenuClick = navController::navigateCreateQuiz,
+            onEditQuizSuccess = navController::navigateUp,
+            onQuizDeleted = navController::navigateUp,
         )
     }
 }

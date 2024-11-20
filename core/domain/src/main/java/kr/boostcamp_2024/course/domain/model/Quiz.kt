@@ -10,6 +10,7 @@ data class Quiz(
     val solveTime: Int,
     val questions: List<String>,
     val userOmrs: List<String>,
+    val quizImageUrl: String?,
 ) {
     val isOpened: Boolean
         get() = LocalDate.now().isAfter(LocalDate.parse(startTime))

@@ -53,9 +53,12 @@ fun CategoryScreen(
     categoryViewModel: CategoryViewModel = hiltViewModel(),
     onCreateCategoryButtonClick: (String?, String?) -> Unit,
 ) {
-
     val categoryUiState = categoryViewModel.categoryUiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        categoryViewModel.initViewmodel()
+    }
 
     LaunchedEffect(Unit) {
         categoryUiState.value.snackBarMessage?.let { message ->
@@ -208,8 +211,8 @@ fun QuizItem(
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(16.dp)),
-            imgUrl = null,
-            contentDescription = null,
+            imgUrl = quiz.quizImageUrl,
+            contentDescription = stringResource(R.string.des_quiz_item_image),
         )
 
         Text(

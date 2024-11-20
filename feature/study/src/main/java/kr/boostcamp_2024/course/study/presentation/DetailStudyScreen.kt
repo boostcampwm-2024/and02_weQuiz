@@ -8,7 +8,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -23,13 +26,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,7 +39,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.StudyGroup
@@ -50,12 +51,17 @@ import kr.boostcamp_2024.course.study.viewmodel.DetailStudyViewModel
 
 @Composable
 fun DetailStudyScreen(
-    viewModel: DetailStudyViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
+    onDeleteStudyGroupSuccess: () -> Unit,
+    onLeaveStudyGroupSuccess: () -> Unit,
+    onEditStudyGroupButtonClick: (String) -> Unit,
+    viewModel: DetailStudyViewModel = hiltViewModel(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onCreateCategoryButtonClick: (String?, String?) -> Unit,
     onCategoryClick: (String, String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
 
     LaunchedEffect(Unit) { viewModel.initViewmodel() }
 
@@ -64,16 +70,47 @@ fun DetailStudyScreen(
         categories = uiState.categories,
         users = uiState.users,
         owner = uiState.owner,
-        curUserId = uiState.userId,
-        isLoading = uiState.isLoading,
-        errorMessageId = uiState.errorMessageId,
-        onErrorMessageShown = viewModel::shownErrorMessage,
+        currentUserId = uiState.userId,
+        snackBarHostState = snackBarHostState,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateCategoryButtonClick = onCreateCategoryButtonClick,
         onCategoryClick = onCategoryClick,
         onRemoveStudyGroupMemberButtonClick = viewModel::deleteStudyGroupMember,
         onInviteConfirmButtonClick = viewModel::addNotification,
+        onEditStudyGroupClick = onEditStudyGroupButtonClick,
+        onDeleteStudyGroupClick = viewModel::deleteStudyGroup,
+        onLeaveStudyGroupClick = viewModel::deleteUserFromStudyGroup,
     )
+
+    if (uiState.isLoading) {
+        Box {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+            )
+        }
+    }
+
+    uiState.errorMessageId?.let { errorMessageId ->
+        val errorMessage = stringResource(errorMessageId)
+        LaunchedEffect(errorMessageId) {
+            snackBarHostState.showSnackbar(errorMessage)
+            viewModel.shownErrorMessage()
+        }
+    }
+
+    if (uiState.isDeleteStudyGroupSuccess) {
+        LaunchedEffect(Unit) {
+            onDeleteStudyGroupSuccess()
+        }
+    }
+
+    if (uiState.isLeaveStudyGroupSuccess) {
+        LaunchedEffect(Unit) {
+            onLeaveStudyGroupSuccess()
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,25 +120,21 @@ fun DetailStudyScreen(
     categories: List<Category>,
     users: List<User>,
     owner: User?,
-    curUserId: String?,
-    isLoading: Boolean,
-    errorMessageId: Int?,
-    onErrorMessageShown: () -> Unit,
+    currentUserId: String?,
+    snackBarHostState: SnackbarHostState,
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: (String?, String?) -> Unit,
     onCategoryClick: (String, String) -> Unit,
     onRemoveStudyGroupMemberButtonClick: (String, String) -> Unit,
     onInviteConfirmButtonClick: (String, String) -> Unit,
+    onEditStudyGroupClick: (String) -> Unit,
+    onDeleteStudyGroupClick: () -> Unit,
+    onLeaveStudyGroupClick: () -> Unit,
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }
-    val screenList = listOf(
-        DetailScreenRoute,
-        GroupScreenRoute,
-    )
-    val snackBarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
+    val screenList = listOf(DetailScreenRoute, GroupScreenRoute)
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -128,15 +161,14 @@ fun DetailStudyScreen(
                     )
                 },
                 actions = {
-                    CustomIconButton(
-                        onClicked = {
-                            coroutineScope.launch {
-                                snackBarHostState.showSnackbar(context.getString(R.string.btn_setting_snack_bar_message))
-                            }
-                        },
-                        imageVector = Icons.Filled.Settings,
-                        description = stringResource(R.string.btn_top_bar_detail_study_setting),
-                    )
+                    currentGroup?.let {
+                        StudyDropDownMenu(
+                            isOwner = (owner?.id == currentUserId),
+                            onEditStudyGroupClick = { onEditStudyGroupClick(currentGroup.id) },
+                            onDeleteStudyGroupClick = onDeleteStudyGroupClick,
+                            onLeaveStudyGroupClick = onLeaveStudyGroupClick,
+                        )
+                    }
                 },
             )
         },
@@ -182,7 +214,7 @@ fun DetailStudyScreen(
                     1 -> GroupListScreen(
                         currentGroup,
                         owner,
-                        curUserId,
+                        currentUserId,
                         users,
                         onInviteConfirmButtonClick,
                         onRemoveStudyGroupMemberButtonClick,
@@ -191,21 +223,56 @@ fun DetailStudyScreen(
             }
         }
     }
+}
 
-    if (isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
-    }
+@Composable
+fun StudyDropDownMenu(
+    isOwner: Boolean,
+    onEditStudyGroupClick: () -> Unit,
+    onDeleteStudyGroupClick: () -> Unit,
+    onLeaveStudyGroupClick: () -> Unit,
+) {
+    var isExpanded by remember { mutableStateOf(false) }
 
-    if (errorMessageId != null) {
-        LaunchedEffect(errorMessageId) {
-            snackBarHostState.showSnackbar(context.getString(errorMessageId))
-            onErrorMessageShown()
+    Box {
+        CustomIconButton(
+            onClicked = { isExpanded = isExpanded.not() },
+            imageVector = Icons.Filled.Settings,
+            description = stringResource(R.string.btn_top_bar_detail_study_setting),
+        )
+        DropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false },
+        ) {
+            when (isOwner) {
+                true -> {
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(R.string.txt_study_group_menu_edit)) },
+                        onClick = {
+                            onEditStudyGroupClick()
+                            isExpanded = false
+                        },
+                    )
+                    HorizontalDivider()
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(R.string.txt_study_group_menu_delete)) },
+                        onClick = {
+                            onDeleteStudyGroupClick()
+                            isExpanded = false
+                        },
+                    )
+                }
+
+                false -> {
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(R.string.txt_study_group_menu_leave)) },
+                        onClick = {
+                            onLeaveStudyGroupClick()
+                            isExpanded = false
+                        },
+                    )
+                }
+            }
         }
     }
 }

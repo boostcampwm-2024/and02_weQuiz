@@ -6,6 +6,7 @@ import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.StudyGroupDTO
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.StudyGroupCreationInfo
+import kr.boostcamp_2024.course.domain.model.StudyGroupUpdatedInfo
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import javax.inject.Inject
 
@@ -17,6 +18,7 @@ class StudyGroupRepositoryImpl @Inject constructor(
     override suspend fun addStudyGroup(studyGroupCreationInfo: StudyGroupCreationInfo): Result<String> =
         runCatching {
             val request = StudyGroupDTO(
+                studyGroupImageUrl = studyGroupCreationInfo.studyGroupImageUrl,
                 name = studyGroupCreationInfo.name,
                 description = studyGroupCreationInfo.description,
                 maxUserNum = studyGroupCreationInfo.maxUserNum,
@@ -50,6 +52,10 @@ class StudyGroupRepositoryImpl @Inject constructor(
         document.update("users", FieldValue.arrayRemove(userId)).await()
     }
 
+    override suspend fun deleteStudyGroup(studyGroupId: String): Result<Unit> = runCatching {
+        studyGroupCollectionRef.document(studyGroupId).delete().await()
+    }
+
     override suspend fun deleteCategory(studyGroupId: String, categoryId: String): Result<Unit> =
         runCatching {
             val document = studyGroupCollectionRef.document(studyGroupId)
@@ -68,5 +74,16 @@ class StudyGroupRepositoryImpl @Inject constructor(
             val response = document.toObject(StudyGroupDTO::class.java)
             val studyGroupName = requireNotNull(response?.name)
             studyGroupName
+        }
+
+    override suspend fun updateStudyGroup(studyGroupId: String, updatedInfo: StudyGroupUpdatedInfo): Result<Unit> =
+        runCatching {
+            val updatedInfoMap = hashMapOf<String, Any?>(
+                "study_group_image_url" to updatedInfo.studyGroupImageUrl,
+                "name" to updatedInfo.name,
+                "description" to updatedInfo.description,
+                "max_user_num" to updatedInfo.maxUserNum,
+            )
+            studyGroupCollectionRef.document(studyGroupId).update(updatedInfoMap).await()
         }
 }
