@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.category.navigation.CreateCategoryRoute
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
+import kr.boostcamp_2024.course.domain.repository.StorageRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import javax.inject.Inject
 
@@ -23,6 +24,9 @@ data class CreateCategoryUiState(
     val isCategoryCreationValid: Boolean = false,
     val creationSuccess: Boolean = false,
     val errorMessage: String? = null,
+    val categoryImageUrl: String? = null,
+    val currentImage: ByteArray? = null,
+    val defaultImageUri: String? = null,
 )
 
 @HiltViewModel
@@ -30,29 +34,65 @@ class CreateCategoryViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val categoryRepository: CategoryRepository,
     private val studyGroupRepository: StudyGroupRepository,
+    private val storageRepository: StorageRepository,
 ) : ViewModel() {
     private val _createCategoryUiState: MutableStateFlow<CreateCategoryUiState> = MutableStateFlow(CreateCategoryUiState())
     val createCategoryUiState: StateFlow<CreateCategoryUiState> = _createCategoryUiState.asStateFlow()
     private val studyGroupId = savedStateHandle.toRoute<CreateCategoryRoute>().studyGroupId
+    val categoryId = savedStateHandle.toRoute<CreateCategoryRoute>().categoryId
 
-    fun createCategory() {
+    fun uploadCategory() {
         setLoading()
         viewModelScope.launch {
-            categoryRepository.createCategory(
-                _createCategoryUiState.value.categoryName,
-                _createCategoryUiState.value.categoryDescription.takeIf { it.isNotBlank() },
-            ).onSuccess { categoryId ->
-                saveCategoryToStudyGroup(categoryId)
-            }.onFailure {
-                Log.e("CreateCategoryViewModel", "Failed to create category", it)
-                setErrorMessage("카테고리 생성에 실패했습니다. 다시 시도해주세요!")
+            when (categoryId) {
+                null -> createCategory()
+                else -> updateCategory(categoryId)
             }
+
+        }
+    }
+
+    private suspend fun createCategory() {
+        val imageUrl = _createCategoryUiState.value.currentImage?.let { image ->
+            storageRepository.uploadImage(image).getOrNull()
+        }
+        categoryRepository.createCategory(
+            _createCategoryUiState.value.categoryName,
+            _createCategoryUiState.value.categoryDescription.takeIf { it.isNotBlank() },
+            imageUrl,
+        ).onSuccess { categoryId ->
+            saveCategoryToStudyGroup(categoryId)
+        }.onFailure {
+            Log.e("CreateCategoryViewModel", "Failed to create category", it)
+            setErrorMessage("카테고리 생성에 실패했습니다. 다시 시도해주세요!")
+            _createCategoryUiState.update { it.copy(isLoading = false) }
+        }
+    }
+
+    private suspend fun updateCategory(categoryId: String) {
+        val imageUrl = _createCategoryUiState.value.currentImage?.let { image ->
+            storageRepository.uploadImage(image).getOrNull()
+        }
+
+        categoryRepository.updateCategory(
+            categoryId,
+            _createCategoryUiState.value.categoryName,
+            _createCategoryUiState.value.categoryDescription.takeIf { it.isNotBlank() },
+            imageUrl,
+        ).onSuccess {
+            saveCategoryToStudyGroup(categoryId)
+        }.onFailure {
+            Log.e("CreateCategoryViewModel", "Failed to update category", it)
+            setErrorMessage("카테고리 업데이트에 실패했습니다. 다시 시도해주세요!")
+            _createCategoryUiState.update { it.copy(isLoading = false) }
         }
     }
 
     private suspend fun saveCategoryToStudyGroup(categoryId: String) {
         try {
-            studyGroupRepository.addCategoryToStudyGroup(studyGroupId, categoryId).getOrThrow()
+            if (studyGroupId != null) {
+                studyGroupRepository.addCategoryToStudyGroup(studyGroupId, categoryId).getOrThrow()
+            }
 
             _createCategoryUiState.update { currentState ->
                 currentState.copy(
@@ -98,5 +138,9 @@ class CreateCategoryViewModel @Inject constructor(
                 isCategoryCreationValid = currentState.categoryName.isNotBlank(),
             )
         }
+    }
+
+    fun onImageByteArrayChanged(imageByteArray: ByteArray) {
+        _createCategoryUiState.update { it.copy(currentImage = imageByteArray) }
     }
 }

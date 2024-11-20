@@ -58,22 +58,25 @@ class DetailStudyViewModel @Inject constructor(
 
     private val _uiState: MutableStateFlow<DetailStudyUiState> = MutableStateFlow(DetailStudyUiState())
     val uiState: StateFlow<DetailStudyUiState> = _uiState.onStart {
-        loadCurrentUser()
-        loadStudyGroup()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), DetailStudyUiState())
 
-    private fun loadCurrentUser() {
+    fun initViewmodel() {
+        getUserKey()
+        loadStudyGroup(studyGroupId)
+    }
+
+    private fun getUserKey() {
         viewModelScope.launch {
-            authRepository.getUserKey()
-                .onSuccess { userKey ->
-                    _uiState.update { it.copy(userId = userKey) }
-                }.onFailure {
-                    Log.e("DetailStudyViewModel", "Failed to get user key", it)
-                }
+            authRepository.getUserKey().onSuccess { userKey ->
+                val userId = requireNotNull(userKey)
+                _uiState.update { it.copy(userId = userId) }
+            }.onFailure {
+                Log.e("DetailStudyViewModel", "Failed to get user key", it)
+            }
         }
     }
 
-    private fun loadStudyGroup() {
+    private fun loadStudyGroup(studyGroupId: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             studyGroupRepository.getStudyGroup(studyGroupId)
@@ -245,7 +248,7 @@ class DetailStudyViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             userRepository.deleteStudyGroupUser(userId, groupId)
                 .onSuccess {
-                    loadStudyGroup()
+                    loadStudyGroup(studyGroupId)
                 }.onFailure {
                     Log.e("DetailStudyViewModel", "Failed to delete study group member", it)
                     _uiState.update {

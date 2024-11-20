@@ -56,6 +56,12 @@ class StudyGroupRepositoryImpl @Inject constructor(
         studyGroupCollectionRef.document(studyGroupId).delete().await()
     }
 
+    override suspend fun deleteCategory(studyGroupId: String, categoryId: String): Result<Unit> =
+        runCatching {
+            val document = studyGroupCollectionRef.document(studyGroupId)
+            document.update("categories", FieldValue.arrayRemove(categoryId)).await()
+        }
+
     override suspend fun addCategoryToStudyGroup(studyGroupId: String, categoryId: String): Result<Unit> =
         runCatching {
             val document = studyGroupCollectionRef.document(studyGroupId)

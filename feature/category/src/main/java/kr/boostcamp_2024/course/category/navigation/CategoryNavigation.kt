@@ -9,22 +9,25 @@ import kr.boostcamp_2024.course.category.presentation.CreateCategoryScreen
 
 @Serializable
 data class CategoryRoute(
+    val studyGroupId: String,
     val categoryId: String,
 )
 
 @Serializable
 data class CreateCategoryRoute(
-    val studyGroupId: String,
+    val studyGroupId: String?,
+    val categoryId: String?,
 )
 
-fun NavController.navigateCategory(categoryId: String) {
-    navigate(CategoryRoute(categoryId))
+fun NavController.navigateCategory(studyGroupId: String, categoryId: String) {
+    navigate(CategoryRoute(studyGroupId, categoryId))
 }
 
 fun NavController.navigateCreateCategory(
-    studyGroupId: String,
+    studyGroupId: String?,
+    categoryId: String?,
 ) {
-    navigate(CreateCategoryRoute(studyGroupId))
+    navigate(CreateCategoryRoute(studyGroupId, categoryId))
 }
 
 fun NavGraphBuilder.categoryNavGraph(
@@ -32,12 +35,14 @@ fun NavGraphBuilder.categoryNavGraph(
     onCreateQuizButtonClick: (String) -> Unit,
     onQuizClick: (String, String) -> Unit,
     onCreateCategorySuccess: () -> Unit,
+    onCreateCategoryButtonClick: (String?, String?) -> Unit,
 ) {
     composable<CategoryRoute> {
         CategoryScreen(
             onNavigationButtonClick = onNavigationButtonClick,
             onCreateQuizButtonClick = onCreateQuizButtonClick,
             onQuizClick = onQuizClick,
+            onCreateCategoryButtonClick = onCreateCategoryButtonClick,
         )
     }
     composable<CreateCategoryRoute> {

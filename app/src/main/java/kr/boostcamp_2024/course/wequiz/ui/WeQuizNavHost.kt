@@ -70,6 +70,7 @@ fun WeQuizNavHost(
             onCreateQuizButtonClick = navController::navigateCreateQuiz,
             onQuizClick = navController::navigateQuiz,
             onCreateCategorySuccess = navController::navigateUp,
+            onCreateCategoryButtonClick = navController::navigateCreateCategory,
         )
 
         quizNavGraph(

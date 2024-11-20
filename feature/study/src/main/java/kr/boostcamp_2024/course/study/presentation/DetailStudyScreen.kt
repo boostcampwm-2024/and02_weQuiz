@@ -52,15 +52,17 @@ import kr.boostcamp_2024.course.study.viewmodel.DetailStudyViewModel
 @Composable
 fun DetailStudyScreen(
     onNavigationButtonClick: () -> Unit,
-    onCreateCategoryButtonClick: (String) -> Unit,
-    onCategoryClick: (String) -> Unit,
     onDeleteStudyGroupSuccess: () -> Unit,
     onLeaveStudyGroupSuccess: () -> Unit,
     onEditStudyGroupButtonClick: (String) -> Unit,
     viewModel: DetailStudyViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    onCreateCategoryButtonClick: (String?, String?) -> Unit,
+    onCategoryClick: (String, String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) { viewModel.initViewmodel() }
 
     DetailStudyScreen(
         currentGroup = uiState.currentGroup,
@@ -120,8 +122,8 @@ fun DetailStudyScreen(
     currentUserId: String?,
     snackBarHostState: SnackbarHostState,
     onNavigationButtonClick: () -> Unit,
-    onCreateCategoryButtonClick: (String) -> Unit,
-    onCategoryClick: (String) -> Unit,
+    onCreateCategoryButtonClick: (String?, String?) -> Unit,
+    onCategoryClick: (String, String) -> Unit,
     onRemoveStudyGroupMemberButtonClick: (String, String) -> Unit,
     onInviteConfirmButtonClick: (String, String) -> Unit,
     onEditStudyGroupClick: (String) -> Unit,
