@@ -39,10 +39,12 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatB
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.login.R
 import kr.boostcamp_2024.course.login.presentation.component.PasswordTextField
+import kr.boostcamp_2024.course.login.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
+    onSignUpButtonClick: () -> Unit,
     loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     val loginUiState by loginViewModel.loginUiState.collectAsStateWithLifecycle()
@@ -60,6 +62,7 @@ fun LoginScreen(
 
     LoginScreen(
         snackBarHostState,
+        onSignUpButtonClick,
         loginViewModel::loginForExperience,
         loginViewModel::setNewSnackBarMessage,
     )
@@ -68,6 +71,7 @@ fun LoginScreen(
 @Composable
 private fun LoginScreen(
     snackBarHostState: SnackbarHostState,
+    onSignUpButtonClick: () -> Unit,
     onLoginSuccess: () -> Unit,
     setNewSnackBarMessage: (String) -> Unit,
 ) {
@@ -90,6 +94,7 @@ private fun LoginScreen(
             LoginContent()
             LoginButtons(
                 onLoginSuccess = onLoginSuccess,
+                onSignUpButtonClick = onSignUpButtonClick,
                 showSnackBar = setNewSnackBarMessage,
             )
         }
@@ -155,6 +160,7 @@ fun LoginContent() {
 @Composable
 fun LoginButtons(
     onLoginSuccess: () -> Unit,
+    onSignUpButtonClick: () -> Unit,
     showSnackBar: (String) -> Unit,
 ) {
     Column(
@@ -174,10 +180,7 @@ fun LoginButtons(
             Text(text = stringResource(R.string.btn_sign_in))
         }
         OutlinedButton(
-            onClick = {
-                // todo: 회원가입 처리
-                showSnackBar("추후 제공될 기능입니다.")
-            },
+            onClick = onSignUpButtonClick,
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(text = stringResource(R.string.btn_sign_up))
@@ -201,6 +204,7 @@ fun LoginScreenPreview() {
     WeQuizTheme {
         LoginScreen(
             snackBarHostState = SnackbarHostState(),
+            onSignUpButtonClick = {},
             onLoginSuccess = {},
             setNewSnackBarMessage = { },
         )

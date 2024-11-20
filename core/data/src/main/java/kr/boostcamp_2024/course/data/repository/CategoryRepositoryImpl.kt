@@ -61,4 +61,11 @@ class CategoryRepositoryImpl @Inject constructor(
             document.update("quizzes", FieldValue.arrayRemove(quizId)).await()
 
         }
+
+    override suspend fun deleteCategories(categoryIds: List<String>): Result<Unit> =
+        runCatching {
+            categoryIds.forEach { categoryId ->
+                categoryCollectionRef.document(categoryId).delete().await()
+            }
+        }
 }

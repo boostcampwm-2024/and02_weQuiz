@@ -37,4 +37,11 @@ class UserOmrRepositoryImpl @Inject constructor(
                 document.reference.delete().await()
             }
         }
+
+    override suspend fun deleteUserOmrs(userOmrIds: List<String>): Result<Unit> =
+        runCatching {
+            userOmrIds.forEach { userOmrId ->
+                userOmrCollectionRef.document(userOmrId).delete().await()
+            }
+        }
 }

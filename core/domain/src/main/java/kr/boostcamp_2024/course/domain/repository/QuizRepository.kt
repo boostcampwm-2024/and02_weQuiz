@@ -17,4 +17,6 @@ interface QuizRepository {
     suspend fun editQuiz(quizId: String, quizCreateInfo: QuizCreationInfo): Result<Unit>
 
     suspend fun deleteQuiz(quizId: String): Result<Unit>
+
+    suspend fun deleteQuizzes(quizzes: List<String>): Result<Unit>
 }
