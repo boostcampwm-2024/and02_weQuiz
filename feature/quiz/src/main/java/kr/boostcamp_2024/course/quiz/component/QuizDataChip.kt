@@ -21,7 +21,7 @@ import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
-fun QuizDataChips(
+fun QuizDataChip(
     category: Category?,
     quiz: BaseQuiz?,
 ) {
