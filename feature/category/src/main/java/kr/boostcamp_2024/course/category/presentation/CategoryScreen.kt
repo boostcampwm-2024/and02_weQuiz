@@ -42,6 +42,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
+import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 
@@ -77,7 +78,7 @@ fun CategoryScreen(
 @Composable
 private fun CategoryScreen(
     category: Category?,
-    quizList: List<Quiz>?,
+    quizList: List<BaseQuiz>?,
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: (String) -> Unit,
     onQuizClick: (String, String) -> Unit,
@@ -164,7 +165,7 @@ private fun CategoryScreen(
 fun QuizList(
     modifier: Modifier = Modifier,
     categoryId: String,
-    quizzes: List<Quiz>?,
+    quizzes: List<BaseQuiz>?,
     onQuizClick: (String, String) -> Unit,
 ) {
     if (quizzes != null) {
@@ -190,7 +191,7 @@ fun QuizList(
 
 @Composable
 fun QuizItem(
-    quiz: Quiz,
+    quiz: BaseQuiz,
     onQuizClick: () -> Unit,
 ) {
     Column(
@@ -213,12 +214,14 @@ fun QuizItem(
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurface,
         )
-        // todo: date format
-        Text(
-            text = quiz.startTime,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+
+        if (quiz is Quiz) {
+            Text(
+                text = quiz.startTime,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 

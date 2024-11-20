@@ -13,8 +13,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
-import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.quiz.navigation.QuizRoute
@@ -23,7 +23,7 @@ import javax.inject.Inject
 data class QuizUiState(
     val isLoading: Boolean = false,
     val category: Category? = null,
-    val quiz: Quiz? = null,
+    val quiz: BaseQuiz? = null,
     val errorMessage: String? = null,
 )
 
