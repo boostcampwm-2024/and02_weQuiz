@@ -1,29 +1,73 @@
 package kr.boostcamp_2024.course.login.viewmodel
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Log
 import android.util.Patterns
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import kr.boostcamp_2024.course.domain.model.UserCreationInfo
+import kr.boostcamp_2024.course.domain.repository.AuthRepository
+import kr.boostcamp_2024.course.domain.repository.StorageRepository
+import kr.boostcamp_2024.course.domain.repository.UserRepository
+import kr.boostcamp_2024.course.login.R
+import kr.boostcamp_2024.course.login.model.UserUiModel
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import javax.inject.Inject
 
 data class SignUpUiState(
+    val isLoading: Boolean = false,
     val userCreationInfo: UserCreationInfo = UserCreationInfo(
         email = "",
-        password = "",
-        nickName = "",
-        profileImage = null,
+        name = "",
+        profileImageUrl = null,
     ),
+    val isSignUpSuccess: Boolean = false,
     val isSignUpValid: Boolean = false,
     val isEmailValid: Boolean = true,
+    val snackBarMessage: Int? = null,
 )
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor() : ViewModel() {
-    private val _signUpUiState: MutableStateFlow<SignUpUiState> = MutableStateFlow(SignUpUiState())
+class SignUpViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val authRepository: AuthRepository,
+    private val storageRepository: StorageRepository,
+    private val userRepository: UserRepository,
+    @ApplicationContext private val context: Context,
+) : ViewModel() {
+    private val userUiModel = requireNotNull(
+        savedStateHandle.get<String>("userUiModel")?.let { string ->
+            Json.decodeFromString<UserUiModel>(string)
+        },
+    ) { "UserUiModel is required" }
+    private val _signUpUiState: MutableStateFlow<SignUpUiState> = MutableStateFlow(
+        SignUpUiState(
+            userCreationInfo = UserCreationInfo(
+                email = userUiModel.email,
+                name = userUiModel.name,
+                profileImageUrl = userUiModel.profileImageUrl,
+            ),
+            isEmailValid = Patterns.EMAIL_ADDRESS.matcher(userUiModel.email).matches(),
+            isSignUpValid = userUiModel.email.isNotBlank() && userUiModel.name.isNotBlank(),
+        ),
+    )
     val signUpUiState: StateFlow<SignUpUiState> = _signUpUiState.asStateFlow()
 
     fun onEmailChanged(email: String) {
@@ -36,19 +80,10 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
         checkIsEmailValid()
     }
 
-    fun onPasswordChanged(password: String) {
+    fun onNameChanged(nickName: String) {
         _signUpUiState.update { currentState ->
             currentState.copy(
-                userCreationInfo = currentState.userCreationInfo.copy(password = password),
-            )
-        }
-        checkIsSignUpValid()
-    }
-
-    fun onNickNameChanged(nickName: String) {
-        _signUpUiState.update { currentState ->
-            currentState.copy(
-                userCreationInfo = currentState.userCreationInfo.copy(nickName = nickName),
+                userCreationInfo = currentState.userCreationInfo.copy(name = nickName),
             )
         }
         checkIsSignUpValid()
@@ -57,7 +92,7 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
     fun onProfileUriChanged(profileUri: String) {
         _signUpUiState.update { currentState ->
             currentState.copy(
-                userCreationInfo = currentState.userCreationInfo.copy(profileImage = profileUri),
+                userCreationInfo = currentState.userCreationInfo.copy(profileImageUrl = profileUri),
             )
         }
     }
@@ -65,8 +100,7 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
     private fun checkIsSignUpValid() {
         val currentState = _signUpUiState.value
         val isSignUpValid = currentState.userCreationInfo.email.isNotBlank() &&
-            currentState.userCreationInfo.password.isNotBlank() &&
-            currentState.userCreationInfo.nickName.isNotBlank() &&
+            currentState.userCreationInfo.name.isNotBlank() &&
             currentState.isEmailValid
         _signUpUiState.update { currentState.copy(isSignUpValid = isSignUpValid) }
     }
@@ -76,5 +110,96 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
         val isEmailValid = currentState.userCreationInfo.email.isNotBlank() &&
             Patterns.EMAIL_ADDRESS.matcher(currentState.userCreationInfo.email).matches()
         _signUpUiState.update { currentState.copy(isEmailValid = isEmailValid) }
+    }
+
+    fun signUp() {
+        setLoading()
+        viewModelScope.launch {
+            val imageByteArray = withContext(Dispatchers.IO) {
+                signUpUiState.value.userCreationInfo.profileImageUrl?.let { uriToByteArray(Uri.parse(it)) }
+            }
+            val downloadUrl = uploadImage(imageByteArray)
+            val userCreationInfo = UserCreationInfo(
+                email = signUpUiState.value.userCreationInfo.email,
+                name = signUpUiState.value.userCreationInfo.name,
+                profileImageUrl = downloadUrl,
+            )
+            userRepository.addUser(userUiModel.id, userCreationInfo)
+                .onSuccess {
+                    saveUserKey(userUiModel.id)
+                }.onFailure {
+                    Log.e("SignUpViewModel", "Failed to sign up", it)
+                    setNewSnackBarMessage(R.string.error_sign_up)
+                }
+        }
+    }
+
+    private suspend fun saveUserKey(userKey: String) {
+        authRepository.storeUserKey(userKey).onSuccess {
+            _signUpUiState.update {
+                it.copy(
+                    isSignUpSuccess = true,
+                    isLoading = false,
+                )
+            }
+        }.onFailure {
+            Log.e("LoginViewModel", "Failed to store user key")
+        }
+    }
+
+    private suspend fun uploadImage(imageByteArray: ByteArray?): String? {
+        imageByteArray?.let {
+            storageRepository.uploadImage(imageByteArray)
+                .onSuccess { downloadUrl ->
+                    return downloadUrl
+                }.onFailure {
+                    Log.e("SignUpViewModel", "Failed to upload image", it)
+                    setNewSnackBarMessage(R.string.error_upload_image)
+                }
+        }
+        return null
+    }
+
+    private fun uriToByteArray(
+        uri: Uri,
+    ): ByteArray {
+        val inputStream = if (uri.scheme == "http" || uri.scheme == "https") {
+            downloadImage(uri.toString())
+        } else {
+            context.contentResolver.openInputStream(uri)
+        }
+        val bitmap = BitmapFactory.decodeStream(inputStream)
+
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+        return baos.toByteArray()
+    }
+
+    private fun downloadImage(urlString: String): InputStream? =
+        try {
+            val url = URL(urlString)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.doInput = true
+            connection.connect()
+            if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+                connection.inputStream
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("SignUpViewModel", "Failed to download image", e)
+            null
+        }
+
+    private fun setLoading() {
+        _signUpUiState.update {
+            it.copy(isLoading = true)
+        }
+    }
+
+    fun setNewSnackBarMessage(message: Int?) {
+        _signUpUiState.update {
+            it.copy(snackBarMessage = message)
+        }
     }
 }

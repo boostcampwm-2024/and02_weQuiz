@@ -29,6 +29,10 @@ navigationCompose = "2.8.3"
 googleGmsGoogleServices = "4.4.2"
 firebaseBom = "33.3.0"
 
+# credential
+credentials = "1.3.0"
+googleId = "1.1.1"
+
 # hilt
 hiltAndroid = "2.51.1"
 hiltAndroidCompiler = "2.51.1"
@@ -41,6 +45,7 @@ espressoCore = "3.6.1"
 
 # coil
 coil = "3.0.0"
+firebaseStorageKtx = "21.0.1"
 
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -74,6 +79,10 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
+
+credentails = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
+credentails-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
+google-id = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleId" }
 
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltAndroidCompiler" }

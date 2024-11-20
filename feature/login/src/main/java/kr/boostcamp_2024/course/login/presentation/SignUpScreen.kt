@@ -1,16 +1,17 @@
 package kr.boostcamp_2024.course.login.presentation
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -18,14 +19,17 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,9 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.login.R
-import kr.boostcamp_2024.course.login.presentation.component.PasswordTextField
 import kr.boostcamp_2024.course.login.viewmodel.SignUpUiState
 import kr.boostcamp_2024.course.login.viewmodel.SignUpViewModel
 
@@ -46,15 +51,28 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.signUpUiState.collectAsStateWithLifecycle()
+    val snackBarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
+    LaunchedEffect(uiState) {
+        uiState.snackBarMessage?.let {
+            snackBarHostState.showSnackbar(context.getString(it))
+            viewModel.setNewSnackBarMessage(null)
+        }
+        if (uiState.isSignUpSuccess) {
+            onSignUpSuccess()
+        }
+    }
 
     SignupScreen(
         uiState = uiState,
+        snackBarHostState = snackBarHostState,
         onEmailChanged = viewModel::onEmailChanged,
-        onPasswordChanged = viewModel::onPasswordChanged,
-        onNickNameChanged = viewModel::onNickNameChanged,
+        onNameChanged = viewModel::onNameChanged,
         onProfileUriChanged = viewModel::onProfileUriChanged,
-        onSignUpSuccess = onSignUpSuccess,
         onNavigationButtonClick = onNavigationButtonClick,
+        onSignUpButtonClick = viewModel::signUp,
+        setNewSnackBarMessage = viewModel::setNewSnackBarMessage,
     )
 }
 
@@ -62,12 +80,13 @@ fun SignUpScreen(
 @Composable
 private fun SignupScreen(
     uiState: SignUpUiState,
+    snackBarHostState: SnackbarHostState,
     onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
-    onNickNameChanged: (String) -> Unit,
+    onNameChanged: (String) -> Unit,
     onProfileUriChanged: (String) -> Unit,
-    onSignUpSuccess: () -> Unit,
     onNavigationButtonClick: () -> Unit,
+    onSignUpButtonClick: () -> Unit,
+    setNewSnackBarMessage: (Int) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -89,6 +108,7 @@ private fun SignupScreen(
                 },
             )
         },
+        snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -103,22 +123,24 @@ private fun SignupScreen(
             item {
                 SignUpContent(
                     email = uiState.userCreationInfo.email,
-                    password = uiState.userCreationInfo.password,
-                    nickName = uiState.userCreationInfo.nickName,
-                    profileUri = uiState.userCreationInfo.profileImage,
+                    name = uiState.userCreationInfo.name,
+                    profileUri = uiState.userCreationInfo.profileImageUrl,
                     onEmailChanged = onEmailChanged,
-                    onPasswordChanged = onPasswordChanged,
-                    onNickNameChanged = onNickNameChanged,
+                    onNameChanged = onNameChanged,
                     onProfileUriChanged = onProfileUriChanged,
                     isEmailValid = uiState.isEmailValid,
+                    setNewSnackBarMessage = setNewSnackBarMessage,
                 )
             }
             item {
                 SignUpButtons(
                     isSignUpValid = uiState.isSignUpValid,
-                    onSignUpSuccess = onSignUpSuccess,
+                    onSignUpButtonClick = onSignUpButtonClick,
                 )
             }
+        }
+        if (uiState.isLoading) {
+            WeQuizCircularProgressIndicator()
         }
     }
 }
@@ -126,41 +148,45 @@ private fun SignupScreen(
 @Composable
 fun SignUpContent(
     email: String,
-    password: String,
-    nickName: String,
+    name: String,
     profileUri: String?,
     onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
-    onNickNameChanged: (String) -> Unit,
+    onNameChanged: (String) -> Unit,
     onProfileUriChanged: (String) -> Unit,
     isEmailValid: Boolean,
+    setNewSnackBarMessage: (Int) -> Unit,
 ) {
     val photoPickerLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia(),
     ) { uri ->
         try {
-            // todo: 갤러리 이미지 처리
+            uri?.let {
+                onProfileUriChanged(it.toString())
+            }
         } catch (e: Exception) {
-            // todo: 갤러리 예외 처리
+            Log.e("SignUpScreen", "Failed to load image from gallery", e)
+            setNewSnackBarMessage(R.string.error_photo_picker)
         }
     }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp),
     ) {
-        Image(
+        WeQuizAsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(148.dp)
-                .clip(shape = MaterialTheme.shapes.large)
+                .padding(horizontal = 70.dp)
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(18.dp))
                 .clickable(enabled = true) {
                     photoPickerLauncher.launch(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
                     )
                 },
-            painter = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_photo_picker),
+            imgUrl = profileUri,
+            placeholder = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_photo_picker),
             contentDescription = stringResource(R.string.des_img_photo_picker),
-            contentScale = ContentScale.FillWidth,
+            fallback = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_photo_picker),
         )
 
         WeQuizTextField(
@@ -171,15 +197,10 @@ fun SignUpContent(
             placeholder = stringResource(R.string.txt_login_email_placeholder),
         )
 
-        PasswordTextField(
-            password = password,
-            onPasswordChanged = onPasswordChanged,
-        )
-
         WeQuizTextField(
             label = stringResource(R.string.txt_sign_up_nick_name),
-            text = nickName,
-            onTextChanged = onNickNameChanged,
+            text = name,
+            onTextChanged = onNameChanged,
             placeholder = stringResource(R.string.txt_sign_up_nick_name_placeholder),
         )
     }
@@ -188,13 +209,13 @@ fun SignUpContent(
 @Composable
 fun SignUpButtons(
     isSignUpValid: Boolean,
-    onSignUpSuccess: () -> Unit,
+    onSignUpButtonClick: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         Button(
-            onClick = onSignUpSuccess,
+            onClick = onSignUpButtonClick,
             modifier = Modifier.fillMaxWidth(),
             enabled = isSignUpValid,
         ) {
