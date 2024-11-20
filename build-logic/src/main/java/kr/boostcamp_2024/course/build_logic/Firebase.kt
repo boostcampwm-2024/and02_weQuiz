@@ -14,6 +14,7 @@ internal fun Project.configureFirebase() {
         add("implementation", platform(bom))
         add("implementation", libs.findLibrary("firebase.auth").get())
         add("implementation", libs.findLibrary("firebase.firestore").get())
+        add("implementation", libs.findLibrary("firebase.storage").get())
     }
 
 }

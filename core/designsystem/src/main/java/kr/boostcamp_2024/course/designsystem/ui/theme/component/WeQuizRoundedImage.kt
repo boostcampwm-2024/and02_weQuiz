@@ -31,7 +31,7 @@ fun WeQuizLocalRoundedImage(
 @Composable
 fun WeQuizAsyncImage(
     modifier: Modifier = Modifier,
-    imgUrl: String?,
+    imgUrl: Any?,
     placeholder: Painter = painterResource(id = R.drawable.img_error),
     error: Painter = painterResource(id = R.drawable.img_error),
     contentDescription: String?,

@@ -36,4 +36,12 @@ class NotificationRepositoryImpl @Inject constructor(
             )
             notificationCollectionRef.add(notification).await()
         }
+
+    override suspend fun deleteNotificationByStudyGroupId(studyGroupId: String): Result<Unit> =
+        runCatching {
+            notificationCollectionRef.whereEqualTo("group_id", studyGroupId).get().await()
+                .forEach { document ->
+                    document.reference.delete().await()
+                }
+        }
 }
