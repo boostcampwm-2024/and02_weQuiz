@@ -155,7 +155,7 @@ fun CreateCategoryScreen(
                 imgUrl = currentCategoryImage ?: defaultCategoryImageUri,
                 contentDescription = stringResource(R.string.des_category_image),
                 placeholder = painterResource(R.drawable.default_profile_image),
-                error = painterResource(R.drawable.default_profile_image),
+                error = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_error),
                 fallback = painterResource(R.drawable.default_profile_image),
             )
             Column(

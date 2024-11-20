@@ -248,7 +248,7 @@ class DetailStudyViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             userRepository.deleteStudyGroupUser(userId, groupId)
                 .onSuccess {
-                    loadStudyGroup()
+                    loadStudyGroup(studyGroupId)
                 }.onFailure {
                     Log.e("DetailStudyViewModel", "Failed to delete study group member", it)
                     _uiState.update {

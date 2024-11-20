@@ -43,14 +43,14 @@ fun CategorySettingMenu(
             onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
-                text = { Text("수정") },
+                text = { Text(stringResource(R.string.txt_category_fix)) },
                 onClick = {
                     expanded = false
                     onEditClick()
                 },
             )
             DropdownMenuItem(
-                text = { Text("카테고리 제거") },
+                text = { Text(stringResource(R.string.txt_category_delete)) },
                 onClick = {
                     expanded = false
                     onDeleteClick()

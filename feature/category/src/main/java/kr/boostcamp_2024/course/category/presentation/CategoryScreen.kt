@@ -128,9 +128,7 @@ private fun CategoryScreen(
                         onEditClick = {
                             onCreateCategoryButtonClick(null, category?.id)
                         },
-                        onDeleteClick = {
-                            onCategoryDeleteClick()
-                        },
+                        onDeleteClick = onCategoryDeleteClick,
                     )
                 },
             )

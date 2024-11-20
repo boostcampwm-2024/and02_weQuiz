@@ -84,7 +84,6 @@ class CategoryViewModel @Inject constructor(
                     setNewSnackBarMessage("카테고리 삭제에 성공했습니다.")
                     studyGroupRepository.deleteCategory(studyGroupId, categoryId)
                         .onSuccess {
-                            Log.d("CategoryViewModel", "Successfully deleted category")
                             _categoryUiState.update { it.copy(isDeleteCategorySuccess = true) }
                         }.onFailure {
                             Log.e("CategoryViewModel", "Failed to delete category from study group", it)

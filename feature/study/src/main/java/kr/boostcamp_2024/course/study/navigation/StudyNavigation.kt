@@ -31,7 +31,6 @@ fun NavGraphBuilder.studyNavGraph(
     onDeleteStudyGroupSuccess: () -> Unit,
     onLeaveStudyGroupSuccess: () -> Unit,
     onEditStudyGroupButtonClick: (String) -> Unit,
-    onCreateStudySuccess: () -> Unit,
     onCategoryClick: (String, String) -> Unit,
     onCreateCategoryButtonClick: (String?, String?) -> Unit,
 ) {
