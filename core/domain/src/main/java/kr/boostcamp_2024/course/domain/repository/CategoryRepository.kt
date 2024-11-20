@@ -12,4 +12,8 @@ interface CategoryRepository {
     suspend fun addQuiz(categoryId: String, quizId: String): Result<Unit>
 
     suspend fun addQuizToCategory(categoryId: String, quizId: String): Result<Unit>
+
+    suspend fun deleteCategory(categoryId: String): Result<Unit>
+
+    suspend fun updateCategory(categoryId: String, categoryName: String, categoryDescription: String?, categoryImageUrl: String?): Result<Unit>
 }

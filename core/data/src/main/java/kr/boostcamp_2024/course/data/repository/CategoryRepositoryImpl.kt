@@ -55,4 +55,26 @@ class CategoryRepositoryImpl @Inject constructor(
             document.update("quizzes", FieldValue.arrayUnion(quizId)).await()
 
         }
+
+    override suspend fun deleteCategory(categoryId: String): Result<Unit> =
+        kotlin.runCatching {
+            categoryCollectionRef.document(categoryId).delete().await()
+        }
+
+    override suspend fun updateCategory(
+        categoryId: String,
+        categoryName: String,
+        categoryDescription: String?,
+        categoryImageUrl: String?
+    ): Result<Unit> {
+        return runCatching {
+            categoryCollectionRef.document(categoryId).update(
+                mapOf(
+                    "name" to categoryName,
+                    "description" to categoryDescription,
+                    "category_image_url" to categoryImageUrl,
+                )
+            ).await()
+        }
+    }
 }
