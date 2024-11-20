@@ -25,9 +25,9 @@ import kr.boostcamp_2024.course.quiz.R
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun QuizTopAppBar(
-    onNavigationButtonClick: () -> Unit,
     category: Category?,
     quiz: BaseQuiz?,
+    onNavigationButtonClick: () -> Unit,
     onSettingMenuClick: (String, String) -> Unit,
     onDeleteMenuClick: (String, BaseQuiz) -> Unit,
 ) {

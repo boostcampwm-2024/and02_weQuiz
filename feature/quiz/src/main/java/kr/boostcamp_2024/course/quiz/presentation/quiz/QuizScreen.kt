@@ -4,17 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedAssistChip
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -26,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,10 +30,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.quiz.R
+import kr.boostcamp_2024.course.quiz.component.QuizDataChips
 import kr.boostcamp_2024.course.quiz.component.QuizTopAppBar
 import kr.boostcamp_2024.course.quiz.viewmodel.QuizViewModel
 
@@ -49,7 +45,7 @@ fun QuizScreen(
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
     onSettingMenuClick: (String, String) -> Unit,
-    onQuizDeleted: () -> Unit,
+    onQuizDeleteSuccess: () -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     viewModel: QuizViewModel = hiltViewModel(),
 ) {
@@ -57,7 +53,7 @@ fun QuizScreen(
 
     if (uiState.value.isDeleted) {
         LaunchedEffect(Unit) {
-            onQuizDeleted() // 삭제되면 뒤로가기
+            onQuizDeleteSuccess()
         }
     }
 
@@ -77,13 +73,7 @@ fun QuizScreen(
     )
 
     if (uiState.value.isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
+        WeQuizCircularProgressIndicator()
     }
 
     uiState.value.errorMessage?.let { errorMessage ->
@@ -109,8 +99,13 @@ fun QuizScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            QuizTopAppBar(onNavigationButtonClick, category, quiz, onSettingMenuClick, onDeleteMenuClick)
-            // 300줄 넘어서 분리
+            QuizTopAppBar(
+                category = category,
+                quiz = quiz,
+                onNavigationButtonClick = onNavigationButtonClick,
+                onSettingMenuClick = onSettingMenuClick,
+                onDeleteMenuClick = onDeleteMenuClick,
+            )
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -163,70 +158,31 @@ fun QuizScreen(
                 }
 
                 // QuizChip
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-
-                    quiz?.let {
-                        ElevatedAssistChip(
-                            onClick = { /* no-op */ },
-                            label = {
-                                Text(text = stringResource(R.string.txt_quiz_question_count, quiz.questions.size))
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    modifier = Modifier.size(18.dp),
-                                    painter = painterResource(R.drawable.search_24),
-                                    contentDescription = null,
-                                )
-                            },
-                        )
-                    }
-
-                    category?.let {
-                        ElevatedAssistChip(
-                            onClick = { /* no-op */ },
-                            label = {
-                                Text(
-                                    text = category.name,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    modifier = Modifier.size(18.dp),
-                                    painter = painterResource(R.drawable.search_24),
-                                    contentDescription = null,
-                                )
-                            },
-                        )
-                    }
-                }
+                QuizDataChips(
+                    category = category,
+                    quiz = quiz,
+                )
 
                 if (quiz is Quiz) {
                     // CreateQuestionButton & StartQuizButton
-                    quiz.let {
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onCreateQuestionButtonClick(quiz.id) },
+                        enabled = quiz.isOpened.not(),
+                    ) {
+                        when (quiz.isOpened.not()) {
+                            true -> Text(text = stringResource(R.string.txt_open_create_question))
+                            false -> Text(text = stringResource(R.string.txt_close_create_question))
+                        }
+
                         Button(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { onCreateQuestionButtonClick(quiz.id) },
-                            enabled = quiz.isOpened.not(),
+                            onClick = { onStartQuizButtonClick(quiz.id) },
+                            enabled = (quiz.isOpened && quiz.questions.isNotEmpty()),
                         ) {
-                            when (quiz.isOpened.not()) {
-                                true -> Text(text = stringResource(R.string.txt_open_create_question))
-                                false -> Text(text = stringResource(R.string.txt_close_create_question))
-                            }
-
-                            Button(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = { onStartQuizButtonClick(quiz.id) },
-                                enabled = (quiz.isOpened && quiz.questions.isNotEmpty()),
-                            ) {
-                                when (quiz.isOpened && quiz.questions.isEmpty()) {
-                                    true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
-                                    false -> Text(text = stringResource(R.string.txt_quiz_start))
-                                }
+                            when (quiz.isOpened && quiz.questions.isEmpty()) {
+                                true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
+                                false -> Text(text = stringResource(R.string.txt_quiz_start))
                             }
                         }
                     }

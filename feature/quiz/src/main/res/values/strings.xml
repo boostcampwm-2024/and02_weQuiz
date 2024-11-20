@@ -68,4 +68,5 @@
     <string name="txt_edit_quiz_drop_down_menu_item">수정</string>
     <string name="txt_delete_quiz_drop_down_menu_item">퀴즈 제거</string>
     <string name="top_app_bar_edit_quiz">퀴즈 수정</string>
+    <string name="txt_real_time_quiz">실시간 퀴즈</string>
 </resources>
