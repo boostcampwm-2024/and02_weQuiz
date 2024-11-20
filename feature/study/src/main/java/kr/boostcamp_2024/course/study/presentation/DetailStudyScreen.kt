@@ -52,8 +52,8 @@ import kr.boostcamp_2024.course.study.viewmodel.DetailStudyViewModel
 fun DetailStudyScreen(
     viewModel: DetailStudyViewModel = hiltViewModel(),
     onNavigationButtonClick: () -> Unit,
-    onCreateCategoryButtonClick: (String?,String?) -> Unit,
-    onCategoryClick: (String,String) -> Unit,
+    onCreateCategoryButtonClick: (String?, String?) -> Unit,
+    onCategoryClick: (String, String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -88,7 +88,7 @@ fun DetailStudyScreen(
     errorMessageId: Int?,
     onErrorMessageShown: () -> Unit,
     onNavigationButtonClick: () -> Unit,
-    onCreateCategoryButtonClick: (String?,String?) -> Unit,
+    onCreateCategoryButtonClick: (String?, String?) -> Unit,
     onCategoryClick: (String, String) -> Unit,
     onRemoveStudyGroupMemberButtonClick: (String, String) -> Unit,
     onInviteConfirmButtonClick: (String, String) -> Unit,

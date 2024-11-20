@@ -20,13 +20,14 @@ data class CreateCategoryRoute(
 )
 
 fun NavController.navigateCategory(studyGroupId: String, categoryId: String) {
-    navigate(CategoryRoute(studyGroupId,categoryId))
+    navigate(CategoryRoute(studyGroupId, categoryId))
 }
 
 fun NavController.navigateCreateCategory(
-    studyGroupId: String?, categoryId: String?
+    studyGroupId: String?,
+    categoryId: String?,
 ) {
-    navigate(CreateCategoryRoute(studyGroupId,categoryId))
+    navigate(CreateCategoryRoute(studyGroupId, categoryId))
 }
 
 fun NavGraphBuilder.categoryNavGraph(

@@ -1,6 +1,5 @@
 package kr.boostcamp_2024.course.category.component
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
@@ -22,13 +21,13 @@ import androidx.compose.ui.res.stringResource
 import kr.boostcamp_2024.course.category.R
 
 @Composable
-fun CategorySettingMenu (
+fun CategorySettingMenu(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     Box(
-    modifier = Modifier.wrapContentSize(Alignment.TopEnd)
+        modifier = Modifier.wrapContentSize(Alignment.TopEnd),
     ) {
         IconButton(
             onClick = { expanded = true },
@@ -36,7 +35,7 @@ fun CategorySettingMenu (
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = stringResource(R.string.des_btn_settings),
-                tint = MaterialTheme.colorScheme.onSurface
+                tint = MaterialTheme.colorScheme.onSurface,
             )
         }
         DropdownMenu(
@@ -60,4 +59,3 @@ fun CategorySettingMenu (
         }
     }
 }
-

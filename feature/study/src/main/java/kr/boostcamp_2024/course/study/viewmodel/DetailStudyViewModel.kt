@@ -50,12 +50,12 @@ class DetailStudyViewModel @Inject constructor(
     val uiState: StateFlow<DetailStudyUiState> = _uiState.onStart {
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), DetailStudyUiState())
 
-    fun initViewmodel(){
+    fun initViewmodel() {
         getUserKey()
         loadStudyGroup(studyGroupId)
     }
 
-    private fun getUserKey(){
+    private fun getUserKey() {
         viewModelScope.launch {
             authRepository.getUserKey().onSuccess { userKey ->
                 val userId = requireNotNull(userKey)

@@ -64,7 +64,7 @@ fun CategoryScreen(
         }
     }
 
-    if (categoryUiState.value.isDeleteCategorySuccess){
+    if (categoryUiState.value.isDeleteCategorySuccess) {
         LaunchedEffect(Unit) { onNavigationButtonClick() }
     }
 
@@ -127,7 +127,7 @@ private fun CategoryScreen(
                         },
                         onDeleteClick = {
                             onCategoryDeleteClick()
-                        }
+                        },
                     )
                 },
             )

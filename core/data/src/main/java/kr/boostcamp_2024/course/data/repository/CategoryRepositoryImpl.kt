@@ -65,7 +65,7 @@ class CategoryRepositoryImpl @Inject constructor(
         categoryId: String,
         categoryName: String,
         categoryDescription: String?,
-        categoryImageUrl: String?
+        categoryImageUrl: String?,
     ): Result<Unit> {
         return runCatching {
             categoryCollectionRef.document(categoryId).update(
@@ -73,7 +73,7 @@ class CategoryRepositoryImpl @Inject constructor(
                     "name" to categoryName,
                     "description" to categoryDescription,
                     "category_image_url" to categoryImageUrl,
-                )
+                ),
             ).await()
         }
     }

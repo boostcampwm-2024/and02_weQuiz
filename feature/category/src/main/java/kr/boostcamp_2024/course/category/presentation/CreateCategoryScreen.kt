@@ -56,7 +56,6 @@ fun CreateCategoryScreen(
     val uiState by viewModel.createCategoryUiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
-
     LaunchedEffect(uiState) {
         if (uiState.creationSuccess) {
             onCreateCategorySuccess()

@@ -28,7 +28,7 @@ import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun CategoryItem(
-    onClicked: (String,String) -> Unit,
+    onClicked: (String, String) -> Unit,
     category: Category,
     quizCount: Int,
     profileImgUrl: String?,

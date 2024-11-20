@@ -25,8 +25,8 @@ fun CategoryListScreen(
     owner: User?,
     currentGroup: StudyGroup,
     categories: List<Category>,
-    createCategoryClick:  (String?,String?) -> Unit,
-    categoryItemClick: (String,String) -> Unit,
+    createCategoryClick: (String?, String?) -> Unit,
+    categoryItemClick: (String, String) -> Unit,
 ) {
     Column(
         modifier = Modifier
