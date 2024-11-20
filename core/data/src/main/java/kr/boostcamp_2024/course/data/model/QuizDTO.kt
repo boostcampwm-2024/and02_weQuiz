@@ -16,7 +16,7 @@ data class QuizDTO(
     @get:PropertyName("user_omrs")
     @set:PropertyName("user_omrs")
     var userOmrs: List<String>? = null,
-) {
+) : BaseQuizDTO {
     fun toVO(quizId: String): Quiz = Quiz(
         id = quizId,
         title = requireNotNull(title),

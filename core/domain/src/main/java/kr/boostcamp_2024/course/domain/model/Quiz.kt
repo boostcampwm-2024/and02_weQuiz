@@ -3,14 +3,14 @@ package kr.boostcamp_2024.course.domain.model
 import java.time.LocalDate
 
 data class Quiz(
-    val id: String,
-    val title: String,
-    val description: String?,
+    override val id: String,
+    override val title: String,
+    override val description: String?,
     val startTime: String,
     val solveTime: Int,
-    val questions: List<String>,
-    val userOmrs: List<String>,
-) {
+    override val questions: List<String>,
+    override val userOmrs: List<String>,
+) : BaseQuiz() {
     val isOpened: Boolean
         get() = LocalDate.now().isAfter(LocalDate.parse(startTime))
 }
