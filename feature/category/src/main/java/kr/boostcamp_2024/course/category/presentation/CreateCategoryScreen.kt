@@ -1,17 +1,19 @@
 package kr.boostcamp_2024.course.category.presentation
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -20,6 +22,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -30,17 +33,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import kr.boostcamp_2024.course.category.R
 import kr.boostcamp_2024.course.category.viewModel.CreateCategoryViewModel
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
+import java.io.ByteArrayOutputStream
 
 @Composable
 fun CreateCategoryScreen(
@@ -50,14 +55,7 @@ fun CreateCategoryScreen(
 ) {
     val uiState by viewModel.createCategoryUiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    val photoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri ->
-            uri?.let {
-                viewModel.onImageUriChanged(it)
-            }
-        },
-    )
+
 
     LaunchedEffect(uiState) {
         if (uiState.creationSuccess) {
@@ -69,17 +67,25 @@ fun CreateCategoryScreen(
         }
     }
 
+    val guideText = if (viewModel.categoryId == null) {
+        stringResource(R.string.txt_create_category)
+    } else {
+        stringResource(R.string.txt_edit_category)
+    }
+
     CreateCategoryScreen(
         name = uiState.categoryName,
         description = uiState.categoryDescription,
-        categoryImageUrl = uiState.categoryImageUrl,
+        currentCategoryImage = uiState.currentImage,
+        defaultCategoryImageUri = uiState.defaultImageUri,
         isCategoryCreationValid = uiState.isCategoryCreationValid,
         snackbarHostState = snackbarHostState,
         onNameChanged = viewModel::onNameChanged,
         onDescriptionChanged = viewModel::onDescriptionChanged,
         onNavigationButtonClick = onNavigationButtonClick,
-        onCreateCategoryButtonClick = viewModel::createCategory,
-        onImagePickClick = { photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+        onCreateCategoryButtonClick = viewModel::uploadCategory,
+        guideText = guideText,
+        onCurrentCategoryImageChanged = viewModel::onImageByteArrayChanged,
     )
 }
 
@@ -88,20 +94,35 @@ fun CreateCategoryScreen(
 fun CreateCategoryScreen(
     name: String,
     description: String,
+    currentCategoryImage: ByteArray?,
+    defaultCategoryImageUri: String?,
     isCategoryCreationValid: Boolean,
     snackbarHostState: SnackbarHostState,
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
-    onImagePickClick: () -> Unit,
-    categoryImageUrl: String?,
+    guideText: String,
+    onCurrentCategoryImageChanged: (ByteArray) -> Unit,
 ) {
+    val context = LocalContext.current
+    val photoPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+            val data = baos.toByteArray()
+
+            onCurrentCategoryImageChanged(data)
+        }
+    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.top_app_bar_create_category))
+                    Text(text = guideText)
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigationButtonClick) {
@@ -123,16 +144,20 @@ fun CreateCategoryScreen(
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState()),
         ) {
-            AsyncImage(
-                model = categoryImageUrl ?: R.drawable.default_profile_image, // URL이 없으면 기본 이미지
-                contentDescription = stringResource(R.string.des_category_image),
+            WeQuizAsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(148.dp)
-                    .padding(horizontal = 16.dp, vertical = 10.dp)
-                    .clip(RoundedCornerShape(18.dp))
-                    .clickable(onClick = onImagePickClick),
-                contentScale = ContentScale.Crop,
+                    .padding(horizontal = 70.dp)
+                    .aspectRatio(1f)
+                    .clip(shape = MaterialTheme.shapes.large)
+                    .clickable(enabled = true) {
+                        photoPickerLauncher.launch(PickVisualMediaRequest(ImageOnly))
+                    },
+                imgUrl = currentCategoryImage ?: defaultCategoryImageUri,
+                contentDescription = stringResource(R.string.des_category_image),
+                placeholder = painterResource(R.drawable.default_profile_image),
+                error = painterResource(R.drawable.default_profile_image),
+                fallback = painterResource(R.drawable.default_profile_image),
             )
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
@@ -157,7 +182,7 @@ fun CreateCategoryScreen(
                     onClick = onCreateCategoryButtonClick,
                     enabled = isCategoryCreationValid,
                 ) {
-                    Text(text = stringResource(R.string.btn_create_category))
+                    Text(text = guideText)
                 }
             }
         }
