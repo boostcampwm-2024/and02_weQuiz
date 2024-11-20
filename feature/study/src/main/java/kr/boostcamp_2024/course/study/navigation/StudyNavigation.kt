@@ -26,8 +26,8 @@ fun NavController.navigateStudy(studyGroupId: String) {
 fun NavGraphBuilder.studyNavGraph(
     onNavigationButtonClick: () -> Unit,
     onCreateStudySuccess: () -> Unit,
-    onCategoryClick: (String) -> Unit,
-    onCreateCategoryButtonClick: (String) -> Unit,
+    onCategoryClick: (String,String) -> Unit,
+    onCreateCategoryButtonClick: (String?, String?) -> Unit,
 ) {
     composable<CreateStudyRoute> {
         CreateStudyScreen(

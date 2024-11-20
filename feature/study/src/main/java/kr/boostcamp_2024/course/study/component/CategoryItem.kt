@@ -28,17 +28,18 @@ import kr.boostcamp_2024.course.study.R
 
 @Composable
 fun CategoryItem(
-    onClicked: (String) -> Unit,
+    onClicked: (String,String) -> Unit,
     category: Category,
     quizCount: Int,
     profileImgUrl: String?,
     author: String,
+    currentGroupId: String,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable(onClick = { onClicked(category.id) }),
+            .clickable(onClick = { onClicked(currentGroupId, category.id) }),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         QuizCountBadge(category.categoryImageUrl, quizCount)
