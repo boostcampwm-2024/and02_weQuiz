@@ -62,7 +62,6 @@ fun DetailStudyScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-
     LaunchedEffect(Unit) { viewModel.initViewmodel() }
 
     DetailStudyScreen(
