@@ -48,15 +48,23 @@ class DetailStudyViewModel @Inject constructor(
 
     private val _uiState: MutableStateFlow<DetailStudyUiState> = MutableStateFlow(DetailStudyUiState())
     val uiState: StateFlow<DetailStudyUiState> = _uiState.onStart {
-        val studyGroupId = savedStateHandle.toRoute<StudyRoute>().studyGroupId
-        authRepository.getUserKey().onSuccess { userKey ->
-            val userId = requireNotNull(userKey)
-            _uiState.update { it.copy(userId = userId) }
-        }.onFailure {
-            Log.e("DetailStudyViewModel", "Failed to get user key", it)
-        }
-        loadStudyGroup(studyGroupId)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), DetailStudyUiState())
+
+    fun initViewmodel(){
+        getUserKey()
+        loadStudyGroup(studyGroupId)
+    }
+
+    private fun getUserKey(){
+        viewModelScope.launch {
+            authRepository.getUserKey().onSuccess { userKey ->
+                val userId = requireNotNull(userKey)
+                _uiState.update { it.copy(userId = userId) }
+            }.onFailure {
+                Log.e("DetailStudyViewModel", "Failed to get user key", it)
+            }
+        }
+    }
 
     private fun loadStudyGroup(studyGroupId: String) {
         viewModelScope.launch {

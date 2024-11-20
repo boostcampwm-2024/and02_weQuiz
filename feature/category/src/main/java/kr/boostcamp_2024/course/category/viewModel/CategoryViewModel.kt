@@ -18,12 +18,14 @@ import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
+import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import javax.inject.Inject
 
 data class CategoryUiState(
     val category: Category? = null,
     val quizList: List<Quiz>? = null,
     val snackBarMessage: String? = null,
+    val isDeleteCategorySuccess: Boolean = false,
 )
 
 @HiltViewModel
@@ -31,7 +33,9 @@ class CategoryViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val categoryRepository: CategoryRepository,
     private val quizRepository: QuizRepository,
+    private val studyGroupRepository: StudyGroupRepository,
 ) : ViewModel() {
+    private val studyGroupId: String = savedStateHandle.toRoute<CategoryRoute>().studyGroupId
     private val categoryId: String = savedStateHandle.toRoute<CategoryRoute>().categoryId
     private val _categoryUiState: MutableStateFlow<CategoryUiState> =
         MutableStateFlow(CategoryUiState())
@@ -75,6 +79,26 @@ class CategoryViewModel @Inject constructor(
     fun setNewSnackBarMessage(message: String?) {
         _categoryUiState.update {
             it.copy(snackBarMessage = message)
+        }
+    }
+
+    fun onCategoryDeleteClick() {
+        viewModelScope.launch {
+            categoryRepository.deleteCategory(categoryId)
+                .onSuccess {
+                    setNewSnackBarMessage("카테고리 삭제에 성공했습니다.")
+                    studyGroupRepository.deleteCategory(studyGroupId, categoryId)
+                        .onSuccess {
+                            Log.d("CategoryViewModel", "Successfully deleted category")
+                            _categoryUiState.update { it.copy(isDeleteCategorySuccess = true) }
+                        }.onFailure {
+                            Log.e("CategoryViewModel", "Failed to delete category from study group", it)
+                            setNewSnackBarMessage("카테고리 삭제에 실패했습니다. 다시 시도해주세요")
+                        }
+                }.onFailure {
+                    Log.e("CategoryViewModel", "Failed to delete category", it)
+                    setNewSnackBarMessage("카테고리 삭제에 실패했습니다. 다시 시도해주세요!")
+                }
         }
     }
 }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -37,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.category.R
+import kr.boostcamp_2024.course.category.component.CategorySettingMenu
 import kr.boostcamp_2024.course.category.viewModel.CategoryViewModel
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
@@ -51,6 +51,7 @@ fun CategoryScreen(
     onCreateQuizButtonClick: (String) -> Unit,
     onQuizClick: (String, String) -> Unit,
     categoryViewModel: CategoryViewModel = hiltViewModel(),
+    onCreateCategoryButtonClick: (String?, String?) -> Unit,
 ) {
 
     val categoryUiState = categoryViewModel.categoryUiState.collectAsStateWithLifecycle()
@@ -63,13 +64,18 @@ fun CategoryScreen(
         }
     }
 
+    if (categoryUiState.value.isDeleteCategorySuccess){
+        LaunchedEffect(Unit) { onNavigationButtonClick() }
+    }
+
     CategoryScreen(
         category = categoryUiState.value.category,
         quizList = categoryUiState.value.quizList,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuizButtonClick = onCreateQuizButtonClick,
         onQuizClick = onQuizClick,
-        setNewSnackBarMessage = categoryViewModel::setNewSnackBarMessage,
+        onCategoryDeleteClick = categoryViewModel::onCategoryDeleteClick,
+        onCreateCategoryButtonClick = onCreateCategoryButtonClick,
     )
 }
 
@@ -81,7 +87,8 @@ private fun CategoryScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: (String) -> Unit,
     onQuizClick: (String, String) -> Unit,
-    setNewSnackBarMessage: (String) -> Unit,
+    onCategoryDeleteClick: () -> Unit,
+    onCreateCategoryButtonClick: (String?, String?) -> Unit,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -114,17 +121,14 @@ private fun CategoryScreen(
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            // todo: 카테고리 설정
-                            setNewSnackBarMessage("추후 제공될 기능입니다.")
+                    CategorySettingMenu(
+                        onEditClick = {
+                            onCreateCategoryButtonClick(null, category?.id)
                         },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(R.string.des_btn_settings),
-                        )
-                    }
+                        onDeleteClick = {
+                            onCategoryDeleteClick()
+                        }
+                    )
                 },
             )
         },
@@ -230,6 +234,7 @@ fun CategoryScreenPreview() {
             onNavigationButtonClick = {},
             onCreateQuizButtonClick = {},
             onQuizClick = { _, _ -> },
+            onCreateCategoryButtonClick = { _, _ -> },
         )
     }
 }
