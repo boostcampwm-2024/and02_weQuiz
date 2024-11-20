@@ -14,13 +14,13 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kr.boostcamp_2024.course.domain.model.UserCreationInfo
+import kr.boostcamp_2024.course.domain.model.UserSubmitInfo
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.login.navigation.SignUpRoute
 import javax.inject.Inject
 
 data class SignUpUiState(
-    val userCreationInfo: UserCreationInfo = UserCreationInfo(
+    val userSubmitInfo: UserSubmitInfo = UserSubmitInfo(
         email = "",
         nickName = "",
         profileImageUrl = null,
@@ -30,12 +30,12 @@ data class SignUpUiState(
     val isSubmitSuccess: Boolean = false,
 ) {
     val isSignUpButtonEnabled: Boolean
-        get() = userCreationInfo.email.isNotBlank() &&
-            userCreationInfo.nickName.isNotBlank() &&
+        get() = userSubmitInfo.email.isNotBlank() &&
+            userSubmitInfo.nickName.isNotBlank() &&
             isEmailValid
     val isEmailValid: Boolean
-        get() = userCreationInfo.email.isNotBlank() &&
-            Patterns.EMAIL_ADDRESS.matcher(userCreationInfo.email)
+        get() = userSubmitInfo.email.isNotBlank() &&
+            Patterns.EMAIL_ADDRESS.matcher(userSubmitInfo.email)
                 .matches()
 }
 
@@ -56,7 +56,7 @@ class SignUpViewModel @Inject constructor(
                 userRepository.getUser(userId).onSuccess {
                     _signUpUiState.update { currentState ->
                         currentState.copy(
-                            userCreationInfo = currentState.userCreationInfo.copy(
+                            userSubmitInfo = currentState.userSubmitInfo.copy(
                                 email = it.email,
                                 nickName = it.name,
                                 profileImageUrl = it.profileUrl,
@@ -74,7 +74,7 @@ class SignUpViewModel @Inject constructor(
     fun addUser() {
         viewModelScope.launch {
             if (userId != null) {
-                userRepository.addUser(userId, _signUpUiState.value.userCreationInfo).onSuccess {
+                userRepository.addUser(userId, _signUpUiState.value.userSubmitInfo).onSuccess {
                     _signUpUiState.update {
                         it.copy(isSubmitSuccess = true)
                     }
@@ -91,7 +91,7 @@ class SignUpViewModel @Inject constructor(
     fun updateUser() {
         viewModelScope.launch {
             if (userId != null) {
-                userRepository.updateUser(userId, _signUpUiState.value.userCreationInfo).onSuccess {
+                userRepository.updateUser(userId, _signUpUiState.value.userSubmitInfo).onSuccess {
                     _signUpUiState.update {
                         it.copy(isSubmitSuccess = true)
                     }
@@ -108,7 +108,7 @@ class SignUpViewModel @Inject constructor(
     fun onEmailChanged(email: String) {
         _signUpUiState.update { currentState ->
             currentState.copy(
-                userCreationInfo = currentState.userCreationInfo.copy(email = email),
+                userSubmitInfo = currentState.userSubmitInfo.copy(email = email),
             )
         }
     }
@@ -116,7 +116,7 @@ class SignUpViewModel @Inject constructor(
     fun onNickNameChanged(nickName: String) {
         _signUpUiState.update { currentState ->
             currentState.copy(
-                userCreationInfo = currentState.userCreationInfo.copy(nickName = nickName),
+                userSubmitInfo = currentState.userSubmitInfo.copy(nickName = nickName),
             )
         }
     }
@@ -124,7 +124,7 @@ class SignUpViewModel @Inject constructor(
     fun onProfileUriChanged(profileUri: String) {
         _signUpUiState.update { currentState ->
             currentState.copy(
-                userCreationInfo = currentState.userCreationInfo.copy(profileImageUrl = profileUri),
+                userSubmitInfo = currentState.userSubmitInfo.copy(profileImageUrl = profileUri),
             )
         }
     }

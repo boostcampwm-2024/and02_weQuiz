@@ -1,10 +1,10 @@
 package kr.boostcamp_2024.course.domain.repository
 
 import kr.boostcamp_2024.course.domain.model.User
-import kr.boostcamp_2024.course.domain.model.UserCreationInfo
+import kr.boostcamp_2024.course.domain.model.UserSubmitInfo
 
 interface UserRepository {
-    suspend fun addUser(userId: String, userCreationInfo: UserCreationInfo): Result<Unit>
+    suspend fun addUser(userId: String, userCreationInfo: UserSubmitInfo): Result<Unit>
 
     suspend fun getUsers(userIds: List<String>): Result<List<User>>
 
@@ -16,5 +16,5 @@ interface UserRepository {
 
     suspend fun deleteStudyGroupUser(userId: String, studyGroupId: String): Result<Unit>
 
-    suspend fun updateUser(userId: String, userCreationInfo: UserCreationInfo): Result<Unit>
+    suspend fun updateUser(userId: String, userSubmitInfo: UserSubmitInfo): Result<Unit>
 }

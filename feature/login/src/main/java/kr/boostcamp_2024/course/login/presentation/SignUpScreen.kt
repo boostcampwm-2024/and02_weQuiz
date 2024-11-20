@@ -80,7 +80,7 @@ private fun SignupScreen(
                 title = {
                     Text(
                         text = when (uiState.isEditMode) {
-                            true -> "회원 수정"
+                            true -> stringResource(R.string.top_app_bar_edit_user)
                             false -> stringResource(R.string.top_app_bar_sign_up)
                         },
                     )
@@ -109,9 +109,9 @@ private fun SignupScreen(
         ) {
             item {
                 SignUpContent(
-                    email = uiState.userCreationInfo.email,
-                    nickName = uiState.userCreationInfo.nickName,
-                    profileUri = uiState.userCreationInfo.profileImageUrl,
+                    email = uiState.userSubmitInfo.email,
+                    nickName = uiState.userSubmitInfo.nickName,
+                    profileUri = uiState.userSubmitInfo.profileImageUrl,
                     onEmailChanged = onEmailChanged,
                     onNickNameChanged = onNickNameChanged,
                     onProfileUriChanged = onProfileUriChanged,
@@ -121,7 +121,7 @@ private fun SignupScreen(
             item {
                 SignUpButtons(
                     isSignUpValid = uiState.isSignUpButtonEnabled,
-                    onSignUpSuccess = if (uiState.isEditMode) onEditButtonClick else onSignUpButtonClick,
+                    onSubmitButtonClick = if (uiState.isEditMode) onEditButtonClick else onSignUpButtonClick,
                     isEditMode = uiState.isEditMode,
                 )
             }
@@ -187,20 +187,20 @@ fun SignUpContent(
 @Composable
 fun SignUpButtons(
     isSignUpValid: Boolean,
-    onSignUpSuccess: () -> Unit,
+    onSubmitButtonClick: () -> Unit,
     isEditMode: Boolean,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         Button(
-            onClick = onSignUpSuccess,
+            onClick = onSubmitButtonClick,
             modifier = Modifier.fillMaxWidth(),
             enabled = isSignUpValid,
         ) {
             Text(
                 text = when (isEditMode) {
-                    true -> "회원 정보 수정"
+                    true -> stringResource(R.string.btn_sign_up_edit_user)
                     false -> stringResource(R.string.btn_sign_up)
                 },
             )
