@@ -43,5 +43,6 @@ data class RealTimeQuizDTO(
         isStarted = requireNotNull(isStarted),
         isFinished = requireNotNull(isFinished),
         waitingUsers = requireNotNull(waitingUsers),
+        quizImageUrl = quizImageUrl,
     )
 }

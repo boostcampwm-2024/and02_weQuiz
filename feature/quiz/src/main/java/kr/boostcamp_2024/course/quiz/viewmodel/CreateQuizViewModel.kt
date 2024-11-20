@@ -66,8 +66,9 @@ class CreateQuizViewModel @Inject constructor(
                             state.copy(
                                 quizTitle = quiz.title,
                                 quizDescription = quiz.description ?: "",
-                                quizDate = quiz.startTime,
-                                quizSolveTime = quiz.solveTime.toFloat(),
+//                                quizDate = quiz.startTime,
+//                                quizSolveTime = quiz.solveTime.toFloat(),
+                                //todo 시간 설정 제거
                                 isEditing = true,
                                 isLoading = false,
                                 defaultImageUrl = quiz.quizImageUrl,

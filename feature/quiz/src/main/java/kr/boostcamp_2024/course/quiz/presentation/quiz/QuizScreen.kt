@@ -103,7 +103,7 @@ fun QuizScreen(
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
     onSettingMenuClick: (String, String) -> Unit,
-    onDeleteMenuClick: (String, Quiz) -> Unit,
+    onDeleteMenuClick: (String, BaseQuiz) -> Unit,
 ) {
 
     Scaffold(
@@ -204,10 +204,10 @@ fun QuizScreen(
                         )
                     }
                 }
-                
+
                 if (quiz is Quiz) {
                     // CreateQuestionButton & StartQuizButton
-                    quiz?.let {
+                    quiz.let {
                         Button(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = { onCreateQuestionButtonClick(quiz.id) },
@@ -218,19 +218,18 @@ fun QuizScreen(
                                 false -> Text(text = stringResource(R.string.txt_close_create_question))
                             }
 
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = { onStartQuizButtonClick(quiz.id) },
-                            enabled = (quiz.isOpened && quiz.questions.isNotEmpty()),
-                        ) {
-                            when (quiz.isOpened && quiz.questions.isEmpty()) {
-                                true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
-                                false -> Text(text = stringResource(R.string.txt_quiz_start))
+                            Button(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { onStartQuizButtonClick(quiz.id) },
+                                enabled = (quiz.isOpened && quiz.questions.isNotEmpty()),
+                            ) {
+                                when (quiz.isOpened && quiz.questions.isEmpty()) {
+                                    true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
+                                    false -> Text(text = stringResource(R.string.txt_quiz_start))
+                                }
                             }
                         }
                     }
-                } else {
-                    // todo: realTime 작업해주세요.
                 }
             }
         }

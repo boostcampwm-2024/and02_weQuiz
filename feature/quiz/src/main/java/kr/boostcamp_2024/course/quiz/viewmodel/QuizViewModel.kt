@@ -91,7 +91,7 @@ class QuizViewModel @Inject constructor(
         _uiState.update { it.copy(errorMessage = null) }
     }
 
-    fun deleteQuiz(categoryId: String, quiz: Quiz) {
+    fun deleteQuiz(categoryId: String, quiz: BaseQuiz) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             categoryRepository.deleteQuizFromCategory(categoryId = categoryId, quizId = quiz.id)

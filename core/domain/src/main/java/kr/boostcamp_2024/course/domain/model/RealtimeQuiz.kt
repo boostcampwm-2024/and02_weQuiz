@@ -6,6 +6,7 @@ sealed class BaseQuiz {
     abstract val description: String?
     abstract val questions: List<String>
     abstract val userOmrs: List<String>
+    abstract val quizImageUrl: String?
 }
 
 data class RealTimeQuiz(
@@ -19,4 +20,5 @@ data class RealTimeQuiz(
     val isStarted: Boolean,
     val isFinished: Boolean,
     val waitingUsers: Int,
+    override val quizImageUrl: String?,
 ) : BaseQuiz()
