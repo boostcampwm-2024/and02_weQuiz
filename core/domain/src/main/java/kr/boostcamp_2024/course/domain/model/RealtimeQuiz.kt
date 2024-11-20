@@ -16,7 +16,6 @@ data class RealTimeQuiz(
     override val userOmrs: List<String>,
     val currentQuestion: Int,
     val ownerId: String,
-    val type: String,
     val isStarted: Boolean,
     val isFinished: Boolean,
     val waitingUsers: Int,

@@ -40,7 +40,6 @@ data class RealTimeQuizDTO(
         userOmrs = requireNotNull(userOmrs),
         currentQuestion = requireNotNull(currentQuestion),
         ownerId = requireNotNull(ownerId),
-        type = requireNotNull(type),
         isStarted = requireNotNull(isStarted),
         isFinished = requireNotNull(isFinished),
         waitingUsers = requireNotNull(waitingUsers),
