@@ -7,4 +7,8 @@ interface UserOmrRepository {
     suspend fun getUserOmr(userOmrId: String): Result<UserOmr>
 
     suspend fun submitQuiz(userOmrCreationInfo: UserOmrCreationInfo): Result<String>
+
+    suspend fun deleteUserOmr(quizId: String): Result<Unit>
+
+    suspend fun deleteUserOmrs(userOmrIds: List<String>): Result<Unit>
 }

@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.UserDTO
 import kr.boostcamp_2024.course.domain.model.User
+import kr.boostcamp_2024.course.domain.model.UserCreationInfo
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -13,13 +14,24 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
     private val userCollectionRef = firestore.collection("User")
 
-    override suspend fun getUser(userId: String): Result<User> {
-        return runCatching {
+    override suspend fun addUser(userId: String, userCreationInfo: UserCreationInfo): Result<Unit> =
+        runCatching {
+            userCollectionRef.document(userId).set(
+                UserDTO(
+                    email = userCreationInfo.email,
+                    name = userCreationInfo.name,
+                    profileUrl = userCreationInfo.profileImageUrl,
+                    studyGroups = emptyList(),
+                ),
+            ).await()
+        }
+
+    override suspend fun getUser(userId: String): Result<User> =
+        runCatching {
             val document = userCollectionRef.document(userId).get().await()
             val response = document.toObject(UserDTO::class.java)
             requireNotNull(response).toVO(userId)
         }
-    }
 
     override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<Unit> =
         runCatching {
@@ -41,6 +53,14 @@ class UserRepositoryImpl @Inject constructor(
         runCatching {
             val document = userCollectionRef.document(userId)
             document.update("study_groups", FieldValue.arrayRemove(studyGroupId)).await()
+        }
+
+    override suspend fun deleteStudyGroupUsers(userIds: List<String>, studyGroupId: String): Result<Unit> =
+        runCatching {
+            userIds.forEach { userId ->
+                val document = userCollectionRef.document(userId)
+                document.update("study_groups", FieldValue.arrayRemove(studyGroupId)).await()
+            }
         }
 
     override suspend fun findUserByEmail(email: String): Result<User> =

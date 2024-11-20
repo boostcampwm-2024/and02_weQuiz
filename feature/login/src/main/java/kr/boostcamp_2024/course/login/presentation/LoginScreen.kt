@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.login.presentation
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,9 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -20,60 +19,72 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLeftChatBubble
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.login.R
-import kr.boostcamp_2024.course.login.presentation.component.PasswordTextField
+import kr.boostcamp_2024.course.login.model.UserUiModel
 import kr.boostcamp_2024.course.login.viewmodel.LoginViewModel
+import java.security.MessageDigest
+import java.util.UUID
 
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
-    onSignUpButtonClick: () -> Unit,
+    onSignUp: (UserUiModel) -> Unit,
     loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     val loginUiState by loginViewModel.loginUiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     LaunchedEffect(loginUiState) {
         if (loginUiState.isLoginSuccess) {
             onLoginSuccess()
         }
-        loginUiState.snackBarMessage?.let { message ->
-            snackBarHostState.showSnackbar(message)
+        loginUiState.snackBarMessage?.let { messageId ->
+            snackBarHostState.showSnackbar(context.getString(messageId))
             loginViewModel.setNewSnackBarMessage(null)
+        }
+        if (loginUiState.isNewUser) {
+            val userInfo = requireNotNull(loginUiState.userInfo)
+            loginViewModel.resetUserState()
+            onSignUp(userInfo)
         }
     }
 
     LoginScreen(
         snackBarHostState,
-        onSignUpButtonClick,
         loginViewModel::loginForExperience,
-        loginViewModel::setNewSnackBarMessage,
+        handleSignIn = loginViewModel::handleSignIn,
+        setNewSnackBarMessage = loginViewModel::setNewSnackBarMessage,
     )
 }
 
 @Composable
 private fun LoginScreen(
     snackBarHostState: SnackbarHostState,
-    onSignUpButtonClick: () -> Unit,
     onLoginSuccess: () -> Unit,
-    setNewSnackBarMessage: (String) -> Unit,
+    handleSignIn: (GetCredentialResponse, Int) -> Unit,
+    setNewSnackBarMessage: (Int?) -> Unit,
 ) {
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -87,15 +98,14 @@ private fun LoginScreen(
                     end = 16.dp,
                     bottom = innerPadding.calculateBottomPadding(),
                 ),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             LoginGuideImageAndText()
-            LoginContent()
             LoginButtons(
                 onLoginSuccess = onLoginSuccess,
-                onSignUpButtonClick = onSignUpButtonClick,
-                showSnackBar = setNewSnackBarMessage,
+                handleSignIn = handleSignIn,
+                setNewSnackBarMessage = setNewSnackBarMessage,
             )
         }
     }
@@ -135,34 +145,51 @@ fun LoginGuideImageAndText() {
 }
 
 @Composable
-fun LoginContent() {
-    var password by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier.padding(top = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(15.dp),
-    ) {
-        WeQuizTextField(
-            label = stringResource(R.string.txt_login_email_label),
-            text = email,
-            onTextChanged = { email = it },
-            placeholder = stringResource(R.string.txt_login_email_placeholder),
-        )
-
-        PasswordTextField(
-            password = password,
-            onPasswordChanged = { password = it },
-        )
-    }
-}
-
-@Composable
 fun LoginButtons(
     onLoginSuccess: () -> Unit,
-    onSignUpButtonClick: () -> Unit,
-    showSnackBar: (String) -> Unit,
+    handleSignIn: (GetCredentialResponse, Int) -> Unit,
+    setNewSnackBarMessage: (Int?) -> Unit,
 ) {
+    val webClientId = stringResource(R.string.web_client_id)
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    val onClick: () -> Unit = {
+        val credentialManager = CredentialManager.create(context)
+
+        val rawNonce = UUID.randomUUID().toString()
+        val bytes = rawNonce.toByteArray()
+        val md = MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(bytes)
+        val hashedNonce = digest.fold("") { str, it -> str + "%02x".format(it) }
+
+        val googleIdOptions: GetGoogleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setServerClientId(webClientId)
+            .setNonce(hashedNonce)
+            .build()
+
+        val request: GetCredentialRequest = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOptions)
+            .build()
+
+        coroutineScope.launch {
+            try {
+                val result = credentialManager.getCredential(
+                    request = request,
+                    context = context,
+                )
+                handleSignIn(
+                    result,
+                    R.string.error_login,
+                )
+            } catch (e: Exception) {
+                Log.e("LoginScreen", "Error: ${e.message}")
+                setNewSnackBarMessage(R.string.error_login)
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -170,21 +197,14 @@ fun LoginButtons(
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Button(
-            onClick = {
-                // todo: 로그인 처리
-                showSnackBar("추후 제공될 기능입니다.")
-            },
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(text = stringResource(R.string.btn_sign_in))
-        }
-        OutlinedButton(
-            onClick = onSignUpButtonClick,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(text = stringResource(R.string.btn_sign_up))
-        }
+        Image(
+            modifier = Modifier.clickable(
+                enabled = true,
+                onClick = onClick,
+            ),
+            painter = painterResource(R.drawable.img_google_light_btn_login),
+            contentDescription = stringResource(R.string.des_google_login),
+        )
         Text(
             text = stringResource(R.string.txt_experience),
             modifier = Modifier.clickable(
@@ -204,9 +224,9 @@ fun LoginScreenPreview() {
     WeQuizTheme {
         LoginScreen(
             snackBarHostState = SnackbarHostState(),
-            onSignUpButtonClick = {},
             onLoginSuccess = {},
-            setNewSnackBarMessage = { },
+            handleSignIn = { _, _ -> },
+            setNewSnackBarMessage = {},
         )
     }
 }

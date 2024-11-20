@@ -2,7 +2,9 @@ package kr.boostcamp_2024.course.main.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,7 +31,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,7 +44,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
 import kr.boostcamp_2024.course.domain.model.StudyGroup
@@ -58,6 +58,7 @@ fun MainScreen(
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
     onStudyGroupClick: (String) -> Unit,
+    onEditStudyButtonClick: (String) -> Unit,
     viewModel: MainViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -69,6 +70,9 @@ fun MainScreen(
         snackBarHostState = snackBarHostState,
         onNotificationButtonClick = onNotificationButtonClick,
         onCreateStudyButtonClick = onCreateStudyButtonClick,
+        onEditStudyGroupClick = onEditStudyButtonClick,
+        onDeleteStudyGroupClick = viewModel::deleteStudyGroup,
+        onLeaveStudyGroupClick = viewModel::deleteUserFromStudyGroup,
         onStudyGroupClick = onStudyGroupClick,
     )
 
@@ -88,6 +92,10 @@ fun MainScreen(
             viewModel.shownErrorMessage()
         }
     }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadCurrentUser()
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,11 +106,13 @@ fun MainScreen(
     snackBarHostState: SnackbarHostState,
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
+    onEditStudyGroupClick: (String) -> Unit,
+    onDeleteStudyGroupClick: (StudyGroup) -> Unit,
+    onLeaveStudyGroupClick: (String) -> Unit,
     onStudyGroupClick: (String) -> Unit,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    val coroutineScope = rememberCoroutineScope()
 
     var state by rememberSaveable { mutableIntStateOf(0) }
     val titles = stringArrayResource(R.array.main_tabs_titles)
@@ -178,13 +188,12 @@ fun MainScreen(
             when (state) {
                 0 -> {
                     StudyGroupTab(
+                        currentUser = currentUser,
                         studyGroups = studyGroups,
                         onStudyGroupClick = onStudyGroupClick,
-                        onStudyGroupMenuClick = {
-                            coroutineScope.launch {
-                                snackBarHostState.showSnackbar("추후 제공될 기능입니다.")
-                            }
-                        },
+                        onEditStudyGroupClick = onEditStudyGroupClick,
+                        onDeleteStudyGroupClick = onDeleteStudyGroupClick,
+                        onLeaveStudyGroupClick = onLeaveStudyGroupClick,
                     )
                 }
 
@@ -197,17 +206,27 @@ fun MainScreen(
 
 @Composable
 fun StudyGroupTab(
+    currentUser: User?,
     studyGroups: List<StudyGroup>,
     onStudyGroupClick: (String) -> Unit,
-    onStudyGroupMenuClick: () -> Unit,
+    onEditStudyGroupClick: (String) -> Unit,
+    onDeleteStudyGroupClick: (StudyGroup) -> Unit,
+    onLeaveStudyGroupClick: (String) -> Unit,
 ) {
     LazyColumn {
         items(items = studyGroups, key = { it.id }) { studyGroup ->
             StudyGroupItem(
+                isOwner = (studyGroup.ownerId == currentUser?.id),
                 studyGroup = studyGroup,
                 onStudyGroupClick = onStudyGroupClick,
-                onStudyGroupMenuClick = onStudyGroupMenuClick,
+                onEditStudyGroupClick = onEditStudyGroupClick,
+                onDeleteStudyGroupClick = onDeleteStudyGroupClick,
+                onLeaveStudyGroupClick = onLeaveStudyGroupClick,
             )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -237,9 +256,12 @@ fun MainScreenPreview() {
                 ),
             ),
             snackBarHostState = SnackbarHostState(),
+            onEditStudyGroupClick = {},
+            onLeaveStudyGroupClick = {},
             onNotificationButtonClick = {},
             onCreateStudyButtonClick = {},
             onStudyGroupClick = {},
+            onDeleteStudyGroupClick = {},
         )
     }
 }

@@ -7,16 +7,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
+import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
+import kr.boostcamp_2024.course.domain.repository.StorageRepository
+import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
 import kr.boostcamp_2024.course.quiz.navigation.QuizRoute
 import javax.inject.Inject
 
@@ -25,12 +25,16 @@ data class QuizUiState(
     val category: Category? = null,
     val quiz: BaseQuiz? = null,
     val errorMessage: String? = null,
+    val isDeleted: Boolean = false,
 )
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val quizRepository: QuizRepository,
+    private val userOmrRepository: UserOmrRepository,
+    private val questionRepository: QuestionRepository,
+    private val storageRepository: StorageRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val quizRoute = savedStateHandle.toRoute<QuizRoute>()
@@ -39,14 +43,19 @@ class QuizViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(QuizUiState())
     val uiState: StateFlow<QuizUiState> = _uiState
-        .onStart {
-            loadCategory()
-            loadQuiz()
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
-            QuizUiState(),
-        )
+
+    //        .onStart {
+//            loadCategory()
+//            loadQuiz()
+//        }.stateIn(
+//            viewModelScope,
+//            SharingStarted.WhileSubscribed(5000L),
+//            QuizUiState(),
+//        )
+    fun initViewModel() {
+        loadCategory()
+        loadQuiz()
+    }
 
     private fun loadCategory() {
         viewModelScope.launch {
@@ -80,5 +89,84 @@ class QuizViewModel @Inject constructor(
 
     fun shownErrorMessage() {
         _uiState.update { it.copy(errorMessage = null) }
+    }
+
+    fun deleteQuiz(categoryId: String, quiz: Quiz) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            categoryRepository.deleteQuizFromCategory(categoryId = categoryId, quizId = quiz.id)
+                .onSuccess {
+                    questionRepository.deleteQuestions(quiz.questions)
+                        .onSuccess {
+                            userOmrRepository.deleteUserOmr(quiz.id)
+                                .onSuccess {
+                                    quizRepository.deleteQuiz(quiz.id)
+                                        .onSuccess {
+                                            quiz.quizImageUrl?.let { quizImageUrl ->
+                                                storageRepository.deleteImage(quizImageUrl)
+                                                    .onSuccess {
+                                                        _uiState.update {
+                                                            it.copy(
+                                                                isLoading = false,
+                                                                isDeleted = true,
+                                                            )
+                                                        }
+                                                    }
+                                                    .onFailure {
+                                                        Log.e("QuizViewModel", "Failed to delete quiz image", it)
+                                                        _uiState.update {
+                                                            it.copy(
+                                                                isLoading = false,
+                                                                errorMessage = "퀴즈 이미지 삭제에 실패하였습니다.",
+                                                            )
+                                                        }
+                                                    }
+                                            } ?: _uiState.update {
+                                                it.copy(
+                                                    isLoading = false,
+                                                    isDeleted = true,
+                                                )
+                                            }
+
+                                        }
+                                        .onFailure {
+                                            Log.e("QuizViewModel", "Failed to delete quiz", it)
+                                            _uiState.update {
+                                                it.copy(
+                                                    isLoading = false,
+                                                    errorMessage = "퀴즈 삭제에 실패했습니다.",
+                                                )
+                                            }
+                                        }
+                                }
+                                .onFailure {
+                                    Log.e("QuizViewModel", "Failed to delete userOmr", it)
+                                    _uiState.update {
+                                        it.copy(
+                                            isLoading = false,
+                                            errorMessage = "답안 삭제에 실패했습니다.",
+                                        )
+                                    }
+                                }
+                        }.onFailure {
+                            Log.e("QuizViewModel", "Failed to delete questions", it)
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    errorMessage = "퀴즈 문제 삭제에 실패했습니다.",
+                                )
+                            }
+                        }
+                }
+                .onFailure {
+                    Log.e("QuizViewModel", "Failed to delete quiz from category", it)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = "카테고리에서 퀴즈를 삭제하는데 실패했습니다.",
+                        )
+                    }
+                }
+        }
     }
 }

@@ -40,7 +40,7 @@ fun GroupListScreen(
     ) {
         CustomPropertyTab(
             studyGroupId = currentGroup?.id ?: "",
-            onClicked = { showDialog = true },
+            onClicked = { _, _ -> showDialog = true },
             imageVector = Icons.Outlined.AddCircle,
             title = R.string.property_tab_group_text,
             currentGroup = currentGroup ?: StudyGroup("", "", "", "", 0, "", emptyList(), emptyList()),

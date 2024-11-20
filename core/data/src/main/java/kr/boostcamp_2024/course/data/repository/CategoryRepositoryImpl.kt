@@ -31,11 +31,12 @@ class CategoryRepositoryImpl @Inject constructor(
     override suspend fun createCategory(
         categoryName: String,
         categoryDescription: String?,
+        categoryImageUrl: String?,
     ): Result<String> = runCatching {
         val newCategory = CategoryDTO(
             name = categoryName,
             description = categoryDescription,
-            categoryImageUrl = null,
+            categoryImageUrl = categoryImageUrl,
             quizzes = emptyList(),
         )
 
@@ -54,4 +55,38 @@ class CategoryRepositoryImpl @Inject constructor(
             document.update("quizzes", FieldValue.arrayUnion(quizId)).await()
 
         }
+
+    override suspend fun deleteQuizFromCategory(categoryId: String, quizId: String): Result<Unit> =
+        runCatching {
+            val document = categoryCollectionRef.document(categoryId)
+            document.update("quizzes", FieldValue.arrayRemove(quizId)).await()
+
+        }
+
+    override suspend fun deleteCategories(categoryIds: List<String>): Result<Unit> =
+        runCatching {
+            categoryIds.forEach { categoryId ->
+                categoryCollectionRef.document(categoryId).delete().await()
+            }
+        }
+
+    override suspend fun deleteCategory(categoryId: String): Result<Unit> =
+        kotlin.runCatching {
+            categoryCollectionRef.document(categoryId).delete().await()
+        }
+
+    override suspend fun updateCategory(
+        categoryId: String,
+        categoryName: String,
+        categoryDescription: String?,
+        categoryImageUrl: String?,
+    ): Result<Unit> = runCatching {
+        categoryCollectionRef.document(categoryId).update(
+            mapOf(
+                "name" to categoryName,
+                "description" to categoryDescription,
+                "category_image_url" to categoryImageUrl,
+            ),
+        ).await()
+    }
 }

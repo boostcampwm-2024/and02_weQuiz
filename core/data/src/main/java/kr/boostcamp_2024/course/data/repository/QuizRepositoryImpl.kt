@@ -33,6 +33,7 @@ class QuizRepositoryImpl @Inject constructor(
                 solveTime = quizCreateInfo.quizSolveTime,
                 questions = emptyList(),
                 userOmrs = emptyList(),
+                quizImageUrl = quizCreateInfo.quizImageUrl,
             )
             val document = quizCollectionRef.add(newQuiz).await()
             document.id
@@ -67,5 +68,31 @@ class QuizRepositoryImpl @Inject constructor(
             quizCollectionRef.document(quizId)
                 .update("user_omrs", FieldValue.arrayUnion(userOmrId))
                 .await()
+        }
+
+    override suspend fun editQuiz(quizId: String, quizCreateInfo: QuizCreationInfo): Result<Unit> =
+        runCatching {
+            val updatedData = mapOf(
+                "title" to quizCreateInfo.quizTitle,
+                "description" to quizCreateInfo.quizDescription,
+                "start_time" to quizCreateInfo.quizDate,
+                "solve_time" to quizCreateInfo.quizSolveTime,
+                "quiz_image_url" to quizCreateInfo.quizImageUrl,
+            )
+            quizCollectionRef.document(quizId)
+                .update(updatedData)
+                .await()
+        }
+
+    override suspend fun deleteQuiz(quizId: String): Result<Unit> =
+        runCatching {
+            quizCollectionRef.document(quizId).delete().await()
+        }
+
+    override suspend fun deleteQuizzes(quizIds: List<String>): Result<Unit> =
+        runCatching {
+            quizIds.forEach { quizId ->
+                quizCollectionRef.document(quizId).delete().await()
+            }
         }
 }

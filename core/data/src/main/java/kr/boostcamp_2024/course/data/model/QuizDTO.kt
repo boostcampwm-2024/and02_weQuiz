@@ -16,6 +16,9 @@ data class QuizDTO(
     @get:PropertyName("user_omrs")
     @set:PropertyName("user_omrs")
     var userOmrs: List<String>? = null,
+    @get:PropertyName("quiz_image_url")
+    @set:PropertyName("quiz_image_url")
+    var quizImageUrl: String? = null,
 ) : BaseQuizDTO {
     fun toVO(quizId: String): Quiz = Quiz(
         id = quizId,
@@ -25,5 +28,6 @@ data class QuizDTO(
         solveTime = requireNotNull(solveTime),
         questions = requireNotNull(questions),
         userOmrs = requireNotNull(userOmrs),
+        quizImageUrl = quizImageUrl,
     )
 }
