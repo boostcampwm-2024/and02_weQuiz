@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.category.navigation.CategoryRoute
+import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
-import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 data class CategoryUiState(
     val category: Category? = null,
-    val quizList: List<Quiz>? = null,
+    val quizList: List<BaseQuiz>? = null,
     val snackBarMessage: String? = null,
     val isDeleteCategorySuccess: Boolean = false,
 )

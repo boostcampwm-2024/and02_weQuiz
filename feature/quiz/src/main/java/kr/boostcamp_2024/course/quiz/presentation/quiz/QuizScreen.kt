@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.quiz.R
@@ -96,13 +97,13 @@ fun QuizScreen(
 @Composable
 fun QuizScreen(
     category: Category?,
-    quiz: Quiz?,
+    quiz: BaseQuiz?,
     snackbarHostState: SnackbarHostState,
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
     onSettingMenuClick: (String, String) -> Unit,
-    onDeleteMenuClick: (String, Quiz) -> Unit,
+    onDeleteMenuClick: (String, BaseQuiz) -> Unit,
 ) {
 
     Scaffold(
@@ -204,28 +205,29 @@ fun QuizScreen(
                     }
                 }
 
-                // CreateQuestionButton & StartQuizButton
+                if (quiz is Quiz) {
+                    // CreateQuestionButton & StartQuizButton
+                    quiz.let {
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { onCreateQuestionButtonClick(quiz.id) },
+                            enabled = quiz.isOpened.not(),
+                        ) {
+                            when (quiz.isOpened.not()) {
+                                true -> Text(text = stringResource(R.string.txt_open_create_question))
+                                false -> Text(text = stringResource(R.string.txt_close_create_question))
+                            }
 
-                quiz?.let {
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { onCreateQuestionButtonClick(quiz.id) },
-                        enabled = quiz.isOpened.not(),
-                    ) {
-                        when (quiz.isOpened.not()) {
-                            true -> Text(text = stringResource(R.string.txt_open_create_question))
-                            false -> Text(text = stringResource(R.string.txt_close_create_question))
-                        }
-                    }
-
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { onStartQuizButtonClick(quiz.id) },
-                        enabled = (quiz.isOpened && quiz.questions.isNotEmpty()),
-                    ) {
-                        when (quiz.isOpened && quiz.questions.isEmpty()) {
-                            true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
-                            false -> Text(text = stringResource(R.string.txt_quiz_start))
+                            Button(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { onStartQuizButtonClick(quiz.id) },
+                                enabled = (quiz.isOpened && quiz.questions.isNotEmpty()),
+                            ) {
+                                when (quiz.isOpened && quiz.questions.isEmpty()) {
+                                    true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
+                                    false -> Text(text = stringResource(R.string.txt_quiz_start))
+                                }
+                            }
                         }
                     }
                 }

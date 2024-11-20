@@ -18,8 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
-import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
@@ -27,9 +27,9 @@ import kr.boostcamp_2024.course.quiz.R
 fun QuizTopAppBar(
     onNavigationButtonClick: () -> Unit,
     category: Category?,
-    quiz: Quiz?,
+    quiz: BaseQuiz?,
     onSettingMenuClick: (String, String) -> Unit,
-    onDeleteMenuClick: (String, Quiz) -> Unit,
+    onDeleteMenuClick: (String, BaseQuiz) -> Unit,
 ) {
     var isSettingMenuExpanded by remember { mutableStateOf(false) }
     TopAppBar(

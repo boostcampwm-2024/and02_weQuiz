@@ -39,8 +39,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
+import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Question
-import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.Question
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
@@ -88,7 +88,7 @@ fun QuestionScreen(
 
 @Composable
 fun QuestionScreen(
-    quiz: Quiz?,
+    quiz: BaseQuiz?,
     currentPage: Int,
     questions: List<Question>,
     countDownTime: Int,
