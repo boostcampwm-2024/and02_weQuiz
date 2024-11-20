@@ -7,10 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.category.navigation.CategoryRoute
@@ -35,13 +32,11 @@ class CategoryViewModel @Inject constructor(
     private val categoryId: String = savedStateHandle.toRoute<CategoryRoute>().categoryId
     private val _categoryUiState: MutableStateFlow<CategoryUiState> =
         MutableStateFlow(CategoryUiState())
-    val categoryUiState: StateFlow<CategoryUiState> = _categoryUiState.onStart {
+    val categoryUiState: StateFlow<CategoryUiState> = _categoryUiState
+
+    fun initViewmodel() {
         loadCategory(categoryId)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000L),
-        CategoryUiState(),
-    )
+    }
 
     private fun loadCategory(categoryId: String) {
         viewModelScope.launch {

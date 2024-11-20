@@ -40,4 +40,5 @@ class QuestionRepositoryImpl @Inject constructor(
             questionCollectionRef.document(questionId).delete().await()
         }
     }
+
 }
