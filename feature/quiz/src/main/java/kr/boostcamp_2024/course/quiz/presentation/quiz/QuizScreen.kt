@@ -146,6 +146,8 @@ fun QuizScreen(
                 // QuizButton
                 QuizDataButton(
                     quiz = quiz,
+                    isOwner = true,
+                    isWaiting = false,
                     onCreateQuestionButtonClick = onCreateQuestionButtonClick,
                     onStartQuizButtonClick = onStartQuizButtonClick,
                 )
