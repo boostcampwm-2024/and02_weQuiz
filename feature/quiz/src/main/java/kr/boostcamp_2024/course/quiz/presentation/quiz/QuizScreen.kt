@@ -54,8 +54,11 @@ fun QuizScreen(
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
+
     if (uiState.value.isDeleted) {
-        onQuizDeleted() // 삭제되면 뒤로가기
+        LaunchedEffect(Unit) {
+            onQuizDeleted() // 삭제되면 뒤로가기
+        }
     }
 
     LaunchedEffect(Unit) {

@@ -35,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,8 +42,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuizDatePickerTextField
@@ -178,8 +177,8 @@ fun CreateQuizScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            AsyncImage(
-                model = currentImage ?: defaultImageUrl,
+            WeQuizAsyncImage(
+                imgUrl = currentImage ?: defaultImageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -187,11 +186,24 @@ fun CreateQuizScreen(
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(18.dp))
                     .clickable(onClick = { photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }),
-                contentScale = ContentScale.Crop,
                 placeholder = painterResource(R.drawable.image_guide),
                 error = painterResource(R.drawable.image_guide),
                 fallback = painterResource(R.drawable.image_guide),
             )
+//            AsyncImage(
+//                model = currentImage ?: defaultImageUrl,
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 70.dp, vertical = 5.dp)
+//                    .aspectRatio(1f)
+//                    .clip(RoundedCornerShape(18.dp))
+//                    .clickable(onClick = { photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }),
+//                contentScale = ContentScale.Crop,
+//                placeholder = painterResource(R.drawable.image_guide),
+//                error = painterResource(R.drawable.image_guide),
+//                fallback = painterResource(R.drawable.image_guide),
+//            )
 
             // QuizInfo
             // Title
