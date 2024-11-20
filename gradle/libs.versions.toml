@@ -78,7 +78,7 @@ compose-compiler-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compil
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
-firebase-storage = { group = "com.google.firebase", name = "firebase-storage-ktx" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 
 credentails = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
 credentails-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }

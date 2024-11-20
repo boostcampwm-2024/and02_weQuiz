@@ -15,4 +15,6 @@ interface UserRepository {
     suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<Unit>
 
     suspend fun deleteStudyGroupUser(userId: String, studyGroupId: String): Result<Unit>
+
+    suspend fun deleteStudyGroupUsers(userIds: List<String>, studyGroupId: String): Result<Unit>
 }

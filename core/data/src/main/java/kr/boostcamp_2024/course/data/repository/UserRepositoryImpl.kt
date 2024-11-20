@@ -55,6 +55,14 @@ class UserRepositoryImpl @Inject constructor(
             document.update("study_groups", FieldValue.arrayRemove(studyGroupId)).await()
         }
 
+    override suspend fun deleteStudyGroupUsers(userIds: List<String>, studyGroupId: String): Result<Unit> =
+        runCatching {
+            userIds.forEach { userId ->
+                val document = userCollectionRef.document(userId)
+                document.update("study_groups", FieldValue.arrayRemove(studyGroupId)).await()
+            }
+        }
+
     override suspend fun findUserByEmail(email: String): Result<User> =
         runCatching {
             val querySnapshot = userCollectionRef.whereEqualTo("email", email).get().await()

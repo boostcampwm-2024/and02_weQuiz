@@ -8,15 +8,17 @@ import kr.boostcamp_2024.course.study.presentation.CreateStudyScreen
 import kr.boostcamp_2024.course.study.presentation.DetailStudyScreen
 
 @Serializable
-data object CreateStudyRoute
+data class CreateStudyRoute(
+    val studyGroupId: String? = null,
+)
 
 @Serializable
 data class StudyRoute(
     val studyGroupId: String,
 )
 
-fun NavController.navigateCreateStudy() {
-    navigate(CreateStudyRoute)
+fun NavController.navigateCreateStudy(studyGroupId: String? = null) {
+    navigate(CreateStudyRoute(studyGroupId))
 }
 
 fun NavController.navigateStudy(studyGroupId: String) {
@@ -25,14 +27,17 @@ fun NavController.navigateStudy(studyGroupId: String) {
 
 fun NavGraphBuilder.studyNavGraph(
     onNavigationButtonClick: () -> Unit,
-    onCreateStudySuccess: () -> Unit,
+    onSubmitStudySuccess: () -> Unit,
     onCategoryClick: (String) -> Unit,
     onCreateCategoryButtonClick: (String) -> Unit,
+    onDeleteStudyGroupSuccess: () -> Unit,
+    onLeaveStudyGroupSuccess: () -> Unit,
+    onEditStudyGroupButtonClick: (String) -> Unit,
 ) {
     composable<CreateStudyRoute> {
         CreateStudyScreen(
             onNavigationButtonClick = onNavigationButtonClick,
-            onCreateStudySuccess = onCreateStudySuccess,
+            onSubmitStudySuccess = onSubmitStudySuccess,
         )
     }
 
@@ -40,7 +45,10 @@ fun NavGraphBuilder.studyNavGraph(
         DetailStudyScreen(
             onNavigationButtonClick = onNavigationButtonClick,
             onCreateCategoryButtonClick = onCreateCategoryButtonClick,
+            onEditStudyGroupButtonClick = onEditStudyGroupButtonClick,
             onCategoryClick = onCategoryClick,
+            onDeleteStudyGroupSuccess = onDeleteStudyGroupSuccess,
+            onLeaveStudyGroupSuccess = onLeaveStudyGroupSuccess,
         )
     }
 }

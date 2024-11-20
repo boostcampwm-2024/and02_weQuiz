@@ -52,13 +52,17 @@ fun WeQuizNavHost(
             onNotificationButtonClick = navController::navigateNotification,
             onCreateStudyButtonClick = navController::navigateCreateStudy,
             onStudyGroupClick = navController::navigateStudy,
+            onEditStudyButtonClick = navController::navigateCreateStudy,
         )
 
         studyNavGraph(
             onNavigationButtonClick = navController::navigateUp,
-            onCreateStudySuccess = navController::navigateUp,
+            onSubmitStudySuccess = navController::navigateUp,
             onCreateCategoryButtonClick = navController::navigateCreateCategory,
             onCategoryClick = navController::navigateCategory,
+            onDeleteStudyGroupSuccess = navController::navigateUp,
+            onLeaveStudyGroupSuccess = navController::navigateUp,
+            onEditStudyGroupButtonClick = navController::navigateCreateStudy,
         )
 
         categoryNavGraph(
@@ -76,6 +80,9 @@ fun WeQuizNavHost(
             onCreateQuizSuccess = navController::navigateUp,
             onCreateQuestionButtonClick = navController::navigateCreateQuestion,
             onStartQuizButtonClick = navController::navigateQuestion,
+            onSettingMenuClick = navController::navigateCreateQuiz,
+            onEditQuizSuccess = navController::navigateUp,
+            onQuizDeleted = navController::navigateUp,
         )
     }
 }
