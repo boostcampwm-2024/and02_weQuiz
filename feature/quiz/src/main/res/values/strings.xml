@@ -50,12 +50,14 @@
     <string name="txt_close_create_question">문제 출제가 마감되었습니다.</string>
     <string name="txt_quiz_start">퀴즈 시작</string>
     <string name="txt_quiz_question_count_zero">문제가 없습니다!</string>
-    <!--  realtime quiz owner  -->
-    <string name="dialog_owner_finish_quiz">정말 나가시나요?\n 퀴즈가 완전히 종료 됩니다.</string>
+    <!--  realtime quiz  -->
+    <string name="dialog_owner_finish_quiz">정말 나가시나요?\n 퀴즈가 완전히 종료됩니다.</string>
     <string name="txt_finish_quiz">나가기</string>
     <string name="txt_finish_cancel">취소</string>
     <string name="txt_quiz_owner">진행자: %1$s</string>
     <string name="txt_quiz_submit_state">제출: %1$d / %2$d명</string>
+    <string name="txt_quiz_finish_notification">퀴즈가 종료되었습니다.\n결과 화면으로 이동합니다.</string>
+    <string name="txt_quiz_finish_confirm">확인</string>
     <!-- content description  -->
     <string name="des_btn_back">뒤로가기</string>
     <string name="des_clear_text">텍스트 지우기</string>

@@ -27,7 +27,6 @@ import javax.inject.Inject
 data class UserQuestionUiState(
     val quiz: BaseQuiz? = null,
     val questions: List<Question> = emptyList(),
-    val isSubmitting: Boolean = false,
     val currentPage: Int = 0,
     val selectedIndexList: List<Int> = emptyList(),
     val submittedIndexList: List<Int> = emptyList(),
@@ -175,8 +174,7 @@ class UserQuestionViewModel @Inject constructor(
 
     fun submitAnswers() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isSubmitting = true) }
-
+            _uiState.update { it.copy(isLoading = true) }
             _uiState.value.currentUserId?.let { userId ->
                 val userOmrCreationInfo = UserOmrCreationInfo(
                     userId = userId,
@@ -187,16 +185,21 @@ class UserQuestionViewModel @Inject constructor(
                     .onSuccess { userOmrId ->
                         quizRepository.addUserOmrToQuiz(quizId, userOmrId)
                             .onSuccess {
-                                _uiState.update { it.copy(isSubmitting = true, userOmrId = userOmrId) }
+                                _uiState.update {
+                                    it.copy(
+                                        userOmrId = userOmrId,
+                                        isLoading = false,
+                                    )
+                                }
                             }
                             .onFailure {
                                 Log.e("QuestionViewModel", "userOmrId 업데이트 실패", it)
-                                _uiState.update { it.copy(isSubmitting = false, errorMessageId = R.string.err_answer_add) }
+                                _uiState.update { it.copy(errorMessageId = R.string.err_answer_add) }
                             }
                     }
                     .onFailure {
                         Log.e("QuestionViewModel", "퀴즈 정답 제출 실패", it)
-                        _uiState.update { it.copy(isSubmitting = false, errorMessageId = R.string.err_answer_add_quiz) }
+                        _uiState.update { it.copy(errorMessageId = R.string.err_answer_add_quiz) }
                     }
             }
         }

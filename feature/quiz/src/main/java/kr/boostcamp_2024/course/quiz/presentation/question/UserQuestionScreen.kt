@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseConfirmDialog
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Question
@@ -50,24 +51,22 @@ fun UserQuestionScreen(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     val uiState by userQuestionViewModel.uiState.collectAsStateWithLifecycle()
+    var quizFinishDialog by rememberSaveable { mutableStateOf(false) }
 
     UserQuestionScreen(
         quiz = uiState.quiz,
         currentPage = uiState.currentPage,
         questions = uiState.questions,
+        quizFinishDialog = quizFinishDialog,
+        onQuizFinishDialogDismissButtonClick = { quizFinishDialog = false },
         selectedIndexList = uiState.selectedIndexList,
         snackbarHostState = snackbarHostState,
         onOptionSelected = userQuestionViewModel::selectOption,
-        onSubmitAnswersByOwner = userQuestionViewModel::submitAnswers,
         onNavigationButtonClick = onNavigationButtonClick,
         onSubmitButtonClick = userQuestionViewModel::submitQuestion,
         isSubmitted = uiState.isSubmitted,
+        onQuizFinishButtonClick = userQuestionViewModel::submitAnswers,
     )
-
-    if (uiState.isQuizFinished) {
-        val userOmrId = requireNotNull(uiState.userOmrId)
-        onQuizFinished(userOmrId)
-    }
 
     uiState.errorMessageId?.let { errorMessageId ->
         val errorMessage = stringResource(R.string.err_answer_add)
@@ -82,6 +81,10 @@ fun UserQuestionScreen(
             onQuizFinished(userOmrId)
         }
     }
+
+    if (uiState.isQuizFinished) {
+        quizFinishDialog = true
+    }
 }
 
 @Composable
@@ -89,18 +92,20 @@ fun UserQuestionScreen(
     quiz: BaseQuiz?,
     currentPage: Int,
     questions: List<Question>,
+    quizFinishDialog: Boolean,
+    onQuizFinishDialogDismissButtonClick: () -> Unit,
     selectedIndexList: List<Int>,
     snackbarHostState: SnackbarHostState,
     onOptionSelected: (Int, Int) -> Unit,
     onNavigationButtonClick: () -> Unit,
-    onSubmitAnswersByOwner: () -> Unit,
     onSubmitButtonClick: (String) -> Unit,
     isSubmitted: Boolean,
+    onQuizFinishButtonClick: () -> Unit,
 ) {
-    var showDialog by rememberSaveable { mutableStateOf(false) }
+    var showExitDialog by rememberSaveable { mutableStateOf(false) }
 
     BackHandler {
-        showDialog = true
+        showExitDialog = true
     }
 
     Scaffold(
@@ -109,7 +114,7 @@ fun UserQuestionScreen(
             quiz?.let {
                 QuestionTopBar(
                     title = it.title,
-                    onShowDialog = { showDialog = true },
+                    onShowDialog = { showExitDialog = true },
                 )
             }
         },
@@ -178,7 +183,18 @@ fun UserQuestionScreen(
         }
     }
 
-    if (showDialog) {
+    if (quizFinishDialog) {
+        WeQuizBaseConfirmDialog(
+            title = stringResource(R.string.txt_quiz_finish_notification),
+            confirmTitle = stringResource(R.string.txt_quiz_finish_confirm),
+            onConfirm = onQuizFinishButtonClick,
+            onDismissRequest = onQuizFinishDialogDismissButtonClick,
+            dialogImage = painterResource(id = R.drawable.quiz_system_profile),
+            content = { /* no-op */ },
+        )
+    }
+
+    if (showExitDialog) {
         WeQuizBaseDialog(
             title = if (currentPage == questions.size - 1) {
                 stringResource(R.string.dialog_submit_script)
@@ -192,14 +208,10 @@ fun UserQuestionScreen(
             },
             dismissTitle = stringResource(R.string.txt_question_cancel),
             onConfirm = {
-                showDialog = false
-                if (currentPage == questions.size - 1) {
-                    onSubmitAnswersByOwner()
-                } else {
-                    onNavigationButtonClick()
-                }
+                showExitDialog = false
+                onNavigationButtonClick()
             },
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { showExitDialog = false },
             dialogImage = painterResource(id = R.drawable.quiz_system_profile),
             content = { /* no-op */ },
         )
