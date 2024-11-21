@@ -10,6 +10,7 @@ import kr.boostcamp_2024.course.category.navigation.navigateCategory
 import kr.boostcamp_2024.course.category.navigation.navigateCreateCategory
 import kr.boostcamp_2024.course.login.navigation.LoginRoute
 import kr.boostcamp_2024.course.login.navigation.loginNavGraph
+import kr.boostcamp_2024.course.login.navigation.navigationLogin
 import kr.boostcamp_2024.course.login.navigation.navigationSignUp
 import kr.boostcamp_2024.course.main.navigation.mainNavGraph
 import kr.boostcamp_2024.course.main.navigation.navigateMain
@@ -54,6 +55,7 @@ fun WeQuizNavHost(
             onStudyGroupClick = navController::navigateStudy,
             onEditStudyButtonClick = navController::navigateCreateStudy,
             onEditUserClick = navController::navigationSignUp,
+            onLoginOutClick = navController::navigationLogin,
         )
 
         studyNavGraph(

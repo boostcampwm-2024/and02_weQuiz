@@ -23,9 +23,11 @@ data class SignUpRoute(
     val userId: String? = null,
 )
 
-// fun NavController.navigationLogin() {
-//    navigate(LoginRoute)
-// }
+fun NavController.navigationLogin() {
+    navigate(LoginRoute) {
+        popUpTo(0)
+    }
+}
 
 fun NavController.navigationSignUp(
     userUiModel: UserUiModel? = null,

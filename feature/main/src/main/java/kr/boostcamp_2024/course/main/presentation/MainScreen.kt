@@ -80,8 +80,12 @@ fun MainScreen(
         onLeaveStudyGroupClick = viewModel::deleteUserFromStudyGroup,
         onStudyGroupClick = onStudyGroupClick,
         onEditUserClick = onEditUserClick,
-        onLogOutClick = onLogOutClick,
+        onLogOutClick = viewModel::logout,
     )
+
+    if (uiState.isLogout) {
+        onLogOutClick()
+    }
 
     if (uiState.isLoading) {
         Box {
@@ -158,9 +162,7 @@ fun MainScreen(
                                 onEditUserClick(null, currentUser.id)
                             }
                         },
-                        onLogOutClick = {
-                            onLogOutClick()
-                        },
+                        onLogOutClick = onLogOutClick,
                     )
                 },
                 actions = {
