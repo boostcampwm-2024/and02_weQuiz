@@ -19,7 +19,7 @@ data class QuizDTO(
     @get:PropertyName("quiz_image_url")
     @set:PropertyName("quiz_image_url")
     var quizImageUrl: String? = null,
-) {
+) : BaseQuizDTO {
     fun toVO(quizId: String): Quiz = Quiz(
         id = quizId,
         title = requireNotNull(title),

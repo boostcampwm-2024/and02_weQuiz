@@ -1,12 +1,12 @@
 package kr.boostcamp_2024.course.domain.repository
 
-import kr.boostcamp_2024.course.domain.model.Quiz
+import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.QuizCreationInfo
 
 interface QuizRepository {
-    suspend fun getQuiz(quizId: String): Result<Quiz>
+    suspend fun getQuiz(quizId: String): Result<BaseQuiz>
 
-    suspend fun getQuizList(quizIdList: List<String>): Result<List<Quiz>>
+    suspend fun getQuizList(quizIdList: List<String>): Result<List<BaseQuiz>>
 
     suspend fun addQuestionToQuiz(quizId: String, questionId: String): Result<Unit>
 

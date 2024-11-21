@@ -4,7 +4,11 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.QuizDTO
-import kr.boostcamp_2024.course.domain.model.Quiz
+import kr.boostcamp_2024.course.data.model.RealTimeQuizDTO
+import kr.boostcamp_2024.course.domain.enum.QuizType.Companion.getQuizTypeFromValue
+import kr.boostcamp_2024.course.domain.enum.QuizType.General
+import kr.boostcamp_2024.course.domain.enum.QuizType.RealTime
+import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.QuizCreationInfo
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import javax.inject.Inject
@@ -35,19 +39,27 @@ class QuizRepositoryImpl @Inject constructor(
             document.id
         }
 
-    override suspend fun getQuiz(quizId: String): Result<Quiz> =
+    override suspend fun getQuiz(quizId: String): Result<BaseQuiz> =
         runCatching {
             val document = quizCollectionRef.document(quizId).get().await()
-            val response = document.toObject(QuizDTO::class.java)
-            requireNotNull(response).toVO(quizId)
+            val quizType = document.get("type").toString()
+            val response = when (getQuizTypeFromValue(quizType)) {
+                RealTime -> document.toObject(RealTimeQuizDTO::class.java)?.toVO(quizId)
+                General -> document.toObject(QuizDTO::class.java)?.toVO(quizId)
+            }
+            requireNotNull(response)
         }
 
-    override suspend fun getQuizList(quizIdList: List<String>): Result<List<Quiz>> =
+    override suspend fun getQuizList(quizIdList: List<String>): Result<List<BaseQuiz>> =
         runCatching {
             quizIdList.map { quizId ->
                 val document = quizCollectionRef.document(quizId).get().await()
-                val response = document.toObject(QuizDTO::class.java)
-                requireNotNull(response).toVO(quizId)
+                val quizType = document.get("type").toString()
+                val response = when (getQuizTypeFromValue(quizType)) {
+                    RealTime -> document.toObject(RealTimeQuizDTO::class.java)?.toVO(quizId)
+                    General -> document.toObject(QuizDTO::class.java)?.toVO(quizId)
+                }
+                requireNotNull(response)
             }
         }
 

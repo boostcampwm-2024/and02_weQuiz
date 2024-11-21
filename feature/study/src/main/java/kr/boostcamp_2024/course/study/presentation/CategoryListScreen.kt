@@ -25,8 +25,8 @@ fun CategoryListScreen(
     owner: User?,
     currentGroup: StudyGroup,
     categories: List<Category>,
-    createCategoryClick: (String) -> Unit,
-    categoryItemClick: (String) -> Unit,
+    createCategoryClick: (String?, String?) -> Unit,
+    categoryItemClick: (String, String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -40,7 +40,7 @@ fun CategoryListScreen(
             title = R.string.property_tab_category_text,
             currentGroup = currentGroup,
         )
-        CategoryLazyColumn(owner, categories, categoryItemClick)
+        CategoryLazyColumn(owner, categories, categoryItemClick, currentGroup.id)
     }
 }
 
@@ -48,7 +48,8 @@ fun CategoryListScreen(
 fun CategoryLazyColumn(
     owner: User?,
     categories: List<Category>,
-    categoryItemClick: (String) -> Unit,
+    categoryItemClick: (String, String) -> Unit,
+    studyGroupId: String,
 ) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         itemsIndexed(items = categories, key = { _, category -> category.id }) { index, category ->
@@ -58,6 +59,7 @@ fun CategoryLazyColumn(
                 category.quizzes.size,
                 owner?.profileUrl,
                 owner?.name ?: stringResource(R.string.txt_detail_study_no_category_owner),
+                studyGroupId,
             )
             if (index < categories.size) {
                 HorizontalDivider()

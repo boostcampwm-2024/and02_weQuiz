@@ -13,8 +13,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Question
-import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.UserOmrCreationInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
@@ -25,7 +25,7 @@ import kr.boostcamp_2024.course.quiz.navigation.QuestionRoute
 import javax.inject.Inject
 
 data class QuestionUiState(
-    val quiz: Quiz? = null,
+    val quiz: BaseQuiz? = null,
     val questions: List<Question> = emptyList(),
     val isSubmitting: Boolean = false,
     val currentPage: Int = 0,

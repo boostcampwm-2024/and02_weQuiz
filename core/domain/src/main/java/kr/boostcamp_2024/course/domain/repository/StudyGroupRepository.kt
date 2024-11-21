@@ -17,6 +17,8 @@ interface StudyGroupRepository {
 
     suspend fun deleteUser(studyGroupId: String, userId: String): Result<Unit>
 
+    suspend fun deleteCategory(studyGroupId: String, categoryId: String): Result<Unit>
+
     suspend fun deleteStudyGroup(studyGroupId: String): Result<Unit>
 
     suspend fun updateStudyGroup(studyGroupId: String, updateInfo: StudyGroupUpdatedInfo): Result<Unit>

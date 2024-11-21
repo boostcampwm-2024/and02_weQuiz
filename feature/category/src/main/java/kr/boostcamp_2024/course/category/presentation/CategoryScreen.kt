@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -37,11 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.category.R
+import kr.boostcamp_2024.course.category.component.CategorySettingMenu
 import kr.boostcamp_2024.course.category.viewModel.CategoryViewModel
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
+import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 
@@ -51,6 +52,7 @@ fun CategoryScreen(
     onCreateQuizButtonClick: (String) -> Unit,
     onQuizClick: (String, String) -> Unit,
     categoryViewModel: CategoryViewModel = hiltViewModel(),
+    onCreateCategoryButtonClick: (String?, String?) -> Unit,
 ) {
     val categoryUiState = categoryViewModel.categoryUiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -66,13 +68,18 @@ fun CategoryScreen(
         }
     }
 
+    if (categoryUiState.value.isDeleteCategorySuccess) {
+        LaunchedEffect(Unit) { onNavigationButtonClick() }
+    }
+
     CategoryScreen(
         category = categoryUiState.value.category,
         quizList = categoryUiState.value.quizList,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuizButtonClick = onCreateQuizButtonClick,
         onQuizClick = onQuizClick,
-        setNewSnackBarMessage = categoryViewModel::setNewSnackBarMessage,
+        onCategoryDeleteClick = categoryViewModel::onCategoryDeleteClick,
+        onCreateCategoryButtonClick = onCreateCategoryButtonClick,
     )
 }
 
@@ -80,11 +87,12 @@ fun CategoryScreen(
 @Composable
 private fun CategoryScreen(
     category: Category?,
-    quizList: List<Quiz>?,
+    quizList: List<BaseQuiz>?,
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: (String) -> Unit,
     onQuizClick: (String, String) -> Unit,
-    setNewSnackBarMessage: (String) -> Unit,
+    onCategoryDeleteClick: () -> Unit,
+    onCreateCategoryButtonClick: (String?, String?) -> Unit,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -117,17 +125,12 @@ private fun CategoryScreen(
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            // todo: 카테고리 설정
-                            setNewSnackBarMessage("추후 제공될 기능입니다.")
+                    CategorySettingMenu(
+                        onEditClick = {
+                            onCreateCategoryButtonClick(null, category?.id)
                         },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(R.string.des_btn_settings),
-                        )
-                    }
+                        onDeleteClick = onCategoryDeleteClick,
+                    )
                 },
             )
         },
@@ -167,7 +170,7 @@ private fun CategoryScreen(
 fun QuizList(
     modifier: Modifier = Modifier,
     categoryId: String,
-    quizzes: List<Quiz>?,
+    quizzes: List<BaseQuiz>?,
     onQuizClick: (String, String) -> Unit,
 ) {
     if (quizzes != null) {
@@ -193,7 +196,7 @@ fun QuizList(
 
 @Composable
 fun QuizItem(
-    quiz: Quiz,
+    quiz: BaseQuiz,
     onQuizClick: () -> Unit,
 ) {
     Column(
@@ -216,12 +219,14 @@ fun QuizItem(
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurface,
         )
-        // todo: date format
-        Text(
-            text = quiz.startTime,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+
+        if (quiz is Quiz) {
+            Text(
+                text = quiz.startTime,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 
@@ -233,6 +238,7 @@ fun CategoryScreenPreview() {
             onNavigationButtonClick = {},
             onCreateQuizButtonClick = {},
             onQuizClick = { _, _ -> },
+            onCreateCategoryButtonClick = { _, _ -> },
         )
     }
 }
