@@ -139,7 +139,7 @@ fun OwnerQuestionScreen(
                         Column(
                             verticalArrangement = Arrangement.spacedBy(20.dp),
                             horizontalAlignment = Alignment.End,
-                            modifier = Modifier
+                            modifier = Modifier,
                         ) {
                             WeQuizRightChatBubble(
                                 modifier = Modifier,
