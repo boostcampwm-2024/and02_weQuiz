@@ -69,4 +69,8 @@
     <string name="txt_delete_quiz_drop_down_menu_item">퀴즈 제거</string>
     <string name="top_app_bar_edit_quiz">퀴즈 수정</string>
     <string name="err_load_current_page">페이지 로드에 실패하였습니다.</string>
+    <!--  realtime quiz owner  -->
+    <string name="dialog_owner_finish_quiz">정말 나가시나요?\n 퀴즈가 완전히 종료 됩니다.</string>
+    <string name="txt_finish_quiz">나가기</string>
+    <string name="txt_finish_cancel">취소</string>
 </resources>
