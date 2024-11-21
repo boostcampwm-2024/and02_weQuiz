@@ -257,6 +257,7 @@ fun QuizStartScreenPreview() {
                 questions = emptyList(),
                 userOmrs = emptyList(),
                 quizImageUrl = "quizImageUrl",
+                type = "",
             ),
             snackbarHostState = SnackbarHostState(),
             onNavigationButtonClick = {},
