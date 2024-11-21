@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.data.repository
 
+import android.util.Log
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -28,6 +29,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getUser(userId: String): Result<User> =
         runCatching {
+            Log.d("UserRepositoryImpl", "getUser: $userId")
             val document = userCollectionRef.document(userId).get().await()
             val response = document.toObject(UserDTO::class.java)
             requireNotNull(response).toVO(userId)
