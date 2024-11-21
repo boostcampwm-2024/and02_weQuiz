@@ -46,14 +46,10 @@ fun QuizScreen(
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (uiState.value.isDeleteSuccess) {
+    if (uiState.value.isDeleteQuizSuccess) {
         LaunchedEffect(Unit) {
             onQuizDeleteSuccess()
         }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.initViewModel()
     }
 
     QuizScreen(

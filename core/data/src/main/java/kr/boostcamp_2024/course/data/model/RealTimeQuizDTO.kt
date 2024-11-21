@@ -27,7 +27,7 @@ data class RealTimeQuizDTO(
     var isFinished: Boolean? = null,
     @get:PropertyName("waiting_users")
     @set:PropertyName("waiting_users")
-    var waitingUsers: Int? = null,
+    var waitingUsers: List<String>? = null,
     @get:PropertyName("quiz_image_url")
     @set:PropertyName("quiz_image_url")
     var quizImageUrl: String? = null,

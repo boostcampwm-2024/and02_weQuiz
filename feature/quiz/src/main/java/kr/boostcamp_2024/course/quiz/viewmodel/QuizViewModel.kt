@@ -28,7 +28,7 @@ data class QuizUiState(
     val quiz: BaseQuiz? = null,
     val currentUserId: String? = null,
     val errorMessage: String? = null,
-    val isDeleteSuccess: Boolean = false,
+    val isDeleteQuizSuccess: Boolean = false,
 )
 
 @HiltViewModel
@@ -53,6 +53,13 @@ class QuizViewModel @Inject constructor(
         loadCategory()
 
         viewModelScope.launch {
+            quizRepository.getQuizFlow(quizId)
+                .collect { quiz ->
+                    _uiState.update { it.copy(isLoading = false, quiz = quiz) }
+                }
+                .runCatching {
+                    _uiState.update { it.copy(isLoading = false, errorMessage = "퀴즈 로드에 실패했습니다.") }
+                }
         }
     }
 
@@ -111,7 +118,7 @@ class QuizViewModel @Inject constructor(
                                                         _uiState.update {
                                                             it.copy(
                                                                 isLoading = false,
-                                                                isDeleteSuccess = true,
+                                                                isDeleteQuizSuccess = true,
                                                             )
                                                         }
                                                     }
@@ -131,7 +138,7 @@ class QuizViewModel @Inject constructor(
                                             } ?: _uiState.update {
                                                 it.copy(
                                                     isLoading = false,
-                                                    isDeleteSuccess = true,
+                                                    isDeleteQuizSuccess = true,
                                                 )
                                             }
 

@@ -57,13 +57,20 @@ fun QuizDataButton(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { onStartQuizButtonClick(quiz.id) },
-                enabled = true,
+                enabled =
+                    if (isOwner && quiz.isStarted.not() && quiz.waitingUsers.isNotEmpty() && quiz.questions.isNotEmpty()) { // (관리자) -> 퀴즈 시작 전
+                        true
+                    } else if (isOwner.not() && quiz.isStarted.not() && isWaiting.not() && quiz.questions.isNotEmpty()) { // (참여자) -> 퀴즈 시작 전
+                        true
+                    } else {
+                        false
+                    },
             ) {
                 if (quiz.questions.isEmpty()) { // (참여자, 관리자) -> 문제가 없는 경우
                     Text(text = stringResource(R.string.txt_quiz_question_count_zero))
                 } else if (isOwner && quiz.isStarted.not()) { // (관리자) -> 퀴즈 시작 전
-                    Text(text = "시작 하기(대기: ${quiz.waitingUsers}명)")
-                } else if (isOwner.not() && quiz.isStarted.not()) { // (참여자) -> 퀴즈 시작 전
+                    Text(text = "시작 하기(대기: ${quiz.waitingUsers.size}명)")
+                } else if (isOwner.not() && quiz.isStarted.not() && isWaiting.not()) { // (참여자) -> 퀴즈 시작 전
                     Text(text = "대기하기")
                 } else if (isOwner.not() && quiz.isStarted.not() && isWaiting) { // (참여자) -> 대기 중
                     Text(text = "대기: ${quiz.waitingUsers}명")
