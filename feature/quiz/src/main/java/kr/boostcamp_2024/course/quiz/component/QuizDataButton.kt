@@ -80,15 +80,15 @@ fun QuizDataButton(
                     if (quiz.questions.isEmpty()) { // (참여자, 관리자) -> 문제가 없는 경우
                         Text(text = stringResource(R.string.txt_quiz_question_count_zero))
                     } else if (isOwner && quiz.isStarted.not()) { // (관리자) -> 퀴즈 시작 전
-                        Text(text = "시작 하기(대기: ${quiz.waitingUsers.size}명)")
+                        Text(text = stringResource(R.string.txt_real_time_quiz_owner, quiz.waitingUsers.size))
                     } else if (isOwner.not() && quiz.isStarted.not() && isWaiting.not()) { // (참여자) -> 퀴즈 시작 전
-                        Text(text = "대기하기")
+                        Text(text = stringResource(R.string.txt_real_time_quiz_wait_false))
                     } else if (isOwner.not() && quiz.isStarted.not() && isWaiting) { // (참여자) -> 대기 중
-                        Text(text = "대기: ${quiz.waitingUsers.size}명")
+                        Text(text = stringResource(R.string.txt_real_time_quiz_wait_true, quiz.waitingUsers.size))
                     } else if (quiz.isStarted && quiz.isFinished.not()) { // (참여자, 관리자) -> 퀴즈 진행 중
-                        Text(text = "퀴즈 진행 중")
+                        Text(text = stringResource(R.string.txt_real_time_quiz_progressing))
                     } else if (quiz.isFinished) { // (참여자, 관리자) -> 퀴즈 종료
-                        Text(text = "시험이 끝났습니다.")
+                        Text(text = stringResource(R.string.txt_real_time_quiz_finished))
                     }
                 }
             }

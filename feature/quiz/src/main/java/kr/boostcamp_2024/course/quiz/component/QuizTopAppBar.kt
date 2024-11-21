@@ -99,10 +99,10 @@ fun QuizTopAppBar(
 
     if (showDialog) {
         WeQuizBaseDialog(
-            title = "정말 나가시나요?\n입장이 취소됩니다!",
+            title = stringResource(R.string.txt_waiting_cancel_dialog),
             dialogImage = painterResource(R.drawable.quiz_system_profile),
-            confirmTitle = "나가기",
-            dismissTitle = "취소",
+            confirmTitle = stringResource(R.string.txt_waiting_cancel_dialog_confirm),
+            dismissTitle = stringResource(R.string.txt_waiting_cancel_dialog_dismiss),
             onConfirm = {
                 showDialog = false
                 onWaitingRealTimeQuizButtonClick(false)
