@@ -98,14 +98,37 @@ class QuizViewModel @Inject constructor(
     }
 
     fun waitingRealTimeQuiz(waiting: Boolean) {
-        Log.d("QuizViewModel", "waitingRealTimeQuiz")
+        viewModelScope.launch {
+
+            _uiState.update { it.copy(isLoading = true) }
+
+            uiState.value.currentUserId?.let { currentUserId ->
+                uiState.value.quiz?.let { quiz ->
+                    quizRepository.waitingRealTimeQuiz(quiz.id, waiting, currentUserId)
+                        .onSuccess {
+                            _uiState.update { it.copy(isLoading = false) }
+                        }
+                        .onFailure {
+                            Log.e("QuizViewModel", "Failed to waiting real-time quiz", it)
+                            _uiState.update {
+                                it.copy(isLoading = false, errorMessage = "실시간 퀴즈 대기 상태 변경에 실패했습니다.")
+                            }
+                        }
+                }
+            }
+        }
     }
 
     fun startRealTimeQuiz() {
         viewModelScope.launch {
+
+            _uiState.update { it.copy(isLoading = true) }
+
             uiState.value.quiz?.let { quiz ->
                 quizRepository.startRealTimeQuiz(quiz.id)
-                    .onSuccess { /* no-op */ }
+                    .onSuccess {
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
                     .onFailure {
                         Log.e("QuizViewModel", "Failed to start real-time quiz", it)
                         _uiState.update {

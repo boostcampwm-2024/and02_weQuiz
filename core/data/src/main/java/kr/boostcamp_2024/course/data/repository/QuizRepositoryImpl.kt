@@ -109,6 +109,23 @@ class QuizRepositoryImpl @Inject constructor(
                 .await()
         }
 
+    override suspend fun waitingRealTimeQuiz(quizId: String, waiting: Boolean, userId: String): Result<Unit> =
+        runCatching {
+            when (waiting) {
+                true -> {
+                    quizCollectionRef.document(quizId)
+                        .update("waiting_users", FieldValue.arrayUnion(userId))
+                        .await()
+                }
+
+                false -> {
+                    quizCollectionRef.document(quizId)
+                        .update("waiting_users", FieldValue.arrayRemove(userId))
+                        .await()
+                }
+            }
+        }
+
     override fun getQuizFlow(quizId: String): Flow<BaseQuiz> = callbackFlow<BaseQuiz> {
         val listener = quizCollectionRef.document(quizId)
             .addSnapshotListener { snapshot, error ->
