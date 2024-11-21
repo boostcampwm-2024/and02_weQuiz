@@ -102,7 +102,18 @@ class QuizViewModel @Inject constructor(
     }
 
     fun startRealTimeQuiz() {
-        Log.d("QuizViewModel", "startRealTimeQuiz")
+        viewModelScope.launch {
+            uiState.value.quiz?.let { quiz ->
+                quizRepository.startRealTimeQuiz(quiz.id)
+                    .onSuccess { /* no-op */ }
+                    .onFailure {
+                        Log.e("QuizViewModel", "Failed to start real-time quiz", it)
+                        _uiState.update {
+                            it.copy(isLoading = false, errorMessage = "실시간 퀴즈 시작에 실패했습니다.")
+                        }
+                    }
+            }
+        }
     }
 
     fun shownErrorMessage() {

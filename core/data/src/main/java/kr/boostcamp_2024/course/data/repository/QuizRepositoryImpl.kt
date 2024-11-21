@@ -99,6 +99,16 @@ class QuizRepositoryImpl @Inject constructor(
             }
         }
 
+    override suspend fun startRealTimeQuiz(quizId: String): Result<Unit> =
+        runCatching {
+            val updatedData = mapOf(
+                "is_started" to true,
+            )
+            quizCollectionRef.document(quizId)
+                .update(updatedData)
+                .await()
+        }
+
     override fun getQuizFlow(quizId: String): Flow<BaseQuiz> = callbackFlow<BaseQuiz> {
         val listener = quizCollectionRef.document(quizId)
             .addSnapshotListener { snapshot, error ->

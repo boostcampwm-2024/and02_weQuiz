@@ -21,5 +21,7 @@ interface QuizRepository {
 
     suspend fun deleteQuizzes(quizzes: List<String>): Result<Unit>
 
+    suspend fun startRealTimeQuiz(quizId: String): Result<Unit>
+
     fun getQuizFlow(quizId: String): Flow<BaseQuiz>
 }
