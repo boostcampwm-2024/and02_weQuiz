@@ -32,9 +32,13 @@ data class CreateQuizUiState(
     val snackBarMessage: String? = null,
     val isEditing: Boolean = false,
     val isEditQuizSuccess: Boolean = false,
+    val selectedQuizTypeIndex: Int = 0,
 ) {
     val isCreateQuizButtonEnabled: Boolean
-        get() = quizTitle.isNotBlank() && quizDate.isNotBlank() && quizSolveTime > 0
+        get() = quizTitle.isNotBlank() && (!isRealtimeQuiz || quizDate.isNotBlank()) && quizSolveTime > 0
+
+    val isRealtimeQuiz: Boolean
+        get() = selectedQuizTypeIndex == 1
 }
 
 @HiltViewModel
@@ -84,6 +88,10 @@ class CreateQuizViewModel @Inject constructor(
                     }
             }
         }
+    }
+
+    fun setSelectedQuizTypeIndex(index: Int) {
+        _uiState.update { it.copy(selectedQuizTypeIndex = index) }
     }
 
     fun setQuizTitle(quizTitle: String) {
