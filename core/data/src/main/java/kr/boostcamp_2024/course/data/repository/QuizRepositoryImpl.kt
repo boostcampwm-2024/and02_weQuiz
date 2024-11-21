@@ -113,9 +113,9 @@ class QuizRepositoryImpl @Inject constructor(
             quizCollectionRef.document(quizId).delete().await()
         }
 
-    override suspend fun deleteQuizzes(quizIds: List<String>): Result<Unit> =
+    override suspend fun deleteQuizzes(quizzes: List<String>): Result<Unit> =
         runCatching {
-            quizIds.forEach { quizId ->
+            quizzes.forEach { quizId ->
                 quizCollectionRef.document(quizId).delete().await()
             }
         }
