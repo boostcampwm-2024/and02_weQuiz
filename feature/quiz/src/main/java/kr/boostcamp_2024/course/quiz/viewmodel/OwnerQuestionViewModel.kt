@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
+import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.quiz.R
 import javax.inject.Inject
@@ -20,18 +21,16 @@ data class QuestionUiState(
     val quiz: RealTimeQuiz? = null,
     val questions: List<Question?> = emptyList(),
     val ownerName: String? = null,
-    val isSubmitting: Boolean = false,
     val currentPage: Int = 0,
-    val selectedIndexList: List<Int> = emptyList(),
-    val countDownTime: Int = 20 * 60,
     val isLoading: Boolean = false,
     val errorMessageId: Int? = null,
     val currentUserId: String? = null,
-    val userOmrId: String? = null,
+    val isQuizFinished: Boolean = false,
 )
 
 @HiltViewModel
 class OwnerQuestionViewModel @Inject constructor(
+    private val quizRepository: QuizRepository,
     private val questionRepository: QuestionRepository,
     private val userRepository: UserRepository,
 ) : ViewModel() {
@@ -91,9 +90,7 @@ class OwnerQuestionViewModel @Inject constructor(
                             }
                         }
                     }
-                    _uiState.update {
-                        it.copy(isLoading = false)
-                    }
+                    setLoadingState(false)
                 }.onFailure {
                     Log.e("OwnerQuestionViewModel", "Failed to load real time questions", it)
                     showErrorMessage(R.string.err_load_questions)
@@ -101,7 +98,27 @@ class OwnerQuestionViewModel @Inject constructor(
         }
     }
 
-    fun showErrorMessage(errorMessageId: Int?) {
+    fun setQuizFinished() {
+        viewModelScope.launch {
+            setLoadingState(true)
+            val currentQuizId = requireNotNull(_uiState.value.quiz?.id)
+            quizRepository.setQuizFinished(currentQuizId)
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            isQuizFinished = true,
+                            isLoading = false,
+                        )
+                    }
+                }.onFailure {
+                    Log.e("OwnerQuestionViewModel", "Failed to set quiz finished", it)
+                    showErrorMessage(R.string.error_quiz_finished)
+                    setLoadingState(false)
+                }
+        }
+    }
+
+    private fun showErrorMessage(errorMessageId: Int?) {
         _uiState.update { currentState ->
             currentState.copy(
                 errorMessageId = errorMessageId,
@@ -124,6 +141,12 @@ class OwnerQuestionViewModel @Inject constructor(
     fun previousPage() {
         _uiState.update { currentState ->
             currentState.copy(currentPage = currentState.currentPage - 1)
+        }
+    }
+
+    private fun setLoadingState(isLoading: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(isLoading = isLoading)
         }
     }
 }

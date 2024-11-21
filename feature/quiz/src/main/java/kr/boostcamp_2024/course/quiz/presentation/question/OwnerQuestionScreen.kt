@@ -64,6 +64,10 @@ fun OwnerQuestionScreen(
         questionViewModel.initQuizData(quiz, currentUserId)
     }
 
+    if (uiState.isQuizFinished) {
+        // TODO: quizId 전달
+    }
+
     OwnerQuestionScreen(
         quiz = uiState.quiz,
         currentPage = uiState.currentPage,
@@ -72,8 +76,7 @@ fun OwnerQuestionScreen(
         snackbarHostState = snackbarHostState,
         onNextButtonClick = questionViewModel::nextPage,
         onPreviousButtonClick = questionViewModel::previousPage,
-        onSubmitButtonClick = {},
-        onNavigationButtonClick = onNavigationButtonClick,
+        onQuizFinishButtonClick = questionViewModel::setQuizFinished,
     )
 
     uiState.errorMessageId?.let { errorMessageId ->
@@ -92,10 +95,9 @@ fun OwnerQuestionScreen(
     questions: List<Question?>,
     ownerName: String,
     snackbarHostState: SnackbarHostState,
-    onNavigationButtonClick: () -> Unit,
     onNextButtonClick: () -> Unit,
     onPreviousButtonClick: () -> Unit,
-    onSubmitButtonClick: () -> Unit,
+    onQuizFinishButtonClick: () -> Unit,
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
     val currentQuestion = questions.getOrNull(currentPage)
@@ -192,15 +194,7 @@ fun OwnerQuestionScreen(
 
         if (showDialog) {
             OwnerFinishQuizDialog(
-                onFinishQuizButtonClick = {
-                    // TODO: 수정
-                    showDialog = false
-                    if (currentPage == questions.size - 1) {
-                        onSubmitButtonClick()
-                    } else {
-                        onNavigationButtonClick()
-                    }
-                },
+                onFinishQuizButtonClick = onQuizFinishButtonClick,
                 onDismissButtonClick = { showDialog = false },
             )
         }

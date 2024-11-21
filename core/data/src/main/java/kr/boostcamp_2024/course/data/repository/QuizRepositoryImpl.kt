@@ -123,7 +123,12 @@ class QuizRepositoryImpl @Inject constructor(
         }
     }
 
-
+    override suspend fun setQuizFinished(quizId: String): Result<Unit> {
+        return runCatching {
+            quizCollectionRef.document(quizId)
+                .update("is_finished", true)
+                .await()
+        }
+    }
 
 }
-

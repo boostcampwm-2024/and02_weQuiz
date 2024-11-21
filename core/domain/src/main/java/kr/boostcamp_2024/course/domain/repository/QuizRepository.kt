@@ -23,4 +23,5 @@ interface QuizRepository {
 
     fun observeCurrentPage(quizId: String): Flow<Result<Int?>>
 
+    suspend fun setQuizFinished(quizId: String): Result<Unit>
 }
