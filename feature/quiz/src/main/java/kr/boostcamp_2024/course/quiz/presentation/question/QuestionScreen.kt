@@ -27,7 +27,6 @@ fun QuestionScreen(
             OwnerQuestionScreen(
                 quiz = quiz,
                 currentUserId = uiState.currentUserId,
-                onNavigationButtonClick = onNavigationButtonClick,
                 onQuizFinished = onQuizFinished,
             )
         } else {

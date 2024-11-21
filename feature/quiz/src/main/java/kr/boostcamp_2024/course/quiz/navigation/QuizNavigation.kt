@@ -34,7 +34,8 @@ data class QuizRoute(
 
 @Serializable
 data class QuizResultRoute(
-    val userOmrId: String,
+    val userOmrId: String? = null,
+    val quizId: String? = null,
 )
 
 @Serializable
@@ -59,9 +60,9 @@ fun NavController.navigateQuiz(categoryId: String, quizId: String) {
     navigate(QuizRoute(categoryId, quizId))
 }
 
-fun NavController.navigateQuizResult(userOmrId: String) {
+fun NavController.navigateQuizResult(userOmrId: String? = null, quizId: String? = null) {
     popBackStack()
-    navigate(QuizResultRoute(userOmrId))
+    navigate(QuizResultRoute(userOmrId, quizId))
 }
 
 fun NavController.navigateCreateQuiz(categoryId: String, quizId: String? = null) {
