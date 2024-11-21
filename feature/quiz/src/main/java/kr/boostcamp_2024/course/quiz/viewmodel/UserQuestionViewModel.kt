@@ -36,6 +36,7 @@ data class UserQuestionUiState(
     val currentUserId: String? = null,
     val userOmrId: String? = null,
     val isSubmitted: Boolean = false,
+    val isQuizFinished: Boolean = false,
 )
 
 @HiltViewModel
@@ -88,8 +89,8 @@ class UserQuestionViewModel @Inject constructor(
                     _uiState.update { currentState ->
                         currentState.copy(
                             questions = questions,
-                            selectedIndexList = List<Int>(questions.size) { -1 },
-                            submittedIndexList = List<Int>(questions.size) { -1 },
+                            selectedIndexList = List(questions.size) { -1 },
+                            submittedIndexList = List(questions.size) { -1 },
                             isLoading = false,
                         )
                     }
@@ -137,25 +138,16 @@ class UserQuestionViewModel @Inject constructor(
 
     private fun updatePageAndSubmitByOwner() {
         viewModelScope.launch {
-            quizRepository.observeCurrentPage(quizId)
+            quizRepository.observeQuiz(quizId)
                 .collect { result ->
                     result
-                        .onSuccess { newCurrentPage ->
-                            newCurrentPage?.let {
-
-                                if (it == _uiState.value.questions.size && it != 0) { // questions.size를 늦게 불러와서 오류뜸
-                                    submitAnswers()
-                                    _uiState.update {
-                                        it.copy(currentPage = 0)
-                                    }
-                                } else {
-                                    _uiState.update {
-                                        it.copy(
-                                            currentPage = newCurrentPage,
-                                            isSubmitted = false,
-                                        )
-                                    }
-                                }
+                        .onSuccess { quiz ->
+                            _uiState.update {
+                                it.copy(
+                                    currentPage = quiz.currentQuestion,
+                                    isSubmitted = false,
+                                    isQuizFinished = quiz.isFinished,
+                                )
                             }
                         }.onFailure {
                             Log.e("UserQuestionViewModel", "페이지 로드 실패", it)

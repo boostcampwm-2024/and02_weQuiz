@@ -64,6 +64,11 @@ fun UserQuestionScreen(
         isSubmitted = uiState.isSubmitted,
     )
 
+    if (uiState.isQuizFinished) {
+        val userOmrId = requireNotNull(uiState.userOmrId)
+        onQuizFinished(userOmrId)
+    }
+
     uiState.errorMessageId?.let { errorMessageId ->
         val errorMessage = stringResource(R.string.err_answer_add)
         LaunchedEffect(errorMessageId) {
