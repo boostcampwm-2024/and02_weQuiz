@@ -1,6 +1,9 @@
 package kr.boostcamp_2024.course.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.QuestionDTO
 import kr.boostcamp_2024.course.data.model.toDTO
@@ -29,6 +32,29 @@ class QuestionRepositoryImpl @Inject constructor(
         requireNotNull(response).toVO(questionId)
     }
 
+    override suspend fun getRealTimeQuestion(questionId: String): Flow<Question> = callbackFlow {
+        val listener = questionCollectionRef.document(questionId).addSnapshotListener { value, error ->
+            if (error != null) {
+                close(error)
+                return@addSnapshotListener
+            }
+
+            val response = value?.toObject(QuestionDTO::class.java)?.toVO(questionId)
+            if (response != null) {
+                trySend(response)
+            }
+        }
+
+        awaitClose { listener.remove() }
+    }
+
+    override suspend fun getRealTimeQuestions(questionIds: List<String>): Result<List<Flow<Question>>> =
+        runCatching {
+            questionIds.map { questionId ->
+                getRealTimeQuestion(questionId)
+            }
+        }
+
     override suspend fun createQuestion(questionCreationInfo: QuestionCreationInfo): Result<String> =
         runCatching {
             val document = questionCollectionRef.add(questionCreationInfo.toDTO()).await()
@@ -56,4 +82,3 @@ class QuestionRepositoryImpl @Inject constructor(
             }.await()
         }
 }
-
