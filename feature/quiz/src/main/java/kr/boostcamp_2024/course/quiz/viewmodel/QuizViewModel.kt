@@ -29,6 +29,7 @@ data class QuizUiState(
     val currentUserId: String? = null,
     val errorMessage: String? = null,
     val isDeleteQuizSuccess: Boolean = false,
+    val isCancelWaitingRealTimeQuizSuccess: Boolean = false,
 )
 
 @HiltViewModel
@@ -98,6 +99,8 @@ class QuizViewModel @Inject constructor(
     }
 
     fun waitingRealTimeQuiz(waiting: Boolean) {
+        if (uiState.value.isLoading) return
+
         viewModelScope.launch {
 
             _uiState.update { it.copy(isLoading = true) }
@@ -106,7 +109,10 @@ class QuizViewModel @Inject constructor(
                 uiState.value.quiz?.let { quiz ->
                     quizRepository.waitingRealTimeQuiz(quiz.id, waiting, currentUserId)
                         .onSuccess {
-                            _uiState.update { it.copy(isLoading = false) }
+                            when (waiting) {
+                                true -> _uiState.update { it.copy(isLoading = false) }
+                                false -> _uiState.update { it.copy(isLoading = false, isCancelWaitingRealTimeQuizSuccess = true) }
+                            }
                         }
                         .onFailure {
                             Log.e("QuizViewModel", "Failed to waiting real-time quiz", it)
@@ -120,6 +126,8 @@ class QuizViewModel @Inject constructor(
     }
 
     fun startRealTimeQuiz() {
+        if (uiState.value.isLoading) return
+
         viewModelScope.launch {
 
             _uiState.update { it.copy(isLoading = true) }
@@ -144,6 +152,8 @@ class QuizViewModel @Inject constructor(
     }
 
     fun deleteQuiz(categoryId: String, quiz: BaseQuiz) {
+        if (uiState.value.isLoading) return
+
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             categoryRepository.deleteQuizFromCategory(categoryId = categoryId, quizId = quiz.id)

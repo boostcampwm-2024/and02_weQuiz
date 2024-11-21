@@ -17,9 +17,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
+import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
@@ -27,15 +30,26 @@ import kr.boostcamp_2024.course.quiz.R
 fun QuizTopAppBar(
     category: Category?,
     quiz: BaseQuiz?,
+    currentUserId: String?,
+    onWaitingRealTimeQuizButtonClick: (Boolean) -> Unit,
     onNavigationButtonClick: () -> Unit,
     onSettingMenuClick: (String, String) -> Unit,
     onDeleteMenuClick: (String, BaseQuiz) -> Unit,
 ) {
+    var showDialog by remember { mutableStateOf(false) }
     var isSettingMenuExpanded by remember { mutableStateOf(false) }
+
     TopAppBar(
         title = {},
         navigationIcon = {
-            IconButton(onClick = onNavigationButtonClick) {
+            IconButton(
+                onClick =
+                    if (quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId)) {
+                        { showDialog = true }
+                    } else {
+                        { onNavigationButtonClick() }
+                    },
+            ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,
@@ -82,4 +96,19 @@ fun QuizTopAppBar(
             containerColor = Color.Transparent,
         ),
     )
+
+    if (showDialog) {
+        WeQuizBaseDialog(
+            title = "정말 나가시나요?\n입장이 취소됩니다!",
+            dialogImage = painterResource(R.drawable.quiz_system_profile),
+            confirmTitle = "나가기",
+            dismissTitle = "취소",
+            onConfirm = {
+                showDialog = false
+                onWaitingRealTimeQuizButtonClick(false)
+            },
+            onDismissRequest = { showDialog = false },
+            content = { /* no-op */ },
+        )
+    }
 }

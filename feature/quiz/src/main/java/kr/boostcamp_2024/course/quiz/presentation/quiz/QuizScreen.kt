@@ -71,6 +71,12 @@ fun QuizScreen(
         WeQuizCircularProgressIndicator()
     }
 
+    if (uiState.isCancelWaitingRealTimeQuizSuccess) {
+        LaunchedEffect(Unit) {
+            onNavigationButtonClick()
+        }
+    }
+
     uiState.errorMessage?.let { errorMessage ->
         LaunchedEffect(errorMessage) {
             snackbarHostState.showSnackbar(errorMessage)
@@ -100,9 +106,11 @@ fun QuizScreen(
             QuizTopAppBar(
                 category = category,
                 quiz = quiz,
+                currentUserId = currentUserId,
                 onNavigationButtonClick = onNavigationButtonClick,
                 onSettingMenuClick = onSettingMenuClick,
                 onDeleteMenuClick = onDeleteMenuClick,
+                onWaitingRealTimeQuizButtonClick = onWaitingRealTimeQuizButtonClick,
             )
         },
         snackbarHost = {
