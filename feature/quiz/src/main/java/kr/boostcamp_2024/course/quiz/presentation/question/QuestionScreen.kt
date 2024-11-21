@@ -25,6 +25,8 @@ fun QuestionScreen(
         val quiz = uiState.quiz as RealTimeQuiz
         if (quiz.ownerId == uiState.currentUserId) {
             OwnerQuestionScreen(
+                quiz = quiz,
+                currentUserId = uiState.currentUserId,
                 onNavigationButtonClick = onNavigationButtonClick,
                 onQuizFinished = onQuizFinished,
             )
