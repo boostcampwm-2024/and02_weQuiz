@@ -36,11 +36,10 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.component.Question
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
 import kr.boostcamp_2024.course.quiz.component.UserQuestion
-import kr.boostcamp_2024.course.quiz.presentation.viewmodel.UserQuestionViewModel
+import kr.boostcamp_2024.course.quiz.viewmodel.UserQuestionViewModel
 
 @Composable
 fun UserQuestionScreen(

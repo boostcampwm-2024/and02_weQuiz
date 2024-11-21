@@ -17,7 +17,7 @@ import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.quiz.R
 import javax.inject.Inject
 
-data class QuestionUiState(
+data class RealTimeWithOwnerQuestionUiState(
     val quiz: RealTimeQuiz? = null,
     val questions: List<Question?> = emptyList(),
     val ownerName: String? = null,
@@ -34,8 +34,8 @@ class OwnerQuestionViewModel @Inject constructor(
     private val questionRepository: QuestionRepository,
     private val userRepository: UserRepository,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<QuestionUiState> = MutableStateFlow(QuestionUiState())
-    val uiState: StateFlow<QuestionUiState> = _uiState.asStateFlow()
+    private val _uiState: MutableStateFlow<RealTimeWithOwnerQuestionUiState> = MutableStateFlow(RealTimeWithOwnerQuestionUiState())
+    val uiState: StateFlow<RealTimeWithOwnerQuestionUiState> = _uiState.asStateFlow()
 
     fun initQuizData(quiz: RealTimeQuiz?, currentUserId: String?) {
         _uiState.update { currentState ->

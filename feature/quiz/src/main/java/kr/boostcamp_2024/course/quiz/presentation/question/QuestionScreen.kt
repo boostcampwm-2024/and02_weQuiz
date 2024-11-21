@@ -11,7 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.presentation.viewmodel.QuestionViewModel
+import kr.boostcamp_2024.course.quiz.viewmodel.QuestionViewModel
 
 @Composable
 fun QuestionScreen(
