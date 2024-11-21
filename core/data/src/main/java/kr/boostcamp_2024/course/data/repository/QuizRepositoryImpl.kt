@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.data.repository
 
+import android.util.Log
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -24,25 +25,47 @@ class QuizRepositoryImpl @Inject constructor(
             document.update("questions", FieldValue.arrayUnion(questionId)).await()
         }
 
-    override suspend fun createQuiz(quizCreateInfo: QuizCreationInfo): Result<String> =
+    override suspend fun createQuiz(quizCreateInfo: QuizCreationInfo, ownerId: String?): Result<String> =
         runCatching {
-            val newQuiz = QuizDTO(
-                title = quizCreateInfo.quizTitle,
-                description = quizCreateInfo.quizDescription,
-                startTime = quizCreateInfo.quizDate,
-                solveTime = quizCreateInfo.quizSolveTime,
-                questions = emptyList(),
-                userOmrs = emptyList(),
-                quizImageUrl = quizCreateInfo.quizImageUrl,
-            )
-            val document = quizCollectionRef.add(newQuiz).await()
-            document.id
+            when (ownerId) {
+                null -> {
+                    val newQuiz = QuizDTO(
+                        title = quizCreateInfo.quizTitle,
+                        description = quizCreateInfo.quizDescription,
+                        startTime = quizCreateInfo.quizDate,
+                        solveTime = quizCreateInfo.quizSolveTime,
+                        questions = emptyList(),
+                        userOmrs = emptyList(),
+                        quizImageUrl = quizCreateInfo.quizImageUrl,
+                        type = "general",
+                    )
+                    quizCollectionRef.add(newQuiz).await().id
+                }
+
+                else -> {
+                    val newRealTimeQuiz = RealTimeQuizDTO(
+                        title = quizCreateInfo.quizTitle,
+                        description = quizCreateInfo.quizDescription,
+                        questions = emptyList(),
+                        userOmrs = emptyList(),
+                        currentQuestion = 0,
+                        ownerId = ownerId,
+                        isStarted = false,
+                        isFinished = false,
+                        waitingUsers = 0,
+                        quizImageUrl = quizCreateInfo.quizImageUrl,
+                        type = "realTime",
+                    )
+                    quizCollectionRef.add(newRealTimeQuiz).await().id
+                }
+            }
         }
 
     override suspend fun getQuiz(quizId: String): Result<BaseQuiz> =
         runCatching {
             val document = quizCollectionRef.document(quizId).get().await()
             val quizType = document.get("type").toString()
+            Log.d("quizType", quizType)
             val response = when (getQuizTypeFromValue(quizType)) {
                 RealTime -> document.toObject(RealTimeQuizDTO::class.java)?.toVO(quizId)
                 General -> document.toObject(QuizDTO::class.java)?.toVO(quizId)
@@ -55,6 +78,7 @@ class QuizRepositoryImpl @Inject constructor(
             quizIdList.map { quizId ->
                 val document = quizCollectionRef.document(quizId).get().await()
                 val quizType = document.get("type").toString()
+                Log.d("quizType", quizType)
                 val response = when (getQuizTypeFromValue(quizType)) {
                     RealTime -> document.toObject(RealTimeQuizDTO::class.java)?.toVO(quizId)
                     General -> document.toObject(QuizDTO::class.java)?.toVO(quizId)
