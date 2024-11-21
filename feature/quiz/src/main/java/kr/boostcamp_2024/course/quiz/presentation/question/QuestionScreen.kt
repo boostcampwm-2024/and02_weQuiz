@@ -9,6 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.viewmodel.QuestionViewModel
@@ -24,6 +25,7 @@ fun QuestionScreen(
 
     if (uiState.quiz is RealTimeQuiz) {
         val quiz = uiState.quiz as RealTimeQuiz
+
         if (quiz.ownerId == uiState.currentUserId) {
             OwnerQuestionScreen(
                 quiz = quiz,
@@ -36,7 +38,7 @@ fun QuestionScreen(
                 onQuizFinished = onQuizFinished,
             )
         }
-    } else {
+    } else if (uiState.quiz is Quiz) {
         GeneralQuestionScreen(
             quiz = uiState.quiz,
             currentPage = uiState.currentPage,

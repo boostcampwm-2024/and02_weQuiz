@@ -8,6 +8,8 @@ import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
@@ -45,9 +47,15 @@ class QuestionViewModel @Inject constructor(
     private val quizId = savedStateHandle.toRoute<QuestionRoute>().quizId
 
     private val _uiState: MutableStateFlow<QuestionUiState> = MutableStateFlow(QuestionUiState())
-    val uiState: StateFlow<QuestionUiState> = _uiState
+    val uiState: StateFlow<QuestionUiState> = _uiState.onStart {
+        initial()
+    }.stateIn(
+        viewModelScope,
+        kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
+        QuestionUiState(),
+    )
 
-    fun initial() {
+    private fun initial() {
         viewModelScope.launch {
             loadCurrentUserId()
 
