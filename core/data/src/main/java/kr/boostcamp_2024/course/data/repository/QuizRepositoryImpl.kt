@@ -108,10 +108,10 @@ class QuizRepositoryImpl @Inject constructor(
                 }
 
                 if (documentSnapshot != null && documentSnapshot.exists()) {
-                    val currentPage = documentSnapshot.getLong("currentPage")?.toInt()
+                    val currentPage = documentSnapshot.getLong("current_question")?.toInt()
                     trySend(Result.success(currentPage))
                 } else {
-                    throw Exception("Document not found or doesn't exist")
+                    throw Exception("문서가 존재하지 않습니다")
                 }
             }.onFailure { exception ->
                 trySend(Result.failure(exception))
@@ -123,7 +123,4 @@ class QuizRepositoryImpl @Inject constructor(
         }
     }
 
-
-
 }
-
