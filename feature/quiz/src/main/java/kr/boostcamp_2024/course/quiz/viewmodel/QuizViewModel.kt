@@ -97,6 +97,14 @@ class QuizViewModel @Inject constructor(
         }
     }
 
+    fun waitingRealTimeQuiz(waiting: Boolean) {
+        Log.d("QuizViewModel", "waitingRealTimeQuiz")
+    }
+
+    fun startRealTimeQuiz() {
+        Log.d("QuizViewModel", "startRealTimeQuiz")
+    }
+
     fun shownErrorMessage() {
         _uiState.update { it.copy(errorMessage = null) }
     }

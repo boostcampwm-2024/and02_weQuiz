@@ -14,6 +14,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,30 +45,33 @@ fun QuizScreen(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     viewModel: QuizViewModel = hiltViewModel(),
 ) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (uiState.value.isDeleteQuizSuccess) {
+    if (uiState.isDeleteQuizSuccess) {
         LaunchedEffect(Unit) {
             onQuizDeleteSuccess()
         }
     }
 
     QuizScreen(
-        category = uiState.value.category,
-        quiz = uiState.value.quiz,
+        category = uiState.category,
+        quiz = uiState.quiz,
+        currentUserId = uiState.currentUserId,
         snackbarHostState = snackbarHostState,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuestionButtonClick = onCreateQuestionButtonClick,
         onStartQuizButtonClick = onStartQuizButtonClick,
         onSettingMenuClick = onSettingMenuClick,
         onDeleteMenuClick = viewModel::deleteQuiz,
+        onStartRealTimeQuizButtonClick = viewModel::startRealTimeQuiz,
+        onWaitingRealTimeQuizButtonClick = viewModel::waitingRealTimeQuiz,
     )
 
-    if (uiState.value.isLoading) {
+    if (uiState.isLoading) {
         WeQuizCircularProgressIndicator()
     }
 
-    uiState.value.errorMessage?.let { errorMessage ->
+    uiState.errorMessage?.let { errorMessage ->
         LaunchedEffect(errorMessage) {
             snackbarHostState.showSnackbar(errorMessage)
             viewModel.shownErrorMessage()
@@ -79,12 +83,15 @@ fun QuizScreen(
 fun QuizScreen(
     category: Category?,
     quiz: BaseQuiz?,
+    currentUserId: String?,
     snackbarHostState: SnackbarHostState,
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,
     onStartQuizButtonClick: (String) -> Unit,
     onSettingMenuClick: (String, String) -> Unit,
     onDeleteMenuClick: (String, BaseQuiz) -> Unit,
+    onStartRealTimeQuizButtonClick: () -> Unit,
+    onWaitingRealTimeQuizButtonClick: (Boolean) -> Unit,
 ) {
 
     Scaffold(
@@ -142,10 +149,11 @@ fun QuizScreen(
                 // QuizButton
                 QuizDataButton(
                     quiz = quiz,
-                    isOwner = true,
-                    isWaiting = false,
+                    currentUserId = currentUserId,
                     onCreateQuestionButtonClick = onCreateQuestionButtonClick,
                     onStartQuizButtonClick = onStartQuizButtonClick,
+                    onStartRealTimeQuizButtonClick = onStartRealTimeQuizButtonClick,
+                    onWaitingRealTimeQuizButtonClick = onWaitingRealTimeQuizButtonClick,
                 )
             }
         }
@@ -180,6 +188,9 @@ fun QuizStartScreenPreview() {
             onStartQuizButtonClick = {},
             onSettingMenuClick = { _, _ -> },
             onDeleteMenuClick = { _, _ -> },
+            currentUserId = "currentUserId",
+            onStartRealTimeQuizButtonClick = {},
+            onWaitingRealTimeQuizButtonClick = {},
         )
     }
 }
