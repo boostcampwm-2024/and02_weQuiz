@@ -77,7 +77,7 @@ class QuestionRepositoryImpl @Inject constructor(
                     val currentSubmit = snapshot.getLong("current_submit") ?: 0
                     transaction.update(document, "current_submit", currentSubmit + 1)
                 } else {
-                    throw Exception("document가 없습니다.")
+                    throw Exception("문서가 존재하지 않습니다.")
                 }
             }.await()
         }

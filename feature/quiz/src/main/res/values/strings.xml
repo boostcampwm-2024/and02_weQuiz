@@ -78,4 +78,5 @@
     <string name="err_load_current_user">로그인한 유저가 없습니다.</string>
     <string name="err_load_current_page">페이지 로드에 실패하였습니다.</string>
     <string name="err_load_owner_name">관리자 이름을 가져오는데 실패했습니다.</string>
+    <string name="err_submit_quetion">퀴즈 제출에 실패하였습니다.</string>
 </resources>

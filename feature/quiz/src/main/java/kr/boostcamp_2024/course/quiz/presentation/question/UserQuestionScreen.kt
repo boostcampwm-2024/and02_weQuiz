@@ -39,6 +39,7 @@ import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.Question
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
+import kr.boostcamp_2024.course.quiz.component.UserQuestion
 import kr.boostcamp_2024.course.quiz.presentation.viewmodel.UserQuestionViewModel
 
 @Composable
@@ -54,17 +55,13 @@ fun UserQuestionScreen(
         quiz = uiState.quiz,
         currentPage = uiState.currentPage,
         questions = uiState.questions,
-//        countDownTime = uiState.countDownTime,
         selectedIndexList = uiState.selectedIndexList,
         snackbarHostState = snackbarHostState,
         onOptionSelected = userQuestionViewModel::selectOption,
-//        onNextButtonClick = userQuestionViewModel::nextPage,
-        onNextByOwner = userQuestionViewModel::nextPage, //신규 생성
-//        onPreviousButtonClick = userQuestionViewModel::previousPage,
-//        onSubmitButtonClick = userQuestionViewModel::submitAnswers,
-        onSubmitAnsewersByOwner = userQuestionViewModel::submitAnswers, //신규 생성
+        onSubmitAnswersByOwner = userQuestionViewModel::submitAnswers,
         onNavigationButtonClick = onNavigationButtonClick,
-        onSubmitButtonClick = userQuestionViewModel::submitAnswers,
+        onSubmitButtonClick = userQuestionViewModel::submitQuestion,
+        isSubmitted = uiState.isSubmitted,
     )
 
     uiState.errorMessageId?.let { errorMessageId ->
@@ -87,15 +84,13 @@ fun UserQuestionScreen(
     quiz: BaseQuiz?,
     currentPage: Int,
     questions: List<Question>,
-//    countDownTime: Int,
     selectedIndexList: List<Int>,
     snackbarHostState: SnackbarHostState,
     onOptionSelected: (Int, Int) -> Unit,
     onNavigationButtonClick: () -> Unit,
-    onNextByOwner: () -> Unit,
-//    onPreviousButtonClick: () -> Unit,
-    onSubmitAnsewersByOwner: () -> Unit,
-    onSubmitButtonClick: () -> Unit,
+    onSubmitAnswersByOwner: () -> Unit,
+    onSubmitButtonClick: (String) -> Unit,
+    isSubmitted: Boolean,
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -145,12 +140,13 @@ fun UserQuestionScreen(
                                 description = questions[currentPage].description,
                             )
 
-                            Question(
+                            UserQuestion(
                                 questions = questions[currentPage].choices,
                                 selectedIndex = selectedIndexList[currentPage],
                                 onOptionSelected = { newIndex ->
                                     onOptionSelected(currentPage, newIndex)
                                 },
+                                enable = !isSubmitted,
                             )
                         }
                     }
@@ -159,25 +155,14 @@ fun UserQuestionScreen(
                 item {
                     Button(
                         onClick = {
-                            if (currentPage < questions.size - 1) {
-                                onSubmitButtonClick()
-                            }
-//                            } else {
-//                                showDialog = true
-//                            }
+                            onSubmitButtonClick(questions[currentPage].id)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
+                        enabled = !isSubmitted,
                     ) {
-                        Text(
-                            "제출",
-//                            text = if (currentPage == questions.size - 1) {
-//                                stringResource(R.string.txt_question_done)
-//                            } else {
-//                                stringResource(R.string.txt_question_next_question)
-//                            },
-                        )
+                        Text(if (isSubmitted) "제출이 완료 되었습니다!" else "제출")
                     }
                 }
             }
@@ -200,7 +185,7 @@ fun UserQuestionScreen(
             onConfirm = {
                 showDialog = false
                 if (currentPage == questions.size - 1) {
-                    onSubmitAnsewersByOwner()
+                    onSubmitAnswersByOwner()
                 } else {
                     onNavigationButtonClick()
                 }
@@ -211,7 +196,6 @@ fun UserQuestionScreen(
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
