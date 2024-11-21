@@ -36,6 +36,9 @@
     <string name="assist_chip_detail_study_group_member_number">%1$s명 / %2$s명</string>
     <string name="txt_detail_study_no_category_description">내용 없음</string>
     <string name="txt_detail_study_no_category_owner">비회원</string>
+    <string name="txt_study_group_menu_edit">수정</string>
+    <string name="txt_study_group_menu_delete">스터디 제거</string>
+    <string name="txt_study_group_menu_leave">나가기</string>
     <string name="error_message_load_study_group">스터디 그룹 로드에 실패했습니다.</string>
     <string name="error_message_load_categories">카테고리 로드에 실패했습니다.</string>
     <string name="error_message_load_users">유저 로드에 실패했습니다.</string>
@@ -45,6 +48,13 @@
     <string name="error_message_delete_study_group_member">스터디 그룹의 멤버 삭제가 실패했습니다.</string>
     <string name="error_message_add_notification">알림 추가가 실패했습니다.</string>
     <string name="error_message_find_user">유저 조회에 실패했습니다.</string>
+    <string name="error_message_delete_study_group">스터디 그룹에서 나가지 못했습니다.</string>
+    <string name="txt_create_study_group_member_number_label">인원</string>
+    <string name="txt_create_study_group_member_number_placeholder">최대 인원은 몇 명인가요?</string>
+    <string name="txt_create_study_group_number_error_message">2에서 50 사이의 정수를 입력해주세요.</string>
+    <string name="txt_edit_study_top_app_bar">스터디 수정</string>
+    <string name="txt_study_edition_button">스터디 수정</string>
+    <string name="des_study_group_image">스터디 배경 이미지</string>
     <string-array name="drop_down_menu_options">
         <item>1명</item>
         <item>2명</item>

@@ -54,4 +54,18 @@ class CategoryRepositoryImpl @Inject constructor(
             document.update("quizzes", FieldValue.arrayUnion(quizId)).await()
 
         }
+
+    override suspend fun deleteQuizFromCategory(categoryId: String, quizId: String): Result<Unit> =
+        runCatching {
+            val document = categoryCollectionRef.document(categoryId)
+            document.update("quizzes", FieldValue.arrayRemove(quizId)).await()
+
+        }
+
+    override suspend fun deleteCategories(categoryIds: List<String>): Result<Unit> =
+        runCatching {
+            categoryIds.forEach { categoryId ->
+                categoryCollectionRef.document(categoryId).delete().await()
+            }
+        }
 }

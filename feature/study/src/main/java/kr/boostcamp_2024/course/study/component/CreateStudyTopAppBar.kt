@@ -15,12 +15,16 @@ import kr.boostcamp_2024.course.study.R
 @ExperimentalMaterial3Api
 @Composable
 fun CreateStudyTopAppBar(
+    isEditMode: Boolean,
     onNavigationButtonClick: () -> Unit,
 ) {
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = stringResource(R.string.txt_create_study_top_app_bar),
+                text = when (isEditMode) {
+                    true -> stringResource(R.string.txt_edit_study_top_app_bar)
+                    false -> stringResource(R.string.txt_create_study_top_app_bar)
+                },
                 style = MaterialTheme.typography.titleLarge,
             )
         },

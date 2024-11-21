@@ -9,6 +9,7 @@ import kr.boostcamp_2024.course.data.repository.CategoryRepositoryImpl
 import kr.boostcamp_2024.course.data.repository.NotificationRepositoryImpl
 import kr.boostcamp_2024.course.data.repository.QuestionRepositoryImpl
 import kr.boostcamp_2024.course.data.repository.QuizRepositoryImpl
+import kr.boostcamp_2024.course.data.repository.StorageRepositoryImpl
 import kr.boostcamp_2024.course.data.repository.StudyGroupRepositoryImpl
 import kr.boostcamp_2024.course.data.repository.UserOmrRepositoryImpl
 import kr.boostcamp_2024.course.data.repository.UserRepositoryImpl
@@ -17,6 +18,7 @@ import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.NotificationRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
+import kr.boostcamp_2024.course.domain.repository.StorageRepository
 import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
@@ -63,4 +65,9 @@ abstract class RepositoryModule {
     abstract fun provideAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl,
     ): AuthRepository
+
+    @Binds
+    abstract fun provideStorageRepository(
+        storageRepositoryImpl: StorageRepositoryImpl,
+    ): StorageRepository
 }

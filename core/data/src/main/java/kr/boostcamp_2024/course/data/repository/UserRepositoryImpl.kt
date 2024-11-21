@@ -14,25 +14,24 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
     private val userCollectionRef = firestore.collection("User")
 
-    override suspend fun addUser(userId: String, userCreationInfo: UserSubmitInfo): Result<Unit> =
+    override suspend fun addUser(userId: String, userSubmitInfo: UserSubmitInfo): Result<Unit> =
         runCatching {
             userCollectionRef.document(userId).set(
                 UserDTO(
-                    email = userCreationInfo.email,
-                    name = userCreationInfo.nickName,
-                    profileUrl = userCreationInfo.profileImageUrl,
-                    studyGroups = emptyList(),
+                    email = userSubmitInfo.email,
+                    name = userSubmitInfo.name,
+                    profileUrl = userSubmitInfo.profileImageUrl,
+                    studyGroups = userSubmitInfo.studyGroups,
                 ),
             ).await()
         }
 
-    override suspend fun getUser(userId: String): Result<User> {
-        return runCatching {
+    override suspend fun getUser(userId: String): Result<User> =
+        runCatching {
             val document = userCollectionRef.document(userId).get().await()
             val response = document.toObject(UserDTO::class.java)
             requireNotNull(response).toVO(userId)
         }
-    }
 
     override suspend fun addStudyGroupToUser(userId: String, studyId: String): Result<Unit> =
         runCatching {
@@ -56,6 +55,14 @@ class UserRepositoryImpl @Inject constructor(
             document.update("study_groups", FieldValue.arrayRemove(studyGroupId)).await()
         }
 
+    override suspend fun deleteStudyGroupUsers(userIds: List<String>, studyGroupId: String): Result<Unit> =
+        runCatching {
+            userIds.forEach { userId ->
+                val document = userCollectionRef.document(userId)
+                document.update("study_groups", FieldValue.arrayRemove(studyGroupId)).await()
+            }
+        }
+
     override suspend fun findUserByEmail(email: String): Result<User> =
         runCatching {
             val querySnapshot = userCollectionRef.whereEqualTo("email", email).get().await()
@@ -67,7 +74,7 @@ class UserRepositoryImpl @Inject constructor(
         val userDocRef = userCollectionRef.document(userId)
         val userMap = mapOf(
             "email" to userCreationInfo.email,
-            "name" to userCreationInfo.nickName,
+            "name" to userCreationInfo.name,
             "profile_url" to userCreationInfo.profileImageUrl,
         )
         userDocRef.update(userMap).await()
