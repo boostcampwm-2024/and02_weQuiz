@@ -80,6 +80,7 @@ class CreateQuizViewModel @Inject constructor(
                                         isEditing = true,
                                         isLoading = false,
                                         defaultImageUrl = quiz.quizImageUrl,
+                                        selectedQuizTypeIndex = 0,
                                     )
                                 }
                             }
@@ -92,6 +93,7 @@ class CreateQuizViewModel @Inject constructor(
                                         isEditing = true,
                                         isLoading = false,
                                         defaultImageUrl = quiz.quizImageUrl,
+                                        selectedQuizTypeIndex = 1,
                                     )
                                 }
                             }
