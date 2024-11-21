@@ -19,6 +19,7 @@ fun UserQuestion(
     questions: List<String>,
     selectedIndex: Int,
     onOptionSelected: (Int) -> Unit,
+    enable: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 20.dp),
@@ -31,6 +32,7 @@ fun UserQuestion(
                     .selectable(
                         selected = selectedIndex == index,
                         onClick = { onOptionSelected(index) },
+                        enabled = enable,
                     ),
             ) {
                 RadioButton(
