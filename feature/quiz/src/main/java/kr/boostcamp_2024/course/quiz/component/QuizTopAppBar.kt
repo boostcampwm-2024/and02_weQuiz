@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.component
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
@@ -38,6 +39,12 @@ fun QuizTopAppBar(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var isSettingMenuExpanded by remember { mutableStateOf(false) }
+
+    BackHandler {
+        if (quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId)) {
+            showDialog = true
+        }
+    }
 
     TopAppBar(
         title = {},
