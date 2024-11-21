@@ -7,4 +7,5 @@ data class Question(
     val solution: String?,
     val answer: Int,
     val choices: List<String>,
+    val currentSubmit: Int,
 )
