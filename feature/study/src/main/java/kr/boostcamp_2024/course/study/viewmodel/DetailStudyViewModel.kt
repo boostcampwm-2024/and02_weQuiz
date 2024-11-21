@@ -55,7 +55,6 @@ class DetailStudyViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val studyGroupId: String = savedStateHandle.toRoute<StudyRoute>().studyGroupId
-
     private val _uiState: MutableStateFlow<DetailStudyUiState> = MutableStateFlow(DetailStudyUiState())
     val uiState: StateFlow<DetailStudyUiState> = _uiState.onStart {
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), DetailStudyUiState())

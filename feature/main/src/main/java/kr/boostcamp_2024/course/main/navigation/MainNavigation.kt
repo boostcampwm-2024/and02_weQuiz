@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
+import kr.boostcamp_2024.course.login.model.UserUiModel
 import kr.boostcamp_2024.course.main.presentation.MainScreen
 import kr.boostcamp_2024.course.main.presentation.NotificationScreen
 
@@ -27,6 +28,8 @@ fun NavGraphBuilder.mainNavGraph(
     onCreateStudyButtonClick: () -> Unit,
     onEditStudyButtonClick: (String) -> Unit,
     onStudyGroupClick: (String) -> Unit,
+    onEditUserClick: (UserUiModel?, String?) -> Unit,
+    onLoginOutClick: () -> Unit,
 ) {
     composable<MainRoute> {
         MainScreen(
@@ -34,6 +37,8 @@ fun NavGraphBuilder.mainNavGraph(
             onCreateStudyButtonClick = onCreateStudyButtonClick,
             onStudyGroupClick = onStudyGroupClick,
             onEditStudyButtonClick = onEditStudyButtonClick,
+            onEditUserClick = onEditUserClick,
+            onLogOutClick = onLoginOutClick,
         )
     }
     composable<NotificationRoute> {
