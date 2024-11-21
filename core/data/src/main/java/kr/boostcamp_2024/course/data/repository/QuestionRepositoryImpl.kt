@@ -10,7 +10,7 @@ import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import javax.inject.Inject
 
 class QuestionRepositoryImpl @Inject constructor(
-    firestore: FirebaseFirestore,
+    private val firestore: FirebaseFirestore,
 ) : QuestionRepository {
     private val questionCollectionRef = firestore.collection("Question")
 
@@ -41,4 +41,19 @@ class QuestionRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateCurrentSubmit(questionId: String): Result<Unit> =
+        runCatching {
+            val document = questionCollectionRef.document(questionId)
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(document)
+
+                if (snapshot.exists()) {
+                    val currentSubmit = snapshot.getLong("current_submit") ?: 0
+                    transaction.update(document, "current_submit", currentSubmit + 1)
+                } else {
+                    throw Exception("document가 없습니다.")
+                }
+            }.await()
+        }
 }
+

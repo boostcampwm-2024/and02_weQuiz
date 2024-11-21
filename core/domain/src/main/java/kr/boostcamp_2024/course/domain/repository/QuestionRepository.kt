@@ -13,4 +13,6 @@ interface QuestionRepository {
     ): Result<String>
 
     suspend fun deleteQuestions(questionIds: List<String>): Result<Unit>
+
+    suspend fun updateCurrentSubmit(questionId: String): Result<Unit>
 }

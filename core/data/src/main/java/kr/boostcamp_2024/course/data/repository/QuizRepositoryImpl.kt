@@ -2,6 +2,9 @@ package kr.boostcamp_2024.course.data.repository
 
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.QuizDTO
 import kr.boostcamp_2024.course.data.model.RealTimeQuizDTO
@@ -95,4 +98,32 @@ class QuizRepositoryImpl @Inject constructor(
                 quizCollectionRef.document(quizId).delete().await()
             }
         }
+
+    override fun observeCurrentPage(quizId: String): Flow<Result<Int?>> = callbackFlow {
+        val quizDocument = quizCollectionRef.document(quizId)
+        val listener = quizDocument.addSnapshotListener { documentSnapshot, error ->
+            runCatching {
+                if (error != null) {
+                    throw error
+                }
+
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    val currentPage = documentSnapshot.getLong("currentPage")?.toInt()
+                    trySend(Result.success(currentPage))
+                } else {
+                    throw Exception("Document not found or doesn't exist")
+                }
+            }.onFailure { exception ->
+                trySend(Result.failure(exception))
+            }
+        }
+
+        awaitClose {
+            listener.remove()
+        }
+    }
+
+
+
 }
+
