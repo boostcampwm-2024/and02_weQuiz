@@ -67,30 +67,6 @@ fun QuestionScreen(
     }
 }
 
-@Composable
-fun GeneralQuestionScreen(
-    onNavigationButtonClick: () -> Unit,
-    onQuizFinished: (String) -> Unit,
-    questionViewModel: QuestionViewModel,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-) {
-    val uiState by questionViewModel.uiState.collectAsStateWithLifecycle()
-    GeneralQuestionScreen(
-        quiz = uiState.quiz,
-        currentPage = uiState.currentPage,
-        questions = uiState.questions,
-        countDownTime = uiState.countDownTime,
-        selectedIndexList = uiState.selectedIndexList,
-        snackbarHostState = snackbarHostState,
-        onOptionSelected = questionViewModel::selectOption,
-        onNextButtonClick = questionViewModel::nextPage,
-        onPreviousButtonClick = questionViewModel::previousPage,
-        onSubmitButtonClick = questionViewModel::submitAnswers,
-        onNavigationButtonClick = onNavigationButtonClick,
-    )
-
-}
-
 @Preview(showBackground = true)
 @Composable
 fun QuestionScreenPreview() {
