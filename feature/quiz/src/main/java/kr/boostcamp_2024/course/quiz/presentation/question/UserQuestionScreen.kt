@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.presentation.question
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -92,6 +93,10 @@ fun UserQuestionScreen(
     isSubmitted: Boolean,
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
+
+    BackHandler {
+        showDialog = true
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
