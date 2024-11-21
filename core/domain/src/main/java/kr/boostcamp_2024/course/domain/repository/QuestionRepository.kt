@@ -9,7 +9,7 @@ interface QuestionRepository {
 
     suspend fun getQuestion(questionId: String): Result<Question>
 
-    fun getRealTimeQuestion(questionId: String): Flow<Question>
+    fun observeQuestion(questionId: String): Flow<Question>
 
     suspend fun getRealTimeQuestions(questionIds: List<String>): Result<List<Flow<Question>>>
 

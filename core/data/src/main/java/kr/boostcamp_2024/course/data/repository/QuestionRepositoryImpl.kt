@@ -32,7 +32,7 @@ class QuestionRepositoryImpl @Inject constructor(
         requireNotNull(response).toVO(questionId)
     }
 
-    override fun getRealTimeQuestion(questionId: String): Flow<Question> = callbackFlow {
+    override fun observeQuestion(questionId: String): Flow<Question> = callbackFlow {
         val listener = questionCollectionRef.document(questionId).addSnapshotListener { value, error ->
             if (error != null) {
                 close(error)
@@ -51,7 +51,7 @@ class QuestionRepositoryImpl @Inject constructor(
     override suspend fun getRealTimeQuestions(questionIds: List<String>): Result<List<Flow<Question>>> =
         runCatching {
             questionIds.map { questionId ->
-                getRealTimeQuestion(questionId)
+                observeQuestion(questionId)
             }
         }
 
