@@ -29,6 +29,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularPr
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
+import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.component.QuizDataButton
 import kr.boostcamp_2024.course.quiz.component.QuizDataChip
 import kr.boostcamp_2024.course.quiz.component.QuizDataText
@@ -74,6 +75,17 @@ fun QuizScreen(
     if (uiState.isCancelWaitingRealTimeQuizSuccess) {
         LaunchedEffect(Unit) {
             onNavigationButtonClick()
+        }
+    }
+
+    val quiz = uiState.quiz
+    if (quiz is RealTimeQuiz &&
+        quiz.isStarted &&
+        quiz.isFinished.not() &&
+        (quiz.waitingUsers.contains(uiState.currentUserId) || quiz.ownerId == uiState.currentUserId)
+    ) {
+        LaunchedEffect(Unit) {
+            onStartQuizButtonClick(quiz.id)
         }
     }
 
