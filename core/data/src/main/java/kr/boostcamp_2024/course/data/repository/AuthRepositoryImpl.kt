@@ -28,11 +28,9 @@ class AuthRepositoryImpl @Inject constructor(
             requireNotNull(userKey)
         }
 
-    override suspend fun removeUserKey(): Result<Unit> {
-        return runCatching {
-            weQuizDataStore.edit { setting ->
-                setting.remove(USER_KEY)
-            }
+    override suspend fun removeUserKey(): Result<Unit> = runCatching {
+        weQuizDataStore.edit { setting ->
+            setting.remove(USER_KEY)
         }
     }
 
