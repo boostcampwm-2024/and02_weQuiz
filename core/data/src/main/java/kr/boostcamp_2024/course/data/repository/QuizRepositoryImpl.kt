@@ -130,7 +130,7 @@ class QuizRepositoryImpl @Inject constructor(
         val listener = quizCollectionRef.document(quizId)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    return@addSnapshotListener
+                    close(error)
                 }
 
                 if (snapshot != null && snapshot.exists()) {
