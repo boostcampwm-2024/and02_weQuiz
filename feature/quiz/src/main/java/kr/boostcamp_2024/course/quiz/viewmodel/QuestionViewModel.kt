@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
@@ -47,13 +47,11 @@ class QuestionViewModel @Inject constructor(
     private val quizId = savedStateHandle.toRoute<QuestionRoute>().quizId
 
     private val _uiState: MutableStateFlow<QuestionUiState> = MutableStateFlow(QuestionUiState())
-    val uiState: StateFlow<QuestionUiState> = _uiState.onStart {
+    val uiState: StateFlow<QuestionUiState> = _uiState.asStateFlow()
+
+    init {
         initial()
-    }.stateIn(
-        viewModelScope,
-        kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
-        QuestionUiState(),
-    )
+    }
 
     private fun initial() {
         viewModelScope.launch {
@@ -147,7 +145,7 @@ class QuestionViewModel @Inject constructor(
     fun updateTimer() {
         viewModelScope.launch {
             while (_uiState.value.countDownTime > 0) {
-                kotlinx.coroutines.delay(1000L)
+                delay(1000L)
                 _uiState.update { currentState ->
                     currentState.copy(countDownTime = currentState.countDownTime - 1)
                 }
