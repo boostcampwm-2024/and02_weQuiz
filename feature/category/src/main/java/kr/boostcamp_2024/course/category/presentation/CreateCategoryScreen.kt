@@ -1,6 +1,5 @@
 package kr.boostcamp_2024.course.category.presentation
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -89,7 +88,6 @@ fun CreateCategoryScreen(
     )
 }
 
-@SuppressLint("NewApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateCategoryScreen(
