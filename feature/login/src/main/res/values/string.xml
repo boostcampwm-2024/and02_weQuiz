@@ -28,6 +28,7 @@
     <string name="des_google_login">구글 로그인</string>
     <!--  error   -->
     <string name="error_login">로그인에 실패했습니다.</string>
+    <string name="error_google_oauth">구글 정보 연동에 실패했습니다.</string>
     <string name="error_sign_up">회원가입에 실패했습니다.</string>
     <string name="error_photo_picker">사진 로드에 실패했습니다.</string>
     <string name="error_upload_image">사진 업로드에 실패했습니다.</string>

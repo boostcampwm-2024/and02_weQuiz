@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.domain.repository
 
+import kotlinx.coroutines.flow.Flow
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.QuizCreationInfo
 
@@ -19,4 +20,10 @@ interface QuizRepository {
     suspend fun deleteQuiz(quizId: String): Result<Unit>
 
     suspend fun deleteQuizzes(quizzes: List<String>): Result<Unit>
+
+    suspend fun startRealTimeQuiz(quizId: String): Result<Unit>
+
+    suspend fun waitingRealTimeQuiz(quizId: String, waiting: Boolean, userId: String): Result<Unit>
+
+    fun observeQuiz(quizId: String): Flow<BaseQuiz>
 }

@@ -17,4 +17,5 @@ dependencies {
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
+    implementation(libs.kotlinx.coroutines)
 }

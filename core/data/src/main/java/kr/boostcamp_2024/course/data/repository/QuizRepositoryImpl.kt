@@ -2,6 +2,9 @@ package kr.boostcamp_2024.course.data.repository
 
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.QuizDTO
 import kr.boostcamp_2024.course.data.model.RealTimeQuizDTO
@@ -51,7 +54,7 @@ class QuizRepositoryImpl @Inject constructor(
                         ownerId = ownerId,
                         isStarted = false,
                         isFinished = false,
-                        waitingUsers = 0,
+                        waitingUsers = emptyList(),
                         quizImageUrl = quizCreateInfo.quizImageUrl,
                         type = REAL_TIME_QUIZ,
                     )
@@ -116,6 +119,59 @@ class QuizRepositoryImpl @Inject constructor(
                 quizCollectionRef.document(quizId).delete().await()
             }
         }
+
+    override suspend fun startRealTimeQuiz(quizId: String): Result<Unit> =
+        runCatching {
+            quizCollectionRef.document(quizId)
+                .update("is_started", true)
+                .await()
+        }
+
+    override suspend fun waitingRealTimeQuiz(quizId: String, waiting: Boolean, userId: String): Result<Unit> =
+        runCatching {
+            when (waiting) {
+                true -> {
+                    quizCollectionRef.document(quizId)
+                        .update("waiting_users", FieldValue.arrayUnion(userId))
+                        .await()
+                }
+
+                false -> {
+                    quizCollectionRef.document(quizId)
+                        .update("waiting_users", FieldValue.arrayRemove(userId))
+                        .await()
+                }
+            }
+        }
+
+    override fun observeQuiz(quizId: String): Flow<BaseQuiz> = callbackFlow<BaseQuiz> {
+        val listener = quizCollectionRef.document(quizId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                }
+
+                if (snapshot?.exists() == true) {
+                    try {
+                        val quizType = snapshot.get("type").toString()
+                        val response = when (getQuizTypeFromValue(quizType)) {
+                            RealTime -> snapshot.toObject(RealTimeQuizDTO::class.java)?.toVO(quizId)
+                            General -> snapshot.toObject(QuizDTO::class.java)?.toVO(quizId)
+                        }
+                        val quiz =
+                            requireNotNull(response) { "Quiz response is null for quizId: $quizId" }
+                        trySend(quiz)
+                    } catch (exception: Exception) {
+                        close(exception)
+                    }
+                } else {
+                    close(Exception("Quiz not found"))
+                }
+            }
+        awaitClose {
+            listener.remove()
+        }
+    }
 
     companion object {
         private const val GENERAL_QUIZ = "general"
