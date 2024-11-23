@@ -7,10 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
@@ -52,16 +49,10 @@ class UserQuestionViewModel @Inject constructor(
 
     init {
         initial()
+        updatePageAndSubmitByOwner()
     }
 
     val uiState: StateFlow<UserQuestionUiState> = _uiState
-        .onStart {
-            updatePageAndSubmitByOwner()
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
-            UserQuestionUiState(),
-        )
 
     private fun initial() {
         viewModelScope.launch {
@@ -145,7 +136,7 @@ class UserQuestionViewModel @Inject constructor(
                         .onSuccess { newCurrentPage ->
                             newCurrentPage?.let {
 
-                                if (it == _uiState.value.questions.size && it != 0) { // questions.size를 늦게 불러와서 오류뜸
+                                if (it == _uiState.value.questions.size && it != 0) {
                                     submitAnswers()
                                     _uiState.update {
                                         it.copy(currentPage = 0)
