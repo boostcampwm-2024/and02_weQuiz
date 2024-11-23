@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.component
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
@@ -17,25 +18,45 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
+import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun QuizTopAppBar(
-    onNavigationButtonClick: () -> Unit,
     category: Category?,
     quiz: BaseQuiz?,
+    currentUserId: String?,
+    onWaitingRealTimeQuizButtonClick: (Boolean) -> Unit,
+    onNavigationButtonClick: () -> Unit,
     onSettingMenuClick: (String, String) -> Unit,
     onDeleteMenuClick: (String, BaseQuiz) -> Unit,
 ) {
+    var showDialog by remember { mutableStateOf(false) }
     var isSettingMenuExpanded by remember { mutableStateOf(false) }
+
+    BackHandler {
+        if (quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId)) {
+            showDialog = true
+        }
+    }
+
     TopAppBar(
         title = {},
         navigationIcon = {
-            IconButton(onClick = onNavigationButtonClick) {
+            IconButton(
+                onClick =
+                    if (quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId)) {
+                        { showDialog = true }
+                    } else {
+                        { onNavigationButtonClick() }
+                    },
+            ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,
@@ -82,4 +103,19 @@ fun QuizTopAppBar(
             containerColor = Color.Transparent,
         ),
     )
+
+    if (showDialog) {
+        WeQuizBaseDialog(
+            title = stringResource(R.string.txt_waiting_cancel_dialog),
+            dialogImage = painterResource(R.drawable.quiz_system_profile),
+            confirmTitle = stringResource(R.string.txt_waiting_cancel_dialog_confirm),
+            dismissTitle = stringResource(R.string.txt_waiting_cancel_dialog_dismiss),
+            onConfirm = {
+                showDialog = false
+                onWaitingRealTimeQuizButtonClick(false)
+            },
+            onDismissRequest = { showDialog = false },
+            content = { /* no-op */ },
+        )
+    }
 }

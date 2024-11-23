@@ -19,6 +19,6 @@ data class RealTimeQuiz(
     val ownerId: String,
     val isStarted: Boolean,
     val isFinished: Boolean,
-    val waitingUsers: Int,
+    val waitingUsers: List<String>,
     override val quizImageUrl: String?,
 ) : BaseQuiz()

@@ -8,10 +8,14 @@ import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
+import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
@@ -24,12 +28,15 @@ data class QuizUiState(
     val isLoading: Boolean = false,
     val category: Category? = null,
     val quiz: BaseQuiz? = null,
+    val currentUserId: String? = null,
     val errorMessage: String? = null,
-    val isDeleted: Boolean = false,
+    val isDeleteQuizSuccess: Boolean = false,
+    val isCancelWaitingRealTimeQuizSuccess: Boolean = false,
 )
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val categoryRepository: CategoryRepository,
     private val quizRepository: QuizRepository,
     private val userOmrRepository: UserOmrRepository,
@@ -42,19 +49,29 @@ class QuizViewModel @Inject constructor(
     private val quizId = quizRoute.quizId
 
     private val _uiState = MutableStateFlow(QuizUiState())
-    val uiState: StateFlow<QuizUiState> = _uiState
+    val uiState: StateFlow<QuizUiState> = _uiState.asStateFlow()
 
-    //        .onStart {
-//            loadCategory()
-//            loadQuiz()
-//        }.stateIn(
-//            viewModelScope,
-//            SharingStarted.WhileSubscribed(5000L),
-//            QuizUiState(),
-//        )
-    fun initViewModel() {
+    init {
+        loadCurrentUserId()
         loadCategory()
         loadQuiz()
+    }
+
+    private fun loadCurrentUserId() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            authRepository.getUserKey()
+                .onSuccess { userId ->
+                    _uiState.update { it.copy(isLoading = false, currentUserId = userId) }
+                }
+                .onFailure {
+                    Log.e("QuizViewModel", "Failed to load current user", it)
+                    _uiState.update {
+                        it.copy(isLoading = false, errorMessage = "로그인이 필요합니다.")
+                    }
+                }
+        }
     }
 
     private fun loadCategory() {
@@ -67,23 +84,75 @@ class QuizViewModel @Inject constructor(
                 }
                 .onFailure {
                     Log.e("QuizViewModel", "Failed to load category", it)
-                    _uiState.update { it.copy(isLoading = false, errorMessage = "카테고리 로드에 실패했습니다.") }
+                    _uiState.update {
+                        it.copy(isLoading = false, errorMessage = "카테고리 로드에 실패했습니다.")
+                    }
                 }
         }
     }
 
     private fun loadQuiz() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-
-            quizRepository.getQuiz(quizId)
-                .onSuccess { quiz ->
-                    _uiState.update { it.copy(isLoading = false, quiz = quiz) }
+            quizRepository.observeQuiz(quizId)
+                .onStart {
+                    _uiState.update { it.copy(isLoading = true) }
                 }
-                .onFailure {
-                    Log.e("QuizViewModel", "Failed to load quiz", it)
+                .catch {
+                    Log.e("QuizViewModel", "Failed to observe quiz", it)
                     _uiState.update { it.copy(isLoading = false, errorMessage = "퀴즈 로드에 실패했습니다.") }
                 }
+                .collect { quiz ->
+                    _uiState.update { it.copy(isLoading = false, quiz = quiz) }
+                }
+        }
+    }
+
+    fun waitingRealTimeQuiz(waiting: Boolean) {
+        if (uiState.value.isLoading) return
+
+        viewModelScope.launch {
+
+            _uiState.update { it.copy(isLoading = true) }
+
+            uiState.value.currentUserId?.let { currentUserId ->
+                uiState.value.quiz?.let { quiz ->
+                    quizRepository.waitingRealTimeQuiz(quiz.id, waiting, currentUserId)
+                        .onSuccess {
+                            when (waiting) {
+                                true -> _uiState.update { it.copy(isLoading = false) }
+                                false -> _uiState.update { it.copy(isLoading = false, isCancelWaitingRealTimeQuizSuccess = true) }
+                            }
+                        }
+                        .onFailure {
+                            Log.e("QuizViewModel", "Failed to waiting real-time quiz", it)
+                            _uiState.update {
+                                it.copy(isLoading = false, errorMessage = "실시간 퀴즈 대기 상태 변경에 실패했습니다.")
+                            }
+                        }
+                }
+            }
+        }
+    }
+
+    fun startRealTimeQuiz() {
+        if (uiState.value.isLoading) return
+
+        viewModelScope.launch {
+
+            _uiState.update { it.copy(isLoading = true) }
+
+            uiState.value.quiz?.let { quiz ->
+                quizRepository.startRealTimeQuiz(quiz.id)
+                    .onSuccess {
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
+                    .onFailure {
+                        Log.e("QuizViewModel", "Failed to start real-time quiz", it)
+                        _uiState.update {
+                            it.copy(isLoading = false, errorMessage = "실시간 퀴즈 시작에 실패했습니다.")
+                        }
+                    }
+            }
         }
     }
 
@@ -92,6 +161,8 @@ class QuizViewModel @Inject constructor(
     }
 
     fun deleteQuiz(categoryId: String, quiz: BaseQuiz) {
+        if (uiState.value.isLoading) return
+
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             categoryRepository.deleteQuizFromCategory(categoryId = categoryId, quizId = quiz.id)
@@ -108,12 +179,16 @@ class QuizViewModel @Inject constructor(
                                                         _uiState.update {
                                                             it.copy(
                                                                 isLoading = false,
-                                                                isDeleted = true,
+                                                                isDeleteQuizSuccess = true,
                                                             )
                                                         }
                                                     }
                                                     .onFailure {
-                                                        Log.e("QuizViewModel", "Failed to delete quiz image", it)
+                                                        Log.e(
+                                                            "QuizViewModel",
+                                                            "Failed to delete quiz image",
+                                                            it,
+                                                        )
                                                         _uiState.update {
                                                             it.copy(
                                                                 isLoading = false,
@@ -124,7 +199,7 @@ class QuizViewModel @Inject constructor(
                                             } ?: _uiState.update {
                                                 it.copy(
                                                     isLoading = false,
-                                                    isDeleted = true,
+                                                    isDeleteQuizSuccess = true,
                                                 )
                                             }
 

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -48,11 +50,12 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
+import kr.boostcamp_2024.course.login.model.UserUiModel
 import kr.boostcamp_2024.course.main.R
+import kr.boostcamp_2024.course.main.component.MainDropDownMenu
 import kr.boostcamp_2024.course.main.component.StudyGroupItem
 import kr.boostcamp_2024.course.main.viewmodel.MainViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     onNotificationButtonClick: () -> Unit,
@@ -61,6 +64,8 @@ fun MainScreen(
     onEditStudyButtonClick: (String) -> Unit,
     viewModel: MainViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    onEditUserClick: (UserUiModel?, String?) -> Unit,
+    onLogOutClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -74,7 +79,13 @@ fun MainScreen(
         onDeleteStudyGroupClick = viewModel::deleteStudyGroup,
         onLeaveStudyGroupClick = viewModel::deleteUserFromStudyGroup,
         onStudyGroupClick = onStudyGroupClick,
+        onEditUserClick = onEditUserClick,
+        onLogOutClick = viewModel::logout,
     )
+
+    if (uiState.isLogout) {
+        onLogOutClick()
+    }
 
     if (uiState.isLoading) {
         Box {
@@ -110,10 +121,11 @@ fun MainScreen(
     onDeleteStudyGroupClick: (StudyGroup) -> Unit,
     onLeaveStudyGroupClick: (String) -> Unit,
     onStudyGroupClick: (String) -> Unit,
+    onEditUserClick: (UserUiModel?, String?) -> Unit,
+    onLogOutClick: () -> Unit,
 ) {
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    var isExpanded by remember { mutableStateOf(false) }
     var state by rememberSaveable { mutableIntStateOf(0) }
     val titles = stringArrayResource(R.array.main_tabs_titles)
 
@@ -133,6 +145,24 @@ fun MainScreen(
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { isExpanded = true }) {
+                        Icon(
+                            imageVector = Icons.Filled.AccountCircle,
+                            contentDescription = stringResource(R.string.top_app_bar_nav_btn),
+                        )
+                    }
+                    MainDropDownMenu(
+                        isExpanded = isExpanded,
+                        onDismissRequest = { isExpanded = false },
+                        onEditUserClick = {
+                            if (currentUser?.id != null) {
+                                onEditUserClick(null, currentUser.id)
+                            }
+                        },
+                        onLogOutClick = onLogOutClick,
                     )
                 },
                 actions = {
@@ -261,6 +291,8 @@ fun MainScreenPreview() {
             onNotificationButtonClick = {},
             onCreateStudyButtonClick = {},
             onStudyGroupClick = {},
+            onEditUserClick = { _, _ -> },
+            onLogOutClick = {},
             onDeleteStudyGroupClick = {},
         )
     }
