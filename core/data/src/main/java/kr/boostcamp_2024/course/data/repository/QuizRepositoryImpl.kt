@@ -54,7 +54,7 @@ class QuizRepositoryImpl @Inject constructor(
                         ownerId = ownerId,
                         isStarted = false,
                         isFinished = false,
-                        waitingUsers = 0,
+                        waitingUsers = emptyList(),
                         quizImageUrl = quizCreateInfo.quizImageUrl,
                         type = REAL_TIME_QUIZ,
                     )
@@ -175,6 +175,6 @@ class QuizRepositoryImpl @Inject constructor(
 
     companion object {
         private const val GENERAL_QUIZ = "general"
-        private const val REAL_TIME_QUIZ = "real_time"
+        private const val REAL_TIME_QUIZ = "realTime"
     }
 }
