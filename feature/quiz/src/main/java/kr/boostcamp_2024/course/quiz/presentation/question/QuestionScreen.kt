@@ -29,12 +29,14 @@ fun QuestionScreen(
             OwnerQuestionScreen(
                 quiz = quiz,
                 currentUserId = uiState.currentUserId,
-                onQuizFinished = onQuizFinished,
+                onQuizFinished = { _, quizId -> onQuizFinished(null, quizId) },
             )
         } else {
             UserQuestionScreen(
                 onNavigationButtonClick = onNavigationButtonClick,
-                onQuizFinished = onQuizFinished,
+                onQuizFinished = { userOmrId, _ ->
+                    onQuizFinished(userOmrId, null)
+                },
             )
         }
     } else if (uiState.quiz is Quiz) {

@@ -204,6 +204,15 @@ fun QuizScreen(
                         )
                     }
                 }
+                Button(
+                    onClick = {
+                        if (quiz != null) {
+                            onStartQuizButtonClick("7YdMkh1av39YtVrpCHTt")
+                        }
+                    },
+                ) {
+                    Text(text = "123")
+                }
 
                 if (quiz is Quiz) {
                     // CreateQuestionButton & StartQuizButton

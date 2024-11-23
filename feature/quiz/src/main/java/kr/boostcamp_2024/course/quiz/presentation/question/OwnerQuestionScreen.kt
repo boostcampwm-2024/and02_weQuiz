@@ -136,11 +136,13 @@ fun OwnerQuestionScreen(
             ) {
                 if (quiz != null && currentQuestion != null) {
                     item {
-                        RealTimeQuizWithOwnerGuideContent(
-                            ownerName = ownerName,
-                            totalParticipants = quiz.waitingUsers.size,
-                            submittedParticipants = currentQuestion.currentSubmit,
-                        )
+                        quiz.waitingUsers?.let {
+                            RealTimeQuizWithOwnerGuideContent(
+                                ownerName = ownerName,
+                                totalParticipants = it.size,
+                                submittedParticipants = currentQuestion.currentSubmit,
+                            )
+                        }
                     }
                     item {
                         HorizontalPager(
