@@ -142,7 +142,7 @@ fun CreateQuizScreen(
     onQuizTypeIndexChange: (Int) -> Unit,
 ) {
     val context = LocalContext.current
-    val options = listOf("일반 퀴즈", "실시간 퀴즈")
+    val options = listOf(stringResource(R.string.txt_create_quiz_general), stringResource(R.string.txt_create_quiz_realtime))
     val photoPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             val inputStream = context.contentResolver.openInputStream(uri)

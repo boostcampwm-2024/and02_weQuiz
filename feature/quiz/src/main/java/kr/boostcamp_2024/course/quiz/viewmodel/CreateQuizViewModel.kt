@@ -138,12 +138,12 @@ class CreateQuizViewModel @Inject constructor(
             if (uiState.value.isRealtimeQuiz) {
                 createRealtimeQuiz()
             } else {
-                createNormalQuiz()
+                createGeneralQuiz()
             }
         }
     }
 
-    private fun createNormalQuiz() {
+    private fun createGeneralQuiz() {
         viewModelScope.launch {
             quizRepository.createQuiz(
                 QuizCreationInfo(

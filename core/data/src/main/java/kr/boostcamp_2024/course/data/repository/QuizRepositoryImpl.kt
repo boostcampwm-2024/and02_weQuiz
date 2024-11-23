@@ -1,6 +1,5 @@
 package kr.boostcamp_2024.course.data.repository
 
-import android.util.Log
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -65,7 +64,6 @@ class QuizRepositoryImpl @Inject constructor(
         runCatching {
             val document = quizCollectionRef.document(quizId).get().await()
             val quizType = document.get("type").toString()
-            Log.d("quizType", quizType)
             val response = when (getQuizTypeFromValue(quizType)) {
                 RealTime -> document.toObject(RealTimeQuizDTO::class.java)?.toVO(quizId)
                 General -> document.toObject(QuizDTO::class.java)?.toVO(quizId)
@@ -78,7 +76,6 @@ class QuizRepositoryImpl @Inject constructor(
             quizIdList.map { quizId ->
                 val document = quizCollectionRef.document(quizId).get().await()
                 val quizType = document.get("type").toString()
-                Log.d("quizType", quizType)
                 val response = when (getQuizTypeFromValue(quizType)) {
                     RealTime -> document.toObject(RealTimeQuizDTO::class.java)?.toVO(quizId)
                     General -> document.toObject(QuizDTO::class.java)?.toVO(quizId)

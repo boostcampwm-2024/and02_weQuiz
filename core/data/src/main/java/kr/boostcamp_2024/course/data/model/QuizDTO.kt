@@ -30,6 +30,5 @@ data class QuizDTO(
         questions = requireNotNull(questions),
         userOmrs = requireNotNull(userOmrs),
         quizImageUrl = quizImageUrl,
-        type = type,
     )
 }

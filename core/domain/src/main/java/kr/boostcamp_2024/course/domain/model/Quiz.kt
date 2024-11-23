@@ -11,7 +11,6 @@ data class Quiz(
     override val questions: List<String>,
     override val userOmrs: List<String>,
     override val quizImageUrl: String?,
-    val type: String?,
 ) : BaseQuiz() {
     val isOpened: Boolean
         get() = LocalDate.now().isAfter(LocalDate.parse(startTime))
