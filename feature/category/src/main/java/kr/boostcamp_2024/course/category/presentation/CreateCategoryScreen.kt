@@ -111,7 +111,7 @@ fun CreateCategoryScreen(
             val bitmap = BitmapFactory.decodeStream(inputStream)
 
             val baos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSY, 50, baos)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
             val data = baos.toByteArray()
 
             onCurrentCategoryImageChanged(data)
