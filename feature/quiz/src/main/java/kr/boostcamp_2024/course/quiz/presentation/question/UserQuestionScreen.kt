@@ -46,7 +46,7 @@ import kr.boostcamp_2024.course.quiz.viewmodel.UserQuestionViewModel
 @Composable
 fun UserQuestionScreen(
     onNavigationButtonClick: () -> Unit,
-    onQuizFinished: (String) -> Unit,
+    onQuizFinished: (String?, String?) -> Unit,
     userQuestionViewModel: UserQuestionViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -78,7 +78,7 @@ fun UserQuestionScreen(
 
     uiState.userOmrId?.let { userOmrId ->
         LaunchedEffect(userOmrId) {
-            onQuizFinished(userOmrId)
+            onQuizFinished(userOmrId, null)
         }
     }
 
@@ -223,6 +223,6 @@ fun UserQuestionScreen(
 fun UserQuestionScreenPreview() {
     UserQuestionScreen(
         onNavigationButtonClick = {},
-        onQuizFinished = {},
+        onQuizFinished = { _, _ -> },
     )
 }

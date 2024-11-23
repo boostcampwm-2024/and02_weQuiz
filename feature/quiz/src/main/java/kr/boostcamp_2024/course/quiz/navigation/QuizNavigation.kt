@@ -72,7 +72,7 @@ fun NavController.navigateCreateQuiz(categoryId: String, quizId: String? = null)
 fun NavGraphBuilder.quizNavGraph(
     onNavigationButtonClick: () -> Unit,
     onCreateQuestionSuccess: () -> Unit,
-    onQuizFinished: (String) -> Unit,
+    onQuizFinished: (String?, String?) -> Unit,
     onQuestionClick: (String) -> Unit,
     onCreateQuizSuccess: () -> Unit,
     onCreateQuestionButtonClick: (String) -> Unit,

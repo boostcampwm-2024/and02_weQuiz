@@ -53,7 +53,7 @@ import kr.boostcamp_2024.course.quiz.viewmodel.OwnerQuestionViewModel
 fun OwnerQuestionScreen(
     quiz: RealTimeQuiz?,
     currentUserId: String?,
-    onQuizFinished: (String) -> Unit,
+    onQuizFinished: (String?, String?) -> Unit,
     questionViewModel: OwnerQuestionViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -75,7 +75,7 @@ fun OwnerQuestionScreen(
     )
 
     if (uiState.isQuizFinished) {
-        onQuizFinished(requireNotNull(uiState.quiz?.id))
+        onQuizFinished(null, requireNotNull(uiState.quiz?.id))
     }
 
     uiState.errorMessageId?.let { errorMessageId ->
@@ -281,7 +281,7 @@ fun OwnerQuestionScreenPreview() {
         OwnerQuestionScreen(
             quiz = null,
             currentUserId = null,
-            onQuizFinished = {},
+            onQuizFinished = { _, _ -> },
         )
     }
 }
