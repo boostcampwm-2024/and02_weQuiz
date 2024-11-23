@@ -51,7 +51,8 @@
     <string name="txt_quiz_start">퀴즈 시작</string>
     <string name="txt_quiz_question_count_zero">문제가 없습니다!</string>
     <!--  realtime quiz  -->
-    <string name="dialog_owner_finish_quiz">정말 나가시나요?\n 퀴즈가 완전히 종료됩니다.</string>
+    <string name="dialog_txt_owner_quit_quiz">정말 나가시나요?\n퀴즈가 완전히 종료됩니다.</string>
+    <string name="dialog_txt_finish_quiz">퀴즈를 마무리하시나요?\n모든 참여자에 대해 퀴즈가 종료됩니다.</string>
     <string name="txt_finish_quiz">나가기</string>
     <string name="txt_finish_cancel">취소</string>
     <string name="txt_quiz_owner">진행자: %1$s</string>

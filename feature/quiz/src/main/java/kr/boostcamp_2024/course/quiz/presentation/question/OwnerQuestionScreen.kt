@@ -43,9 +43,9 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatB
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.component.OwnerFinishQuizDialog
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
+import kr.boostcamp_2024.course.quiz.component.QuizOwnerDialog
 import kr.boostcamp_2024.course.quiz.component.RealTimeQuestion
 import kr.boostcamp_2024.course.quiz.viewmodel.OwnerQuestionViewModel
 
@@ -98,11 +98,12 @@ fun OwnerQuestionScreen(
     onPreviousButtonClick: () -> Unit,
     onQuizFinishButtonClick: () -> Unit,
 ) {
-    var showDialog by rememberSaveable { mutableStateOf(false) }
+    var showQuitQuizDialog by rememberSaveable { mutableStateOf(false) }
+    var showFinishQuizDialog by rememberSaveable { mutableStateOf(false) }
     val currentQuestion = questions.getOrNull(currentPage)
 
     BackHandler {
-        showDialog = true
+        showQuitQuizDialog = true
     }
 
     Scaffold(
@@ -111,7 +112,7 @@ fun OwnerQuestionScreen(
             quiz?.let {
                 QuestionTopBar(
                     title = it.title,
-                    onShowDialog = { showDialog = true },
+                    onShowDialog = { showQuitQuizDialog = true },
                 )
             }
         },
@@ -182,7 +183,7 @@ fun OwnerQuestionScreen(
                     if (currentPage < questions.size - 1) {
                         onNextButtonClick()
                     } else {
-                        showDialog = true
+                        showFinishQuizDialog = true
                     }
                 },
                 onPrevButtonClick = {
@@ -191,10 +192,17 @@ fun OwnerQuestionScreen(
             )
         }
 
-        if (showDialog) {
-            OwnerFinishQuizDialog(
+        if (showQuitQuizDialog || showFinishQuizDialog) {
+            QuizOwnerDialog(
+                isQuit = showQuitQuizDialog,
+                onDismissButtonClick = {
+                    if (showFinishQuizDialog) {
+                        showFinishQuizDialog = false
+                    } else {
+                        showQuitQuizDialog = false
+                    }
+                },
                 onFinishQuizButtonClick = onQuizFinishButtonClick,
-                onDismissButtonClick = { showDialog = false },
             )
         }
     }
