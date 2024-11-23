@@ -21,6 +21,6 @@ interface QuizRepository {
 
     suspend fun deleteQuizzes(quizzes: List<String>): Result<Unit>
 
-    fun observeCurrentPage(quizId: String): Flow<Result<Int?>>
+    fun observeCurrentPage(quizId: String): Flow<Result<Int>>
 
 }

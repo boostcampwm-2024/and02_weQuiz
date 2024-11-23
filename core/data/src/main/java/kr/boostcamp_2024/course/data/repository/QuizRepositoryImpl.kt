@@ -99,7 +99,7 @@ class QuizRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun observeCurrentPage(quizId: String): Flow<Result<Int?>> = callbackFlow {
+    override fun observeCurrentPage(quizId: String): Flow<Result<Int>> = callbackFlow {
         val quizDocument = quizCollectionRef.document(quizId)
         val listener = quizDocument.addSnapshotListener { documentSnapshot, error ->
             runCatching {
@@ -107,9 +107,9 @@ class QuizRepositoryImpl @Inject constructor(
                     throw error
                 }
 
-                if (documentSnapshot != null && documentSnapshot.exists()) {
+                if (documentSnapshot?.exists() == true) {
                     val currentPage = documentSnapshot.getLong("current_question")?.toInt()
-                    trySend(Result.success(currentPage))
+                    trySend(Result.success(requireNotNull(currentPage)))
                 } else {
                     throw Exception("문서가 존재하지 않습니다")
                 }

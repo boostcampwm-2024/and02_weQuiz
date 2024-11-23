@@ -49,9 +49,13 @@ class UserQuestionViewModel @Inject constructor(
     private val quizId = savedStateHandle.toRoute<QuestionRoute>().quizId
 
     private val _uiState: MutableStateFlow<UserQuestionUiState> = MutableStateFlow(UserQuestionUiState())
+
+    init {
+        initial()
+    }
+
     val uiState: StateFlow<UserQuestionUiState> = _uiState
         .onStart {
-            initial()
             updatePageAndSubmitByOwner()
         }.stateIn(
             viewModelScope,
@@ -206,5 +210,9 @@ class UserQuestionViewModel @Inject constructor(
                     }
             }
         }
+    }
+
+    private fun updateLoadingState(isLoading: Boolean) {
+        _uiState.update { it.copy(isLoading = isLoading) }
     }
 }
