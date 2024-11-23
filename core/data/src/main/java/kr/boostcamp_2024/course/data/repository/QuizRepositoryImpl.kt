@@ -36,7 +36,7 @@ class QuizRepositoryImpl @Inject constructor(
                         questions = emptyList(),
                         userOmrs = emptyList(),
                         quizImageUrl = quizCreateInfo.quizImageUrl,
-                        type = "general",
+                        type = GENERAL_QUIZ,
                     )
                     quizCollectionRef.add(newQuiz).await().id
                 }
@@ -53,7 +53,7 @@ class QuizRepositoryImpl @Inject constructor(
                         isFinished = false,
                         waitingUsers = 0,
                         quizImageUrl = quizCreateInfo.quizImageUrl,
-                        type = "realTime",
+                        type = REAL_TIME_QUIZ,
                     )
                     quizCollectionRef.add(newRealTimeQuiz).await().id
                 }
@@ -116,4 +116,9 @@ class QuizRepositoryImpl @Inject constructor(
                 quizCollectionRef.document(quizId).delete().await()
             }
         }
+
+    companion object {
+        private const val GENERAL_QUIZ = "general"
+        private const val REAL_TIME_QUIZ = "real_time"
+    }
 }
