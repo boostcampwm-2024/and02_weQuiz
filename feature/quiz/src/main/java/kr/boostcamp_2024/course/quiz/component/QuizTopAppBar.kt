@@ -40,10 +40,8 @@ fun QuizTopAppBar(
     var showDialog by remember { mutableStateOf(false) }
     var isSettingMenuExpanded by remember { mutableStateOf(false) }
 
-    BackHandler {
-        if (quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId)) {
-            showDialog = true
-        }
+    BackHandler(quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId)) {
+        showDialog = true
     }
 
     TopAppBar(
