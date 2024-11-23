@@ -25,5 +25,5 @@ interface QuizRepository {
 
     suspend fun waitingRealTimeQuiz(quizId: String, waiting: Boolean, userId: String): Result<Unit>
 
-    fun getQuizFlow(quizId: String): Flow<BaseQuiz>
+    fun observeQuiz(quizId: String): Flow<BaseQuiz>
 }

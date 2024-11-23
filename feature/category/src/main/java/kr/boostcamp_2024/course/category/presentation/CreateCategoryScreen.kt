@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.category.presentation
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -88,6 +89,7 @@ fun CreateCategoryScreen(
     )
 }
 
+@SuppressLint("NewApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateCategoryScreen(
@@ -111,7 +113,7 @@ fun CreateCategoryScreen(
             val bitmap = BitmapFactory.decodeStream(inputStream)
 
             val baos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+            bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSY, 50, baos)
             val data = baos.toByteArray()
 
             onCurrentCategoryImageChanged(data)

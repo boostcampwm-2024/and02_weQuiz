@@ -9,6 +9,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
@@ -52,16 +54,7 @@ class QuizViewModel @Inject constructor(
     init {
         loadCurrentUserId()
         loadCategory()
-
-        viewModelScope.launch {
-            quizRepository.getQuizFlow(quizId)
-                .collect { quiz ->
-                    _uiState.update { it.copy(isLoading = false, quiz = quiz) }
-                }
-                .runCatching {
-                    _uiState.update { it.copy(isLoading = false, errorMessage = "퀴즈 로드에 실패했습니다.") }
-                }
-        }
+        loadQuiz()
     }
 
     private fun loadCurrentUserId() {
@@ -94,6 +87,22 @@ class QuizViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(isLoading = false, errorMessage = "카테고리 로드에 실패했습니다.")
                     }
+                }
+        }
+    }
+
+    private fun loadQuiz() {
+        viewModelScope.launch {
+            quizRepository.observeQuiz(quizId)
+                .onStart {
+                    _uiState.update { it.copy(isLoading = true) }
+                }
+                .catch {
+                    Log.e("QuizViewModel", "Failed to observe quiz", it)
+                    _uiState.update { it.copy(isLoading = false, errorMessage = "퀴즈 로드에 실패했습니다.") }
+                }
+                .collect { quiz ->
+                    _uiState.update { it.copy(isLoading = false, quiz = quiz) }
                 }
         }
     }

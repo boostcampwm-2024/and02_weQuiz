@@ -101,11 +101,8 @@ class QuizRepositoryImpl @Inject constructor(
 
     override suspend fun startRealTimeQuiz(quizId: String): Result<Unit> =
         runCatching {
-            val updatedData = mapOf(
-                "is_started" to true,
-            )
             quizCollectionRef.document(quizId)
-                .update(updatedData)
+                .update("is_started", true)
                 .await()
         }
 
@@ -126,14 +123,14 @@ class QuizRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getQuizFlow(quizId: String): Flow<BaseQuiz> = callbackFlow<BaseQuiz> {
+    override fun observeQuiz(quizId: String): Flow<BaseQuiz> = callbackFlow<BaseQuiz> {
         val listener = quizCollectionRef.document(quizId)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)
                 }
 
-                if (snapshot != null && snapshot.exists()) {
+                if (snapshot?.exists() == true) {
                     try {
                         val quizType = snapshot.get("type").toString()
                         val response = when (getQuizTypeFromValue(quizType)) {
