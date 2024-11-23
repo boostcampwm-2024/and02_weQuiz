@@ -33,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseConfirmDialog
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Question
@@ -184,12 +183,13 @@ fun UserQuestionScreen(
     }
 
     if (quizFinishDialog) {
-        WeQuizBaseConfirmDialog(
+        WeQuizBaseDialog(
             title = stringResource(R.string.txt_quiz_finish_notification),
+            dialogImage = painterResource(id = R.drawable.quiz_system_profile),
             confirmTitle = stringResource(R.string.txt_quiz_finish_confirm),
             onConfirm = onQuizFinishButtonClick,
             onDismissRequest = onQuizFinishDialogDismissButtonClick,
-            dialogImage = painterResource(id = R.drawable.quiz_system_profile),
+            dismissButton = null,
             content = { /* no-op */ },
         )
     }
