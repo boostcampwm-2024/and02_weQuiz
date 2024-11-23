@@ -7,6 +7,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.Question
@@ -78,8 +81,8 @@ class OwnerQuestionViewModel @Inject constructor(
             questionRepository.getRealTimeQuestions(questionIds)
                 .onSuccess { questionList ->
                     questionList.forEachIndexed { index, questionFlow ->
-                        launch {
-                            questionFlow.collect { question ->
+                        viewModelScope.launch {
+                            questionFlow.onEach { question ->
                                 _uiState.update { currentState ->
                                     currentState.copy(
                                         questions = currentState.questions.toMutableList().apply {
@@ -87,7 +90,10 @@ class OwnerQuestionViewModel @Inject constructor(
                                         },
                                     )
                                 }
-                            }
+                            }.catch {
+                                Log.e("OwnerQuestionViewModel", "Failed to load real time questions", it)
+                                showErrorMessage(R.string.err_load_questions)
+                            }.collect()
                         }
                     }
                     setLoadingState(false)
