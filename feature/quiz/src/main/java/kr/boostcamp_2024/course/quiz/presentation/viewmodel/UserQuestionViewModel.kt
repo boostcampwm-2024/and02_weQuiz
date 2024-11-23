@@ -211,8 +211,4 @@ class UserQuestionViewModel @Inject constructor(
             }
         }
     }
-
-    private fun updateLoadingState(isLoading: Boolean) {
-        _uiState.update { it.copy(isLoading = isLoading) }
-    }
 }
