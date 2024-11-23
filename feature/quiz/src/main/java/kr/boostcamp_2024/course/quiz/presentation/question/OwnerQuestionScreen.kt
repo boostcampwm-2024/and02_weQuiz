@@ -79,7 +79,7 @@ fun OwnerQuestionScreen(
     }
 
     uiState.errorMessageId?.let { errorMessageId ->
-        val errorMessage = stringResource(R.string.err_answer_add)
+        val errorMessage = stringResource(errorMessageId)
         LaunchedEffect(errorMessageId) {
             snackbarHostState.showSnackbar(errorMessage)
             questionViewModel.shownErrorMessage()

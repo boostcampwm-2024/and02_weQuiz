@@ -11,7 +11,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
-import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.viewmodel.QuestionViewModel
 
 @Composable
@@ -55,7 +54,7 @@ fun QuestionScreen(
     }
 
     uiState.errorMessageId?.let { errorMessageId ->
-        val errorMessage = stringResource(R.string.err_answer_add)
+        val errorMessage = stringResource(errorMessageId)
         LaunchedEffect(errorMessageId) {
             snackbarHostState.showSnackbar(errorMessage)
             questionViewModel.shownErrorMessage()
