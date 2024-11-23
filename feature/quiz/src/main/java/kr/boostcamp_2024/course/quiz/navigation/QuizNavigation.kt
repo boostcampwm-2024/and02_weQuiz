@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import kr.boostcamp_2024.course.quiz.presentation.question.CreateQuestionScreen
 import kr.boostcamp_2024.course.quiz.presentation.question.QuestionDetailScreen
-import kr.boostcamp_2024.course.quiz.presentation.question.UserQuestionScreen
+import kr.boostcamp_2024.course.quiz.presentation.question.QuestionScreen
 import kr.boostcamp_2024.course.quiz.presentation.quiz.CreateQuizScreen
 import kr.boostcamp_2024.course.quiz.presentation.quiz.QuizResultScreen
 import kr.boostcamp_2024.course.quiz.presentation.quiz.QuizScreen
@@ -92,7 +92,7 @@ fun NavGraphBuilder.quizNavGraph(
         )
     }
     composable<QuestionRoute> {
-        UserQuestionScreen(
+        QuestionScreen(
             onNavigationButtonClick = onNavigationButtonClick,
             onQuizFinished = onQuizFinished,
         )
