@@ -27,19 +27,40 @@ class QuizRepositoryImpl @Inject constructor(
             document.update("questions", FieldValue.arrayUnion(questionId)).await()
         }
 
-    override suspend fun createQuiz(quizCreateInfo: QuizCreationInfo): Result<String> =
+    override suspend fun createQuiz(quizCreateInfo: QuizCreationInfo, ownerId: String?): Result<String> =
         runCatching {
-            val newQuiz = QuizDTO(
-                title = quizCreateInfo.quizTitle,
-                description = quizCreateInfo.quizDescription,
-                startTime = quizCreateInfo.quizDate,
-                solveTime = quizCreateInfo.quizSolveTime,
-                questions = emptyList(),
-                userOmrs = emptyList(),
-                quizImageUrl = quizCreateInfo.quizImageUrl,
-            )
-            val document = quizCollectionRef.add(newQuiz).await()
-            document.id
+            when (ownerId) {
+                null -> {
+                    val newQuiz = QuizDTO(
+                        title = quizCreateInfo.quizTitle,
+                        description = quizCreateInfo.quizDescription,
+                        startTime = quizCreateInfo.quizDate,
+                        solveTime = quizCreateInfo.quizSolveTime,
+                        questions = emptyList(),
+                        userOmrs = emptyList(),
+                        quizImageUrl = quizCreateInfo.quizImageUrl,
+                        type = GENERAL_QUIZ,
+                    )
+                    quizCollectionRef.add(newQuiz).await().id
+                }
+
+                else -> {
+                    val newRealTimeQuiz = RealTimeQuizDTO(
+                        title = quizCreateInfo.quizTitle,
+                        description = quizCreateInfo.quizDescription,
+                        questions = emptyList(),
+                        userOmrs = emptyList(),
+                        currentQuestion = 0,
+                        ownerId = ownerId,
+                        isStarted = false,
+                        isFinished = false,
+                        waitingUsers = emptyList(),
+                        quizImageUrl = quizCreateInfo.quizImageUrl,
+                        type = REAL_TIME_QUIZ,
+                    )
+                    quizCollectionRef.add(newRealTimeQuiz).await().id
+                }
+            }
         }
 
     override suspend fun getQuiz(quizId: String): Result<BaseQuiz> =
@@ -92,9 +113,9 @@ class QuizRepositoryImpl @Inject constructor(
             quizCollectionRef.document(quizId).delete().await()
         }
 
-    override suspend fun deleteQuizzes(quizIds: List<String>): Result<Unit> =
+    override suspend fun deleteQuizzes(quizzes: List<String>): Result<Unit> =
         runCatching {
-            quizIds.forEach { quizId ->
+            quizzes.forEach { quizId ->
                 quizCollectionRef.document(quizId).delete().await()
             }
         }
@@ -150,5 +171,10 @@ class QuizRepositoryImpl @Inject constructor(
         awaitClose {
             listener.remove()
         }
+    }
+
+    companion object {
+        private const val GENERAL_QUIZ = "general"
+        private const val REAL_TIME_QUIZ = "realTime"
     }
 }

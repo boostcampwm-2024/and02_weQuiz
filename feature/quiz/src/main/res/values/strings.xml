@@ -77,4 +77,6 @@
     <string name="txt_real_time_quiz_wait_true">대기: %1$s명</string>
     <string name="txt_real_time_quiz_progressing">퀴즈 진행 중</string>
     <string name="txt_real_time_quiz_finished">시험이 끝났습니다.</string>
+    <string name="txt_create_quiz_general">일반 퀴즈</string>
+    <string name="txt_create_quiz_realtime">실시간 퀴즈</string>
 </resources>

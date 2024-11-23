@@ -13,7 +13,10 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.QuizCreationInfo
+import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
+import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.domain.repository.StorageRepository
@@ -32,13 +35,17 @@ data class CreateQuizUiState(
     val snackBarMessage: String? = null,
     val isEditing: Boolean = false,
     val isEditQuizSuccess: Boolean = false,
+    val selectedQuizTypeIndex: Int = 0,
 ) {
     val isCreateQuizButtonEnabled: Boolean
-        get() = quizTitle.isNotBlank() && quizDate.isNotBlank() && quizSolveTime > 0
+        get() = quizTitle.isNotBlank() && (isRealtimeQuiz || (quizDate.isNotBlank() && quizSolveTime > 0))
+    val isRealtimeQuiz: Boolean
+        get() = selectedQuizTypeIndex == 1
 }
 
 @HiltViewModel
 class CreateQuizViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val quizRepository: QuizRepository,
     private val categoryRepository: CategoryRepository,
     private val storageRepository: StorageRepository,
@@ -62,17 +69,34 @@ class CreateQuizViewModel @Inject constructor(
             quizId?.let {
                 quizRepository.getQuiz(it)
                     .onSuccess { quiz ->
-                        _uiState.update { state ->
-                            state.copy(
-                                quizTitle = quiz.title,
-                                quizDescription = quiz.description ?: "",
-//                                quizDate = quiz.startTime,
-//                                quizSolveTime = quiz.solveTime.toFloat(),
-                                //todo 시간 설정 제거
-                                isEditing = true,
-                                isLoading = false,
-                                defaultImageUrl = quiz.quizImageUrl,
-                            )
+                        when (quiz) {
+                            is Quiz -> {
+                                _uiState.update { state ->
+                                    state.copy(
+                                        quizTitle = quiz.title,
+                                        quizDescription = quiz.description ?: "",
+                                        quizDate = quiz.startTime,
+                                        quizSolveTime = quiz.solveTime.toFloat(),
+                                        isEditing = true,
+                                        isLoading = false,
+                                        defaultImageUrl = quiz.quizImageUrl,
+                                        selectedQuizTypeIndex = 0,
+                                    )
+                                }
+                            }
+
+                            is RealTimeQuiz -> {
+                                _uiState.update { state ->
+                                    state.copy(
+                                        quizTitle = quiz.title,
+                                        quizDescription = quiz.description ?: "",
+                                        isEditing = true,
+                                        isLoading = false,
+                                        defaultImageUrl = quiz.quizImageUrl,
+                                        selectedQuizTypeIndex = 1,
+                                    )
+                                }
+                            }
                         }
                     }
                     .onFailure { throwable ->
@@ -84,6 +108,11 @@ class CreateQuizViewModel @Inject constructor(
                     }
             }
         }
+    }
+
+    fun setSelectedQuizTypeIndex(index: Int) {
+        if (_uiState.value.isEditing) return
+        _uiState.update { it.copy(selectedQuizTypeIndex = index) }
     }
 
     fun setQuizTitle(quizTitle: String) {
@@ -106,7 +135,16 @@ class CreateQuizViewModel @Inject constructor(
         setLoadingState()
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+            if (uiState.value.isRealtimeQuiz) {
+                createRealtimeQuiz()
+            } else {
+                createGeneralQuiz()
+            }
+        }
+    }
 
+    private fun createGeneralQuiz() {
+        viewModelScope.launch {
             quizRepository.createQuiz(
                 QuizCreationInfo(
                     quizTitle = uiState.value.quizTitle,
@@ -117,11 +155,36 @@ class CreateQuizViewModel @Inject constructor(
                         storageRepository.uploadImage(imageByteArray).getOrNull()
                     },
                 ),
+                ownerId = null,
             ).onSuccess { quizId ->
                 saveQuizToCategory(quizId)
             }.onFailure {
                 Log.e("CreateQuizViewModel", it.message, it)
                 setNewSnackBarMessage("퀴즈 생성에 실패했습니다.")
+            }
+        }
+    }
+
+    private fun createRealtimeQuiz() {
+        viewModelScope.launch {
+            authRepository.getUserKey().onSuccess { userId ->
+                quizRepository.createQuiz(
+                    QuizCreationInfo(
+                        quizTitle = uiState.value.quizTitle,
+                        quizDescription = uiState.value.quizDescription.takeIf { it.isNotBlank() },
+                        quizDate = uiState.value.quizDate,
+                        quizSolveTime = uiState.value.quizSolveTime.toInt(),
+                        quizImageUrl = uiState.value.currentImage?.let { imageByteArray ->
+                            storageRepository.uploadImage(imageByteArray).getOrNull()
+                        },
+                    ),
+                    ownerId = userId,
+                ).onSuccess { quizId ->
+                    saveQuizToCategory(quizId)
+                }.onFailure {
+                    Log.e("CreateQuizViewModel", it.message, it)
+                    setNewSnackBarMessage("퀴즈 생성에 실패했습니다.")
+                }
             }
         }
     }
