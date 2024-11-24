@@ -10,9 +10,9 @@ data class QuestionDTO(
     val solution: String? = null,
     val answer: Int? = null,
     val choices: List<String>? = null,
-    @get:PropertyName("current_submit")
-    @set:PropertyName("current_submit")
-    var currentSubmit: Int? = null,
+    @get:PropertyName("user_answers")
+    @set:PropertyName("user_answers")
+    var userAnswers: List<Int>? = listOf(0, 0, 0, 0),
 ) {
     fun toVO(questionId: String): Question = Question(
         id = questionId,
@@ -21,7 +21,7 @@ data class QuestionDTO(
         solution = solution,
         answer = requireNotNull(answer),
         choices = requireNotNull(choices),
-        currentSubmit = requireNotNull(currentSubmit),
+        userAnswers = requireNotNull(userAnswers),
     )
 }
 
@@ -31,5 +31,4 @@ fun QuestionCreationInfo.toDTO() = QuestionDTO(
     solution = this.solution,
     answer = this.answer,
     choices = this.choices,
-    currentSubmit = 0,
 )

@@ -42,6 +42,7 @@ fun QuizResultScreen(
     } else {
         GeneralQuizResultScreen(
             quizTitle = uiState.quizTitle,
+            questions = uiState.questions,
             quizResult = uiState.quizResult,
             onNavigationButtonClick = onNavigationButtonClick,
             snackbarHostState = snackbarHostState,

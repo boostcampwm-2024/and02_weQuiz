@@ -65,17 +65,6 @@ class QuizResultViewModel @Inject constructor(
         }
     }
 
-//    private fun loadQuiz(quizId: String) {
-//        viewModelScope.launch {
-//            _uiState.update { it.copy(isLoading = true) }
-//            quizRepository.getQuiz(quizId).onSuccess {
-//                _uiState.update { it.copy(quizTitle = it.quizTitle, isLoading = false) }
-//            }.onFailure {
-//                Log.e("QuizResultViewModel", "Failed to load quiz", it)
-//            }
-//        }
-//    }
-
     private fun loadQuestions(quizId: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

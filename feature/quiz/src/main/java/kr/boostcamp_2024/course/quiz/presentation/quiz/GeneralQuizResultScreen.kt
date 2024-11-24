@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
+import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.QuestionResult
 import kr.boostcamp_2024.course.domain.model.QuizResult
 import kr.boostcamp_2024.course.quiz.R
@@ -49,6 +50,7 @@ import kr.boostcamp_2024.course.quiz.R
 @Composable
 fun GeneralQuizResultScreen(
     quizTitle: String?,
+    questions: List<Question>?,
     quizResult: QuizResult?,
     onNavigationButtonClick: () -> Unit,
     onQuestionClick: (String) -> Unit,

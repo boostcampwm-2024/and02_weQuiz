@@ -22,12 +22,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuestionDescription
 import kr.boostcamp_2024.course.quiz.component.QuestionDetailTopAppBar
 import kr.boostcamp_2024.course.quiz.component.QuestionItems
@@ -52,6 +54,7 @@ fun QuestionDetailScreen(
         errorMessage = uiState.errorMessage,
         onNavigationButtonClick = onNavigationButtonClick,
         onErrorMessageShown = viewModel::shownErrorMessage,
+        userAnswer = uiState.userAnswer,
     )
 }
 
@@ -66,6 +69,7 @@ fun QuestionDetailScreen(
     solution: String?,
     errorMessage: String?,
     onErrorMessageShown: () -> Unit = {},
+    userAnswer: List<Int>,
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
@@ -83,13 +87,13 @@ fun QuestionDetailScreen(
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Edit,
-                        contentDescription = "퀴즈 결과 화면 보기 버튼",
+                        contentDescription = stringResource(R.string.fab_quiz_result),
                         tint = MaterialTheme.colorScheme.primary,
                     )
                 },
                 text = {
                     Text(
-                        text = "결과 보기",
+                        text = stringResource(R.string.txt_quiz_result),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                     )
@@ -116,7 +120,7 @@ fun QuestionDetailScreen(
                 QuizStatisticsDialog(
                     onConfirmButtonClick = { showDialog = false },
                     onDismissRequest = { showDialog = false },
-                    quizId = "123",
+                    userAnswer = userAnswer,
                 )
             }
         }
@@ -143,7 +147,7 @@ private fun getPreviewQuestion(): Question {
             "1번 객관식 문항 내용입니다. 이것도 전체 다 보여줌. 1번 객관식 문항입니다. 이것도 전체",
             "1번 객관식 문항 내용입니다. 이것도 전체 다 보여줌. 1번 객관식 문항입니다. 이것도 전체",
         ),
-        currentSubmit = 0,
+        userAnswers = listOf(1, 2, 3, 4),
     )
 }
 
@@ -160,6 +164,7 @@ fun QuestionDetailScreenPreview() {
             answer = question.answer,
             solution = question.solution,
             errorMessage = null,
+            userAnswer = listOf(0, 0, 0, 0),
         )
     }
 }

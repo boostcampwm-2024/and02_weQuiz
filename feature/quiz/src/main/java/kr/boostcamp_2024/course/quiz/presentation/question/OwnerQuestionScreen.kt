@@ -140,7 +140,6 @@ fun OwnerQuestionScreen(
                             RealTimeQuizWithOwnerGuideContent(
                                 ownerName = ownerName,
                                 totalParticipants = it.size,
-                                submittedParticipants = currentQuestion.currentSubmit,
                             )
                         }
                     }
@@ -214,7 +213,6 @@ fun OwnerQuestionScreen(
 fun RealTimeQuizWithOwnerGuideContent(
     ownerName: String,
     totalParticipants: Int,
-    submittedParticipants: Int,
 ) {
     Row(
         modifier = Modifier
@@ -234,7 +232,8 @@ fun RealTimeQuizWithOwnerGuideContent(
             )
             WeQuizRightChatBubble(
                 modifier = Modifier,
-                text = stringResource(R.string.txt_quiz_submit_state, submittedParticipants, totalParticipants),
+                text = "ToDo",
+                //text = stringResource(R.string.txt_quiz_submit_state)
             )
         }
         WeQuizLocalRoundedImage(
