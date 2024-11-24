@@ -103,7 +103,7 @@ private fun getPreviewQuestion(): Question {
             "1번 객관식 문항 내용입니다. 이것도 전체 다 보여줌. 1번 객관식 문항입니다. 이것도 전체",
             "1번 객관식 문항 내용입니다. 이것도 전체 다 보여줌. 1번 객관식 문항입니다. 이것도 전체",
         ),
-        currentSubmit = 0,
+        userAnswers = listOf(0, 0, 0, 0),
     )
 }
 

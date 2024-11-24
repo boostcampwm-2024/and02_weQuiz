@@ -139,7 +139,7 @@ fun OwnerQuestionScreen(
                         RealTimeQuizWithOwnerGuideContent(
                             ownerName = ownerName,
                             totalParticipants = quiz.waitingUsers.size,
-                            submittedParticipants = currentQuestion.currentSubmit,
+                            submittedParticipants = currentQuestion.userAnswers.sum(),
                         )
                     }
                     item {
