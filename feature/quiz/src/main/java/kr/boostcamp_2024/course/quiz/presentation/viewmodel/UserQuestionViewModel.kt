@@ -160,7 +160,10 @@ class UserQuestionViewModel @Inject constructor(
 
     fun submitQuestion(questionId: String) {
         viewModelScope.launch {
-            val result = questionRepository.updateCurrentSubmit(questionId)
+            val result = questionRepository.updateCurrentSubmit(
+                questionId,
+                _uiState.value.selectedIndexList[_uiState.value.currentPage],
+            )
             val updatedList = _uiState.value.submittedIndexList.toMutableList().apply {
                 this[_uiState.value.currentPage] =
                     _uiState.value.selectedIndexList[_uiState.value.currentPage]
