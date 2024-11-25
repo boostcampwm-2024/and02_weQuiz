@@ -1,11 +1,9 @@
 package kr.boostcamp_2024.course.data.model
 
 import com.google.firebase.firestore.PropertyName
-import kr.boostcamp_2024.course.domain.model.BlankContent
 import kr.boostcamp_2024.course.domain.model.BlankQuestion
 import kr.boostcamp_2024.course.domain.model.BlankQuestionCreationInfo
 import kr.boostcamp_2024.course.domain.model.Question
-import kr.boostcamp_2024.course.domain.model.TextContent
 
 sealed interface QuestionDTO {
     fun toVO(questionId: String): Question
@@ -16,14 +14,14 @@ data class BlankQuestionDTO(
     val solution: String? = null,
     @get:PropertyName("question_content")
     @set:PropertyName("question_content")
-    var questionContent: List<BlankQuestionContentDTO>? = null,
+    var questionContent: List<Map<String, String>>? = null,
     val type: String? = null,
 ) : QuestionDTO {
     override fun toVO(questionId: String): Question = BlankQuestion(
         id = questionId,
         title = requireNotNull(title),
         solution = solution,
-        questionContent = requireNotNull(questionContent).map { it.toVO() },
+        questionContent = requireNotNull(questionContent),
         type = requireNotNull(type),
     )
 }
@@ -31,11 +29,6 @@ data class BlankQuestionDTO(
 fun BlankQuestionCreationInfo.toDTO() = BlankQuestionDTO(
     title = this.title,
     solution = this.solution,
-    questionContent = this.questionContent.map {
-        when (it) {
-            is BlankContent -> it.toDTO()
-            is TextContent -> it.toDTO()
-        }
-    },
+    questionContent = this.questionContent,
     type = this.type,
 )
