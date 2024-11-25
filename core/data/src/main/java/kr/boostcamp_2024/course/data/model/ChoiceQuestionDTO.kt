@@ -3,6 +3,7 @@ package kr.boostcamp_2024.course.data.model
 import com.google.firebase.firestore.PropertyName
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestionCreationInfo
+import kr.boostcamp_2024.course.domain.model.Question
 
 data class ChoiceQuestionDTO(
     val title: String? = null,
@@ -15,7 +16,7 @@ data class ChoiceQuestionDTO(
     var userAnswers: List<Int>? = null,
     val type: String? = null,
 ) : QuestionDTO {
-    fun toVO(questionId: String): ChoiceQuestion = ChoiceQuestion(
+    override fun toVO(questionId: String): Question = ChoiceQuestion(
         id = questionId,
         title = requireNotNull(title),
         description = requireNotNull(description),

@@ -4,9 +4,12 @@ import com.google.firebase.firestore.PropertyName
 import kr.boostcamp_2024.course.domain.model.BlankContent
 import kr.boostcamp_2024.course.domain.model.BlankQuestion
 import kr.boostcamp_2024.course.domain.model.BlankQuestionCreationInfo
+import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.TextContent
 
-sealed interface QuestionDTO
+sealed interface QuestionDTO {
+    fun toVO(questionId: String): Question
+}
 
 data class BlankQuestionDTO(
     val title: String? = null,
@@ -16,7 +19,7 @@ data class BlankQuestionDTO(
     var questionContent: List<BlankQuestionContentDTO>? = null,
     val type: String? = null,
 ) : QuestionDTO {
-    fun toVO(questionId: String): BlankQuestion = BlankQuestion(
+    override fun toVO(questionId: String): Question = BlankQuestion(
         id = questionId,
         title = requireNotNull(title),
         solution = solution,
