@@ -33,9 +33,9 @@ data class QuizResult(
         userAnswer: Map<*, *>,
     ): Boolean {
         val blankQuestion = choiceQuestions[index] as BlankQuestion
-        val blankQuestionContent = blankQuestion.questionContent.filterIsInstance<BlankContent>()
+        val blankQuestionContent = blankQuestion.questionContent.filter { it["type"] == "blank" }
         return blankQuestionContent.withIndex().all { (index, content) ->
-            content.text == userAnswer[index]
+            content["text"] == userAnswer[index]
         }
     }
 }
