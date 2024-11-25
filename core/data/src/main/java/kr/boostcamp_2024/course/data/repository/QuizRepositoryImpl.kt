@@ -106,10 +106,9 @@ class QuizRepositoryImpl @Inject constructor(
             runCatching {
                 if (error != null) {
                     close(error)
-                    return@addSnapshotListener
                 }
 
-                if (documentSnapshot != null && documentSnapshot.exists()) {
+                if (documentSnapshot?.exists() == true) {
                     val response = documentSnapshot.toObject(RealTimeQuizDTO::class.java)?.toVO(quizId)
                     trySend(Result.success(requireNotNull(response)))
                 } else {
