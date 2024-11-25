@@ -130,7 +130,7 @@ class UserQuestionViewModel @Inject constructor(
 
     private fun updatePageAndSubmitByOwner() {
         viewModelScope.launch {
-            quizRepository.observeQuiz(quizId)
+            quizRepository.observeRealTimeQuiz(quizId)
                 .collect { result ->
                     result
                         .onSuccess { quiz ->

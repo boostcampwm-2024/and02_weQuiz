@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.data.repository
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,7 @@ class QuestionRepositoryImpl @Inject constructor(
             questionIds.map { questionId ->
                 val document = questionCollectionRef.document(questionId).get().await()
                 val response = document.toObject(QuestionDTO::class.java)
+                Log.d("response", "$response")
                 requireNotNull(response).toVO(questionId)
             }
         }
