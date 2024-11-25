@@ -35,9 +35,7 @@ class QuizResultViewModel @Inject constructor(
     private val userOmrRepository: UserOmrRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    // TODO: userOmrId와 quizId nullable 처리해주세요!(to. 지훈)
-    private val userOmrId: String = savedStateHandle.toRoute<QuizResultRoute>().userOmrId ?: ""
-    private val quizId: String = savedStateHandle.toRoute<QuizResultRoute>().quizId ?: ""
+    private val userOmrId: String = savedStateHandle.toRoute<QuizResultRoute>().userOmrId
 
     private val userOmrAnswers = MutableStateFlow<List<Int>>(emptyList()) // 사용자 답지
     private val questions = MutableStateFlow<List<Question>>(emptyList()) // 퀴즈 리스트

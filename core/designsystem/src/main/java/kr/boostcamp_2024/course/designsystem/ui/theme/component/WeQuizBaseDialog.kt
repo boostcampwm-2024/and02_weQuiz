@@ -21,23 +21,15 @@ import kr.boostcamp_2024.course.designsystem.R
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @Composable
-fun BaseDialogDismissButton(dismissTitle: String, onDismissRequest: () -> Unit) {
-    Button(onClick = onDismissRequest) {
-        Text(dismissTitle)
-    }
-}
-
-@Composable
 fun WeQuizBaseDialog(
     title: String,
     dialogImage: Painter,
     confirmTitle: String,
-    dismissTitle: String? = null,
+    dismissTitle: String,
     onConfirm: () -> Unit,
     onDismissRequest: () -> Unit,
-    confirmButtonEnabled: Boolean = true,
-    dismissButton: @Composable (() -> Unit)? = { BaseDialogDismissButton(requireNotNull(dismissTitle), onDismissRequest) },
     content: @Composable () -> Unit,
+    confirmButtonEnabled: Boolean = true,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -60,7 +52,11 @@ fun WeQuizBaseDialog(
                 content()
             }
         },
-        dismissButton = dismissButton,
+        dismissButton = {
+            Button(onClick = onDismissRequest) {
+                Text(dismissTitle)
+            }
+        },
         confirmButton = {
             Button(
                 onClick = onConfirm,
