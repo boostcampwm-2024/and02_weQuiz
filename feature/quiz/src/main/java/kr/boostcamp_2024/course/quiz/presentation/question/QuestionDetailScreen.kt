@@ -114,7 +114,9 @@ fun QuestionDetailScreen(
 
             QuestionItems(choices, answer) {}
 
-            QuestionSolution(solution)
+            solution?.let {
+                QuestionSolution(it)
+            }
 
             if (showDialog) {
                 QuizStatisticsDialog(

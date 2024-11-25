@@ -172,17 +172,13 @@ fun OwnerQuestionResultItem(
                 overflow = TextOverflow.Ellipsis,
             )
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(
+            Icon(
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.End),
-                onClick = { /* no-op */ },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = null,
-                )
-            }
+                imageVector = Icons.Default.PlayArrow,
+                contentDescription = null,
+            )
         }
     }
 }

@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
-import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.QuestionResult
 import kr.boostcamp_2024.course.domain.model.QuizResult
 import kr.boostcamp_2024.course.quiz.R
@@ -50,7 +49,6 @@ import kr.boostcamp_2024.course.quiz.R
 @Composable
 fun GeneralQuizResultScreen(
     quizTitle: String?,
-    questions: List<Question>?,
     quizResult: QuizResult?,
     onNavigationButtonClick: () -> Unit,
     onQuestionClick: (String) -> Unit,
@@ -197,17 +195,13 @@ fun GeneralQuestionResultItem(
                 overflow = TextOverflow.Ellipsis,
             )
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(
+            Icon(
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.End),
-                onClick = { /* no-op */ },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = null,
-                )
-            }
+                imageVector = Icons.Default.PlayArrow,
+                contentDescription = null,
+            )
         }
     }
 }

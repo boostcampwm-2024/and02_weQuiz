@@ -23,14 +23,25 @@ import kr.boostcamp_2024.course.quiz.R
 @Composable
 fun PieChartScreen(userAnswers: List<Int>) {
     val totalInfo = mutableListOf<PieEntry>()
-    totalInfo.add(PieEntry(userAnswers[0].toFloat(), stringResource(R.string.txt_label_pie_chart_1)))
-    totalInfo.add(PieEntry(userAnswers[1].toFloat(), stringResource(R.string.txt_label_pie_chart_2)))
-    totalInfo.add(PieEntry(userAnswers[2].toFloat(), stringResource(R.string.txt_label_pie_chart_3)))
-    totalInfo.add(PieEntry(userAnswers[3].toFloat(), stringResource(R.string.txt_label_pie_chart_4)))
+    val pieChartStrings: List<String> = listOf(
+        stringResource(R.string.txt_label_pie_chart_1),
+        stringResource(R.string.txt_label_pie_chart_2),
+        stringResource(R.string.txt_label_pie_chart_3),
+        stringResource(R.string.txt_label_pie_chart_4),
+    )
+
+    userAnswers.forEachIndexed { index, i ->
+        if (i != 0) {
+            totalInfo.add(PieEntry(i.toFloat(), pieChartStrings[index]))
+        }
+    }
 
     val pieDataSet = PieDataSet(totalInfo, "")
     pieDataSet.apply {
-        colors = VORDIPLOM_COLORS.toList()
+        val alpha = 128
+        colors = VORDIPLOM_COLORS.toList().map { color ->
+            (alpha shl 24) or (color and 0x00FFFFFF)
+        }
         valueTextColor = Color.Black.toArgb()
         valueTextSize = 16f
     }
@@ -45,7 +56,6 @@ fun PieChartScreen(userAnswers: List<Int>) {
                 PieChart(context).apply {
                     data = pieData
                     description.isEnabled = false // 설명 비활성화
-                    isRotationEnabled = false // 회전 비활성화
                     centerText = context.getString(R.string.txt_pie_chart_center) // 중앙 텍스트 설정
                     setEntryLabelColor(Color.Black.toArgb()) // 항목 라벨 색상 설정
                     setEntryLabelTextSize(18f)
