@@ -16,6 +16,7 @@ material = "1.10.0"
 jetbrainsKotlinJvm = "2.0.0"
 
 # dataStore
+mpandroidchart = "v3.1.0"
 preferencesDataStore = "1.1.1"
 
 # kotlin symbol processing
@@ -62,6 +63,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 preferences-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "preferencesDataStore" }
 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }

@@ -25,6 +25,7 @@ data class DetailUiState(
     val choices: List<String> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
+    val userAnswer: List<Int> = listOf(0, 0, 0, 0),
     // TODO 출제자 이미지 추가
 )
 
@@ -56,6 +57,7 @@ class QuestionDetailViewModel @Inject constructor(
                         solution = question.solution,
                         answer = question.answer,
                         choices = question.choices,
+                        userAnswer = question.userAnswers,
                     )
                 }
             }.onFailure { throwable ->
