@@ -23,10 +23,10 @@ import kr.boostcamp_2024.course.quiz.R
 @Composable
 fun PieChartScreen(userAnswers: List<Int>) {
     val totalInfo = mutableListOf<PieEntry>()
-    totalInfo.add(PieEntry(userAnswers[0].toFloat(), stringResource(R.string.label_pie_chart_1)))
-    totalInfo.add(PieEntry(userAnswers[1].toFloat(), stringResource(R.string.label_pie_chart_2)))
-    totalInfo.add(PieEntry(userAnswers[2].toFloat(), stringResource(R.string.label_pie_chart_3)))
-    totalInfo.add(PieEntry(userAnswers[3].toFloat(), stringResource(R.string.label_pie_chart_4)))
+    totalInfo.add(PieEntry(userAnswers[0].toFloat(), stringResource(R.string.txt_label_pie_chart_1)))
+    totalInfo.add(PieEntry(userAnswers[1].toFloat(), stringResource(R.string.txt_label_pie_chart_2)))
+    totalInfo.add(PieEntry(userAnswers[2].toFloat(), stringResource(R.string.txt_label_pie_chart_3)))
+    totalInfo.add(PieEntry(userAnswers[3].toFloat(), stringResource(R.string.txt_label_pie_chart_4)))
 
     val pieDataSet = PieDataSet(totalInfo, "")
     pieDataSet.apply {
