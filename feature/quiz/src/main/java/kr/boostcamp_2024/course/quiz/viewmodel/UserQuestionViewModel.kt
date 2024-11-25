@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
-import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
+import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.UserOmrCreationInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 data class UserQuestionUiState(
     val quiz: BaseQuiz? = null,
-    val choiceQuestions: List<ChoiceQuestion> = emptyList(),
+    val choiceQuestions: List<Question> = emptyList(),
     val currentPage: Int = 0,
     val selectedIndexList: List<Int> = emptyList(),
     val submittedIndexList: List<Int> = emptyList(),
@@ -45,7 +45,8 @@ class UserQuestionViewModel @Inject constructor(
 ) : ViewModel() {
     private val quizId = savedStateHandle.toRoute<QuestionRoute>().quizId
 
-    private val _uiState: MutableStateFlow<UserQuestionUiState> = MutableStateFlow(UserQuestionUiState())
+    private val _uiState: MutableStateFlow<UserQuestionUiState> =
+        MutableStateFlow(UserQuestionUiState())
 
     init {
         initial()
@@ -66,7 +67,12 @@ class UserQuestionViewModel @Inject constructor(
                 }
                 .onFailure {
                     Log.e("QuestionViewModel", "퀴즈 로드 실패", it)
-                    _uiState.update { it.copy(isLoading = false, errorMessageId = R.string.err_load_quiz) }
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessageId = R.string.err_load_quiz,
+                        )
+                    }
                 }
         }
     }

@@ -38,6 +38,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRound
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
+import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.Question
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
@@ -48,7 +49,7 @@ import kr.boostcamp_2024.course.quiz.utils.timerFormat
 fun GeneralQuestionScreen(
     quiz: BaseQuiz?,
     currentPage: Int,
-    choiceQuestions: List<ChoiceQuestion>,
+    choiceQuestions: List<Question>,
     countDownTime: Int,
     selectedIndexList: List<Int>,
     snackbarHostState: SnackbarHostState,
@@ -116,20 +117,24 @@ fun GeneralQuestionScreen(
                         ),
                         userScrollEnabled = false,
                     ) {
-                        Column {
-                            QuestionTitleAndDetail(
-                                title = choiceQuestions[currentPage].title,
-                                description = choiceQuestions[currentPage].description,
-                            )
+                        val currentQuestion = choiceQuestions[currentPage]
+                        if (currentQuestion is ChoiceQuestion) {
+                            Column {
+                                QuestionTitleAndDetail(
+                                    title = currentQuestion.title,
+                                    description = currentQuestion.description,
+                                )
 
-                            Question(
-                                questions = choiceQuestions[currentPage].choices,
-                                selectedIndex = selectedIndexList[currentPage],
-                                onOptionSelected = { newIndex ->
-                                    onOptionSelected(currentPage, newIndex)
-                                },
-                            )
+                                Question(
+                                    questions = currentQuestion.choices,
+                                    selectedIndex = selectedIndexList[currentPage],
+                                    onOptionSelected = { newIndex ->
+                                        onOptionSelected(currentPage, newIndex)
+                                    },
+                                )
+                            }
                         }
+                        // TODO: Blank question 처리 해야 해요!!
                     }
                 }
             }

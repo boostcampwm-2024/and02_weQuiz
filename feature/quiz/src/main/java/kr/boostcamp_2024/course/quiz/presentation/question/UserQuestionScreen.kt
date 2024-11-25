@@ -36,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
+import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
@@ -90,7 +91,7 @@ fun UserQuestionScreen(
 fun UserQuestionScreen(
     quiz: BaseQuiz?,
     currentPage: Int,
-    choiceQuestions: List<ChoiceQuestion>,
+    choiceQuestions: List<Question>,
     quizFinishDialog: Boolean,
     onQuizFinishDialogDismissButtonClick: () -> Unit,
     selectedIndexList: List<Int>,
@@ -148,19 +149,23 @@ fun UserQuestionScreen(
                         userScrollEnabled = false,
                     ) {
                         Column {
-                            QuestionTitleAndDetail(
-                                title = choiceQuestions[currentPage].title,
-                                description = choiceQuestions[currentPage].description,
-                            )
+                            val currentQuestion = choiceQuestions[currentPage]
+                            if (currentQuestion is ChoiceQuestion) {
+                                QuestionTitleAndDetail(
+                                    title = choiceQuestions[currentPage].title,
+                                    description = currentQuestion.description,
+                                )
 
-                            UserQuestion(
-                                questions = choiceQuestions[currentPage].choices,
-                                selectedIndex = selectedIndexList[currentPage],
-                                onOptionSelected = { newIndex ->
-                                    onOptionSelected(currentPage, newIndex)
-                                },
-                                enable = !isSubmitted,
-                            )
+                                UserQuestion(
+                                    questions = currentQuestion.choices,
+                                    selectedIndex = selectedIndexList[currentPage],
+                                    onOptionSelected = { newIndex ->
+                                        onOptionSelected(currentPage, newIndex)
+                                    },
+                                    enable = !isSubmitted,
+                                )
+                            }
+                            // TODO: blank question 처리 해야 해요!!
                         }
                     }
                 }
@@ -175,7 +180,15 @@ fun UserQuestionScreen(
                             .padding(horizontal = 16.dp),
                         enabled = !isSubmitted,
                     ) {
-                        Text(if (isSubmitted) stringResource(R.string.btn_success_submit) else stringResource(R.string.btn_submit))
+                        Text(
+                            if (isSubmitted) {
+                                stringResource(R.string.btn_success_submit)
+                            } else {
+                                stringResource(
+                                    R.string.btn_submit,
+                                )
+                            },
+                        )
                     }
                 }
             }

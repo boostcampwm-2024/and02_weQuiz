@@ -41,6 +41,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
+import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
@@ -91,7 +92,7 @@ fun OwnerQuestionScreen(
 fun OwnerQuestionScreen(
     quiz: RealTimeQuiz?,
     currentPage: Int,
-    choiceQuestions: List<ChoiceQuestion?>,
+    choiceQuestions: List<Question?>,
     ownerName: String,
     snackbarHostState: SnackbarHostState,
     onNextButtonClick: () -> Unit,
@@ -135,35 +136,38 @@ fun OwnerQuestionScreen(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 if (quiz != null && currentQuestion != null) {
-                    item {
-                        RealTimeQuizWithOwnerGuideContent(
-                            ownerName = ownerName,
-                            totalParticipants = quiz.waitingUsers.size,
-                            submittedParticipants = currentQuestion.userAnswers.sum(),
-                        )
-                    }
-                    item {
-                        HorizontalPager(
-                            state = rememberPagerState(
-                                initialPage = currentPage,
-                                pageCount = { choiceQuestions.size },
-                            ),
-                            userScrollEnabled = false,
-                        ) {
-                            Column {
-                                QuestionTitleAndDetail(
-                                    title = currentQuestion.title,
-                                    description = currentQuestion.description,
-                                )
+                    if (currentQuestion is ChoiceQuestion) {
+                        item {
+                            RealTimeQuizWithOwnerGuideContent(
+                                ownerName = ownerName,
+                                totalParticipants = quiz.waitingUsers.size,
+                                submittedParticipants = currentQuestion.userAnswers.sum(),
+                            )
+                        }
+                        item {
+                            HorizontalPager(
+                                state = rememberPagerState(
+                                    initialPage = currentPage,
+                                    pageCount = { choiceQuestions.size },
+                                ),
+                                userScrollEnabled = false,
+                            ) {
+                                Column {
+                                    QuestionTitleAndDetail(
+                                        title = currentQuestion.title,
+                                        description = currentQuestion.description,
+                                    )
 
-                                RealTimeQuestion(
-                                    isOwner = true,
-                                    questions = currentQuestion.choices,
-                                    selectedIndex = currentQuestion.answer,
-                                )
+                                    RealTimeQuestion(
+                                        isOwner = true,
+                                        questions = currentQuestion.choices,
+                                        selectedIndex = currentQuestion.answer,
+                                    )
+                                }
                             }
                         }
                     }
+                    // todo: blank question 처리 해야 해요!!
                 }
             }
 
