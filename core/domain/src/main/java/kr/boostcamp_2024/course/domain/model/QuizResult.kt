@@ -1,7 +1,7 @@
 package kr.boostcamp_2024.course.domain.model
 
 data class QuizResult(
-    val questions: List<Question>,
+    val choiceQuestions: List<ChoiceQuestion>,
     val userOmrAnswers: List<Int>,
 ) {
     val totalQuestions: Int
@@ -9,21 +9,21 @@ data class QuizResult(
 
     val correctQuestions: Int
         get() = userOmrAnswers.withIndex().count { (index, userAnswer) ->
-            userAnswer == questions[index].answer
+            userAnswer == choiceQuestions[index].answer
         }
 
     val questionResults: List<QuestionResult>
         get() = userOmrAnswers.mapIndexed { index, userOmrAnswers ->
             QuestionResult(
-                question = questions[index],
+                choiceQuestion = choiceQuestions[index],
                 userAnswer = userOmrAnswers,
-                isCorrect = questions[index].answer == userOmrAnswers,
+                isCorrect = choiceQuestions[index].answer == userOmrAnswers,
             )
         }
 }
 
 data class QuestionResult(
-    val question: Question,
+    val choiceQuestion: ChoiceQuestion,
     val userAnswer: Int,
     val isCorrect: Boolean,
 )

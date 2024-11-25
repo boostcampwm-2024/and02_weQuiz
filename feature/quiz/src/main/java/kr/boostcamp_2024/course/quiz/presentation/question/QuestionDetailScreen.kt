@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.quiz.component.QuestionDescription
 import kr.boostcamp_2024.course.quiz.component.QuestionDetailTopAppBar
 import kr.boostcamp_2024.course.quiz.component.QuestionItems
@@ -89,9 +89,9 @@ fun QuestionDetailScreen(
     }
 }
 
-private fun getPreviewQuestion(): Question {
+private fun getPreviewQuestion(): ChoiceQuestion {
     // TODO 뷰모델과 연결하고 임시값 빼기
-    return Question(
+    return ChoiceQuestion(
         id = "",
         "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
         "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
@@ -104,6 +104,7 @@ private fun getPreviewQuestion(): Question {
             "1번 객관식 문항 내용입니다. 이것도 전체 다 보여줌. 1번 객관식 문항입니다. 이것도 전체",
         ),
         userAnswers = listOf(0, 0, 0, 0),
+        type = "choice",
     )
 }
 

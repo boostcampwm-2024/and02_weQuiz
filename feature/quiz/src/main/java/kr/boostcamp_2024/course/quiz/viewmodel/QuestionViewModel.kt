@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
-import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.UserOmrCreationInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 data class QuestionUiState(
     val quiz: BaseQuiz? = null,
-    val questions: List<Question> = emptyList(),
+    val choiceQuestions: List<ChoiceQuestion> = emptyList(),
     val isSubmitting: Boolean = false,
     val currentPage: Int = 0,
     val selectedIndexList: List<Int> = emptyList(),
@@ -96,7 +96,7 @@ class QuestionViewModel @Inject constructor(
                 .onSuccess { questions ->
                     _uiState.update { currentState ->
                         currentState.copy(
-                            questions = questions,
+                            choiceQuestions = questions,
                             selectedIndexList = List<Int>(questions.size) { -1 },
                             isLoading = false,
                         )

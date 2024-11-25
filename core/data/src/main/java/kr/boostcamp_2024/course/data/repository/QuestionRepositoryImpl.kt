@@ -6,10 +6,10 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
-import kr.boostcamp_2024.course.data.model.QuestionDTO
+import kr.boostcamp_2024.course.data.model.ChoiceQuestionDTO
 import kr.boostcamp_2024.course.data.model.toDTO
-import kr.boostcamp_2024.course.domain.model.Question
-import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestionCreationInfo
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import javax.inject.Inject
 
@@ -18,30 +18,30 @@ class QuestionRepositoryImpl @Inject constructor(
 ) : QuestionRepository {
     private val questionCollectionRef = firestore.collection("Question")
 
-    override suspend fun getQuestions(questionIds: List<String>): Result<List<Question>> =
+    override suspend fun getQuestions(questionIds: List<String>): Result<List<ChoiceQuestion>> =
         runCatching {
             questionIds.map { questionId ->
                 val document = questionCollectionRef.document(questionId).get().await()
-                val response = document.toObject(QuestionDTO::class.java)
+                val response = document.toObject(ChoiceQuestionDTO::class.java)
                 Log.d("response", "$response")
                 requireNotNull(response).toVO(questionId)
             }
         }
 
-    override suspend fun getQuestion(questionId: String): Result<Question> = runCatching {
+    override suspend fun getQuestion(questionId: String): Result<ChoiceQuestion> = runCatching {
         val document = questionCollectionRef.document(questionId).get().await()
-        val response = document.toObject(QuestionDTO::class.java)
+        val response = document.toObject(ChoiceQuestionDTO::class.java)
         requireNotNull(response).toVO(questionId)
     }
 
-    override fun observeQuestion(questionId: String): Flow<Question> = callbackFlow {
+    override fun observeQuestion(questionId: String): Flow<ChoiceQuestion> = callbackFlow {
         val listener = questionCollectionRef.document(questionId).addSnapshotListener { value, error ->
             if (error != null) {
                 close(error)
                 return@addSnapshotListener
             }
 
-            val response = value?.toObject(QuestionDTO::class.java)?.toVO(questionId)
+            val response = value?.toObject(ChoiceQuestionDTO::class.java)?.toVO(questionId)
             if (response != null) {
                 trySend(response)
             }
@@ -50,16 +50,16 @@ class QuestionRepositoryImpl @Inject constructor(
         awaitClose { listener.remove() }
     }
 
-    override suspend fun getRealTimeQuestions(questionIds: List<String>): Result<List<Flow<Question>>> =
+    override suspend fun getRealTimeQuestions(questionIds: List<String>): Result<List<Flow<ChoiceQuestion>>> =
         runCatching {
             questionIds.map { questionId ->
                 observeQuestion(questionId)
             }
         }
 
-    override suspend fun createQuestion(questionCreationInfo: QuestionCreationInfo): Result<String> =
+    override suspend fun createQuestion(choiceQuestionCreationInfo: ChoiceQuestionCreationInfo): Result<String> =
         runCatching {
-            val document = questionCollectionRef.add(questionCreationInfo.toDTO()).await()
+            val document = questionCollectionRef.add(choiceQuestionCreationInfo.toDTO()).await()
             document.id
         }
 

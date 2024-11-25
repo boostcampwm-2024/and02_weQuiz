@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.QuizResult
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
@@ -40,13 +40,13 @@ class QuizResultViewModel @Inject constructor(
     private val quizId: String = savedStateHandle.toRoute<QuizResultRoute>().quizId ?: ""
 
     private val userOmrAnswers = MutableStateFlow<List<Int>>(emptyList()) // 사용자 답지
-    private val questions = MutableStateFlow<List<Question>>(emptyList()) // 퀴즈 리스트
+    private val questions = MutableStateFlow<List<ChoiceQuestion>>(emptyList()) // 퀴즈 리스트
     private val _uiState = MutableStateFlow(QuizResultUiState())
 
     val uiState = combine(userOmrAnswers, questions, _uiState) { userOmrAnswers, questions, uiState ->
         val quizResult =
             when (userOmrAnswers.size == questions.size && questions.isNotEmpty()) {
-                true -> QuizResult(userOmrAnswers = userOmrAnswers, questions = questions)
+                true -> QuizResult(userOmrAnswers = userOmrAnswers, choiceQuestions = questions)
                 false -> null
             }
 

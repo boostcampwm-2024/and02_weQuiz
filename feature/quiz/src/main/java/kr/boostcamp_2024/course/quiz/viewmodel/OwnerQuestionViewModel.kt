@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 data class RealTimeWithOwnerQuestionUiState(
     val quiz: RealTimeQuiz? = null,
-    val questions: List<Question?> = emptyList(),
+    val choiceQuestions: List<ChoiceQuestion?> = emptyList(),
     val ownerName: String? = null,
     val currentPage: Int = 0,
     val isLoading: Boolean = false,
@@ -75,7 +75,7 @@ class OwnerQuestionViewModel @Inject constructor(
             _uiState.update { currentState ->
                 currentState.copy(
                     isLoading = true,
-                    questions = List(questionIds.size) { null },
+                    choiceQuestions = List(questionIds.size) { null },
                 )
             }
             questionRepository.getRealTimeQuestions(questionIds)
@@ -85,7 +85,7 @@ class OwnerQuestionViewModel @Inject constructor(
                             questionFlow.onEach { question ->
                                 _uiState.update { currentState ->
                                     currentState.copy(
-                                        questions = currentState.questions.toMutableList().apply {
+                                        choiceQuestions = currentState.choiceQuestions.toMutableList().apply {
                                             this[index] = question
                                         },
                                     )

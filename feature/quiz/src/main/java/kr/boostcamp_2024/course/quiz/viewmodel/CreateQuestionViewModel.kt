@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestionCreationInfo
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.quiz.navigation.CreateQuestionRoute
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 data class CreateQuestionUiState(
     val isLoading: Boolean = false,
-    val questionCreationInfo: QuestionCreationInfo = QuestionCreationInfo(
+    val choiceQuestionCreationInfo: ChoiceQuestionCreationInfo = ChoiceQuestionCreationInfo(
         title = "",
         description = "",
         solution = null,
@@ -45,7 +45,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun onTitleChanged(title: String) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = currentState.questionCreationInfo.copy(
+                choiceQuestionCreationInfo = currentState.choiceQuestionCreationInfo.copy(
                     title = title,
                 ),
             )
@@ -56,7 +56,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun onDescriptionChanged(description: String) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = currentState.questionCreationInfo.copy(
+                choiceQuestionCreationInfo = currentState.choiceQuestionCreationInfo.copy(
                     description = description,
                 ),
             )
@@ -67,7 +67,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun onSolutionChanged(solution: String) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = currentState.questionCreationInfo.copy(
+                choiceQuestionCreationInfo = currentState.choiceQuestionCreationInfo.copy(
                     solution = solution,
                 ),
             )
@@ -78,8 +78,8 @@ class CreateQuestionViewModel @Inject constructor(
     fun onChoiceTextChanged(changedIndex: Int, changedText: String) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = currentState.questionCreationInfo.copy(
-                    choices = currentState.questionCreationInfo.choices.mapIndexed { index, text ->
+                choiceQuestionCreationInfo = currentState.choiceQuestionCreationInfo.copy(
+                    choices = currentState.choiceQuestionCreationInfo.choices.mapIndexed { index, text ->
                         if (index == changedIndex) changedText else text
                     },
                 ),
@@ -91,7 +91,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun onSelectedChoiceNumChanged(changedNum: Int) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = currentState.questionCreationInfo.copy(answer = changedNum),
+                choiceQuestionCreationInfo = currentState.choiceQuestionCreationInfo.copy(answer = changedNum),
             )
         }
         checkCreateQuestionValid()
@@ -100,9 +100,9 @@ class CreateQuestionViewModel @Inject constructor(
     private fun checkCreateQuestionValid() {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                isCreateQuestionValid = currentState.questionCreationInfo.title.isNotBlank() &&
-                    currentState.questionCreationInfo.description.isNotBlank() &&
-                    currentState.questionCreationInfo.choices.all { it.isNotBlank() },
+                isCreateQuestionValid = currentState.choiceQuestionCreationInfo.title.isNotBlank() &&
+                    currentState.choiceQuestionCreationInfo.description.isNotBlank() &&
+                    currentState.choiceQuestionCreationInfo.choices.all { it.isNotBlank() },
             )
         }
     }
@@ -110,7 +110,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun createQuestion() {
         setLoadingState(true)
         viewModelScope.launch {
-            val currentQuestionCreationInfo = createQuestionUiState.value.questionCreationInfo
+            val currentQuestionCreationInfo = createQuestionUiState.value.choiceQuestionCreationInfo
             val questionCreationInfo = currentQuestionCreationInfo.copy(
                 solution = if (currentQuestionCreationInfo.solution.isNullOrBlank()) null else currentQuestionCreationInfo.solution,
             )

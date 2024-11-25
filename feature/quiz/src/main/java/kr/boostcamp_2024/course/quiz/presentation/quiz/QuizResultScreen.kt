@@ -51,7 +51,6 @@ import kr.boostcamp_2024.course.domain.model.QuestionResult
 import kr.boostcamp_2024.course.domain.model.QuizResult
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.viewmodel.QuizResultViewModel
-import kotlin.collections.List
 
 @Composable
 fun QuizResultScreen(
@@ -192,7 +191,7 @@ fun QuestionResultListContent(
         modifier = Modifier.padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        items(items = questionResults, key = { it.question.id }) { questionResult ->
+        items(items = questionResults, key = { it.choiceQuestion.id }) { questionResult ->
             QuestionResultItem(
                 questionResult = questionResult,
                 onQuestionClick = onQuestionClick,
@@ -210,7 +209,7 @@ fun QuestionResultItem(
         modifier = Modifier
             .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-            .clickable(onClick = { onQuestionClick(questionResult.question.id) })
+            .clickable(onClick = { onQuestionClick(questionResult.choiceQuestion.id) })
             .padding(10.dp)
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
@@ -228,13 +227,13 @@ fun QuestionResultItem(
             modifier = Modifier.weight(1f),
         ) {
             Text(
-                text = questionResult.question.title,
+                text = questionResult.choiceQuestion.title,
                 style = MaterialTheme.typography.titleLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = questionResult.question.description,
+                text = questionResult.choiceQuestion.description,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2,

@@ -140,9 +140,9 @@ fun CreateQuestionScreen(
                         focusRequester = focusRequester,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                        title = uiState.questionCreationInfo.title,
-                        description = uiState.questionCreationInfo.description,
-                        solution = uiState.questionCreationInfo.solution,
+                        title = uiState.choiceQuestionCreationInfo.title,
+                        description = uiState.choiceQuestionCreationInfo.description,
+                        solution = uiState.choiceQuestionCreationInfo.solution,
                         onTitleChanged = onTitleChanged,
                         onDescriptionChanged = onDescriptionChanged,
                         onSolutionChanged = onSolutionChanged,
@@ -153,8 +153,8 @@ fun CreateQuestionScreen(
                     CreateChoiceItems(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         focusManager = focusManager,
-                        choices = uiState.questionCreationInfo.choices,
-                        selectedChoiceNum = uiState.questionCreationInfo.answer,
+                        choices = uiState.choiceQuestionCreationInfo.choices,
+                        selectedChoiceNum = uiState.choiceQuestionCreationInfo.answer,
                         updateChoiceText = onChoiceTextChanged,
                         updateSelectedChoiceNum = onSelectedChoiceNumChanged,
                     )

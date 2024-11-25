@@ -35,7 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
-import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
@@ -55,7 +55,7 @@ fun UserQuestionScreen(
     UserQuestionScreen(
         quiz = uiState.quiz,
         currentPage = uiState.currentPage,
-        questions = uiState.questions,
+        choiceQuestions = uiState.choiceQuestions,
         quizFinishDialog = quizFinishDialog,
         onQuizFinishDialogDismissButtonClick = { quizFinishDialog = false },
         selectedIndexList = uiState.selectedIndexList,
@@ -90,7 +90,7 @@ fun UserQuestionScreen(
 fun UserQuestionScreen(
     quiz: BaseQuiz?,
     currentPage: Int,
-    questions: List<Question>,
+    choiceQuestions: List<ChoiceQuestion>,
     quizFinishDialog: Boolean,
     onQuizFinishDialogDismissButtonClick: () -> Unit,
     selectedIndexList: List<Int>,
@@ -130,7 +130,7 @@ fun UserQuestionScreen(
             LazyColumn {
                 item {
                     LinearProgressIndicator(
-                        progress = { (currentPage + 1) / questions.size.toFloat() },
+                        progress = { (currentPage + 1) / choiceQuestions.size.toFloat() },
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
@@ -143,18 +143,18 @@ fun UserQuestionScreen(
                     HorizontalPager(
                         state = rememberPagerState(
                             initialPage = currentPage,
-                            pageCount = { questions.size },
+                            pageCount = { choiceQuestions.size },
                         ),
                         userScrollEnabled = false,
                     ) {
                         Column {
                             QuestionTitleAndDetail(
-                                title = questions[currentPage].title,
-                                description = questions[currentPage].description,
+                                title = choiceQuestions[currentPage].title,
+                                description = choiceQuestions[currentPage].description,
                             )
 
                             UserQuestion(
-                                questions = questions[currentPage].choices,
+                                questions = choiceQuestions[currentPage].choices,
                                 selectedIndex = selectedIndexList[currentPage],
                                 onOptionSelected = { newIndex ->
                                     onOptionSelected(currentPage, newIndex)
@@ -168,7 +168,7 @@ fun UserQuestionScreen(
                 item {
                     Button(
                         onClick = {
-                            onSubmitButtonClick(questions[currentPage].id)
+                            onSubmitButtonClick(choiceQuestions[currentPage].id)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -196,12 +196,12 @@ fun UserQuestionScreen(
 
     if (showExitDialog) {
         WeQuizBaseDialog(
-            title = if (currentPage == questions.size - 1) {
+            title = if (currentPage == choiceQuestions.size - 1) {
                 stringResource(R.string.dialog_submit_script)
             } else {
                 stringResource(R.string.dialog_exit_script)
             },
-            confirmTitle = if (currentPage == questions.size - 1) {
+            confirmTitle = if (currentPage == choiceQuestions.size - 1) {
                 stringResource(R.string.txt_question_submit)
             } else {
                 stringResource(R.string.txt_question_exit)

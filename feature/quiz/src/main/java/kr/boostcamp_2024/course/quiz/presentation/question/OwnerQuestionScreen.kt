@@ -40,7 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
-import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
@@ -66,7 +66,7 @@ fun OwnerQuestionScreen(
     OwnerQuestionScreen(
         quiz = uiState.quiz,
         currentPage = uiState.currentPage,
-        questions = uiState.questions,
+        choiceQuestions = uiState.choiceQuestions,
         ownerName = uiState.ownerName ?: "",
         snackbarHostState = snackbarHostState,
         onNextButtonClick = questionViewModel::nextPage,
@@ -91,7 +91,7 @@ fun OwnerQuestionScreen(
 fun OwnerQuestionScreen(
     quiz: RealTimeQuiz?,
     currentPage: Int,
-    questions: List<Question?>,
+    choiceQuestions: List<ChoiceQuestion?>,
     ownerName: String,
     snackbarHostState: SnackbarHostState,
     onNextButtonClick: () -> Unit,
@@ -100,7 +100,7 @@ fun OwnerQuestionScreen(
 ) {
     var showQuitQuizDialog by rememberSaveable { mutableStateOf(false) }
     var showFinishQuizDialog by rememberSaveable { mutableStateOf(false) }
-    val currentQuestion = questions.getOrNull(currentPage)
+    val currentQuestion = choiceQuestions.getOrNull(currentPage)
 
     BackHandler {
         showQuitQuizDialog = true
@@ -127,7 +127,7 @@ fun OwnerQuestionScreen(
                 .padding(innerPadding),
         ) {
             LinearProgressIndicator(
-                progress = { (currentPage + 1) / questions.size.toFloat() },
+                progress = { (currentPage + 1) / choiceQuestions.size.toFloat() },
                 modifier = Modifier.fillMaxWidth(),
             )
 
@@ -146,7 +146,7 @@ fun OwnerQuestionScreen(
                         HorizontalPager(
                             state = rememberPagerState(
                                 initialPage = currentPage,
-                                pageCount = { questions.size },
+                                pageCount = { choiceQuestions.size },
                             ),
                             userScrollEnabled = false,
                         ) {
@@ -174,13 +174,13 @@ fun OwnerQuestionScreen(
                     .fillMaxWidth()
                     .padding(10.dp),
                 prevButtonEnabled = currentPage > 0,
-                nextButtonText = if (currentPage == questions.size - 1) {
+                nextButtonText = if (currentPage == choiceQuestions.size - 1) {
                     stringResource(R.string.txt_question_done)
                 } else {
                     stringResource(R.string.txt_question_next_question)
                 },
                 onNextButtonClick = {
-                    if (currentPage < questions.size - 1) {
+                    if (currentPage < choiceQuestions.size - 1) {
                         onNextButtonClick()
                     } else {
                         showFinishQuizDialog = true
