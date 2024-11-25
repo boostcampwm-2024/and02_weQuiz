@@ -13,6 +13,7 @@ import kr.boostcamp_2024.course.domain.enum.QuizType.General
 import kr.boostcamp_2024.course.domain.enum.QuizType.RealTime
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.QuizCreationInfo
+import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import javax.inject.Inject
 
@@ -177,4 +178,35 @@ class QuizRepositoryImpl @Inject constructor(
         private const val GENERAL_QUIZ = "general"
         private const val REAL_TIME_QUIZ = "realTime"
     }
+
+    override fun observeRealTimeQuiz(quizId: String): Flow<Result<RealTimeQuiz>> = callbackFlow {
+        val quizDocument = quizCollectionRef.document(quizId)
+        val listener = quizDocument.addSnapshotListener { documentSnapshot, error ->
+            runCatching {
+                if (error != null) {
+                    close(error)
+                }
+
+                if (documentSnapshot?.exists() == true) {
+                    val response = documentSnapshot.toObject(RealTimeQuizDTO::class.java)?.toVO(quizId)
+                    trySend(Result.success(requireNotNull(response)))
+                } else {
+                    throw Exception("문서가 존재하지 않습니다")
+                }
+            }.onFailure { exception ->
+                trySend(Result.failure(exception))
+            }
+        }
+
+        awaitClose {
+            listener.remove()
+        }
+    }
+
+    override suspend fun setQuizFinished(quizId: String): Result<Unit> =
+        runCatching {
+            quizCollectionRef.document(quizId)
+                .update("is_finished", true)
+                .await()
+        }
 }

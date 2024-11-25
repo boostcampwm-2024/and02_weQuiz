@@ -1,6 +1,10 @@
 package kr.boostcamp_2024.course.data.repository
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kr.boostcamp_2024.course.data.model.QuestionDTO
 import kr.boostcamp_2024.course.data.model.toDTO
@@ -10,7 +14,7 @@ import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import javax.inject.Inject
 
 class QuestionRepositoryImpl @Inject constructor(
-    firestore: FirebaseFirestore,
+    private val firestore: FirebaseFirestore,
 ) : QuestionRepository {
     private val questionCollectionRef = firestore.collection("Question")
 
@@ -19,6 +23,7 @@ class QuestionRepositoryImpl @Inject constructor(
             questionIds.map { questionId ->
                 val document = questionCollectionRef.document(questionId).get().await()
                 val response = document.toObject(QuestionDTO::class.java)
+                Log.d("response", "$response")
                 requireNotNull(response).toVO(questionId)
             }
         }
@@ -28,6 +33,29 @@ class QuestionRepositoryImpl @Inject constructor(
         val response = document.toObject(QuestionDTO::class.java)
         requireNotNull(response).toVO(questionId)
     }
+
+    override fun observeQuestion(questionId: String): Flow<Question> = callbackFlow {
+        val listener = questionCollectionRef.document(questionId).addSnapshotListener { value, error ->
+            if (error != null) {
+                close(error)
+                return@addSnapshotListener
+            }
+
+            val response = value?.toObject(QuestionDTO::class.java)?.toVO(questionId)
+            if (response != null) {
+                trySend(response)
+            }
+        }
+
+        awaitClose { listener.remove() }
+    }
+
+    override suspend fun getRealTimeQuestions(questionIds: List<String>): Result<List<Flow<Question>>> =
+        runCatching {
+            questionIds.map { questionId ->
+                observeQuestion(questionId)
+            }
+        }
 
     override suspend fun createQuestion(questionCreationInfo: QuestionCreationInfo): Result<String> =
         runCatching {
@@ -41,4 +69,25 @@ class QuestionRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateCurrentSubmit(questionId: String, selectedIndex: Int): Result<Unit> =
+        runCatching {
+            val document = questionCollectionRef.document(questionId)
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(document)
+
+                if (snapshot.exists()) {
+                    val userAnswers = snapshot.get("user_answers") as? MutableList<Int> ?: throw Exception("user_answers 배열이 존재하지 않거나 잘못되었습니다.")
+
+                    if (selectedIndex < 0 || selectedIndex >= userAnswers.size) {
+                        throw Exception("잘못된 인덱스입니다.")
+                    }
+
+                    userAnswers[selectedIndex] += 1
+
+                    transaction.update(document, "user_answers", userAnswers)
+                } else {
+                    throw Exception("문서가 존재하지 않습니다.")
+                }
+            }.await()
+        }
 }

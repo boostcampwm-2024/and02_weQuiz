@@ -3,6 +3,7 @@ package kr.boostcamp_2024.course.domain.repository
 import kotlinx.coroutines.flow.Flow
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.QuizCreationInfo
+import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 
 interface QuizRepository {
     suspend fun getQuiz(quizId: String): Result<BaseQuiz>
@@ -20,6 +21,10 @@ interface QuizRepository {
     suspend fun deleteQuiz(quizId: String): Result<Unit>
 
     suspend fun deleteQuizzes(quizzes: List<String>): Result<Unit>
+
+    fun observeRealTimeQuiz(quizId: String): Flow<Result<RealTimeQuiz>>
+
+    suspend fun setQuizFinished(quizId: String): Result<Unit>
 
     suspend fun startRealTimeQuiz(quizId: String): Result<Unit>
 
