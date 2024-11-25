@@ -29,6 +29,7 @@ data class MainUiState(
     val currentUser: User? = null,
     val studyGroups: List<StudyGroup> = emptyList(),
     val errorMessage: String? = null,
+    val isLogout: Boolean = false,
 )
 
 @HiltViewModel
@@ -283,6 +284,24 @@ class MainViewModel @Inject constructor(
                         _uiState.update { it.copy(errorMessage = "스터디 그룹에서 나가지 못했습니다.") }
                     }
             }
+        }
+    }
+
+    fun logout() {
+        _uiState.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            authRepository.removeUserKey()
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isLogout = true,
+                        )
+                    }
+                }.onFailure {
+                    Log.e("MainViewModel", "Failed to logout", it)
+                    _uiState.update { it.copy(errorMessage = "로그아웃에 실패했습니다.") }
+                }
         }
     }
 

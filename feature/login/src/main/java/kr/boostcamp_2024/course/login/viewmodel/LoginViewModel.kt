@@ -91,10 +91,10 @@ class LoginViewModel @Inject constructor(
 
     private fun checkUser(googleIdTokenCredential: GoogleIdTokenCredential) {
         viewModelScope.launch {
-            userRepository.getUser(googleIdTokenCredential.idToken)
-                .onSuccess {
+            userRepository.findUserByEmail(googleIdTokenCredential.id)
+                .onSuccess { user ->
                     // 이미 회원가입된 유저
-                    saveUserKey(googleIdTokenCredential.idToken)
+                    saveUserKey(user.id)
                     _loginUiState.update { currentState ->
                         currentState.copy(isLoginSuccess = true)
                     }

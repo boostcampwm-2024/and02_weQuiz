@@ -73,7 +73,14 @@ fun SignUpScreen(
         onNavigationButtonClick = onNavigationButtonClick,
         onSignUpButtonClick = viewModel::signUp,
         setNewSnackBarMessage = viewModel::setNewSnackBarMessage,
+        onEditButtonClick = viewModel::updateUser,
     )
+
+    LaunchedEffect(uiState.isSubmitSuccess) {
+        if (uiState.isSubmitSuccess) {
+            onSignUpSuccess()
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,13 +94,17 @@ private fun SignupScreen(
     onNavigationButtonClick: () -> Unit,
     onSignUpButtonClick: () -> Unit,
     setNewSnackBarMessage: (Int) -> Unit,
+    onEditButtonClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.top_app_bar_sign_up),
+                        text = when (uiState.isEditMode) {
+                            true -> stringResource(R.string.top_app_bar_edit_user)
+                            false -> stringResource(R.string.top_app_bar_sign_up)
+                        },
                     )
                 },
                 navigationIcon = {
@@ -111,20 +122,19 @@ private fun SignupScreen(
         snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = innerPadding.calculateBottomPadding(),
-                ),
+            modifier = Modifier.padding(
+                top = innerPadding.calculateTopPadding(),
+                start = 16.dp,
+                end = 16.dp,
+                bottom = innerPadding.calculateBottomPadding(),
+            ),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             item {
                 SignUpContent(
-                    email = uiState.userCreationInfo.email,
-                    name = uiState.userCreationInfo.name,
-                    profileUri = uiState.userCreationInfo.profileImageUrl,
+                    email = uiState.userSubmitInfo.email,
+                    name = uiState.userSubmitInfo.name,
+                    profileUri = uiState.userSubmitInfo.profileImageUrl,
                     onEmailChanged = onEmailChanged,
                     onNameChanged = onNameChanged,
                     onProfileUriChanged = onProfileUriChanged,
@@ -134,8 +144,9 @@ private fun SignupScreen(
             }
             item {
                 SignUpButtons(
-                    isSignUpValid = uiState.isSignUpValid,
-                    onSignUpButtonClick = onSignUpButtonClick,
+                    isSignUpValid = uiState.isSignUpButtonEnabled,
+                    onSubmitButtonClick = if (uiState.isEditMode) onEditButtonClick else onSignUpButtonClick,
+                    isEditMode = uiState.isEditMode,
                 )
             }
         }
@@ -209,18 +220,22 @@ fun SignUpContent(
 @Composable
 fun SignUpButtons(
     isSignUpValid: Boolean,
-    onSignUpButtonClick: () -> Unit,
+    onSubmitButtonClick: () -> Unit,
+    isEditMode: Boolean,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         Button(
-            onClick = onSignUpButtonClick,
+            onClick = onSubmitButtonClick,
             modifier = Modifier.fillMaxWidth(),
             enabled = isSignUpValid,
         ) {
             Text(
-                text = stringResource(R.string.btn_sign_up),
+                text = when (isEditMode) {
+                    true -> stringResource(R.string.btn_sign_up_edit_user)
+                    false -> stringResource(R.string.btn_sign_up)
+                },
             )
         }
 
