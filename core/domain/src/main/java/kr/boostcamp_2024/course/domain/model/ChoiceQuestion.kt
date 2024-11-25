@@ -1,14 +1,18 @@
 package kr.boostcamp_2024.course.domain.model
 
-sealed interface Question
+sealed class Question {
+    abstract val title: String
+    abstract val solution: String?
+    abstract val type: String
+}
 
-class ChoiceQuestion(
+data class ChoiceQuestion(
     val id: String,
-    val title: String,
+    override val title: String,
     val description: String,
-    val solution: String?,
+    override val solution: String?,
     val answer: Int,
     val choices: List<String>,
     val userAnswers: List<Int>,
-    val type: String,
-) : Question
+    override val type: String,
+) : Question()

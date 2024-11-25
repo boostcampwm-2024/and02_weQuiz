@@ -2,8 +2,8 @@ package kr.boostcamp_2024.course.domain.model
 
 data class BlankQuestion(
     val id: String,
-    val title: String,
-    val solution: String?,
+    override val title: String,
+    override val solution: String?,
     val questionContent: List<BlankQuestionContent>,
-    val type: String,
-) : Question
+    override val type: String,
+) : Question()
