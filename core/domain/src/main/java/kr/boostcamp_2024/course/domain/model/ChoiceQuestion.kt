@@ -1,6 +1,8 @@
 package kr.boostcamp_2024.course.domain.model
 
-data class ChoiceQuestion(
+sealed interface Question
+
+class ChoiceQuestion(
     val id: String,
     val title: String,
     val description: String,
@@ -9,4 +11,4 @@ data class ChoiceQuestion(
     val choices: List<String>,
     val userAnswers: List<Int>,
     val type: String,
-)
+) : Question

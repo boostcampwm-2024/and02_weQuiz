@@ -6,4 +6,4 @@ data class BlankQuestion(
     val solution: String?,
     val questionContent: List<BlankQuestionContent>,
     val type: String,
-)
+) : Question
