@@ -9,10 +9,7 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.ElevatedAssistChip
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -24,9 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -183,25 +178,6 @@ fun QuizScreen(
                     onStartRealTimeQuizButtonClick = onStartRealTimeQuizButtonClick,
                     onWaitingRealTimeQuizButtonClick = onWaitingRealTimeQuizButtonClick,
                 )
-                category?.let {
-                    ElevatedAssistChip(
-                        onClick = { /* no-op */ },
-                        label = {
-                            Text(
-                                text = category.name,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                modifier = Modifier.size(18.dp),
-                                painter = painterResource(R.drawable.search_24),
-                                contentDescription = null,
-                            )
-                        },
-                    )
-                }
             }
 
             if (quiz is Quiz) {
