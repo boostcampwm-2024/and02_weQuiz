@@ -95,4 +95,6 @@
     <string name="err_load_current_page">페이지 로드에 실패하였습니다.</string>
     <string name="err_load_owner_name">관리자 이름을 가져오는데 실패했습니다.</string>
     <string name="err_submit_quetion">퀴즈 제출에 실패하였습니다.</string>
+    <string name="des_remove_blank">낱말 제거</string>
+    <string name="des_remove_text">텍스트 제거</string>
 </resources>
