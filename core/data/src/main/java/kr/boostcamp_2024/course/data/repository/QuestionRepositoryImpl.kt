@@ -1,15 +1,17 @@
 package kr.boostcamp_2024.course.data.repository
 
-import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import kr.boostcamp_2024.course.data.model.BlankQuestionDTO
 import kr.boostcamp_2024.course.data.model.ChoiceQuestionDTO
 import kr.boostcamp_2024.course.data.model.toDTO
-import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
+import kr.boostcamp_2024.course.domain.enum.QuestionType
+import kr.boostcamp_2024.course.domain.enum.toQuestionType
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestionCreationInfo
+import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import javax.inject.Inject
 
@@ -18,30 +20,45 @@ class QuestionRepositoryImpl @Inject constructor(
 ) : QuestionRepository {
     private val questionCollectionRef = firestore.collection("Question")
 
-    override suspend fun getQuestions(questionIds: List<String>): Result<List<ChoiceQuestion>> =
+    override suspend fun getQuestions(questionIds: List<String>): Result<List<Question>> =
         runCatching {
             questionIds.map { questionId ->
                 val document = questionCollectionRef.document(questionId).get().await()
-                val response = document.toObject(ChoiceQuestionDTO::class.java)
-                Log.d("response", "$response")
+                val questionType = document.getString("type")?.toQuestionType()
+                val response = when (questionType) {
+                    is QuestionType.Choice -> document.toObject(ChoiceQuestionDTO::class.java)
+                    is QuestionType.Blank -> document.toObject(BlankQuestionDTO::class.java)
+                    else -> throw Exception("잘못된 문제 타입입니다.")
+                }
                 requireNotNull(response).toVO(questionId)
             }
         }
 
-    override suspend fun getQuestion(questionId: String): Result<ChoiceQuestion> = runCatching {
+    override suspend fun getQuestion(questionId: String): Result<Question> = runCatching {
         val document = questionCollectionRef.document(questionId).get().await()
-        val response = document.toObject(ChoiceQuestionDTO::class.java)
+        val questionType = document.getString("type")?.toQuestionType()
+        val response = when (questionType) {
+            is QuestionType.Choice -> document.toObject(ChoiceQuestionDTO::class.java)
+            is QuestionType.Blank -> document.toObject(BlankQuestionDTO::class.java)
+            else -> throw Exception("잘못된 문제 타입입니다.")
+        }
         requireNotNull(response).toVO(questionId)
     }
 
-    override fun observeQuestion(questionId: String): Flow<ChoiceQuestion> = callbackFlow {
+    override fun observeQuestion(questionId: String): Flow<Question> = callbackFlow {
         val listener = questionCollectionRef.document(questionId).addSnapshotListener { value, error ->
             if (error != null) {
                 close(error)
                 return@addSnapshotListener
             }
 
-            val response = value?.toObject(ChoiceQuestionDTO::class.java)?.toVO(questionId)
+            val questionType = value?.getString("type")?.toQuestionType()
+            val response = when (questionType) {
+                is QuestionType.Choice -> value?.toObject(ChoiceQuestionDTO::class.java)
+                is QuestionType.Blank -> value?.toObject(BlankQuestionDTO::class.java)
+                else -> throw Exception("잘못된 문제 타입입니다.")
+            }?.toVO(questionId)
+
             if (response != null) {
                 trySend(response)
             }
@@ -50,7 +67,7 @@ class QuestionRepositoryImpl @Inject constructor(
         awaitClose { listener.remove() }
     }
 
-    override suspend fun getRealTimeQuestions(questionIds: List<String>): Result<List<Flow<ChoiceQuestion>>> =
+    override suspend fun getRealTimeQuestions(questionIds: List<String>): Result<List<Flow<Question>>> =
         runCatching {
             questionIds.map { questionId ->
                 observeQuestion(questionId)
