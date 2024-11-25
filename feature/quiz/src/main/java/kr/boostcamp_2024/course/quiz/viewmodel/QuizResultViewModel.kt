@@ -56,7 +56,6 @@ class QuizResultViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), QuizResultUiState())
 
     fun initViewModel() {
-        Log.d("zzz", "$userOmrId, $quizId")
         if (userOmrId != null) {
             loadUserOmr()
         } else if (quizId != null) {

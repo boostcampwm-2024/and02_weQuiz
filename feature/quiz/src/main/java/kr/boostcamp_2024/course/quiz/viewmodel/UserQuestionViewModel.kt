@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.quiz.viewmodel
+package kr.boostcamp_2024.course.quiz.presentation.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
@@ -7,10 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
@@ -48,18 +45,14 @@ class UserQuestionViewModel @Inject constructor(
 ) : ViewModel() {
     private val quizId = savedStateHandle.toRoute<QuestionRoute>().quizId
 
-    private val _uiState: MutableStateFlow<UserQuestionUiState> = MutableStateFlow(
-        UserQuestionUiState(),
-    )
+    private val _uiState: MutableStateFlow<UserQuestionUiState> = MutableStateFlow(UserQuestionUiState())
+
+    init {
+        initial()
+        updatePageAndSubmitByOwner()
+    }
+
     val uiState: StateFlow<UserQuestionUiState> = _uiState
-        .onStart {
-            initial()
-            updatePageAndSubmitByOwner()
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
-            UserQuestionUiState(),
-        )
 
     private fun initial() {
         viewModelScope.launch {
@@ -137,7 +130,7 @@ class UserQuestionViewModel @Inject constructor(
 
     private fun updatePageAndSubmitByOwner() {
         viewModelScope.launch {
-            quizRepository.observeQuiz(quizId)
+            quizRepository.observeRealTimeQuiz(quizId)
                 .collect { result ->
                     result
                         .onSuccess { quiz ->
@@ -158,7 +151,10 @@ class UserQuestionViewModel @Inject constructor(
 
     fun submitQuestion(questionId: String) {
         viewModelScope.launch {
-            val result = questionRepository.updateCurrentSubmit(questionId)
+            val result = questionRepository.updateCurrentSubmit(
+                questionId,
+                _uiState.value.selectedIndexList[_uiState.value.currentPage],
+            )
             val updatedList = _uiState.value.submittedIndexList.toMutableList().apply {
                 this[_uiState.value.currentPage] =
                     _uiState.value.selectedIndexList[_uiState.value.currentPage]

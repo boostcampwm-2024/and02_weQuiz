@@ -27,10 +27,6 @@ fun QuizResultScreen(
 ) {
     val uiState by quizResultViewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        quizResultViewModel.initViewModel()
-    }
-
     if (uiState.isManager) {
         OwnerQuizResultScreen(
             questions = uiState.questions,

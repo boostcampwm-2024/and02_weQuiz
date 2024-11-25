@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.data.repository
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,7 @@ class QuestionRepositoryImpl @Inject constructor(
             questionIds.map { questionId ->
                 val document = questionCollectionRef.document(questionId).get().await()
                 val response = document.toObject(QuestionDTO::class.java)
+                Log.d("response", "$response")
                 requireNotNull(response).toVO(questionId)
             }
         }
@@ -67,15 +69,22 @@ class QuestionRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateCurrentSubmit(questionId: String): Result<Unit> =
+    override suspend fun updateCurrentSubmit(questionId: String, selectedIndex: Int): Result<Unit> =
         runCatching {
             val document = questionCollectionRef.document(questionId)
             firestore.runTransaction { transaction ->
                 val snapshot = transaction.get(document)
 
                 if (snapshot.exists()) {
-                    val currentSubmit = snapshot.getLong("current_submit") ?: 0
-                    transaction.update(document, "current_submit", currentSubmit + 1)
+                    val userAnswers = snapshot.get("user_answers") as? MutableList<Int> ?: throw Exception("user_answers 배열이 존재하지 않거나 잘못되었습니다.")
+
+                    if (selectedIndex < 0 || selectedIndex >= userAnswers.size) {
+                        throw Exception("잘못된 인덱스입니다.")
+                    }
+
+                    userAnswers[selectedIndex] += 1
+
+                    transaction.update(document, "user_answers", userAnswers)
                 } else {
                     throw Exception("문서가 존재하지 않습니다.")
                 }

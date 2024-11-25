@@ -83,9 +83,9 @@ fun OwnerQuizResultScreen(
         ) {
             OwnerQuizResultContent()
             // 문제 리스트
-            if (questions != null) {
+            questions?.let {
                 OwnerQuestionResultListContent(
-                    questions = questions,
+                    questions = it,
                     onQuestionClick = onQuestionClick,
                 )
             }
@@ -195,9 +195,12 @@ fun OwnerQuestionResultItem(
 @Composable
 fun OwnerQuizResultScreenPreview() {
     WeQuizTheme {
-        QuizResultScreen(
+        OwnerQuizResultScreen(
             onNavigationButtonClick = {},
             onQuestionClick = {},
+            questions = emptyList(),
+            quizTitle = "",
+            snackbarHostState = remember { SnackbarHostState() },
         )
     }
 }

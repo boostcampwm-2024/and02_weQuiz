@@ -26,6 +26,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -68,6 +71,7 @@ fun CreateQuizScreen(
         quizSolveTime = uiState.value.quizSolveTime,
         createQuizButtonEnabled = uiState.value.isCreateQuizButtonEnabled,
         isEditing = uiState.value.isEditing,
+        selectedQuizTypeIndex = uiState.value.selectedQuizTypeIndex,
         snackBarHostState = snackBarHostState,
         defaultImageUrl = uiState.value.defaultImageUrl,
         onQuizTitleChange = viewModel::setQuizTitle,
@@ -79,6 +83,8 @@ fun CreateQuizScreen(
         onEditButtonClick = viewModel::editQuiz,
         currentImage = uiState.value.currentImage,
         onCurrentStudyImageChanged = viewModel::changeCurrentStudyImage,
+        isRealtimeQuiz = uiState.value.isRealtimeQuiz,
+        onQuizTypeIndexChange = viewModel::setSelectedQuizTypeIndex,
     )
 
     if (uiState.value.isCreateQuizSuccess) {
@@ -120,6 +126,8 @@ fun CreateQuizScreen(
     quizSolveTime: Float,
     createQuizButtonEnabled: Boolean,
     isEditing: Boolean,
+    selectedQuizTypeIndex: Int,
+    isRealtimeQuiz: Boolean,
     currentImage: ByteArray?,
     snackBarHostState: SnackbarHostState,
     defaultImageUrl: String?,
@@ -131,8 +139,10 @@ fun CreateQuizScreen(
     onCreateQuizButtonClick: () -> Unit,
     onEditButtonClick: () -> Unit,
     onCurrentStudyImageChanged: (ByteArray) -> Unit,
+    onQuizTypeIndexChange: (Int) -> Unit,
 ) {
     val context = LocalContext.current
+    val options = listOf(stringResource(R.string.txt_create_quiz_general), stringResource(R.string.txt_create_quiz_realtime))
     val photoPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             val inputStream = context.contentResolver.openInputStream(uri)
@@ -177,6 +187,23 @@ fun CreateQuizScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
+            SingleChoiceSegmentedButtonRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            ) {
+                options.forEachIndexed { index, label ->
+                    SegmentedButton(
+                        shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+                        onClick = { onQuizTypeIndexChange(index) },
+                        selected = index == selectedQuizTypeIndex,
+                    ) {
+                        Text(
+                            text = label,
+                        )
+                    }
+                }
+            }
             WeQuizAsyncImage(
                 imgUrl = currentImage ?: defaultImageUrl,
                 contentDescription = null,
@@ -190,20 +217,6 @@ fun CreateQuizScreen(
                 error = painterResource(R.drawable.image_guide),
                 fallback = painterResource(R.drawable.image_guide),
             )
-//            AsyncImage(
-//                model = currentImage ?: defaultImageUrl,
-//                contentDescription = null,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 70.dp, vertical = 5.dp)
-//                    .aspectRatio(1f)
-//                    .clip(RoundedCornerShape(18.dp))
-//                    .clickable(onClick = { photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }),
-//                contentScale = ContentScale.Crop,
-//                placeholder = painterResource(R.drawable.image_guide),
-//                error = painterResource(R.drawable.image_guide),
-//                fallback = painterResource(R.drawable.image_guide),
-//            )
 
             // QuizInfo
             // Title
@@ -223,22 +236,24 @@ fun CreateQuizScreen(
                 minLines = 6,
                 maxLines = 6,
             )
+            if (!isRealtimeQuiz) {
 
-            // StartTime
-            Text(text = stringResource(R.string.txt_quiz_start_time))
-            QuizDatePickerTextField(
-                quizDate = quizDate,
-                onDateSelected = { onQuizDateChange(it) },
-            )
+                // StartTime
+                Text(text = stringResource(R.string.txt_quiz_start_time))
+                QuizDatePickerTextField(
+                    quizDate = quizDate,
+                    onDateSelected = { onQuizDateChange(it) },
+                )
 
-            // SolveTime
-            Text(text = stringResource(R.string.txt_quiz_solve_time))
-            QuizSolveTimeSlider(
-                value = quizSolveTime,
-                steps = 8,
-                valueRange = 10f..100f,
-                onValueChange = { onQuizSolveTimeChange(it) },
-            )
+                // SolveTime
+                Text(text = stringResource(R.string.txt_quiz_solve_time))
+                QuizSolveTimeSlider(
+                    value = quizSolveTime,
+                    steps = 8,
+                    valueRange = 10f..100f,
+                    onValueChange = { onQuizSolveTimeChange(it) },
+                )
+            }
             if (isEditing) {
                 // EditButton
                 Button(
@@ -273,7 +288,10 @@ fun CreateQuizScreenPreview() {
             quizSolveTime = 10f,
             createQuizButtonEnabled = true,
             isEditing = false,
+            isRealtimeQuiz = false,
             currentImage = null,
+            snackBarHostState = remember { SnackbarHostState() },
+            defaultImageUrl = null,
             onQuizTitleChange = {},
             onQuizDescriptionChange = {},
             onQuizDateChange = {},
@@ -281,9 +299,9 @@ fun CreateQuizScreenPreview() {
             onNavigationButtonClick = {},
             onCreateQuizButtonClick = {},
             onEditButtonClick = {},
-            snackBarHostState = remember { SnackbarHostState() },
             onCurrentStudyImageChanged = {},
-            defaultImageUrl = null,
+            onQuizTypeIndexChange = {},
+            selectedQuizTypeIndex = 0,
         )
     }
 }

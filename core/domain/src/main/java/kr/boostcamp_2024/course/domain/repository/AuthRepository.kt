@@ -4,4 +4,6 @@ interface AuthRepository {
     suspend fun storeUserKey(userKey: String): Result<Unit>
 
     suspend fun getUserKey(): Result<String>
+
+    suspend fun removeUserKey(): Result<Unit>
 }

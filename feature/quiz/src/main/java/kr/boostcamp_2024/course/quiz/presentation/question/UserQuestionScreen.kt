@@ -40,7 +40,7 @@ import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
 import kr.boostcamp_2024.course.quiz.component.UserQuestion
-import kr.boostcamp_2024.course.quiz.viewmodel.UserQuestionViewModel
+import kr.boostcamp_2024.course.quiz.presentation.viewmodel.UserQuestionViewModel
 
 @Composable
 fun UserQuestionScreen(
@@ -175,7 +175,7 @@ fun UserQuestionScreen(
                             .padding(horizontal = 16.dp),
                         enabled = !isSubmitted,
                     ) {
-                        Text(if (isSubmitted) "제출이 완료 되었습니다!" else "제출")
+                        Text(if (isSubmitted) stringResource(R.string.btn_success_submit) else stringResource(R.string.btn_submit))
                     }
                 }
             }

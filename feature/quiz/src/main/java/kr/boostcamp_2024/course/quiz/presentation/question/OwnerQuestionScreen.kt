@@ -136,12 +136,11 @@ fun OwnerQuestionScreen(
             ) {
                 if (quiz != null && currentQuestion != null) {
                     item {
-                        quiz.waitingUsers?.let {
-                            RealTimeQuizWithOwnerGuideContent(
-                                ownerName = ownerName,
-                                totalParticipants = it.size,
-                            )
-                        }
+                        RealTimeQuizWithOwnerGuideContent(
+                            ownerName = ownerName,
+                            totalParticipants = quiz.waitingUsers.size,
+                            submittedParticipants = currentQuestion.userAnswers.sum(),
+                        )
                     }
                     item {
                         HorizontalPager(
@@ -213,6 +212,7 @@ fun OwnerQuestionScreen(
 fun RealTimeQuizWithOwnerGuideContent(
     ownerName: String,
     totalParticipants: Int,
+    submittedParticipants: Int,
 ) {
     Row(
         modifier = Modifier
@@ -232,8 +232,7 @@ fun RealTimeQuizWithOwnerGuideContent(
             )
             WeQuizRightChatBubble(
                 modifier = Modifier,
-                text = "ToDo",
-                //text = stringResource(R.string.txt_quiz_submit_state)
+                text = stringResource(R.string.txt_quiz_submit_state, submittedParticipants, totalParticipants),
             )
         }
         WeQuizLocalRoundedImage(

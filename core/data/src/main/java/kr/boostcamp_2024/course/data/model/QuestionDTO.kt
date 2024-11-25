@@ -12,7 +12,7 @@ data class QuestionDTO(
     val choices: List<String>? = null,
     @get:PropertyName("user_answers")
     @set:PropertyName("user_answers")
-    var userAnswers: List<Int>? = listOf(0, 0, 0, 0),
+    var userAnswers: List<Int>? = null,
 ) {
     fun toVO(questionId: String): Question = Question(
         id = questionId,
@@ -31,4 +31,5 @@ fun QuestionCreationInfo.toDTO() = QuestionDTO(
     solution = this.solution,
     answer = this.answer,
     choices = this.choices,
+    userAnswers = List(4) { 0 },
 )
