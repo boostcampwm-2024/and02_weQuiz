@@ -13,8 +13,8 @@ data class ChoiceQuestionDTO(
     @get:PropertyName("user_answers")
     @set:PropertyName("user_answers")
     var userAnswers: List<Int>? = null,
-    var type: String? = null,
-) {
+    val type: String? = null,
+) : QuestionDTO {
     fun toVO(questionId: String): ChoiceQuestion = ChoiceQuestion(
         id = questionId,
         title = requireNotNull(title),
