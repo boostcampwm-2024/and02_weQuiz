@@ -9,34 +9,35 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
-import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.presentation.viewmodel.QuestionViewModel
+import kr.boostcamp_2024.course.quiz.viewmodel.QuestionViewModel
 
 @Composable
 fun QuestionScreen(
     onNavigationButtonClick: () -> Unit,
-    onQuizFinished: (String) -> Unit,
+    onQuizFinished: (String?, String?) -> Unit,
     questionViewModel: QuestionViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     val uiState by questionViewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        questionViewModel.initial()
-    }
-
     if (uiState.quiz is RealTimeQuiz) {
         val quiz = uiState.quiz as RealTimeQuiz
+
         if (quiz.ownerId == uiState.currentUserId) {
-            // TODO: Owner
+            OwnerQuestionScreen(
+                quiz = quiz,
+                currentUserId = uiState.currentUserId,
+                onQuizFinished = onQuizFinished,
+            )
         } else {
             UserQuestionScreen(
                 onNavigationButtonClick = onNavigationButtonClick,
                 onQuizFinished = onQuizFinished,
             )
         }
-    } else {
+    } else if (uiState.quiz is Quiz) {
         GeneralQuestionScreen(
             quiz = uiState.quiz,
             currentPage = uiState.currentPage,
@@ -53,7 +54,7 @@ fun QuestionScreen(
     }
 
     uiState.errorMessageId?.let { errorMessageId ->
-        val errorMessage = stringResource(R.string.err_answer_add)
+        val errorMessage = stringResource(errorMessageId)
         LaunchedEffect(errorMessageId) {
             snackbarHostState.showSnackbar(errorMessage)
             questionViewModel.shownErrorMessage()
@@ -62,33 +63,9 @@ fun QuestionScreen(
 
     uiState.userOmrId?.let { userOmrId ->
         LaunchedEffect(userOmrId) {
-            onQuizFinished(userOmrId)
+            onQuizFinished(userOmrId, null)
         }
     }
-}
-
-@Composable
-fun GeneralQuestionScreen(
-    onNavigationButtonClick: () -> Unit,
-    onQuizFinished: (String) -> Unit,
-    questionViewModel: QuestionViewModel,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-) {
-    val uiState by questionViewModel.uiState.collectAsStateWithLifecycle()
-    GeneralQuestionScreen(
-        quiz = uiState.quiz,
-        currentPage = uiState.currentPage,
-        questions = uiState.questions,
-        countDownTime = uiState.countDownTime,
-        selectedIndexList = uiState.selectedIndexList,
-        snackbarHostState = snackbarHostState,
-        onOptionSelected = questionViewModel::selectOption,
-        onNextButtonClick = questionViewModel::nextPage,
-        onPreviousButtonClick = questionViewModel::previousPage,
-        onSubmitButtonClick = questionViewModel::submitAnswers,
-        onNavigationButtonClick = onNavigationButtonClick,
-    )
-
 }
 
 @Preview(showBackground = true)
@@ -96,6 +73,6 @@ fun GeneralQuestionScreen(
 fun QuestionScreenPreview() {
     QuestionScreen(
         onNavigationButtonClick = {},
-        onQuizFinished = {},
+        onQuizFinished = { _, _ -> },
     )
 }

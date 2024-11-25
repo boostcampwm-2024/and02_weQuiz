@@ -21,21 +21,22 @@ import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.navigation.QuestionRoute
 import javax.inject.Inject
 
-data class QuestionUiState(
+data class UserQuestionUiState(
     val quiz: BaseQuiz? = null,
     val questions: List<Question> = emptyList(),
-    val isSubmitting: Boolean = false,
     val currentPage: Int = 0,
     val selectedIndexList: List<Int> = emptyList(),
-    val countDownTime: Int = 20 * 60,
+    val submittedIndexList: List<Int> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessageId: Int? = null,
     val currentUserId: String? = null,
     val userOmrId: String? = null,
+    val isSubmitted: Boolean = false,
+    val isQuizFinished: Boolean = false,
 )
 
 @HiltViewModel
-class QuestionViewModel @Inject constructor(
+class UserQuestionViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val questionRepository: QuestionRepository,
     private val quizRepository: QuizRepository,
@@ -44,10 +45,16 @@ class QuestionViewModel @Inject constructor(
 ) : ViewModel() {
     private val quizId = savedStateHandle.toRoute<QuestionRoute>().quizId
 
-    private val _uiState: MutableStateFlow<QuestionUiState> = MutableStateFlow(QuestionUiState())
-    val uiState: StateFlow<QuestionUiState> = _uiState
+    private val _uiState: MutableStateFlow<UserQuestionUiState> = MutableStateFlow(UserQuestionUiState())
 
-    fun initial() {
+    init {
+        initial()
+        updatePageAndSubmitByOwner()
+    }
+
+    val uiState: StateFlow<UserQuestionUiState> = _uiState
+
+    private fun initial() {
         viewModelScope.launch {
             loadCurrentUserId()
 
@@ -61,23 +68,6 @@ class QuestionViewModel @Inject constructor(
                     Log.e("QuestionViewModel", "퀴즈 로드 실패", it)
                     _uiState.update { it.copy(isLoading = false, errorMessageId = R.string.err_load_quiz) }
                 }
-            updateTimer()
-        }
-    }
-
-    private fun loadCurrentUserId() {
-        viewModelScope.launch {
-
-            authRepository.getUserKey()
-                .onSuccess { currentUser ->
-
-                    _uiState.update { it.copy(currentUserId = currentUser) }
-                }
-                .onFailure {
-                    Log.e("MainViewModel", "Failed to load current user", it)
-                    _uiState.update { it.copy(errorMessageId = R.string.err_load_current_user) }
-                }
-
         }
     }
 
@@ -91,7 +81,8 @@ class QuestionViewModel @Inject constructor(
                     _uiState.update { currentState ->
                         currentState.copy(
                             questions = questions,
-                            selectedIndexList = List<Int>(questions.size) { -1 },
+                            selectedIndexList = List(questions.size) { -1 },
+                            submittedIndexList = List(questions.size) { -1 },
                             isLoading = false,
                         )
                     }
@@ -104,6 +95,19 @@ class QuestionViewModel @Inject constructor(
                             errorMessageId = R.string.err_load_questions,
                         )
                     }
+                }
+        }
+    }
+
+    private fun loadCurrentUserId() {
+        viewModelScope.launch {
+            authRepository.getUserKey()
+                .onSuccess { currentUser ->
+                    _uiState.update { it.copy(currentUserId = currentUser) }
+                }
+                .onFailure {
+                    Log.e("MainViewModel", "Failed to load current user", it)
+                    _uiState.update { it.copy(errorMessageId = R.string.err_load_current_user) }
                 }
         }
     }
@@ -124,53 +128,74 @@ class QuestionViewModel @Inject constructor(
         }
     }
 
-    fun nextPage() {
-        _uiState.update { currentState ->
-            currentState.copy(currentPage = currentState.currentPage + 1)
-        }
-    }
-
-    fun previousPage() {
-        _uiState.update { currentState ->
-            currentState.copy(currentPage = currentState.currentPage - 1)
-        }
-    }
-
-    fun updateTimer() {
+    private fun updatePageAndSubmitByOwner() {
         viewModelScope.launch {
-            while (_uiState.value.countDownTime > 0) {
-                kotlinx.coroutines.delay(1000L)
-                _uiState.update { currentState ->
-                    currentState.copy(countDownTime = currentState.countDownTime - 1)
+            quizRepository.observeQuiz(quizId)
+                .collect { result ->
+                    result
+                        .onSuccess { quiz ->
+                            _uiState.update {
+                                it.copy(
+                                    currentPage = quiz.currentQuestion,
+                                    isSubmitted = false,
+                                    isQuizFinished = quiz.isFinished,
+                                )
+                            }
+                        }.onFailure {
+                            Log.e("UserQuestionViewModel", "페이지 로드 실패", it)
+                            _uiState.update { it.copy(errorMessageId = R.string.err_load_current_page) }
+                        }
                 }
+        }
+    }
+
+    fun submitQuestion(questionId: String) {
+        viewModelScope.launch {
+            val result = questionRepository.updateCurrentSubmit(
+                questionId,
+                _uiState.value.selectedIndexList[_uiState.value.currentPage],
+            )
+            val updatedList = _uiState.value.submittedIndexList.toMutableList().apply {
+                this[_uiState.value.currentPage] =
+                    _uiState.value.selectedIndexList[_uiState.value.currentPage]
+            }
+            result.onSuccess {
+                _uiState.update { it.copy(isSubmitted = true, submittedIndexList = updatedList) }
+            }.onFailure {
+                Log.e("UserQuestionViewModel", "제출 실패 ", it)
+                _uiState.update { it.copy(errorMessageId = R.string.err_submit_quetion) }
             }
         }
     }
 
     fun submitAnswers() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isSubmitting = true) }
-
+            _uiState.update { it.copy(isLoading = true) }
             _uiState.value.currentUserId?.let { userId ->
                 val userOmrCreationInfo = UserOmrCreationInfo(
                     userId = userId,
                     quizId = quizId,
-                    answers = _uiState.value.selectedIndexList.map { it },
+                    answers = _uiState.value.submittedIndexList.map { it },
                 )
                 userOmrRepository.submitQuiz(userOmrCreationInfo)
                     .onSuccess { userOmrId ->
                         quizRepository.addUserOmrToQuiz(quizId, userOmrId)
                             .onSuccess {
-                                _uiState.update { it.copy(isSubmitting = true, userOmrId = userOmrId) }
+                                _uiState.update {
+                                    it.copy(
+                                        userOmrId = userOmrId,
+                                        isLoading = false,
+                                    )
+                                }
                             }
                             .onFailure {
                                 Log.e("QuestionViewModel", "userOmrId 업데이트 실패", it)
-                                _uiState.update { it.copy(isSubmitting = false, errorMessageId = R.string.err_answer_add) }
+                                _uiState.update { it.copy(errorMessageId = R.string.err_answer_add) }
                             }
                     }
                     .onFailure {
                         Log.e("QuestionViewModel", "퀴즈 정답 제출 실패", it)
-                        _uiState.update { it.copy(isSubmitting = false, errorMessageId = R.string.err_answer_add_quiz) }
+                        _uiState.update { it.copy(errorMessageId = R.string.err_answer_add_quiz) }
                     }
             }
         }

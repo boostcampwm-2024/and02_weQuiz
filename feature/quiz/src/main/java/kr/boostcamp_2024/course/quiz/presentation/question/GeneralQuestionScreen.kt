@@ -30,7 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
@@ -203,5 +205,25 @@ fun GeneralQuestionScreen(
                 content = { /* no-op */ },
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GeneralQuestionScreenPreview() {
+    WeQuizTheme {
+        GeneralQuestionScreen(
+            quiz = null,
+            currentPage = 0,
+            questions = emptyList(),
+            countDownTime = 0,
+            selectedIndexList = emptyList(),
+            snackbarHostState = SnackbarHostState(),
+            onNavigationButtonClick = {},
+            onOptionSelected = { _, _ -> },
+            onNextButtonClick = {},
+            onPreviousButtonClick = {},
+            onSubmitButtonClick = {},
+        )
     }
 }
