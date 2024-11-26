@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
+import kr.boostcamp_2024.course.domain.repository.AiRepository
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.NotificationRepository
@@ -43,6 +44,7 @@ class MainViewModel @Inject constructor(
     private val userOmrRepository: UserOmrRepository,
     private val notificationRepository: NotificationRepository,
     private val storageRepository: StorageRepository,
+    private val aiRepository: AiRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState
@@ -50,6 +52,13 @@ class MainViewModel @Inject constructor(
             loadCurrentUser()
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), MainUiState())
+
+    init {
+        viewModelScope.launch {
+            val result = aiRepository.getAiQuestion("포켓몬")
+            Log.d("zzz", result.toString())
+        }
+    }
 
     fun loadCurrentUser() {
         viewModelScope.launch {
