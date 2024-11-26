@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cancel
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -35,34 +35,37 @@ fun ConsumeBlankContentUi(
     onValueChanged: (String) -> Unit,
     textFieldEnabled: Boolean = true,
 ) {
-    ElevatedCard(
-        modifier = Modifier.shadow(50.dp),
-        shape = RoundedCornerShape(4.dp),
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(10.dp)
-                .clickable(
-                    enabled = true,
-                    onClick = onContentRemove,
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-
-            BasicTextField(
-                value = word,
-                onValueChange = onValueChanged,
-                modifier = Modifier.width(IntrinsicSize.Min),
-                enabled = textFieldEnabled,
+    Row(
+        modifier = Modifier
+            .shadow(
+                elevation = 10.dp,
+                shape = RoundedCornerShape(4.dp),
+                clip = false,
             )
-            if (removeIconInvisible) {
-                Icon(
-                    imageVector = Icons.Outlined.Cancel,
-                    contentDescription = stringResource(R.string.des_remove_blank),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(4.dp),
+            )
+            .clickable(
+                onClick = onContentRemove,
+            )
+            .padding(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+
+        BasicTextField(
+            value = word,
+            onValueChange = onValueChanged,
+            modifier = Modifier.width(IntrinsicSize.Min),
+            enabled = textFieldEnabled,
+        )
+        if (removeIconInvisible) {
+            Icon(
+                imageVector = Icons.Outlined.Cancel,
+                contentDescription = stringResource(R.string.des_remove_blank),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
@@ -76,23 +79,22 @@ fun ConsumeTextContentUi(
     textFieldEnabled: Boolean = true,
 ) {
     Column(
-        modifier = Modifier.drawBehind {
-            val borderSize = 1.dp.toPx()
-            drawLine(
-                color = Color.Black,
-                start = Offset(0f, size.height),
-                end = Offset(size.width, size.height),
-                strokeWidth = borderSize,
-            )
-        },
+        modifier = Modifier
+            .drawBehind {
+                val borderSize = 1.dp.toPx()
+                drawLine(
+                    color = Color.Black,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
+                    strokeWidth = borderSize,
+                )
+            }
+            .clickable(
+                onClick = onContentRemove,
+            ),
     ) {
         Row(
-            modifier = Modifier
-                .padding(10.dp)
-                .clickable(
-                    enabled = true,
-                    onClick = onContentRemove,
-                ),
+            modifier = Modifier.padding(10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -109,7 +111,6 @@ fun ConsumeTextContentUi(
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-
         }
 
     }
