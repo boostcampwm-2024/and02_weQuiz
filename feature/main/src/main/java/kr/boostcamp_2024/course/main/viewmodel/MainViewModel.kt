@@ -147,10 +147,6 @@ class MainViewModel @Inject constructor(
                                                                                                 studyGroup.id,
                                                                                             )
                                                                                                 .onSuccess {
-                                                                                                    Log.d(
-                                                                                                        "MainViewModel",
-                                                                                                        "스터디 그룹 삭제 완료",
-                                                                                                    )
                                                                                                     loadCurrentUser() // 스터디 그룹 최신화
                                                                                                 }
                                                                                                 .onFailure {

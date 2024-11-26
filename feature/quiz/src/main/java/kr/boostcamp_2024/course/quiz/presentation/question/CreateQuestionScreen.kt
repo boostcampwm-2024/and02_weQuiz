@@ -17,8 +17,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -45,6 +47,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRound
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.CreateChoiceItems
 import kr.boostcamp_2024.course.quiz.component.CreateQuestionContent
+import kr.boostcamp_2024.course.quiz.component.QuizAiDialog
 import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuestionUiState
 import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuestionViewModel
 
@@ -67,6 +70,15 @@ fun CreateQuestionScreen(
             viewModel.setNewSnackBarMessage(null)
         }
     }
+    if (uiState.showDialog) {
+        QuizAiDialog(
+            onDismissButtonClick = { viewModel.closeDialog() },
+            onConfirmButtonClick = { category ->
+                viewModel.getAiRecommendedQuestion(category)
+                viewModel.closeDialog()
+            },
+        )
+    }
 
     CreateQuestionScreen(
         uiState = uiState,
@@ -79,6 +91,7 @@ fun CreateQuestionScreen(
         onChoiceTextChanged = viewModel::onChoiceTextChanged,
         onSelectedChoiceNumChanged = viewModel::onSelectedChoiceNumChanged,
         onCreateQuestionButtonClick = viewModel::createQuestion,
+        onShowDialog = viewModel::showDialog,
     )
 }
 
@@ -95,6 +108,7 @@ fun CreateQuestionScreen(
     onChoiceTextChanged: (Int, String) -> Unit,
     onSelectedChoiceNumChanged: (Int) -> Unit,
     onCreateQuestionButtonClick: () -> Unit,
+    onShowDialog: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -181,7 +195,22 @@ fun CreateQuestionScreen(
                         .align(Alignment.Center),
                 )
             }
+            FloatingActionButton(
+                onClick = { onShowDialog() },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(80.dp)
+                    .padding(16.dp),
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            ) {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(id = R.drawable.image_ai),
+                    contentDescription = stringResource(R.string.btn_create_quiz_ai),
+                )
+            }
         }
+
     }
 }
 
