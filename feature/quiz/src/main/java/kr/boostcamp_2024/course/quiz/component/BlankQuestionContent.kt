@@ -30,7 +30,6 @@ fun BlankQuestionContent(
     removeBlankWord: (Int) -> Unit,
     addBlankWord: (Int) -> Unit,
 ) {
-
     Column(
         modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -175,7 +174,10 @@ private fun BlankQuestionContentPreview() {
         ),
         type = "blank",
     )
-    val blankQuestionManager = BlankQuestionManager(question.questionContent)
+    val blankQuestionManager = BlankQuestionManager(
+        updateCallback = {},
+    )
+
     WeQuizTheme {
         BlankQuestionContent(
             isOwner = true,
