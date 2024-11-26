@@ -16,7 +16,7 @@ class AiRepositoryImpl @Inject constructor(
         runCatching {
             val newMessage = Message("user", question)
             val response =
-                aiService.getAiQuestion(AiQuestionRequest(messages = Message.defaultMessage + newMessage, maxTokens = 1024))
+                aiService.getAiQuestion(AiQuestionRequest(messages = Message.defaultMessage + newMessage, maxTokens = 512))
             val content: ContentDTO = Json.decodeFromString(response.result.message.content)
             content.toVO()
         }
