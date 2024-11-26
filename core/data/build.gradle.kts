@@ -12,8 +12,6 @@ properties.load(FileInputStream("local.properties"))
 android {
     namespace = "kr.boostcamp_2024.course.data"
     defaultConfig {
-        buildConfigField("String", "BASE_URL", properties.getProperty("base_url"))
-        buildConfigField("String", "POST_URL", properties.getProperty("post_url"))
         buildConfigField("String", "X_NCP_CLOVASTUDIO_API_KEY", properties.getProperty("X-NCP-CLOVASTUDIO-API-KEY"))
         buildConfigField("String", "X_NCP_APIGW_API_KEY", properties.getProperty("X-NCP-APIGW-API-KEY"))
         buildConfigField("String", "X_NCP_CLOVASTUDIO_REQUEST_ID", properties.getProperty("X-NCP-CLOVASTUDIO-REQUEST-ID"))
