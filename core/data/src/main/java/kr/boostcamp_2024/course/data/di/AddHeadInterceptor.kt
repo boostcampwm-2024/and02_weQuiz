@@ -10,6 +10,7 @@ class AddHeadInterceptor : Interceptor {
             .addHeader("X-NCP-CLOVASTUDIO-API-KEY", BuildConfig.X_NCP_CLOVASTUDIO_API_KEY)
             .addHeader("X-NCP-APIGW-API-KEY", BuildConfig.X_NCP_APIGW_API_KEY)
             .addHeader("X-NCP-CLOVASTUDIO-REQUEST-ID", BuildConfig.X_NCP_CLOVASTUDIO_REQUEST_ID)
+            .addHeader("content-type", "application/json")
             .build()
         return chain.proceed(request)
     }
