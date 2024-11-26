@@ -52,6 +52,7 @@ fun QuestionScreen(
             onPreviousButtonClick = questionViewModel::previousPage,
             onSubmitButtonClick = questionViewModel::submitAnswers,
             onNavigationButtonClick = onNavigationButtonClick,
+            showErrorMessage = questionViewModel::shownErrorMessage,
         )
     }
 

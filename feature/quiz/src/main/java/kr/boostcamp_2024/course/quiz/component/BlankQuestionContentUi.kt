@@ -31,9 +31,10 @@ import kr.boostcamp_2024.course.quiz.R
 fun ConsumeBlankContentUi(
     word: String,
     onContentRemove: () -> Unit,
-    removeIconInvisible: Boolean = true,
+    removeIconVisible: Boolean = true,
     onValueChanged: (String) -> Unit,
     textFieldEnabled: Boolean = true,
+    clickableEnabled: Boolean = true,
 ) {
     Row(
         modifier = Modifier
@@ -47,6 +48,7 @@ fun ConsumeBlankContentUi(
                 shape = RoundedCornerShape(4.dp),
             )
             .clickable(
+                enabled = clickableEnabled,
                 onClick = onContentRemove,
             )
             .padding(10.dp),
@@ -60,7 +62,7 @@ fun ConsumeBlankContentUi(
             modifier = Modifier.width(IntrinsicSize.Min),
             enabled = textFieldEnabled,
         )
-        if (removeIconInvisible) {
+        if (removeIconVisible) {
             Icon(
                 imageVector = Icons.Outlined.Cancel,
                 contentDescription = stringResource(R.string.des_remove_blank),
@@ -77,6 +79,7 @@ fun ConsumeTextContentUi(
     removeIconInvisible: Boolean = true,
     onValueChanged: (String) -> Unit,
     textFieldEnabled: Boolean = true,
+    clickableEnabled: Boolean = true,
 ) {
     Column(
         modifier = Modifier
@@ -90,6 +93,7 @@ fun ConsumeTextContentUi(
                 )
             }
             .clickable(
+                enabled = clickableEnabled,
                 onClick = onContentRemove,
             ),
     ) {

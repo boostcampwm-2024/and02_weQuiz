@@ -114,6 +114,12 @@ class QuestionViewModel @Inject constructor(
         }
     }
 
+    fun shownErrorMessage(errorMessageId: Int) {
+        _uiState.update { currentState ->
+            currentState.copy(errorMessageId = errorMessageId)
+        }
+    }
+
     fun shownErrorMessage() {
         _uiState.update { currentState ->
             currentState.copy(errorMessageId = null)
