@@ -13,7 +13,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
-import kr.boostcamp_2024.course.data.BuildConfig
 import kr.boostcamp_2024.course.data.network.AiService
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -23,6 +22,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 // todo: encrypt data store
 private val Context.weQuizDataStore: DataStore<Preferences> by preferencesDataStore("wequiz_datastore")
+const val BASE_URL = "https://clovastudio.stream.ntruss.com"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -60,7 +60,7 @@ object AppModule {
         client: OkHttpClient,
         json: Json,
     ): AiService = Retrofit.Builder()
-        .baseUrl(BuildConfig.BASE_URL)
+        .baseUrl(BASE_URL)
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .client(client)
         .build()
