@@ -60,6 +60,8 @@
     <string name="txt_real_time_quiz_progressing">퀴즈 진행 중</string>
     <string name="txt_real_time_quiz_finished">시험이 끝났습니다.</string>
     <string name="txt_create_quiz_general">일반 퀴즈</string>
+    <string name="txt_create_general_question">일반</string>
+    <string name="txt_create_blank_question">낱말</string>
     <string name="txt_create_quiz_realtime">실시간 퀴즈</string>
     <string name="btn_success_submit">제출이 완료 되었습니다!</string>
     <string name="btn_submit">제출</string>
@@ -78,6 +80,9 @@
     <string name="txt_quiz_submit_state">제출: %1$d / %2$d명</string>
     <string name="txt_quiz_finish_notification">퀴즈가 종료되었습니다.\n결과 화면으로 이동합니다.</string>
     <string name="txt_quiz_finish_confirm">확인</string>
+    <!-- blank quiz -->
+    <string name="btn_create_text">텍스트 추가</string>
+    <string name="btn_create_blank">빈칸 추가</string>
     <!-- content description  -->
     <string name="des_btn_back">뒤로가기</string>
     <string name="des_clear_text">텍스트 지우기</string>
