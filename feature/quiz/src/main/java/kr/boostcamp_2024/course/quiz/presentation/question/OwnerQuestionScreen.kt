@@ -145,31 +145,34 @@ fun OwnerQuestionScreen(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 if (quiz != null && currentQuestion != null) {
-                    if (currentQuestion is ChoiceQuestion) {
-                        item {
-                            RealTimeQuizWithOwnerGuideContent(
-                                ownerName = ownerName,
-                                totalParticipants = quiz.waitingUsers.size,
-                                submittedParticipants = currentQuestion.userAnswers.sum(),
-                            )
-                        }
-                        item {
-                            QuizContent(
-                                isOwner = true,
-                                isRealTime = true,
-                                currentPage = currentPage,
-                                selectedIndexList = currentQuestion.userAnswers,
-                                onOptionSelected = { _, _ -> },
-                                questions = choiceQuestions,
-                                showErrorMessage = showErrorMessage,
-                                onBlanksSelected = { _, _ -> },
-                                blankQuestionContents = blankQuestionContents,
-                                blankWords = blankWords,
-                                removeBlankContent = removeBlankWord,
-                                addBlankContent = addBlankWord,
-                                getBlankQuestionAnswer = getBlankQuestionAnswer,
-                            )
-                        }
+                    val submittedParticipants = if (currentQuestion is ChoiceQuestion) {
+                        currentQuestion.userAnswers.sum()
+                    } else {
+                        currentQuestion.userAnswers.size
+                    }
+                    item {
+                        RealTimeQuizWithOwnerGuideContent(
+                            ownerName = ownerName,
+                            totalParticipants = quiz.waitingUsers.size,
+                            submittedParticipants = submittedParticipants,
+                        )
+                    }
+                    item {
+                        QuizContent(
+                            isOwner = true,
+                            isRealTime = true,
+                            currentPage = currentPage,
+                            selectedIndexList = currentQuestion.userAnswers,
+                            onOptionSelected = { _, _ -> },
+                            questions = choiceQuestions,
+                            showErrorMessage = showErrorMessage,
+                            onBlanksSelected = { _, _ -> },
+                            blankQuestionContents = blankQuestionContents,
+                            blankWords = blankWords,
+                            removeBlankContent = removeBlankWord,
+                            addBlankContent = addBlankWord,
+                            getBlankQuestionAnswer = getBlankQuestionAnswer,
+                        )
                     }
                 }
             }
