@@ -49,7 +49,7 @@ fun UserQuestionScreen(
     UserQuestionScreen(
         quiz = uiState.quiz,
         currentPage = uiState.currentPage,
-        choiceQuestions = uiState.choiceQuestions,
+        choiceQuestions = uiState.questions,
         quizFinishDialog = quizFinishDialog,
         onQuizFinishDialogDismissButtonClick = { quizFinishDialog = false },
         selectedIndexList = uiState.selectedIndexList,

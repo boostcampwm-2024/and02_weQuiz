@@ -64,7 +64,7 @@ fun OwnerQuestionScreen(
     OwnerQuestionScreen(
         quiz = uiState.quiz,
         currentPage = uiState.currentPage,
-        choiceQuestions = uiState.choiceQuestions,
+        choiceQuestions = uiState.questions,
         ownerName = uiState.ownerName ?: "",
         snackbarHostState = snackbarHostState,
         onNextButtonClick = questionViewModel::nextPage,

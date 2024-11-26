@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 data class RealTimeWithOwnerQuestionUiState(
     val quiz: RealTimeQuiz? = null,
-    val choiceQuestions: List<Question?> = emptyList(),
+    val questions: List<Question?> = emptyList(),
     val ownerName: String? = null,
     val currentPage: Int = 0,
     val isLoading: Boolean = false,
@@ -80,7 +80,7 @@ class OwnerQuestionViewModel @Inject constructor(
             _uiState.update { currentState ->
                 currentState.copy(
                     isLoading = true,
-                    choiceQuestions = List(questionIds.size) { null },
+                    questions = List(questionIds.size) { null },
                 )
             }
             questionRepository.getRealTimeQuestions(questionIds)
@@ -90,7 +90,7 @@ class OwnerQuestionViewModel @Inject constructor(
                             questionFlow.onEach { question ->
                                 _uiState.update { currentState ->
                                     currentState.copy(
-                                        choiceQuestions = currentState.choiceQuestions.toMutableList().apply {
+                                        questions = currentState.questions.toMutableList().apply {
                                             this[index] = question
                                         },
                                     )
@@ -168,7 +168,7 @@ class OwnerQuestionViewModel @Inject constructor(
     }
 
     private fun setNewBlankQuestionManager(pageIdx: Int) {
-        val currentQuestion = _uiState.value.choiceQuestions[pageIdx]
+        val currentQuestion = _uiState.value.questions[pageIdx]
         if (currentQuestion is BlankQuestion) {
             blankQuestionManager.setNewQuestions(
                 isOwner = true,

@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 data class QuestionUiState(
     val quiz: BaseQuiz? = null,
-    val choiceQuestions: List<Question> = emptyList(),
+    val questions: List<Question> = emptyList(),
     val isSubmitting: Boolean = false,
     val currentPage: Int = 0,
     val selectedIndexList: List<Any> = emptyList(),
@@ -108,7 +108,7 @@ class QuestionViewModel @Inject constructor(
                     }
                     _uiState.update { currentState ->
                         currentState.copy(
-                            choiceQuestions = questions,
+                            questions = questions,
                             selectedIndexList = baseSelectedList,
                             isLoading = false,
                         )
@@ -175,7 +175,7 @@ class QuestionViewModel @Inject constructor(
     }
 
     private fun setNewBlankQuestionManager(pageIdx: Int) {
-        val currentQuestion = _uiState.value.choiceQuestions[pageIdx]
+        val currentQuestion = _uiState.value.questions[pageIdx]
         if (currentQuestion is BlankQuestion) {
             blankQuestionManager.setNewQuestions(
                 questionContents = currentQuestion.questionContent,
