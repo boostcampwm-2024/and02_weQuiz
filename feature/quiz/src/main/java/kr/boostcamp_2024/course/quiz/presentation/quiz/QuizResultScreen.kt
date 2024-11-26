@@ -98,7 +98,6 @@ fun QuizResultScreen(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizResultScreen(
@@ -154,7 +153,6 @@ fun QuizResultScreen(
         }
     }
 }
-
 
 @Composable
 fun QuizResultContent(

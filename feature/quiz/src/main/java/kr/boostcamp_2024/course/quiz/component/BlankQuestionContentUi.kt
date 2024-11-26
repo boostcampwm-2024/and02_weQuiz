@@ -71,14 +71,6 @@ fun ConsumeBlankContentUi(
             )
         }
     }
-//    Column(
-//        modifier = Modifier.fillMaxSize()
-//            .background(
-//                color = Color.White,
-//                shape = RoundedCornerShape(10.dp),
-//            )
-//    ) {
-//    }
 }
 
 @Composable
