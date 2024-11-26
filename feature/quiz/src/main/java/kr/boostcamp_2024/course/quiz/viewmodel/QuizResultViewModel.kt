@@ -22,10 +22,12 @@ import kr.boostcamp_2024.course.quiz.navigation.QuizResultRoute
 import javax.inject.Inject
 
 data class QuizResultUiState(
+    val questions: List<Question>? = null,
     val quizTitle: String? = null,
     val quizResult: QuizResult? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
+    val isManager: Boolean = false,
 )
 
 @HiltViewModel
@@ -35,9 +37,8 @@ class QuizResultViewModel @Inject constructor(
     private val userOmrRepository: UserOmrRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    // TODO: userOmrId와 quizId nullable 처리해주세요!(to. 지훈)
-    private val userOmrId: String = savedStateHandle.toRoute<QuizResultRoute>().userOmrId ?: ""
-    private val quizId: String = savedStateHandle.toRoute<QuizResultRoute>().quizId ?: ""
+    private val userOmrId: String? = savedStateHandle.toRoute<QuizResultRoute>().userOmrId
+    private val quizId: String? = savedStateHandle.toRoute<QuizResultRoute>().quizId
 
     private val userOmrAnswers = MutableStateFlow<List<Any>>(emptyList()) // 사용자 답지
     private val questions = MutableStateFlow<List<Question>>(emptyList()) // 퀴즈 리스트
@@ -58,8 +59,17 @@ class QuizResultViewModel @Inject constructor(
             false -> uiState.copy(errorMessage = "퀴즈 결과 생성에 실패했습니다.")
         }
     }.onStart {
-        loadUserOmr()
+        initViewModel()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), QuizResultUiState())
+
+    fun initViewModel() {
+        if (userOmrId != null) {
+            loadUserOmr()
+        } else if (quizId != null) {
+            loadQuestions(quizId)
+            _uiState.update { it.copy(isManager = true) }
+        }
+    }
 
     private fun loadQuestions(quizId: String) {
         viewModelScope.launch {
@@ -70,9 +80,9 @@ class QuizResultViewModel @Inject constructor(
                     _uiState.update { it.copy(quizTitle = quiz.title) }
 
                     questionRepository.getQuestions(quiz.questions)
-                        .onSuccess {
-                            _uiState.update { it.copy(isLoading = false) }
-                            questions.value = it
+                        .onSuccess { question ->
+                            _uiState.update { it.copy(isLoading = false, questions = question) }
+                            questions.value = question
                         }
                         .onFailure {
                             Log.e("QuizResultViewModel", "Failed to load questions", it)
@@ -90,17 +100,20 @@ class QuizResultViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            userOmrRepository.getUserOmr(userOmrId)
-                .onSuccess { userOmr ->
-                    _uiState.update { it.copy(isLoading = false) }
-                    userOmrAnswers.value = userOmr.answers
+            if (userOmrId != null) {
+                userOmrRepository.getUserOmr(userOmrId)
+                    .onSuccess { userOmr ->
+                        _uiState.update { it.copy(isLoading = false) }
+                        userOmrAnswers.value = userOmr.answers
 
-                    loadQuestions(userOmr.quizId)
-                }
-                .onFailure {
-                    Log.e("QuizResultViewModel", "Failed to load userOmr", it)
-                    _uiState.update { it.copy(isLoading = false, errorMessage = "답지 로드에 실패했습니다.") }
-                }
+                        loadQuestions(userOmr.quizId)
+
+                    }
+                    .onFailure {
+                        Log.e("QuizResultViewModel", "Failed to load userOmr", it)
+                        _uiState.update { it.copy(isLoading = false, errorMessage = "답지 로드에 실패했습니다.") }
+                    }
+            }
         }
     }
 

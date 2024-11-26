@@ -22,6 +22,7 @@ data class DetailUiState(
     val question: Question? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
+    val userAnswer: List<Int> = listOf(0, 0, 0, 0),
     // TODO 출제자 이미지 추가
 )
 

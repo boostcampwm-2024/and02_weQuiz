@@ -69,6 +69,15 @@
     <string name="txt_edit_quiz_drop_down_menu_item">수정</string>
     <string name="txt_delete_quiz_drop_down_menu_item">퀴즈 제거</string>
     <string name="top_app_bar_edit_quiz">퀴즈 수정</string>
+    <string name="txt_pie_chart_center">결과 분석 결과</string>
+    <string name="txt_quiz_statistics_dialog">퀴즈 결과 통계</string>
+    <string name="btn_quiz_statistics_dialog_close">닫기</string>
+    <string name="txt_label_pie_chart_1">1번</string>
+    <string name="txt_label_pie_chart_2">2번</string>
+    <string name="txt_label_pie_chart_3">3번</string>
+    <string name="txt_label_pie_chart_4">4번</string>
+    <string name="fab_quiz_result">퀴즈 결과 화면 보기 버튼</string>
+    <string name="txt_quiz_result">결과 보기</string>
     <!--  realtime quiz  -->
     <string name="dialog_txt_owner_quit_quiz">정말 나가시나요?\n퀴즈가 완전히 종료됩니다.</string>
     <string name="dialog_txt_finish_quiz">퀴즈를 마무리하시나요?\n모든 참여자에 대해 퀴즈가 종료됩니다.</string>
