@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
+import kr.boostcamp_2024.course.domain.repository.AiRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.quiz.navigation.CreateQuestionRoute
@@ -27,19 +28,24 @@ data class CreateQuestionUiState(
         answer = 0,
         choices = List(4) { "" },
     ),
-    val isCreateQuestionValid: Boolean = false,
     val snackBarMessage: String? = null,
     val creationSuccess: Boolean = false,
-)
+) {
+    val isCreateQuestionValid: Boolean = questionCreationInfo.title.isNotBlank() &&
+        questionCreationInfo.description.isNotBlank() &&
+        questionCreationInfo.choices.all {
+            it.isNotBlank()
+        }
+}
 
 @HiltViewModel
 class CreateQuestionViewModel @Inject constructor(
     private val questionRepository: QuestionRepository,
     private val quizRepository: QuizRepository,
+    private val aiRepository: AiRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val quizId: String = savedStateHandle.toRoute<CreateQuestionRoute>().quizId
-
     private val _createQuestionUiState: MutableStateFlow<CreateQuestionUiState> = MutableStateFlow(CreateQuestionUiState())
     val createQuestionUiState: StateFlow<CreateQuestionUiState> = _createQuestionUiState.asStateFlow()
 
@@ -51,7 +57,6 @@ class CreateQuestionViewModel @Inject constructor(
                 ),
             )
         }
-        checkCreateQuestionValid()
     }
 
     fun onDescriptionChanged(description: String) {
@@ -62,7 +67,6 @@ class CreateQuestionViewModel @Inject constructor(
                 ),
             )
         }
-        checkCreateQuestionValid()
     }
 
     fun onSolutionChanged(solution: String) {
@@ -73,7 +77,6 @@ class CreateQuestionViewModel @Inject constructor(
                 ),
             )
         }
-        checkCreateQuestionValid()
     }
 
     fun onChoiceTextChanged(changedIndex: Int, changedText: String) {
@@ -86,24 +89,12 @@ class CreateQuestionViewModel @Inject constructor(
                 ),
             )
         }
-        checkCreateQuestionValid()
     }
 
     fun onSelectedChoiceNumChanged(changedNum: Int) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
                 questionCreationInfo = currentState.questionCreationInfo.copy(answer = changedNum),
-            )
-        }
-        checkCreateQuestionValid()
-    }
-
-    private fun checkCreateQuestionValid() {
-        _createQuestionUiState.update { currentState ->
-            currentState.copy(
-                isCreateQuestionValid = currentState.questionCreationInfo.title.isNotBlank() &&
-                    currentState.questionCreationInfo.description.isNotBlank() &&
-                    currentState.questionCreationInfo.choices.all { it.isNotBlank() },
             )
         }
     }
@@ -115,13 +106,12 @@ class CreateQuestionViewModel @Inject constructor(
             val questionCreationInfo = currentQuestionCreationInfo.copy(
                 solution = if (currentQuestionCreationInfo.solution.isNullOrBlank()) null else currentQuestionCreationInfo.solution,
             )
-            questionRepository.createQuestion(questionCreationInfo)
-                .onSuccess { questionId ->
-                    saveQuestionToQuiz(questionId)
-                }.onFailure { exception ->
-                    Log.e("CreateQuestionViewModel", exception.message, exception)
-                    setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
-                }
+            questionRepository.createQuestion(questionCreationInfo).onSuccess { questionId ->
+                saveQuestionToQuiz(questionId)
+            }.onFailure { exception ->
+                Log.e("CreateQuestionViewModel", exception.message, exception)
+                setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
+            }
         }
     }
 
@@ -177,29 +167,26 @@ class CreateQuestionViewModel @Inject constructor(
     fun getAiRecommendedQuestion(category: String) {
         setLoadingState(true)
         viewModelScope.launch {
-            try {
-                // TODO: 실제 AI 추천 API 호출 로직 작성
+            aiRepository.getAiQuestion(category).onSuccess {
                 setAiRecommendedQuestion(
                     QuestionCreationInfo(
-                        title = "AI 추천 문제",
-                        description = "AI 추천 문제 설명",
-                        solution = "AI 추천 문제",
-                        answer = getAnswerIndex("AI 추천 문제 선택지 2", List(4) { "AI 추천 문제 선택지 $it" }),
-                        choices = List(4) { "AI 추천 문제 선택지 $it" },
+                        title = it.title,
+                        description = it.description,
+                        solution = it.solution,
+                        answer = getAnswerIndex(it.answer, it.choices),
+                        choices = it.choices,
                     ),
                 )
                 _createQuestionUiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
-                        snackBarMessage = "AI 추천 문제를 성공적으로 가져왔습니다!",
                     )
                 }
-            } catch (exception: Exception) {
-                Log.e("CreateQuestionViewModel", exception.message, exception)
+            }.onFailure {
                 setNewSnackBarMessage("AI 추천 문제 가져오기에 실패했습니다. 다시 시도해주세요!")
-            } finally {
-                setLoadingState(false)
+                Log.d("CreateQuestionViewModel", "AI 추천 문제 가져오기 실패")
             }
+
         }
     }
 

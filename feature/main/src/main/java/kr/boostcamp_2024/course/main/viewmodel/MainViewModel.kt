@@ -54,10 +54,7 @@ class MainViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), MainUiState())
 
     init {
-        viewModelScope.launch {
-            val result = aiRepository.getAiQuestion("포켓몬")
-            Log.d("zzz", result.toString())
-        }
+
     }
 
     fun loadCurrentUser() {
