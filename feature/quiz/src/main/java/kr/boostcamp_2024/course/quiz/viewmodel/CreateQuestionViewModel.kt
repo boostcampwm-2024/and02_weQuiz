@@ -198,7 +198,6 @@ class CreateQuestionViewModel @Inject constructor(
         }
     }
 
-    private fun getAnswerIndex(answer: String, choices: List<String>): Int {
-        return choices.indexOf(answer)
-    }
+    private fun getAnswerIndex(answer: String, choices: List<String>): Int = choices.indexOf(answer)
+
 }

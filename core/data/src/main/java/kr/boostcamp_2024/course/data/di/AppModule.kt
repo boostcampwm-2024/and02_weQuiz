@@ -42,11 +42,10 @@ object AppModule {
     fun provideJson(): Json = Json { ignoreUnknownKeys = true }
 
     @Provides
-    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-    }
 
     @Provides
     fun provideOkHttpClient(
