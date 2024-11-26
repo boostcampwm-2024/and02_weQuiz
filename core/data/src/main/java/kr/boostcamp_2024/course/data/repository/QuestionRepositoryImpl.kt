@@ -10,6 +10,7 @@ import kr.boostcamp_2024.course.data.model.ChoiceQuestionDTO
 import kr.boostcamp_2024.course.data.model.toDTO
 import kr.boostcamp_2024.course.domain.enum.QuestionType
 import kr.boostcamp_2024.course.domain.enum.toQuestionType
+import kr.boostcamp_2024.course.domain.model.BlankQuestionCreationInfo
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestionCreationInfo
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
@@ -106,5 +107,11 @@ class QuestionRepositoryImpl @Inject constructor(
                     throw Exception("문서가 존재하지 않습니다.")
                 }
             }.await()
+        }
+
+    override suspend fun createBlankQuestion(blankQuestionCreationInfo: BlankQuestionCreationInfo): Result<String> =
+        runCatching {
+            val document = questionCollectionRef.add(blankQuestionCreationInfo.toDTO()).await()
+            document.id
         }
 }

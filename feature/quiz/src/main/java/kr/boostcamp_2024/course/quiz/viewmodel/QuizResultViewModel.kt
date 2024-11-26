@@ -58,6 +58,12 @@ class QuizResultViewModel @Inject constructor(
 
             false -> uiState.copy(errorMessage = "퀴즈 결과 생성에 실패했습니다.")
         }
+        val quizResult =
+            when (userOmrAnswers.size == questions.size && questions.isNotEmpty()) {
+                true -> QuizResult(userOmrAnswers = userOmrAnswers, choiceQuestions = questions)
+                false -> null
+            }
+        uiState.copy(quizResult = quizResult)
     }.onStart {
         initViewModel()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), QuizResultUiState())
