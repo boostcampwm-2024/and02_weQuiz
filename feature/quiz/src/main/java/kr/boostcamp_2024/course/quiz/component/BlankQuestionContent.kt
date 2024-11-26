@@ -173,6 +173,7 @@ private fun BlankQuestionContentPreview() {
             mapOf("type" to "text", "text" to "입니다."),
         ),
         type = "blank",
+        userAnswers = emptyList(),
     )
     val blankQuestionManager = BlankQuestionManager(
         updateCallback = {},

@@ -144,6 +144,7 @@ fun QuestionDetailScreenPreview() {
                 questionContent = emptyList(),
                 solution = "문제 해설",
                 type = "blank",
+                userAnswers = emptyList(),
             ),
             errorMessage = null,
             userAnswer = listOf(0, 0, 0, 0),
