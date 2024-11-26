@@ -60,7 +60,7 @@ class QuizResultViewModel @Inject constructor(
         }
         val quizResult =
             when (userOmrAnswers.size == questions.size && questions.isNotEmpty()) {
-                true -> QuizResult(userOmrAnswers = userOmrAnswers, choiceQuestions = questions)
+                true -> QuizResult(userOmrAnswers = userOmrAnswers, questions = questions)
                 false -> null
             }
         uiState.copy(quizResult = quizResult)
