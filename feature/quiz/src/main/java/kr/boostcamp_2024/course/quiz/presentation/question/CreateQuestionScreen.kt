@@ -1,15 +1,9 @@
 package kr.boostcamp_2024.course.quiz.presentation.question
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +18,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -49,8 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.component.ConsumeBlankContentUi
-import kr.boostcamp_2024.course.quiz.component.ConsumeTextContentUi
+import kr.boostcamp_2024.course.quiz.component.CreateBlankQuestionContent
 import kr.boostcamp_2024.course.quiz.component.CreateChoiceItems
 import kr.boostcamp_2024.course.quiz.component.CreateQuestionContent
 import kr.boostcamp_2024.course.quiz.viewmodel.BlankQuestionItem
@@ -156,23 +148,6 @@ fun CreateQuestionScreen(
             )
         },
     ) { innerPadding ->
-        SingleChoiceSegmentedButtonRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-        ) {
-            options.forEachIndexed { index, label ->
-                SegmentedButton(
-                    shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
-                    onClick = { },
-                    selected = index == 1,
-                ) {
-                    Text(
-                        text = label,
-                    )
-                }
-            }
-        }
         Box(
             modifier = Modifier
                 .padding(innerPadding)
@@ -233,65 +208,15 @@ fun CreateQuestionScreen(
                 }
                 if (isBlankQuestion) {
                     item {
-                        Column(modifier = Modifier.padding(top = 10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text(
-                                modifier = Modifier.padding(
-                                    horizontal = 16.dp,
-                                ),
-                                text = stringResource(R.string.txt_create_blank_question),
-                            )
-                            FlowRow(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp)
-                                    .heightIn(min = 180.dp)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                                    .padding(10.dp),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                blankQuestionItems.forEachIndexed { index, it ->
-                                    when (it) {
-                                        is BlankQuestionItem.Blank -> {
-                                            ConsumeBlankContentUi(
-                                                word = it.text,
-                                                index = index,
-                                                onContentRemove = onContentRemove,
-                                                onValueChanged = onBlankQuestionItemValueChanged,
-                                            )
-                                        }
-
-                                        is BlankQuestionItem.Text -> {
-                                            ConsumeTextContentUi(
-                                                word = it.text,
-                                                index = index,
-                                                onContentRemove = onContentRemove,
-                                                onValueChanged = onBlankQuestionItemValueChanged,
-                                            )
-                                        }
-
-                                    }
-                                }
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                            ) {
-                                Button(
-                                    onClick = onAddTextItemButtonClick,
-                                    enabled = isCreateTextButtonValid,
-                                ) {
-                                    Text(stringResource(R.string.btn_create_text))
-                                }
-
-                                Button(
-                                    onClick = onAddBlankItemButtonClick,
-                                    enabled = isCreateBlankButtonValid,
-                                ) {
-                                    Text(stringResource(R.string.btn_create_blank))
-                                }
-                            }
-                        }
+                        CreateBlankQuestionContent(
+                            blankQuestionItems,
+                            onContentRemove,
+                            onBlankQuestionItemValueChanged,
+                            onAddTextItemButtonClick,
+                            isCreateTextButtonValid,
+                            onAddBlankItemButtonClick,
+                            isCreateBlankButtonValid,
+                        )
                     }
                 }
                 if (!isBlankQuestion) {

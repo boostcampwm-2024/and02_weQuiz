@@ -44,10 +44,12 @@ data class CreateQuestionUiState(
 ) {
     val isCreateBlankQuestionValid: Boolean
         get() = items.any { it is BlankQuestionItem.Blank } &&
-                items.all {
-                    (it is BlankQuestionItem.Text && it.text.isNotBlank() || it is BlankQuestionItem.Blank
-                            && it.text.isNotBlank())
-                } && choiceQuestionCreationInfo.title.isNotBlank()
+            items.all {
+                (
+                    it is BlankQuestionItem.Text && it.text.isNotBlank() || it is BlankQuestionItem.Blank &&
+                        it.text.isNotBlank()
+                )
+            } && choiceQuestionCreationInfo.title.isNotBlank()
 
     val isCreateBlankButtonValid: Boolean
         get() = items.count { it is BlankQuestionItem.Blank } < 5
@@ -129,8 +131,8 @@ class CreateQuestionViewModel @Inject constructor(
         _createQuestionUiState.update { currentState ->
             currentState.copy(
                 isCreateQuestionValid = currentState.choiceQuestionCreationInfo.title.isNotBlank() &&
-                        currentState.choiceQuestionCreationInfo.description.isNotBlank() &&
-                        currentState.choiceQuestionCreationInfo.choices.all { it.isNotBlank() },
+                    currentState.choiceQuestionCreationInfo.description.isNotBlank() &&
+                    currentState.choiceQuestionCreationInfo.choices.all { it.isNotBlank() },
             )
         }
     }
