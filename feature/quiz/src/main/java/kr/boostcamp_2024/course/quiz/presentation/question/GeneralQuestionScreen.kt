@@ -45,7 +45,7 @@ import kr.boostcamp_2024.course.quiz.utils.timerFormat
 fun GeneralQuestionScreen(
     quiz: BaseQuiz?,
     currentPage: Int,
-    choiceQuestions: List<Question>,
+    questions: List<Question>,
     countDownTime: Int,
     selectedIndexList: List<Any>,
     snackbarHostState: SnackbarHostState,
@@ -85,7 +85,7 @@ fun GeneralQuestionScreen(
                 .padding(innerPadding),
         ) {
             LinearProgressIndicator(
-                progress = { (currentPage + 1) / choiceQuestions.size.toFloat() },
+                progress = { (currentPage + 1) / questions.size.toFloat() },
                 modifier = Modifier.fillMaxWidth(),
             )
 
@@ -99,7 +99,7 @@ fun GeneralQuestionScreen(
                         currentPage = currentPage,
                         selectedIndexList = selectedIndexList,
                         onOptionSelected = onOptionSelected,
-                        questions = choiceQuestions,
+                        questions = questions,
                         showErrorMessage = showErrorMessage,
                         onBlanksSelected = onBlanksSelected,
                         blankQuestionContents = blankQuestionContents,
@@ -117,13 +117,13 @@ fun GeneralQuestionScreen(
                     .background(Color.Transparent)
                     .fillMaxWidth()
                     .padding(10.dp),
-                nextButtonText = if (currentPage == choiceQuestions.size - 1) {
+                nextButtonText = if (currentPage == questions.size - 1) {
                     stringResource(R.string.txt_question_done)
                 } else {
                     stringResource(R.string.txt_question_next_question)
                 },
                 onNextButtonClick = {
-                    if (currentPage < choiceQuestions.size - 1) {
+                    if (currentPage < questions.size - 1) {
                         onNextButtonClick()
                     } else {
                         showDialog = true
@@ -139,7 +139,7 @@ fun GeneralQuestionScreen(
         if (showDialog) {
             GeneralQuizDialog(
                 currentPage = currentPage,
-                questions = choiceQuestions,
+                questions = questions,
                 closeDialog = { showDialog = false },
                 onNavigationButtonClick = onNavigationButtonClick,
                 onSubmitButtonClick = onSubmitButtonClick,
@@ -249,7 +249,7 @@ fun GeneralQuestionScreenPreview() {
         GeneralQuestionScreen(
             quiz = null,
             currentPage = 0,
-            choiceQuestions = emptyList(),
+            questions = emptyList(),
             countDownTime = 0,
             selectedIndexList = emptyList(),
             snackbarHostState = SnackbarHostState(),

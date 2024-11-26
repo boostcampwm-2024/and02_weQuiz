@@ -84,7 +84,7 @@ fun BlankQuestionContents(
                 ConsumeTextContentUi(
                     word = content.getOrDefault("text", "") as String,
                     onContentRemove = {},
-                    onValueChanged = {},
+                    onValueChanged = { _, _ -> },
                     removeIconInvisible = false,
                     textFieldEnabled = false,
                     clickableEnabled = false,
@@ -94,7 +94,7 @@ fun BlankQuestionContents(
                     ConsumeBlankContentUi(
                         word = "_",
                         onContentRemove = {},
-                        onValueChanged = {},
+                        onValueChanged = { _, _ -> },
                         removeIconVisible = false,
                         textFieldEnabled = false,
                         clickableEnabled = false,
@@ -105,7 +105,7 @@ fun BlankQuestionContents(
                         onContentRemove = {
                             onRemoveContentClick(index)
                         },
-                        onValueChanged = {},
+                        onValueChanged = { _, _ -> },
                         removeIconVisible = false,
                         textFieldEnabled = false,
                         clickableEnabled = !isOwner,
@@ -140,7 +140,7 @@ fun Blanks(
                     onContentRemove = {
                         onAddContentClick(index)
                     },
-                    onValueChanged = {},
+                    onValueChanged = { _, _ -> },
                     textFieldEnabled = false,
                     removeIconVisible = false,
                 )

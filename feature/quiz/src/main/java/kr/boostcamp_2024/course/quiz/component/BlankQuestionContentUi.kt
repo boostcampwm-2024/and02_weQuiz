@@ -30,9 +30,10 @@ import kr.boostcamp_2024.course.quiz.R
 @Composable
 fun ConsumeBlankContentUi(
     word: String,
-    onContentRemove: () -> Unit,
+    index: Int = 0,
+    onContentRemove: (Int) -> Unit,
     removeIconVisible: Boolean = true,
-    onValueChanged: (String) -> Unit,
+    onValueChanged: (String, Int) -> Unit,
     textFieldEnabled: Boolean = true,
     clickableEnabled: Boolean = true,
 ) {
@@ -49,7 +50,7 @@ fun ConsumeBlankContentUi(
             )
             .clickable(
                 enabled = clickableEnabled,
-                onClick = onContentRemove,
+                onClick = { onContentRemove(index) },
             )
             .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -58,7 +59,9 @@ fun ConsumeBlankContentUi(
 
         BasicTextField(
             value = word,
-            onValueChange = onValueChanged,
+            onValueChange = { newValue ->
+                onValueChanged(newValue, index)
+            },
             modifier = Modifier.width(IntrinsicSize.Min),
             enabled = textFieldEnabled,
         )
@@ -75,9 +78,10 @@ fun ConsumeBlankContentUi(
 @Composable
 fun ConsumeTextContentUi(
     word: String,
-    onContentRemove: () -> Unit,
+    index: Int = 0,
+    onContentRemove: (Int) -> Unit,
     removeIconInvisible: Boolean = true,
-    onValueChanged: (String) -> Unit,
+    onValueChanged: (String, Int) -> Unit,
     textFieldEnabled: Boolean = true,
     clickableEnabled: Boolean = true,
 ) {
@@ -94,7 +98,7 @@ fun ConsumeTextContentUi(
             }
             .clickable(
                 enabled = clickableEnabled,
-                onClick = onContentRemove,
+                onClick = { onContentRemove(index) },
             ),
     ) {
         Row(
@@ -104,7 +108,9 @@ fun ConsumeTextContentUi(
         ) {
             BasicTextField(
                 value = word,
-                onValueChange = onValueChanged,
+                onValueChange = { newValue ->
+                    onValueChanged(newValue, index)
+                },
                 modifier = Modifier.width(IntrinsicSize.Min),
                 enabled = textFieldEnabled,
             )
@@ -128,7 +134,7 @@ private fun ConsumeBlankContentUiPreview() {
         ConsumeBlankContentUi(
             word = "판다",
             onContentRemove = {},
-            onValueChanged = {},
+            onValueChanged = { _, _ -> },
             textFieldEnabled = true,
         )
 
@@ -142,7 +148,7 @@ private fun ConsumeTextContentUiPreview() {
         ConsumeTextContentUi(
             word = "는",
             onContentRemove = {},
-            onValueChanged = {},
+            onValueChanged = { _, _ -> },
             textFieldEnabled = true,
         )
     }

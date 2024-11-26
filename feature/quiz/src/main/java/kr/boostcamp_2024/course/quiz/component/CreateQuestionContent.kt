@@ -26,6 +26,7 @@ fun CreateQuestionContent(
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onSolutionChanged: (String) -> Unit,
+    isBlankQuestion: Boolean,
 ) {
 
     Column(
@@ -41,16 +42,18 @@ fun CreateQuestionContent(
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
         )
-        WeQuizTextField(
-            label = stringResource(id = R.string.txt_question_content_label),
-            text = description ?: "",
-            onTextChanged = onDescriptionChanged,
-            placeholder = stringResource(id = R.string.txt_question_content_placeholder),
-            minLines = 6,
-            maxLines = 6,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-        )
+        if (!isBlankQuestion) {
+            WeQuizTextField(
+                label = stringResource(id = R.string.txt_question_content_label),
+                text = description ?: "",
+                onTextChanged = onDescriptionChanged,
+                placeholder = stringResource(id = R.string.txt_question_content_placeholder),
+                minLines = 6,
+                maxLines = 6,
+                keyboardOptions = keyboardOptions,
+                keyboardActions = keyboardActions,
+            )
+        }
         WeQuizTextField(
             label = stringResource(id = R.string.txt_question_description_label),
             text = solution ?: "",

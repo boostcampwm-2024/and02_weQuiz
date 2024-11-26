@@ -11,11 +11,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.domain.model.BlankQuestionCreationInfo
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestionCreationInfo
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.quiz.navigation.CreateQuestionRoute
 import javax.inject.Inject
+
+sealed class BlankQuestionItem {
+    data class Blank(
+        val text: String,
+    ) : BlankQuestionItem()
+
+    data class Text(
+        val text: String,
+    ) : BlankQuestionItem()
+}
 
 data class CreateQuestionUiState(
     val isLoading: Boolean = false,
@@ -29,7 +40,29 @@ data class CreateQuestionUiState(
     val isCreateQuestionValid: Boolean = false,
     val snackBarMessage: String? = null,
     val creationSuccess: Boolean = false,
-)
+    val selectedQuestionTypeIndex: Int = 0,
+    val items: List<BlankQuestionItem> = listOf(
+        BlankQuestionItem.Blank("낱말"),
+        BlankQuestionItem.Text("텍스트"),
+    ),
+) {
+    val isCreateBlankQuestionValid: Boolean
+        get() = items.any { it is BlankQuestionItem.Blank } &&
+            items.all {
+                (it is BlankQuestionItem.Text && it.text.isNotBlank()) ||
+                    (it is BlankQuestionItem.Blank && it.text.isNotBlank())
+            } &&
+            choiceQuestionCreationInfo.title.isNotBlank()
+
+    val isCreateBlankButtonValid: Boolean
+        get() = items.count { it is BlankQuestionItem.Blank } < 5
+
+    val isCreateTextButtonValid: Boolean
+        get() = items.count { it is BlankQuestionItem.Text } < 5
+
+    val isBlankQuestion: Boolean
+        get() = selectedQuestionTypeIndex == 1
+}
 
 @HiltViewModel
 class CreateQuestionViewModel @Inject constructor(
@@ -156,4 +189,85 @@ class CreateQuestionViewModel @Inject constructor(
             )
         }
     }
+
+    fun onQuestionTypeIndexChange(index: Int) {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                selectedQuestionTypeIndex = index,
+            )
+        }
+    }
+
+    fun addBlankItem() {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                items = currentState.items + BlankQuestionItem.Blank(""),
+            )
+        }
+    }
+
+    fun addTextItem() {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                items = currentState.items + BlankQuestionItem.Text(""),
+            )
+        }
+    }
+
+    fun onBlankQuestionItemValueChanged(word: String, index: Int) {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                items = currentState.items.mapIndexed { i, item ->
+                    if (item is BlankQuestionItem.Blank && i == index) {
+                        BlankQuestionItem.Blank(word)
+                    } else if (item is BlankQuestionItem.Text && i == index) {
+                        BlankQuestionItem.Text(word)
+                    } else {
+                        item
+                    }
+                },
+            )
+        }
+    }
+
+    fun onContentRemove(index: Int) {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                items = currentState.items.filterIndexed { i, _ -> i != index },
+            )
+        }
+
+    }
+
+    fun onCreateBlankQuestion() {
+        val blankQuestionList = mutableListOf<LinkedHashMap<String, String>>()
+        _createQuestionUiState.value.items.forEachIndexed { _, item ->
+            val blankQuestionMap = LinkedHashMap<String, String>()
+            if (item is BlankQuestionItem.Blank) {
+                blankQuestionMap["text"] = item.text
+                blankQuestionMap["type"] = "blank"
+            } else if (item is BlankQuestionItem.Text) {
+                blankQuestionMap["text"] = item.text
+                blankQuestionMap["type"] = "text"
+            }
+            blankQuestionList.add(blankQuestionMap)
+        }
+
+        viewModelScope.launch {
+            questionRepository.createBlankQuestion(
+                BlankQuestionCreationInfo(
+                    title = _createQuestionUiState.value.choiceQuestionCreationInfo.title,
+                    solution = if (_createQuestionUiState.value.choiceQuestionCreationInfo.solution.isNullOrBlank()) null else _createQuestionUiState.value.choiceQuestionCreationInfo.solution,
+                    questionContent = blankQuestionList,
+                ),
+            ).onSuccess { questionId ->
+                saveQuestionToQuiz(questionId)
+            }.onFailure { exception ->
+                Log.e("CreateQuestionViewModel", exception.message, exception)
+                setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
+            }
+
+        }
+    }
+
 }
