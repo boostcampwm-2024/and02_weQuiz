@@ -78,6 +78,12 @@
     <string name="txt_label_pie_chart_4">4번</string>
     <string name="fab_quiz_result">퀴즈 결과 화면 보기 버튼</string>
     <string name="txt_quiz_result">결과 보기</string>
+    <string name="btn_create_quiz_ai">AI 문제 출제 버튼</string>
+    <string name="txt_create_question_ai_title">Ai 추천을 받고 싶군요!\n문제 주제를 선택해주세요!</string>
+    <string name="txt_create_question_ai_confirmTitle">문제 생성</string>
+    <string name="txt_create_question_ai_title_dismissTitle">취소</string>
+    <string name="txt_create_question_ai_title_label">주제</string>
+    <string name="txt_create_question_ai_title_placeholder">주제를 입력해주세요</string>
     <!--  realtime quiz  -->
     <string name="dialog_txt_owner_quit_quiz">정말 나가시나요?\n퀴즈가 완전히 종료됩니다.</string>
     <string name="dialog_txt_finish_quiz">퀴즈를 마무리하시나요?\n모든 참여자에 대해 퀴즈가 종료됩니다.</string>
@@ -104,10 +110,4 @@
     <string name="err_load_current_page">페이지 로드에 실패하였습니다.</string>
     <string name="err_load_owner_name">관리자 이름을 가져오는데 실패했습니다.</string>
     <string name="err_submit_quetion">퀴즈 제출에 실패하였습니다.</string>
-    <string name="btn_create_quiz_ai">AI 문제 출제 버튼</string>
-    <string name="txt_create_question_ai_title">Ai 추천을 받고 싶군요!\n문제 주제를 선택해주세요!</string>
-    <string name="txt_create_question_ai_confirmTitle">문제 생성</string>
-    <string name="txt_create_question_ai_title_dismissTitle">취소</string>
-    <string name="txt_create_question_ai_title_label">주제</string>
-    <string name="txt_create_question_ai_title_placeholder">주제를 입력해주세요</string>
 </resources>
