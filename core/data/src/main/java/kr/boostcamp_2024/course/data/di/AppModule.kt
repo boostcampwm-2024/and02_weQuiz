@@ -52,6 +52,7 @@ object AppModule {
         loggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
+        .addInterceptor(AddHeadInterceptor())
         .build()
 
     @Provides
