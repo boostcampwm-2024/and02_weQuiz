@@ -13,9 +13,9 @@ data class QuizResult(
                 choiceQuestion = choiceQuestions[index],
                 userAnswer = userOmrAnswers,
                 isCorrect = when (userOmrAnswers) {
-                    is Int -> evaluateChoiceQuestion(index, userOmrAnswers)
+                    is Number -> evaluateChoiceQuestion(index, userOmrAnswers)
                     is Map<*, *> -> evaluateBlankQuestion(index, userOmrAnswers)
-                    else -> throw Exception("Invalid user answer type")
+                    else -> false
                 },
             )
         }
@@ -25,7 +25,7 @@ data class QuizResult(
 
     private fun evaluateChoiceQuestion(
         index: Int,
-        userAnswer: Int,
+        userAnswer: Number,
     ): Boolean = userAnswer == (choiceQuestions[index] as ChoiceQuestion).answer
 
     private fun evaluateBlankQuestion(
