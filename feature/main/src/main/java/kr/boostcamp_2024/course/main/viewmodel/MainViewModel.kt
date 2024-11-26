@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
-import kr.boostcamp_2024.course.domain.repository.AiRepository
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
 import kr.boostcamp_2024.course.domain.repository.NotificationRepository
@@ -44,7 +43,6 @@ class MainViewModel @Inject constructor(
     private val userOmrRepository: UserOmrRepository,
     private val notificationRepository: NotificationRepository,
     private val storageRepository: StorageRepository,
-    private val aiRepository: AiRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState
@@ -52,10 +50,6 @@ class MainViewModel @Inject constructor(
             loadCurrentUser()
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), MainUiState())
-
-    init {
-
-    }
 
     fun loadCurrentUser() {
         viewModelScope.launch {
@@ -153,10 +147,6 @@ class MainViewModel @Inject constructor(
                                                                                                 studyGroup.id,
                                                                                             )
                                                                                                 .onSuccess {
-                                                                                                    Log.d(
-                                                                                                        "MainViewModel",
-                                                                                                        "스터디 그룹 삭제 완료",
-                                                                                                    )
                                                                                                     loadCurrentUser() // 스터디 그룹 최신화
                                                                                                 }
                                                                                                 .onFailure {

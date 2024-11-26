@@ -12,11 +12,11 @@ import javax.inject.Inject
 class AiRepositoryImpl @Inject constructor(
     private val aiService: AiService,
 ) : AiRepository {
-    override suspend fun getAiQuestion(topic: String): Result<AiQuestion> =
+    override suspend fun getAiQuestion(question: String): Result<AiQuestion> =
         runCatching {
-            val newMessage = Message("user", topic)
+            val newMessage = Message("user", question)
             val response =
-                aiService.getAiQuestion(AiQuestionRequest(messages = Message.defaultMessage + newMessage))
+                aiService.getAiQuestion(AiQuestionRequest(messages = Message.defaultMessage + newMessage, maxTokens = 1024))
             val content: ContentDTO = Json.decodeFromString(response.result.message.content)
             content.toVO()
         }

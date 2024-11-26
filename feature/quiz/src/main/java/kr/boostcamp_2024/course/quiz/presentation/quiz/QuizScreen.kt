@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +30,6 @@ import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
-import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuizDataButton
 import kr.boostcamp_2024.course.quiz.component.QuizDataChip
 import kr.boostcamp_2024.course.quiz.component.QuizDataText
@@ -178,31 +174,6 @@ fun QuizScreen(
                     onStartRealTimeQuizButtonClick = onStartRealTimeQuizButtonClick,
                     onWaitingRealTimeQuizButtonClick = onWaitingRealTimeQuizButtonClick,
                 )
-            }
-
-            if (quiz is Quiz) {
-                // CreateQuestionButton & StartQuizButton
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onCreateQuestionButtonClick(quiz.id) },
-                    enabled = quiz.isOpened.not(),
-                ) {
-                    when (quiz.isOpened.not()) {
-                        true -> Text(text = stringResource(R.string.txt_open_create_question))
-                        false -> Text(text = stringResource(R.string.txt_close_create_question))
-                    }
-
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { onStartQuizButtonClick(quiz.id) },
-                        enabled = (quiz.isOpened && quiz.questions.isNotEmpty()),
-                    ) {
-                        when (quiz.isOpened && quiz.questions.isEmpty()) {
-                            true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
-                            false -> Text(text = stringResource(R.string.txt_quiz_start))
-                        }
-                    }
-                }
             }
         }
     }
