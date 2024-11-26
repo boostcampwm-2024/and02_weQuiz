@@ -17,9 +17,11 @@ material = "1.10.0"
 jetbrainsKotlinJvm = "2.0.21"
 
 # dataStore
-mpandroidchart = "v3.1.0"
 okhttp = "4.12.0"
 preferencesDataStore = "1.1.1"
+
+# graph
+mpandroidchart = "v3.1.0"
 
 # kotlin symbol processing
 ksp = "2.0.21-1.0.25"
