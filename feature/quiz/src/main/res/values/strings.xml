@@ -98,6 +98,7 @@
     <string name="des_question_detail_top_app_bar_navigation_icon">뒤로 가기</string>
     <!-- error  -->
     <string name="err_load_quiz">퀴즈 로드에 실패했습니다.</string>
+    <string name="err_update_current_question">퀴즈 문제 현황 업데이트에 실패했습니다.</string>
     <string name="error_quiz_finished">퀴즈 종료에 실패했습니다.</string>
     <string name="err_load_questions">문제 로드에 실패했습니다.</string>
     <string name="err_answer_add">퀴즈에 응답 추가 실패했습니다.</string>

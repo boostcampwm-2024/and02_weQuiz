@@ -144,20 +144,27 @@ class OwnerQuestionViewModel @Inject constructor(
     }
 
     fun nextPage() {
-        _uiState.update { currentState ->
-            val newPage = currentState.currentPage + 1
-            setNewBlankQuestionManager(newPage)
-            currentState.copy(currentPage = newPage)
-        }
+        updateCurrentPage(_uiState.value.currentPage + 1)
     }
 
     fun previousPage() {
-        _uiState.update { currentState ->
-            val newPage = currentState.currentPage - 1
-            setNewBlankQuestionManager(newPage)
-            currentState.copy(currentPage = newPage)
-        }
+        updateCurrentPage(_uiState.value.currentPage - 1)
+    }
 
+    private fun updateCurrentPage(pageIdx: Int) {
+        val currentQuizId = requireNotNull(_uiState.value.quiz?.id)
+        viewModelScope.launch {
+            quizRepository.updateQuizCurrentQuestion(currentQuizId, pageIdx)
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(currentPage = pageIdx)
+                    }
+                    setNewBlankQuestionManager(pageIdx)
+                }.onFailure {
+                    Log.e("OwnerQuestionViewModel", "Failed to update current page", it)
+                    showErrorMessage(R.string.err_update_current_question)
+                }
+        }
     }
 
     private fun setNewBlankQuestionManager(pageIdx: Int) {
