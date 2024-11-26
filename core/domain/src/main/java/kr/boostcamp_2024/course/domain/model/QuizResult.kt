@@ -1,7 +1,7 @@
 package kr.boostcamp_2024.course.domain.model
 
 data class QuizResult(
-    val choiceQuestions: List<Question>,
+    val questions: List<Question>,
     val userOmrAnswers: List<Any>,
 ) {
     val totalQuestions: Int
@@ -10,7 +10,7 @@ data class QuizResult(
     val questionResults: List<QuestionResult>
         get() = userOmrAnswers.mapIndexed { index, userOmrAnswers ->
             QuestionResult(
-                choiceQuestion = choiceQuestions[index],
+                choiceQuestion = questions[index],
                 userAnswer = userOmrAnswers,
                 isCorrect = when (userOmrAnswers) {
                     is Int -> evaluateChoiceQuestion(index, userOmrAnswers)
@@ -26,13 +26,13 @@ data class QuizResult(
     private fun evaluateChoiceQuestion(
         index: Int,
         userAnswer: Int,
-    ): Boolean = userAnswer == (choiceQuestions[index] as ChoiceQuestion).answer
+    ): Boolean = userAnswer == (questions[index] as ChoiceQuestion).answer
 
     private fun evaluateBlankQuestion(
         index: Int,
         userAnswer: Map<*, *>,
     ): Boolean {
-        val blankQuestion = choiceQuestions[index] as BlankQuestion
+        val blankQuestion = questions[index] as BlankQuestion
         val blankQuestionContent = blankQuestion.questionContent.filter { it["type"] == "blank" }
         return blankQuestionContent.withIndex().all { (index, content) ->
             content["text"] == userAnswer[index]

@@ -48,7 +48,7 @@ class QuizResultViewModel @Inject constructor(
         when (userOmrAnswers.size == questions.size && questions.isNotEmpty()) {
             true -> {
                 try {
-                    val quizResult = QuizResult(userOmrAnswers = userOmrAnswers, choiceQuestions = questions)
+                    val quizResult = QuizResult(userOmrAnswers = userOmrAnswers, questions = questions)
                     uiState.copy(quizResult = quizResult)
                 } catch (exception: Exception) {
                     Log.e("QuizResultViewModel", "Failed to create QuizResult", exception)

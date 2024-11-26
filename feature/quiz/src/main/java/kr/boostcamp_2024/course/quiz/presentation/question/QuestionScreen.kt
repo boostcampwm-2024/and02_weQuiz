@@ -43,7 +43,7 @@ fun QuestionScreen(
         GeneralQuestionScreen(
             quiz = uiState.quiz,
             currentPage = uiState.currentPage,
-            choiceQuestions = uiState.choiceQuestions,
+            questions = uiState.choiceQuestions,
             countDownTime = uiState.countDownTime,
             selectedIndexList = uiState.selectedIndexList,
             snackbarHostState = snackbarHostState,
