@@ -20,9 +20,9 @@ import javax.inject.Inject
 
 sealed class BlankQuestionItem {
     data class Blank(val text: String) : BlankQuestionItem()
+
     data class Text(val text: String) : BlankQuestionItem()
 }
-
 
 data class CreateQuestionUiState(
     val isLoading: Boolean = false,
@@ -43,16 +43,17 @@ data class CreateQuestionUiState(
     ),
 ) {
     val isCreateBlankQuestionValid: Boolean
-        get() = items.any { it is BlankQuestionItem.Blank }
-                && items.all {
-            (it is BlankQuestionItem.Text && it.text.isNotBlank() || it is BlankQuestionItem.Blank && it.text.isNotBlank())
-        } && choiceQuestionCreationInfo.title.isNotBlank()
+        get() = items.any { it is BlankQuestionItem.Blank } &&
+                items.all {
+                    (it is BlankQuestionItem.Text && it.text.isNotBlank() || it is BlankQuestionItem.Blank
+                            && it.text.isNotBlank())
+                } && choiceQuestionCreationInfo.title.isNotBlank()
 
     val isCreateBlankButtonValid: Boolean
-        get()= items.count {  it is BlankQuestionItem.Blank } < 5
+        get() = items.count { it is BlankQuestionItem.Blank } < 5
 
     val isCreateTextButtonValid: Boolean
-        get()= items.count {  it is BlankQuestionItem.Text } < 5
+        get() = items.count { it is BlankQuestionItem.Text } < 5
 
     val isBlankQuestion: Boolean
         get() = selectedQuestionTypeIndex == 1
@@ -246,6 +247,7 @@ class CreateQuestionViewModel @Inject constructor(
             }
             blankQuestionList.add(blankQuestionMap)
         }
+
         viewModelScope.launch {
             questionRepository.createBlankQuestion(
                 BlankQuestionCreationInfo(
@@ -264,4 +266,3 @@ class CreateQuestionViewModel @Inject constructor(
     }
 
 }
-

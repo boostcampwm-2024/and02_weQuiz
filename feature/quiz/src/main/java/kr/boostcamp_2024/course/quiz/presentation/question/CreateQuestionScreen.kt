@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -38,9 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,16 +48,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLeftChatBubble
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.ConsumeBlankContentUi
 import kr.boostcamp_2024.course.quiz.component.ConsumeTextContentUi
 import kr.boostcamp_2024.course.quiz.component.CreateChoiceItems
 import kr.boostcamp_2024.course.quiz.component.CreateQuestionContent
+import kr.boostcamp_2024.course.quiz.viewmodel.BlankQuestionItem
 import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuestionUiState
 import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuestionViewModel
-import kr.boostcamp_2024.course.quiz.viewmodel.BlankQuestionItem
 
 @Composable
 fun CreateQuestionScreen(
@@ -70,7 +68,7 @@ fun CreateQuestionScreen(
     val focusRequester = remember { FocusRequester() }
     val options = listOf(
         stringResource(R.string.txt_create_general_question),
-        stringResource(R.string.txt_create_blank_question),
+        stringResource(R.string.txt_blank_question),
     )
     LaunchedEffect(uiState) {
         if (uiState.creationSuccess) {
@@ -218,8 +216,7 @@ fun CreateQuestionScreen(
                         onDescriptionChanged = onDescriptionChanged,
                         onSolutionChanged = onSolutionChanged,
                         isBlankQuestion = isBlankQuestion,
-
-                        )
+                    )
                 }
 
                 if (!isBlankQuestion) {
@@ -236,65 +233,63 @@ fun CreateQuestionScreen(
                 }
                 if (isBlankQuestion) {
                     item {
-                        Text(
-                            modifier = Modifier.padding(
-                                horizontal = 16.dp,
-                                vertical = 10.dp,
-                            ),
-                            text = "낱말 맞추기 문제 만들기",
-                        )
-                        FlowRow(
-                            modifier = Modifier
-                                .fillMaxSize(1f)
-                                .padding(16.dp)
-                                .background(Color.Gray)
-                                .padding(10.dp),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            blankQuestionItems.forEachIndexed { index, it ->
-                                when (it) {
-                                    is BlankQuestionItem.Blank -> {
-                                        ConsumeBlankContentUi(
-                                            word = it.text,
-                                            index = index,
-                                            onContentRemove = onContentRemove,
-                                            onValueChanged = onBlankQuestionItemValueChanged,
-                                        )
-                                    }
-
-                                    is BlankQuestionItem.Text -> {
-                                        ConsumeTextContentUi(
-                                            word = it.text,
-                                            index = index,
-                                            onContentRemove = onContentRemove,
-                                            onValueChanged = onBlankQuestionItemValueChanged,
-
+                        Column(modifier = Modifier.padding(top = 10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Text(
+                                modifier = Modifier.padding(
+                                    horizontal = 16.dp,
+                                ),
+                                text = stringResource(R.string.txt_create_blank_question),
+                            )
+                            FlowRow(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                                    .heightIn(min = 180.dp)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    .padding(10.dp),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                blankQuestionItems.forEachIndexed { index, it ->
+                                    when (it) {
+                                        is BlankQuestionItem.Blank -> {
+                                            ConsumeBlankContentUi(
+                                                word = it.text,
+                                                index = index,
+                                                onContentRemove = onContentRemove,
+                                                onValueChanged = onBlankQuestionItemValueChanged,
                                             )
-                                    }
+                                        }
 
+                                        is BlankQuestionItem.Text -> {
+                                            ConsumeTextContentUi(
+                                                word = it.text,
+                                                index = index,
+                                                onContentRemove = onContentRemove,
+                                                onValueChanged = onBlankQuestionItemValueChanged,
+                                            )
+                                        }
+
+                                    }
                                 }
                             }
-                        }
-                    }
-
-                    item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                        ) {
-                            Button(
-                                onClick = onAddTextItemButtonClick,
-                                enabled = isCreateTextButtonValid,
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                             ) {
-                                Text(stringResource(R.string.btn_create_text))
-                            }
+                                Button(
+                                    onClick = onAddTextItemButtonClick,
+                                    enabled = isCreateTextButtonValid,
+                                ) {
+                                    Text(stringResource(R.string.btn_create_text))
+                                }
 
-                            Button(
-                                onClick = onAddBlankItemButtonClick,
-                                enabled = isCreateBlankButtonValid,
-                            ) {
-                                Text(stringResource(R.string.btn_create_blank))
+                                Button(
+                                    onClick = onAddBlankItemButtonClick,
+                                    enabled = isCreateBlankButtonValid,
+                                ) {
+                                    Text(stringResource(R.string.btn_create_blank))
+                                }
                             }
                         }
                     }
@@ -346,37 +341,6 @@ fun CreateQuestionScreen(
         }
     }
 }
-
-
-@Composable
-fun CreateQuestionGuideContent(
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        WeQuizLocalRoundedImage(
-            modifier = Modifier.size(120.dp),
-            imagePainter = painterResource(id = R.drawable.img_clock_character),
-            contentDescription = null,
-        )
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            WeQuizLeftChatBubble(
-                text = stringResource(id = R.string.txt_create_question_guide1),
-            )
-            WeQuizLeftChatBubble(
-                text = stringResource(id = R.string.txt_create_question_guide2),
-            )
-        }
-    }
-}
-
 
 @Preview(showBackground = true)
 @Composable
