@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
@@ -44,10 +42,9 @@ import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
+import kr.boostcamp_2024.course.quiz.component.QuizContent
 import kr.boostcamp_2024.course.quiz.component.QuizOwnerDialog
-import kr.boostcamp_2024.course.quiz.component.RealTimeQuestion
 import kr.boostcamp_2024.course.quiz.viewmodel.OwnerQuestionViewModel
 
 @Composable
@@ -73,6 +70,12 @@ fun OwnerQuestionScreen(
         onNextButtonClick = questionViewModel::nextPage,
         onPreviousButtonClick = questionViewModel::previousPage,
         onQuizFinishButtonClick = questionViewModel::setQuizFinished,
+        showErrorMessage = questionViewModel::showErrorMessage,
+        blankQuestionContents = uiState.blankQuestionContents,
+        blankWords = uiState.blankWords,
+        removeBlankWord = questionViewModel.blankQuestionManager::removeBlankContent,
+        addBlankWord = questionViewModel.blankQuestionManager::addBlankContent,
+        getBlankQuestionAnswer = questionViewModel.blankQuestionManager::getAnswer,
     )
 
     if (uiState.isQuizFinished) {
@@ -98,6 +101,12 @@ fun OwnerQuestionScreen(
     onNextButtonClick: () -> Unit,
     onPreviousButtonClick: () -> Unit,
     onQuizFinishButtonClick: () -> Unit,
+    showErrorMessage: (Int) -> Unit,
+    blankQuestionContents: List<Map<String, Any>?>,
+    blankWords: List<Map<String, Any>>,
+    removeBlankWord: (Int) -> Unit,
+    addBlankWord: (Int) -> Unit,
+    getBlankQuestionAnswer: () -> Map<String, String?>,
 ) {
     var showQuitQuizDialog by rememberSaveable { mutableStateOf(false) }
     var showFinishQuizDialog by rememberSaveable { mutableStateOf(false) }
@@ -145,29 +154,23 @@ fun OwnerQuestionScreen(
                             )
                         }
                         item {
-                            HorizontalPager(
-                                state = rememberPagerState(
-                                    initialPage = currentPage,
-                                    pageCount = { choiceQuestions.size },
-                                ),
-                                userScrollEnabled = false,
-                            ) {
-                                Column {
-                                    QuestionTitleAndDetail(
-                                        title = currentQuestion.title,
-                                        description = currentQuestion.description,
-                                    )
-
-                                    RealTimeQuestion(
-                                        isOwner = true,
-                                        questions = currentQuestion.choices,
-                                        selectedIndex = currentQuestion.answer,
-                                    )
-                                }
-                            }
+                            QuizContent(
+                                isOwner = true,
+                                isRealTime = true,
+                                currentPage = currentPage,
+                                selectedIndexList = currentQuestion.userAnswers,
+                                onOptionSelected = { _, _ -> },
+                                questions = choiceQuestions,
+                                showErrorMessage = showErrorMessage,
+                                onBlanksSelected = { _, _ -> },
+                                blankQuestionContents = blankQuestionContents,
+                                blankWords = blankWords,
+                                removeBlankContent = removeBlankWord,
+                                addBlankContent = addBlankWord,
+                                getBlankQuestionAnswer = getBlankQuestionAnswer,
+                            )
                         }
                     }
-                    // todo: blank question 처리 해야 해요!!
                 }
             }
 

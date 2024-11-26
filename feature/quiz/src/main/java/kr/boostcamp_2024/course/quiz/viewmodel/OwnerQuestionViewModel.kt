@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.domain.model.BlankQuestion
+import kr.boostcamp_2024.course.domain.model.BlankQuestionManager
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
@@ -29,6 +31,8 @@ data class RealTimeWithOwnerQuestionUiState(
     val errorMessageId: Int? = null,
     val currentUserId: String? = null,
     val isQuizFinished: Boolean = false,
+    val blankQuestionContents: List<Map<String, Any>?> = emptyList(),
+    val blankWords: List<Map<String, Any>> = emptyList(),
 )
 
 @HiltViewModel
@@ -39,6 +43,7 @@ class OwnerQuestionViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<RealTimeWithOwnerQuestionUiState> = MutableStateFlow(RealTimeWithOwnerQuestionUiState())
     val uiState: StateFlow<RealTimeWithOwnerQuestionUiState> = _uiState.asStateFlow()
+    val blankQuestionManager = BlankQuestionManager(::setNewBlankContents)
 
     fun initQuizData(quiz: RealTimeQuiz?, currentUserId: String?) {
         _uiState.update { currentState ->
@@ -140,13 +145,38 @@ class OwnerQuestionViewModel @Inject constructor(
 
     fun nextPage() {
         _uiState.update { currentState ->
-            currentState.copy(currentPage = currentState.currentPage + 1)
+            val newPage = currentState.currentPage + 1
+            setNewBlankQuestionManager(newPage)
+            currentState.copy(currentPage = newPage)
         }
     }
 
     fun previousPage() {
         _uiState.update { currentState ->
-            currentState.copy(currentPage = currentState.currentPage - 1)
+            val newPage = currentState.currentPage - 1
+            setNewBlankQuestionManager(newPage)
+            currentState.copy(currentPage = newPage)
+        }
+
+    }
+
+    private fun setNewBlankQuestionManager(pageIdx: Int) {
+        val currentQuestion = _uiState.value.choiceQuestions[pageIdx]
+        if (currentQuestion is BlankQuestion) {
+            blankQuestionManager.setNewQuestions(
+                isOwner = true,
+                questionContents = currentQuestion.questionContent,
+            )
+            setNewBlankContents()
+        }
+    }
+
+    private fun setNewBlankContents() {
+        _uiState.update {
+            it.copy(
+                blankQuestionContents = blankQuestionManager.contents,
+                blankWords = blankQuestionManager.blankWords,
+            )
         }
     }
 

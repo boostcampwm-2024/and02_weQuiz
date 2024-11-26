@@ -52,7 +52,13 @@ fun QuestionScreen(
             onPreviousButtonClick = questionViewModel::previousPage,
             onSubmitButtonClick = questionViewModel::submitAnswers,
             onNavigationButtonClick = onNavigationButtonClick,
-            showErrorMessage = questionViewModel::shownErrorMessage,
+            showErrorMessage = questionViewModel::showErrorMessage,
+            onBlanksSelected = questionViewModel::selectBlanks,
+            blankQuestionContents = uiState.blankQuestionContents,
+            blankWords = uiState.blankWords,
+            removeBlankContent = questionViewModel.blankQuestionManager::removeBlankContent,
+            addBlankContent = questionViewModel.blankQuestionManager::addBlankContent,
+            getBlankQuestionAnswer = questionViewModel.blankQuestionManager::getAnswer,
         )
     }
 

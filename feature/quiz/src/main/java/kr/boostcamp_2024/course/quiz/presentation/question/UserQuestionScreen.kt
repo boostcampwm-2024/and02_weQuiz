@@ -3,15 +3,10 @@ package kr.boostcamp_2024.course.quiz.presentation.question
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -35,13 +30,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
-import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
-import kr.boostcamp_2024.course.quiz.component.UserQuestion
-import kr.boostcamp_2024.course.quiz.presentation.viewmodel.UserQuestionViewModel
+import kr.boostcamp_2024.course.quiz.component.QuizContent
+import kr.boostcamp_2024.course.quiz.viewmodel.UserQuestionViewModel
 
 @Composable
 fun UserQuestionScreen(
@@ -62,10 +55,16 @@ fun UserQuestionScreen(
         selectedIndexList = uiState.selectedIndexList,
         snackbarHostState = snackbarHostState,
         onOptionSelected = userQuestionViewModel::selectOption,
+        onBlanksSelected = userQuestionViewModel::selectBlanks,
         onNavigationButtonClick = onNavigationButtonClick,
         onSubmitButtonClick = userQuestionViewModel::submitQuestion,
         isSubmitted = uiState.isSubmitted,
         onQuizFinishButtonClick = userQuestionViewModel::submitAnswers,
+        blankQuestionContents = uiState.blankQuestionContents,
+        blankWords = uiState.blankWords,
+        removeBlankContent = userQuestionViewModel.blankQuestionManager::removeBlankContent,
+        addBlankContent = userQuestionViewModel.blankQuestionManager::addBlankContent,
+        getBlankQuestionAnswer = userQuestionViewModel.blankQuestionManager::getAnswer,
     )
 
     uiState.errorMessageId?.let { errorMessageId ->
@@ -94,13 +93,19 @@ fun UserQuestionScreen(
     choiceQuestions: List<Question>,
     quizFinishDialog: Boolean,
     onQuizFinishDialogDismissButtonClick: () -> Unit,
-    selectedIndexList: List<Int>,
+    selectedIndexList: List<Any?>,
     snackbarHostState: SnackbarHostState,
     onOptionSelected: (Int, Int) -> Unit,
+    onBlanksSelected: (Int, Map<String, String?>) -> Unit,
     onNavigationButtonClick: () -> Unit,
     onSubmitButtonClick: (String) -> Unit,
     isSubmitted: Boolean,
     onQuizFinishButtonClick: () -> Unit,
+    blankQuestionContents: List<Map<String, Any>?>,
+    blankWords: List<Map<String, Any>>,
+    removeBlankContent: (Int) -> Unit,
+    addBlankContent: (Int) -> Unit,
+    getBlankQuestionAnswer: () -> Map<String, String?>,
 ) {
     var showExitDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -128,46 +133,30 @@ fun UserQuestionScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding),
         ) {
-            LazyColumn {
+            LinearProgressIndicator(
+                progress = { (currentPage + 1) / choiceQuestions.size.toFloat() },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            LazyColumn(
+                modifier = Modifier.padding(
+                    vertical = 20.dp,
+                ),
+            ) {
                 item {
-                    LinearProgressIndicator(
-                        progress = { (currentPage + 1) / choiceQuestions.size.toFloat() },
-                        modifier = Modifier.fillMaxWidth(),
+                    QuizContent(
+                        currentPage = currentPage,
+                        selectedIndexList = selectedIndexList,
+                        onOptionSelected = onOptionSelected,
+                        questions = choiceQuestions,
+                        showErrorMessage = { /* no-op */ },
+                        onBlanksSelected = onBlanksSelected,
+                        blankQuestionContents = blankQuestionContents,
+                        blankWords = blankWords,
+                        removeBlankContent = removeBlankContent,
+                        addBlankContent = addBlankContent,
+                        getBlankQuestionAnswer = getBlankQuestionAnswer,
                     )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-
-                item {
-                    HorizontalPager(
-                        state = rememberPagerState(
-                            initialPage = currentPage,
-                            pageCount = { choiceQuestions.size },
-                        ),
-                        userScrollEnabled = false,
-                    ) {
-                        Column {
-                            val currentQuestion = choiceQuestions[currentPage]
-                            if (currentQuestion is ChoiceQuestion) {
-                                QuestionTitleAndDetail(
-                                    title = choiceQuestions[currentPage].title,
-                                    description = currentQuestion.description,
-                                )
-
-                                UserQuestion(
-                                    questions = currentQuestion.choices,
-                                    selectedIndex = selectedIndexList[currentPage],
-                                    onOptionSelected = { newIndex ->
-                                        onOptionSelected(currentPage, newIndex)
-                                    },
-                                    enable = !isSubmitted,
-                                )
-                            }
-                            // TODO: blank question 처리 해야 해요!!
-                        }
-                    }
                 }
 
                 item {
