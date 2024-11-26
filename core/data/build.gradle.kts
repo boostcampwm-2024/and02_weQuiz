@@ -2,6 +2,7 @@ plugins {
     id("convention.android.library")
     id("convention.firebase")
     id("convention.android.hilt")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -18,4 +19,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     implementation(libs.kotlinx.coroutines)
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.converter.kotlinx.serialization)
 }

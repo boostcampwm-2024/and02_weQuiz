@@ -19,6 +19,7 @@ import javax.inject.Inject
 
 data class CreateQuestionUiState(
     val isLoading: Boolean = false,
+    val showDialog: Boolean = false,
     val questionCreationInfo: QuestionCreationInfo = QuestionCreationInfo(
         title = "",
         description = "",
@@ -155,5 +156,62 @@ class CreateQuestionViewModel @Inject constructor(
                 snackBarMessage = message,
             )
         }
+    }
+
+    fun showDialog() {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                showDialog = true,
+            )
+        }
+    }
+
+    fun closeDialog() {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                showDialog = false,
+            )
+        }
+    }
+
+    fun getAiRecommendedQuestion(category: String) {
+        setLoadingState(true)
+        viewModelScope.launch {
+            try {
+                // TODO: 실제 AI 추천 API 호출 로직 작성
+                setAiRecommendedQuestion(
+                    QuestionCreationInfo(
+                        title = "AI 추천 문제",
+                        description = "AI 추천 문제 설명",
+                        solution = "AI 추천 문제",
+                        answer = getAnswerIndex("AI 추천 문제 선택지 2", List(4) { "AI 추천 문제 선택지 $it" }),
+                        choices = List(4) { "AI 추천 문제 선택지 $it" },
+                    ),
+                )
+                _createQuestionUiState.update { currentState ->
+                    currentState.copy(
+                        isLoading = false,
+                        snackBarMessage = "AI 추천 문제를 성공적으로 가져왔습니다!",
+                    )
+                }
+            } catch (exception: Exception) {
+                Log.e("CreateQuestionViewModel", exception.message, exception)
+                setNewSnackBarMessage("AI 추천 문제 가져오기에 실패했습니다. 다시 시도해주세요!")
+            } finally {
+                setLoadingState(false)
+            }
+        }
+    }
+
+    private fun setAiRecommendedQuestion(questionCreationInfo: QuestionCreationInfo) {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                questionCreationInfo = questionCreationInfo,
+            )
+        }
+    }
+
+    private fun getAnswerIndex(answer: String, choices: List<String>): Int {
+        return choices.indexOf(answer)
     }
 }

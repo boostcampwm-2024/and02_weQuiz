@@ -104,4 +104,10 @@
     <string name="err_load_current_page">페이지 로드에 실패하였습니다.</string>
     <string name="err_load_owner_name">관리자 이름을 가져오는데 실패했습니다.</string>
     <string name="err_submit_quetion">퀴즈 제출에 실패하였습니다.</string>
+    <string name="btn_create_quiz_ai">AI 문제 출제 버튼</string>
+    <string name="txt_create_question_ai_title">Ai 추천을 받고 싶군요!\n문제 주제를 선택해주세요!</string>
+    <string name="txt_create_question_ai_confirmTitle">문제 생성</string>
+    <string name="txt_create_question_ai_title_dismissTitle">취소</string>
+    <string name="txt_create_question_ai_title_label">주제</string>
+    <string name="txt_create_question_ai_title_placeholder">주제를 입력해주세요</string>
 </resources>
