@@ -19,9 +19,13 @@ import kr.boostcamp_2024.course.quiz.navigation.CreateQuestionRoute
 import javax.inject.Inject
 
 sealed class BlankQuestionItem {
-    data class Blank(val text: String) : BlankQuestionItem()
+    data class Blank(
+        val text: String,
+    ) : BlankQuestionItem()
 
-    data class Text(val text: String) : BlankQuestionItem()
+    data class Text(
+        val text: String,
+    ) : BlankQuestionItem()
 }
 
 data class CreateQuestionUiState(
@@ -45,11 +49,10 @@ data class CreateQuestionUiState(
     val isCreateBlankQuestionValid: Boolean
         get() = items.any { it is BlankQuestionItem.Blank } &&
             items.all {
-                (
-                    it is BlankQuestionItem.Text && it.text.isNotBlank() || it is BlankQuestionItem.Blank &&
-                        it.text.isNotBlank()
-                )
-            } && choiceQuestionCreationInfo.title.isNotBlank()
+                (it is BlankQuestionItem.Text && it.text.isNotBlank()) ||
+                    (it is BlankQuestionItem.Blank && it.text.isNotBlank())
+            } &&
+            choiceQuestionCreationInfo.title.isNotBlank()
 
     val isCreateBlankButtonValid: Boolean
         get() = items.count { it is BlankQuestionItem.Blank } < 5
