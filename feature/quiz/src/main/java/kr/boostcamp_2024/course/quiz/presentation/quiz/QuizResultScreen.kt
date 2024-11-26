@@ -96,59 +96,59 @@ fun QuizResultScreen(
             quizResultViewModel.shownErrorMessage()
         }
     }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun QuizResultScreen(
-    quizTitle: String?,
-    quizResult: QuizResult?,
-    snackbarHostState: SnackbarHostState,
-    onNavigationButtonClick: () -> Unit,
-    onQuestionClick: (String) -> Unit,
-) {
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun QuizResultScreen(
+        quizTitle: String?,
+        quizResult: QuizResult?,
+        snackbarHostState: SnackbarHostState,
+        onNavigationButtonClick: () -> Unit,
+        onQuestionClick: (String) -> Unit,
+    ) {
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = quizTitle ?: "",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigationButtonClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.btn_navigation),
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = {
+                        Text(
+                            text = quizTitle ?: "",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
-                    }
-                },
-            )
-        },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-    ) { innerPadding ->
-
-        quizResult?.let { quizResult ->
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-            ) {
-                // 캐릭터 & 점수
-                QuizResultContent(
-                    totalQuestions = quizResult.totalQuestions,
-                    correctQuestions = quizResult.correctQuestions,
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onNavigationButtonClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = stringResource(R.string.btn_navigation),
+                            )
+                        }
+                    },
                 )
-                // 문제 리스트
-                QuestionResultListContent(
-                    questionResults = quizResult.questionResults,
-                    onQuestionClick = onQuestionClick,
-                )
+            },
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        ) { innerPadding ->
+
+            quizResult?.let { quizResult ->
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                ) {
+                    // 캐릭터 & 점수
+                    QuizResultContent(
+                        totalQuestions = quizResult.totalQuestions,
+                        correctQuestions = quizResult.correctQuestions,
+                    )
+                    // 문제 리스트
+                    QuestionResultListContent(
+                        questionResults = quizResult.questionResults,
+                        onQuestionClick = onQuestionClick,
+                    )
+                }
             }
         }
     }

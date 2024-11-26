@@ -49,7 +49,7 @@ import kr.boostcamp_2024.course.quiz.utils.timerFormat
 fun GeneralQuestionScreen(
     quiz: BaseQuiz?,
     currentPage: Int,
-    choiceQuestions: List<Question>,
+    questions: List<Question>,
     countDownTime: Int,
     selectedIndexList: List<Int>,
     snackbarHostState: SnackbarHostState,
@@ -84,7 +84,7 @@ fun GeneralQuestionScreen(
             LazyColumn {
                 item {
                     LinearProgressIndicator(
-                        progress = { (currentPage + 1) / choiceQuestions.size.toFloat() },
+                        progress = { (currentPage + 1) / questions.size.toFloat() },
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
@@ -113,11 +113,11 @@ fun GeneralQuestionScreen(
                     HorizontalPager(
                         state = rememberPagerState(
                             initialPage = currentPage,
-                            pageCount = { choiceQuestions.size },
+                            pageCount = { questions.size },
                         ),
                         userScrollEnabled = false,
                     ) {
-                        val currentQuestion = choiceQuestions[currentPage]
+                        val currentQuestion = questions[currentPage]
                         if (currentQuestion is ChoiceQuestion) {
                             Column {
                                 QuestionTitleAndDetail(
@@ -148,7 +148,7 @@ fun GeneralQuestionScreen(
             ) {
                 Button(
                     onClick = {
-                        if (currentPage < choiceQuestions.size - 1) {
+                        if (currentPage < questions.size - 1) {
                             onNextButtonClick()
                         } else {
                             showDialog = true
@@ -157,7 +157,7 @@ fun GeneralQuestionScreen(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
-                        text = if (currentPage == choiceQuestions.size - 1) {
+                        text = if (currentPage == questions.size - 1) {
                             stringResource(R.string.txt_question_done)
                         } else {
                             stringResource(R.string.txt_question_next_question)
@@ -186,12 +186,12 @@ fun GeneralQuestionScreen(
 
         if (showDialog) {
             WeQuizBaseDialog(
-                title = if (currentPage == choiceQuestions.size - 1) {
+                title = if (currentPage == questions.size - 1) {
                     stringResource(R.string.dialog_submit_script)
                 } else {
                     stringResource(R.string.dialog_exit_script)
                 },
-                confirmTitle = if (currentPage == choiceQuestions.size - 1) {
+                confirmTitle = if (currentPage == questions.size - 1) {
                     stringResource(R.string.txt_question_submit)
                 } else {
                     stringResource(R.string.txt_question_exit)
@@ -199,7 +199,7 @@ fun GeneralQuestionScreen(
                 dismissTitle = stringResource(R.string.txt_question_cancel),
                 onConfirm = {
                     showDialog = false
-                    if (currentPage == choiceQuestions.size - 1) {
+                    if (currentPage == questions.size - 1) {
                         onSubmitButtonClick()
                     } else {
                         onNavigationButtonClick()
@@ -220,7 +220,7 @@ fun GeneralQuestionScreenPreview() {
         GeneralQuestionScreen(
             quiz = null,
             currentPage = 0,
-            choiceQuestions = emptyList(),
+            questions = emptyList(),
             countDownTime = 0,
             selectedIndexList = emptyList(),
             snackbarHostState = SnackbarHostState(),
