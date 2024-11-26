@@ -99,10 +99,17 @@ class QuestionViewModel @Inject constructor(
             }
             questionRepository.getQuestions(questionIds)
                 .onSuccess { questions ->
+                    val baseSelectedList = questions.map {
+                        if (it is BlankQuestion) {
+                            mapOf<Int, String?>()
+                        } else {
+                            -1
+                        }
+                    }
                     _uiState.update { currentState ->
                         currentState.copy(
                             choiceQuestions = questions,
-                            selectedIndexList = List(questions.size) { -1 },
+                            selectedIndexList = baseSelectedList,
                             isLoading = false,
                         )
                     }
