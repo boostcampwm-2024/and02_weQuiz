@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.UserOmrCreationInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
@@ -29,7 +30,7 @@ data class QuestionUiState(
     val isSubmitting: Boolean = false,
     val currentPage: Int = 0,
     val selectedIndexList: List<Int> = emptyList(),
-    val countDownTime: Int = 20 * 60,
+    val countDownTime: Int? = null,
     val isLoading: Boolean = false,
     val errorMessageId: Int? = null,
     val currentUserId: String? = null,
@@ -56,11 +57,16 @@ class QuestionViewModel @Inject constructor(
     private fun initial() {
         viewModelScope.launch {
             loadCurrentUserId()
-
             _uiState.update { it.copy(isLoading = true) }
             quizRepository.getQuiz(quizId)
                 .onSuccess { quiz ->
-                    _uiState.update { it.copy(isLoading = false, quiz = quiz) }
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            quiz = quiz,
+                        )
+                    }
+                    setTimer()
                     loadQuestions(quiz.questions)
                 }
                 .onFailure {
@@ -71,19 +77,23 @@ class QuestionViewModel @Inject constructor(
         }
     }
 
+    private fun setTimer() {
+        val currentQuiz = _uiState.value.quiz
+        if (currentQuiz is Quiz) {
+            _uiState.update { it.copy(countDownTime = currentQuiz.solveTime) }
+        }
+    }
+
     private fun loadCurrentUserId() {
         viewModelScope.launch {
-
             authRepository.getUserKey()
                 .onSuccess { currentUser ->
-
                     _uiState.update { it.copy(currentUserId = currentUser) }
                 }
                 .onFailure {
                     Log.e("MainViewModel", "Failed to load current user", it)
                     _uiState.update { it.copy(errorMessageId = R.string.err_load_current_user) }
                 }
-
         }
     }
 
@@ -142,12 +152,14 @@ class QuestionViewModel @Inject constructor(
         }
     }
 
-    fun updateTimer() {
-        viewModelScope.launch {
-            while (_uiState.value.countDownTime > 0) {
-                delay(1000L)
-                _uiState.update { currentState ->
-                    currentState.copy(countDownTime = currentState.countDownTime - 1)
+    private fun updateTimer() {
+        _uiState.value.countDownTime?.let { currentCountDownTime ->
+            viewModelScope.launch {
+                while (currentCountDownTime > 0) {
+                    delay(1000L)
+                    _uiState.update { currentState ->
+                        currentState.copy(countDownTime = currentCountDownTime - 1)
+                    }
                 }
             }
         }
@@ -156,7 +168,6 @@ class QuestionViewModel @Inject constructor(
     fun submitAnswers() {
         viewModelScope.launch {
             _uiState.update { it.copy(isSubmitting = true) }
-
             _uiState.value.currentUserId?.let { userId ->
                 val userOmrCreationInfo = UserOmrCreationInfo(
                     userId = userId,
