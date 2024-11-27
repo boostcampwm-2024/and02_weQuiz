@@ -5,10 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
-import android.util.Patterns
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -20,18 +20,20 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 import kr.boostcamp_2024.course.domain.model.UserSubmitInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.StorageRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.login.R
 import kr.boostcamp_2024.course.login.model.UserUiModel
+import kr.boostcamp_2024.course.login.navigation.CustomNavType.UserUiModelType
+import kr.boostcamp_2024.course.login.navigation.SignUpRoute
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
+import kotlin.reflect.typeOf
 
 data class SignUpUiState(
     val isLoading: Boolean = false,
@@ -46,14 +48,8 @@ data class SignUpUiState(
     val isSubmitSuccess: Boolean = false,
     val snackBarMessage: Int? = null,
 ) {
-    val isSignUpButtonEnabled: Boolean
-        get() = userSubmitInfo.email.isNotBlank() &&
-            userSubmitInfo.name.isNotBlank() &&
-            isEmailValid
-    val isEmailValid: Boolean
-        get() = userSubmitInfo.email.isNotBlank() &&
-            Patterns.EMAIL_ADDRESS.matcher(userSubmitInfo.email)
-                .matches()
+    val isSignUpButtonEnabled: Boolean = userSubmitInfo.email.isNotBlank() &&
+        userSubmitInfo.name.isNotBlank()
 }
 
 @HiltViewModel
@@ -64,22 +60,22 @@ class SignUpViewModel @Inject constructor(
     private val userRepository: UserRepository,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
-    private val userUiModel = savedStateHandle.get<String>("userUiModel?")?.let {
-        Json.decodeFromString(UserUiModel.serializer(), it)
-    }
-    private val userId: String? = savedStateHandle.get<String>("userId?")
+    private val userUiModel = savedStateHandle.toRoute<SignUpRoute>(mapOf(typeOf<UserUiModel?>() to UserUiModelType)).userUiModel
+    private val userId = savedStateHandle.toRoute<SignUpRoute>(mapOf(typeOf<UserUiModel?>() to UserUiModelType)).userId
+
     private val _signUpUiState: MutableStateFlow<SignUpUiState> = MutableStateFlow(SignUpUiState())
-    val signUpUiState: StateFlow<SignUpUiState> = _signUpUiState.onStart {
-        if (userId != null) {
-            loadUser()
-        } else {
-            setUserUiModel()
-        }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000L),
-        SignUpUiState(),
-    )
+    val signUpUiState: StateFlow<SignUpUiState> = _signUpUiState
+        .onStart {
+            if (userId != null) {
+                loadUser()
+            } else {
+                setUserUiModel()
+            }
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            SignUpUiState(),
+        )
 
     private fun setUserUiModel() {
         try {
@@ -87,8 +83,8 @@ class SignUpViewModel @Inject constructor(
                 it.copy(
                     userSubmitInfo = UserSubmitInfo(
                         email = requireNotNull(userUiModel?.email),
-                        name = requireNotNull(userUiModel?.name),
-                        profileImageUrl = userUiModel?.profileImageUrl,
+                        name = requireNotNull(userUiModel.name),
+                        profileImageUrl = userUiModel.profileImageUrl,
                     ),
                 )
             }
@@ -116,14 +112,6 @@ class SignUpViewModel @Inject constructor(
                     Log.e("MainViewModel", "Failed to load user", it)
                 }
             }
-        }
-    }
-
-    fun onEmailChanged(email: String) {
-        _signUpUiState.update { currentState ->
-            currentState.copy(
-                userSubmitInfo = currentState.userSubmitInfo.copy(email = email),
-            )
         }
     }
 
@@ -174,7 +162,7 @@ class SignUpViewModel @Inject constructor(
             )
             userRepository.addUser(requireNotNull(userUiModel?.id), userCreationInfo)
                 .onSuccess {
-                    saveUserKey(requireNotNull(userUiModel?.id))
+                    saveUserKey(requireNotNull(userUiModel.id))
                 }.onFailure {
                     Log.e("SignUpViewModel", "Failed to sign up", it)
                     setNewSnackBarMessage(R.string.error_sign_up)
