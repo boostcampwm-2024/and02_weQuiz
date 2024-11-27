@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.presentation.question
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +23,7 @@ import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 fun PieChartScreen(userAnswers: List<Int>) {
+    Log.d("PieChartScreen", "userAnswers: $userAnswers")
     val totalInfo = mutableListOf<PieEntry>()
     val pieChartStrings: List<String> = listOf(
         stringResource(R.string.txt_label_pie_chart_1),
@@ -44,6 +46,12 @@ fun PieChartScreen(userAnswers: List<Int>) {
         }
         valueTextColor = Color.Black.toArgb()
         valueTextSize = 16f
+
+        valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return value.toInt().toString() // 정수로 변환하여 반환
+            }
+        }
     }
 
     val pieData = PieData(pieDataSet)
