@@ -156,7 +156,6 @@ class QuestionViewModel @Inject constructor(
     fun submitAnswers() {
         viewModelScope.launch {
             _uiState.update { it.copy(isSubmitting = true) }
-
             _uiState.value.currentUserId?.let { userId ->
                 val userOmrCreationInfo = UserOmrCreationInfo(
                     userId = userId,
@@ -167,7 +166,17 @@ class QuestionViewModel @Inject constructor(
                     .onSuccess { userOmrId ->
                         quizRepository.addUserOmrToQuiz(quizId, userOmrId)
                             .onSuccess {
-                                _uiState.update { it.copy(isSubmitting = true, userOmrId = userOmrId) }
+                                _uiState.update { it.copy(userOmrId = userOmrId) }
+                                _uiState.value.questions.forEachIndexed { index, question ->
+                                    questionRepository.updateCurrentSubmit(question.id, _uiState.value.selectedIndexList[index])
+                                        .onSuccess {
+                                            _uiState.update { it.copy(isSubmitting = true) }
+                                        }
+                                        .onFailure {
+                                            Log.e("QuestionViewModel", "user_answers 업데이트 실패")
+                                            _uiState.update { it.copy(isSubmitting = false, errorMessageId = R.string.err_add_user_answers) }
+                                        }
+                                }
                             }
                             .onFailure {
                                 Log.e("QuestionViewModel", "userOmrId 업데이트 실패", it)
