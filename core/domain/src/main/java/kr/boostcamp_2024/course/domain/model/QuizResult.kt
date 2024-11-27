@@ -2,28 +2,46 @@ package kr.boostcamp_2024.course.domain.model
 
 data class QuizResult(
     val questions: List<Question>,
-    val userOmrAnswers: List<Int>,
+    val userOmrAnswers: List<Any>,
 ) {
     val totalQuestions: Int
         get() = userOmrAnswers.size
 
-    val correctQuestions: Int
-        get() = userOmrAnswers.withIndex().count { (index, userAnswer) ->
-            userAnswer == questions[index].answer
-        }
-
     val questionResults: List<QuestionResult>
         get() = userOmrAnswers.mapIndexed { index, userOmrAnswers ->
             QuestionResult(
-                question = questions[index],
+                choiceQuestion = questions[index],
                 userAnswer = userOmrAnswers,
-                isCorrect = questions[index].answer == userOmrAnswers,
+                isCorrect = when (userOmrAnswers) {
+                    is Number -> evaluateChoiceQuestion(index, userOmrAnswers)
+                    is Map<*, *> -> evaluateBlankQuestion(index, userOmrAnswers)
+                    else -> false
+                },
             )
         }
+
+    val correctQuestions: Int
+        get() = questionResults.count { it.isCorrect }
+
+    private fun evaluateChoiceQuestion(
+        index: Int,
+        userAnswer: Number,
+    ): Boolean = userAnswer == (questions[index] as ChoiceQuestion).answer
+
+    private fun evaluateBlankQuestion(
+        index: Int,
+        userAnswer: Map<*, *>,
+    ): Boolean {
+        val blankQuestion = questions[index] as BlankQuestion
+        val blankQuestionContent = blankQuestion.questionContent.filter { it["type"] == "blank" }
+        return blankQuestionContent.withIndex().all { (index, content) ->
+            content["text"] == userAnswer[index.toString()]
+        }
+    }
 }
 
 data class QuestionResult(
-    val question: Question,
-    val userAnswer: Int,
+    val choiceQuestion: Question,
+    val userAnswer: Any,
     val isCorrect: Boolean,
 )

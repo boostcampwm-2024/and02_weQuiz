@@ -174,11 +174,6 @@ class QuizRepositoryImpl @Inject constructor(
         }
     }
 
-    companion object {
-        private const val GENERAL_QUIZ = "general"
-        private const val REAL_TIME_QUIZ = "realTime"
-    }
-
     override fun observeRealTimeQuiz(quizId: String): Flow<Result<RealTimeQuiz>> = callbackFlow {
         val quizDocument = quizCollectionRef.document(quizId)
         val listener = quizDocument.addSnapshotListener { documentSnapshot, error ->
@@ -209,4 +204,16 @@ class QuizRepositoryImpl @Inject constructor(
                 .update("is_finished", true)
                 .await()
         }
+
+    override suspend fun updateQuizCurrentQuestion(quizId: String, currentQuestion: Int): Result<Unit> =
+        runCatching {
+            quizCollectionRef.document(quizId)
+                .update("current_question", currentQuestion)
+                .await()
+        }
+
+    companion object {
+        private const val GENERAL_QUIZ = "general"
+        private const val REAL_TIME_QUIZ = "realTime"
+    }
 }

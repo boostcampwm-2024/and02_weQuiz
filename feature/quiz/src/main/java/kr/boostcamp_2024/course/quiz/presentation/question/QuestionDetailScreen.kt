@@ -28,8 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.domain.model.BlankQuestion
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.quiz.R
+import kr.boostcamp_2024.course.quiz.component.BlankQuestionDescription
 import kr.boostcamp_2024.course.quiz.component.QuestionDescription
 import kr.boostcamp_2024.course.quiz.component.QuestionDetailTopAppBar
 import kr.boostcamp_2024.course.quiz.component.QuestionItems
@@ -46,11 +49,7 @@ fun QuestionDetailScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     QuestionDetailScreen(
-        title = uiState.title,
-        description = uiState.description,
-        choices = uiState.choices,
-        answer = uiState.answer,
-        solution = uiState.solution,
+        question = uiState.question,
         errorMessage = uiState.errorMessage,
         onNavigationButtonClick = onNavigationButtonClick,
         onErrorMessageShown = viewModel::shownErrorMessage,
@@ -61,13 +60,9 @@ fun QuestionDetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestionDetailScreen(
-    onNavigationButtonClick: () -> Unit,
-    title: String,
-    description: String,
-    choices: List<String>,
-    answer: Int,
-    solution: String?,
+    question: Question?,
     errorMessage: String?,
+    onNavigationButtonClick: () -> Unit,
     onErrorMessageShown: () -> Unit = {},
     userAnswer: List<Int>,
 ) {
@@ -79,26 +74,28 @@ fun QuestionDetailScreen(
         topBar = { QuestionDetailTopAppBar(onNavigationButtonClick = onNavigationButtonClick) },
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { showDialog = true },
-                modifier = Modifier.padding(end = 16.dp, bottom = 53.dp),
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                shape = MaterialTheme.shapes.large,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Edit,
-                        contentDescription = stringResource(R.string.fab_quiz_result),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                },
-                text = {
-                    Text(
-                        text = stringResource(R.string.txt_quiz_result),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                },
-            )
+            if (question is ChoiceQuestion) {
+                ExtendedFloatingActionButton(
+                    onClick = { showDialog = true },
+                    modifier = Modifier.padding(end = 16.dp, bottom = 53.dp),
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    shape = MaterialTheme.shapes.large,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = stringResource(R.string.fab_quiz_result),
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(R.string.txt_quiz_result),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    },
+                )
+            }
         },
     ) { paddingValues ->
         Column(
@@ -108,14 +105,17 @@ fun QuestionDetailScreen(
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            QuestionTitle(title)
+            question?.let {
+                QuestionTitle(question.title)
 
-            QuestionDescription(description)
+                if (question is ChoiceQuestion) {
+                    QuestionDescription(question.description)
+                    QuestionItems(question.choices, question.answer) {}
+                } else if (question is BlankQuestion) {
+                    BlankQuestionDescription(question.questionContent)
+                }
 
-            QuestionItems(choices, answer) {}
-
-            solution?.let {
-                QuestionSolution(it)
+                QuestionSolution(question.solution)
             }
 
             if (showDialog) {
@@ -135,36 +135,22 @@ fun QuestionDetailScreen(
     }
 }
 
-private fun getPreviewQuestion(): Question {
-    // TODO 뷰모델과 연결하고 임시값 빼기
-    return Question(
-        id = "",
-        "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
-        "제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. 제목 전체 다 보여줌. 줄 수 상관 없음. ",
-        "해설이 들어갑니다... 넙적한 건 어쩔 수 없는듯... 들어갈 수 있는 양 모두 들어감. 친구가 해설을 길게 쓴다면 그 내용 다 들어감... 해설이 들어갑니다... 넙적한 건 어쩔 수 없는듯... 들어갈 수 있는 양 모두 들어감. 친구가 해설을 길게 쓴다면 그 내용 다 들어감... ",
-        0,
-        listOf(
-            "1번 객관식 문항 내용입니다. 이것도 전체 다 보여줌. 1번 객관식 문항입니다. 이것도 전체",
-            "1번 객관식 문항 내용입니다. 이것도 전체 다 보여줌. 1번 객관식 문항입니다. 이것도 전체",
-            "1번 객관식 문항 내용입니다. 이것도 전체 다 보여줌. 1번 객관식 문항입니다. 이것도 전체",
-            "1번 객관식 문항 내용입니다. 이것도 전체 다 보여줌. 1번 객관식 문항입니다. 이것도 전체",
-        ),
-        userAnswers = listOf(0, 0, 0, 0),
-    )
-}
-
 @Preview
 @Composable
 fun QuestionDetailScreenPreview() {
-    val question = getPreviewQuestion()
     WeQuizTheme {
         QuestionDetailScreen(
             onNavigationButtonClick = {},
-            title = question.title,
-            description = question.description,
-            choices = question.choices,
-            answer = question.answer,
-            solution = question.solution,
+            question = BlankQuestion(
+                id = "1",
+                title = "문제 제목",
+                questionContent = listOf(
+                    mapOf("text" to "이훈"),
+                    mapOf("text" to "은 바나나를 좋아한다"),
+                ),
+                solution = "문제 해설",
+                userAnswers = emptyList(),
+            ),
             errorMessage = null,
             userAnswer = listOf(0, 0, 0, 0),
         )

@@ -11,17 +11,28 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
+import kr.boostcamp_2024.course.domain.model.BlankQuestionCreationInfo
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestionCreationInfo
 import kr.boostcamp_2024.course.domain.repository.AiRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.quiz.navigation.CreateQuestionRoute
 import javax.inject.Inject
 
+sealed class BlankQuestionItem {
+    data class Blank(
+        val text: String,
+    ) : BlankQuestionItem()
+
+    data class Text(
+        val text: String,
+    ) : BlankQuestionItem()
+}
+
 data class CreateQuestionUiState(
     val isLoading: Boolean = false,
     val showDialog: Boolean = false,
-    val questionCreationInfo: QuestionCreationInfo = QuestionCreationInfo(
+    val choiceQuestionCreationInfo: ChoiceQuestionCreationInfo = ChoiceQuestionCreationInfo(
         title = "",
         description = "",
         solution = null,
@@ -30,12 +41,34 @@ data class CreateQuestionUiState(
     ),
     val snackBarMessage: String? = null,
     val creationSuccess: Boolean = false,
+    val selectedQuestionTypeIndex: Int = 0,
+    val items: List<BlankQuestionItem> = listOf(
+        BlankQuestionItem.Blank("낱말"),
+        BlankQuestionItem.Text("텍스트"),
+    ),
 ) {
-    val isCreateQuestionValid: Boolean = questionCreationInfo.title.isNotBlank() &&
-        questionCreationInfo.description.isNotBlank() &&
-        questionCreationInfo.choices.all {
+    val isCreateQuestionValid: Boolean = choiceQuestionCreationInfo.title.isNotBlank() &&
+        choiceQuestionCreationInfo.description.isNotBlank() &&
+        choiceQuestionCreationInfo.choices.all {
             it.isNotBlank()
         }
+
+    val isCreateBlankQuestionValid: Boolean
+        get() = items.any { it is BlankQuestionItem.Blank } &&
+            items.all {
+                (it is BlankQuestionItem.Text && it.text.isNotBlank()) ||
+                    (it is BlankQuestionItem.Blank && it.text.isNotBlank())
+            } &&
+            choiceQuestionCreationInfo.title.isNotBlank()
+
+    val isCreateBlankButtonValid: Boolean
+        get() = items.count { it is BlankQuestionItem.Blank } < 5
+
+    val isCreateTextButtonValid: Boolean
+        get() = items.count { it is BlankQuestionItem.Text } < 5
+
+    val isBlankQuestion: Boolean
+        get() = selectedQuestionTypeIndex == 1
 }
 
 @HiltViewModel
@@ -52,7 +85,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun onTitleChanged(title: String) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = currentState.questionCreationInfo.copy(
+                choiceQuestionCreationInfo = currentState.choiceQuestionCreationInfo.copy(
                     title = title,
                 ),
             )
@@ -62,7 +95,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun onDescriptionChanged(description: String) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = currentState.questionCreationInfo.copy(
+                choiceQuestionCreationInfo = currentState.choiceQuestionCreationInfo.copy(
                     description = description,
                 ),
             )
@@ -72,7 +105,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun onSolutionChanged(solution: String) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = currentState.questionCreationInfo.copy(
+                choiceQuestionCreationInfo = currentState.choiceQuestionCreationInfo.copy(
                     solution = solution,
                 ),
             )
@@ -82,8 +115,8 @@ class CreateQuestionViewModel @Inject constructor(
     fun onChoiceTextChanged(changedIndex: Int, changedText: String) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = currentState.questionCreationInfo.copy(
-                    choices = currentState.questionCreationInfo.choices.mapIndexed { index, text ->
+                choiceQuestionCreationInfo = currentState.choiceQuestionCreationInfo.copy(
+                    choices = currentState.choiceQuestionCreationInfo.choices.mapIndexed { index, text ->
                         if (index == changedIndex) changedText else text
                     },
                 ),
@@ -94,7 +127,7 @@ class CreateQuestionViewModel @Inject constructor(
     fun onSelectedChoiceNumChanged(changedNum: Int) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = currentState.questionCreationInfo.copy(answer = changedNum),
+                choiceQuestionCreationInfo = currentState.choiceQuestionCreationInfo.copy(answer = changedNum),
             )
         }
     }
@@ -102,16 +135,17 @@ class CreateQuestionViewModel @Inject constructor(
     fun createQuestion() {
         setLoadingState(true)
         viewModelScope.launch {
-            val currentQuestionCreationInfo = createQuestionUiState.value.questionCreationInfo
+            val currentQuestionCreationInfo = createQuestionUiState.value.choiceQuestionCreationInfo
             val questionCreationInfo = currentQuestionCreationInfo.copy(
                 solution = if (currentQuestionCreationInfo.solution.isNullOrBlank()) null else currentQuestionCreationInfo.solution,
             )
-            questionRepository.createQuestion(questionCreationInfo).onSuccess { questionId ->
-                saveQuestionToQuiz(questionId)
-            }.onFailure { exception ->
-                Log.e("CreateQuestionViewModel", exception.message, exception)
-                setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
-            }
+            questionRepository.createQuestion(questionCreationInfo)
+                .onSuccess { questionId ->
+                    saveQuestionToQuiz(questionId)
+                }.onFailure { exception ->
+                    Log.e("CreateQuestionViewModel", exception.message, exception)
+                    setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
+                }
         }
     }
 
@@ -169,7 +203,7 @@ class CreateQuestionViewModel @Inject constructor(
         viewModelScope.launch {
             aiRepository.getAiQuestion(category).onSuccess {
                 setAiRecommendedQuestion(
-                    QuestionCreationInfo(
+                    ChoiceQuestionCreationInfo(
                         title = it.title,
                         description = it.description,
                         solution = it.solution,
@@ -190,14 +224,94 @@ class CreateQuestionViewModel @Inject constructor(
         }
     }
 
-    private fun setAiRecommendedQuestion(questionCreationInfo: QuestionCreationInfo) {
+    private fun setAiRecommendedQuestion(questionCreationInfo: ChoiceQuestionCreationInfo) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
-                questionCreationInfo = questionCreationInfo,
+                choiceQuestionCreationInfo = questionCreationInfo,
             )
         }
     }
 
     private fun getAnswerIndex(answer: String, choices: List<String>): Int = choices.indexOf(answer)
+
+    fun onQuestionTypeIndexChange(index: Int) {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                selectedQuestionTypeIndex = index,
+            )
+        }
+    }
+
+    fun addBlankItem() {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                items = currentState.items + BlankQuestionItem.Blank(""),
+            )
+        }
+    }
+
+    fun addTextItem() {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                items = currentState.items + BlankQuestionItem.Text(""),
+            )
+        }
+    }
+
+    fun onBlankQuestionItemValueChanged(word: String, index: Int) {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                items = currentState.items.mapIndexed { i, item ->
+                    if (item is BlankQuestionItem.Blank && i == index) {
+                        BlankQuestionItem.Blank(word)
+                    } else if (item is BlankQuestionItem.Text && i == index) {
+                        BlankQuestionItem.Text(word)
+                    } else {
+                        item
+                    }
+                },
+            )
+        }
+    }
+
+    fun onContentRemove(index: Int) {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                items = currentState.items.filterIndexed { i, _ -> i != index },
+            )
+        }
+
+    }
+
+    fun onCreateBlankQuestion() {
+        val blankQuestionList = mutableListOf<LinkedHashMap<String, String>>()
+        _createQuestionUiState.value.items.forEachIndexed { _, item ->
+            val blankQuestionMap = LinkedHashMap<String, String>()
+            if (item is BlankQuestionItem.Blank) {
+                blankQuestionMap["text"] = item.text
+                blankQuestionMap["type"] = "blank"
+            } else if (item is BlankQuestionItem.Text) {
+                blankQuestionMap["text"] = item.text
+                blankQuestionMap["type"] = "text"
+            }
+            blankQuestionList.add(blankQuestionMap)
+        }
+
+        viewModelScope.launch {
+            questionRepository.createBlankQuestion(
+                BlankQuestionCreationInfo(
+                    title = _createQuestionUiState.value.choiceQuestionCreationInfo.title,
+                    solution = if (_createQuestionUiState.value.choiceQuestionCreationInfo.solution.isNullOrBlank()) null else _createQuestionUiState.value.choiceQuestionCreationInfo.solution,
+                    questionContent = blankQuestionList,
+                ),
+            ).onSuccess { questionId ->
+                saveQuestionToQuiz(questionId)
+            }.onFailure { exception ->
+                Log.e("CreateQuestionViewModel", exception.message, exception)
+                setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
+            }
+
+        }
+    }
 
 }

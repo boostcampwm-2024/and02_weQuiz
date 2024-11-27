@@ -26,6 +26,8 @@ interface QuizRepository {
 
     suspend fun setQuizFinished(quizId: String): Result<Unit>
 
+    suspend fun updateQuizCurrentQuestion(quizId: String, currentQuestion: Int): Result<Unit>
+
     suspend fun startRealTimeQuiz(quizId: String): Result<Unit>
 
     suspend fun waitingRealTimeQuiz(quizId: String, waiting: Boolean, userId: String): Result<Unit>

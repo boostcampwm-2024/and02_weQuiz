@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
+import kr.boostcamp_2024.course.domain.model.BlankQuestion
+import kr.boostcamp_2024.course.domain.model.BlankQuestionManager
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.UserOmrCreationInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
@@ -28,12 +30,14 @@ data class QuestionUiState(
     val questions: List<Question> = emptyList(),
     val isSubmitting: Boolean = false,
     val currentPage: Int = 0,
-    val selectedIndexList: List<Int> = emptyList(),
+    val selectedIndexList: List<Any> = emptyList(),
     val countDownTime: Int = 20 * 60,
     val isLoading: Boolean = false,
     val errorMessageId: Int? = null,
     val currentUserId: String? = null,
     val userOmrId: String? = null,
+    val blankQuestionContents: List<Map<String, Any>?> = emptyList(),
+    val blankWords: List<Map<String, Any>> = emptyList(),
 )
 
 @HiltViewModel
@@ -48,6 +52,7 @@ class QuestionViewModel @Inject constructor(
 
     private val _uiState: MutableStateFlow<QuestionUiState> = MutableStateFlow(QuestionUiState())
     val uiState: StateFlow<QuestionUiState> = _uiState.asStateFlow()
+    val blankQuestionManager = BlankQuestionManager(::setNewBlankContents)
 
     init {
         initial()
@@ -94,10 +99,17 @@ class QuestionViewModel @Inject constructor(
             }
             questionRepository.getQuestions(questionIds)
                 .onSuccess { questions ->
+                    val baseSelectedList = questions.map {
+                        if (it is BlankQuestion) {
+                            mapOf<Int, String?>()
+                        } else {
+                            -1
+                        }
+                    }
                     _uiState.update { currentState ->
                         currentState.copy(
                             questions = questions,
-                            selectedIndexList = List<Int>(questions.size) { -1 },
+                            selectedIndexList = baseSelectedList,
                             isLoading = false,
                         )
                     }
@@ -111,6 +123,12 @@ class QuestionViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    fun showErrorMessage(errorMessageId: Int) {
+        _uiState.update { currentState ->
+            currentState.copy(errorMessageId = errorMessageId)
         }
     }
 
@@ -130,15 +148,48 @@ class QuestionViewModel @Inject constructor(
         }
     }
 
+    fun selectBlanks(pageIndex: Int, blanks: Map<String, String?>) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedIndexList = currentState.selectedIndexList.toMutableList().apply {
+                    this[pageIndex] = blanks
+                },
+            )
+        }
+    }
+
     fun nextPage() {
         _uiState.update { currentState ->
-            currentState.copy(currentPage = currentState.currentPage + 1)
+            val newPage = currentState.currentPage + 1
+            setNewBlankQuestionManager(newPage)
+            currentState.copy(currentPage = newPage)
         }
     }
 
     fun previousPage() {
         _uiState.update { currentState ->
-            currentState.copy(currentPage = currentState.currentPage - 1)
+            val newPage = currentState.currentPage - 1
+            setNewBlankQuestionManager(newPage)
+            currentState.copy(currentPage = newPage)
+        }
+    }
+
+    private fun setNewBlankQuestionManager(pageIdx: Int) {
+        val currentQuestion = _uiState.value.questions[pageIdx]
+        if (currentQuestion is BlankQuestion) {
+            blankQuestionManager.setNewQuestions(
+                questionContents = currentQuestion.questionContent,
+            )
+            setNewBlankContents()
+        }
+    }
+
+    private fun setNewBlankContents() {
+        _uiState.update {
+            it.copy(
+                blankQuestionContents = blankQuestionManager.contents,
+                blankWords = blankQuestionManager.blankWords,
+            )
         }
     }
 
@@ -156,19 +207,24 @@ class QuestionViewModel @Inject constructor(
     fun submitAnswers() {
         viewModelScope.launch {
             _uiState.update { it.copy(isSubmitting = true) }
+
             _uiState.value.currentUserId?.let { userId ->
                 val userOmrCreationInfo = UserOmrCreationInfo(
                     userId = userId,
                     quizId = quizId,
-                    answers = _uiState.value.selectedIndexList.map { it },
+                    answers = _uiState.value.selectedIndexList,
                 )
                 userOmrRepository.submitQuiz(userOmrCreationInfo)
                     .onSuccess { userOmrId ->
                         quizRepository.addUserOmrToQuiz(quizId, userOmrId)
                             .onSuccess {
-                                _uiState.update { it.copy(userOmrId = userOmrId) }
+                                _uiState.update { it.copy(isSubmitting = true, userOmrId = userOmrId) }
                                 _uiState.value.questions.forEachIndexed { index, question ->
-                                    questionRepository.updateCurrentSubmit(question.id, _uiState.value.selectedIndexList[index])
+                                    questionRepository.updateCurrentSubmit(
+                                        uiState.value.currentUserId,
+                                        question.id,
+                                        uiState.value.selectedIndexList[index],
+                                    )
                                         .onSuccess {
                                             _uiState.update { it.copy(isSubmitting = true) }
                                         }

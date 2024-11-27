@@ -13,16 +13,13 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.quiz.navigation.QuestionDetailRoute
 import javax.inject.Inject
 
 data class DetailUiState(
-    val title: String = "",
-    val description: String = "",
-    val solution: String? = "",
-    val answer: Int = 1,
-    val choices: List<String> = emptyList(),
+    val question: Question? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val userAnswer: List<Int> = listOf(0, 0, 0, 0),
@@ -52,12 +49,7 @@ class QuestionDetailViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        title = question.title,
-                        description = question.description,
-                        solution = question.solution,
-                        answer = question.answer,
-                        choices = question.choices,
-                        userAnswer = question.userAnswers,
+                        question = question,
                     )
                 }
             }.onFailure { throwable ->
