@@ -26,8 +26,8 @@ import kr.boostcamp_2024.course.domain.repository.StorageRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.login.R
 import kr.boostcamp_2024.course.login.model.UserUiModel
+import kr.boostcamp_2024.course.login.navigation.CustomNavType.UserUiModelType
 import kr.boostcamp_2024.course.login.navigation.SignUpRoute
-import kr.boostcamp_2024.course.login.navigation.UserUiModelType
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
