@@ -195,7 +195,9 @@ class CreateStudyViewModel @Inject constructor(
     }
 
     fun onMaxUserNumChange(groupMemberNumber: String) {
-        _uiState.update { it.copy(maxUserNum = groupMemberNumber) }
+        groupMemberNumber.toIntOrNull()?.takeIf { it in 2..50 }?.let {
+            _uiState.update { it.copy(maxUserNum = groupMemberNumber) }
+        }
     }
 
     fun onImageByteArrayChanged(imageByteArray: ByteArray) {
