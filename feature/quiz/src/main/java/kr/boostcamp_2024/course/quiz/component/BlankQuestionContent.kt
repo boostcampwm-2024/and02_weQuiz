@@ -20,6 +20,8 @@ import kr.boostcamp_2024.course.domain.model.BlankQuestion
 import kr.boostcamp_2024.course.domain.model.BlankQuestionManager
 import kr.boostcamp_2024.course.quiz.R
 
+private const val NULL_BLANK_TEXT = "_"
+
 @Composable
 fun BlankQuestionContent(
     isOwner: Boolean = false,
@@ -92,7 +94,7 @@ fun BlankQuestionContents(
             } else {
                 if (content == null) {
                     ConsumeBlankContentUi(
-                        word = "_",
+                        word = NULL_BLANK_TEXT,
                         onContentRemove = {},
                         onValueChanged = { _, _ -> },
                         removeIconVisible = false,
