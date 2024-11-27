@@ -35,7 +35,7 @@ data class QuizResult(
         val blankQuestion = questions[index] as BlankQuestion
         val blankQuestionContent = blankQuestion.questionContent.filter { it["type"] == "blank" }
         return blankQuestionContent.withIndex().all { (index, content) ->
-            content["text"] == userAnswer[index]
+            content["text"] == userAnswer[index.toString()]
         }
     }
 }
