@@ -85,7 +85,7 @@ class QuestionViewModel @Inject constructor(
     private fun setTimer() {
         val currentQuiz = _uiState.value.quiz
         if (currentQuiz is Quiz) {
-            _uiState.update { it.copy(countDownTime = currentQuiz.solveTime) }
+            _uiState.update { it.copy(countDownTime = currentQuiz.solveTime * 60) }
         }
     }
 
@@ -204,14 +204,17 @@ class QuestionViewModel @Inject constructor(
     }
 
     private fun updateTimer() {
-        _uiState.value.countDownTime?.let { currentCountDownTime ->
+        _uiState.value.countDownTime?.let { defaultCountDownTime ->
             viewModelScope.launch {
-                while (currentCountDownTime > 0) {
+                var currentCountDownTime: Int = defaultCountDownTime
+                while (currentCountDownTime > 1) {
+                    currentCountDownTime = requireNotNull(_uiState.value.countDownTime)
                     delay(1000L)
                     _uiState.update { currentState ->
                         currentState.copy(countDownTime = currentCountDownTime - 1)
                     }
                 }
+                submitAnswers()
             }
         }
     }
