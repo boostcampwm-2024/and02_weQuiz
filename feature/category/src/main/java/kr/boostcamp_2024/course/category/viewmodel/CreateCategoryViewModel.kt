@@ -97,7 +97,7 @@ class CreateCategoryViewModel @Inject constructor(
     private suspend fun updateCategory(categoryId: String) {
         val imageUrl = _createCategoryUiState.value.currentImage?.let { image ->
             storageRepository.uploadImage(image).getOrNull()
-        }
+        } ?: createCategoryUiState.value.defaultImageUri
 
         categoryRepository.updateCategory(
             categoryId,
