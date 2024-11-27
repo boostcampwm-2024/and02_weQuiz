@@ -21,12 +21,13 @@ fun Question(
     onOptionSelected: (Int) -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 100.dp),
+        modifier = Modifier.padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         questions.forEachIndexed { index, option ->
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(bottom = 10.dp)
                     .selectable(
                         selected = selectedIndex == index,
