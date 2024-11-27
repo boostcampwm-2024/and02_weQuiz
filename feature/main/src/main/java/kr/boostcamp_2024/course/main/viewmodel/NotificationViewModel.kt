@@ -61,7 +61,7 @@ class NotificationViewModel @Inject constructor(
                                 onFailure = {
                                     NotificationWithGroupInfo(
                                         notification = notification,
-                                        studyGroupName = "",
+                                        studyGroupName = null,
                                         studyGroupImgUrl = null,
                                     )
                                 },
@@ -127,8 +127,7 @@ class NotificationViewModel @Inject constructor(
 
     private fun addGroupMember(userId: String, groupId: String) {
         viewModelScope.launch {
-            studyGroupRepository.addUser(groupId, userId).onSuccess {
-            }.onFailure { throwable ->
+            studyGroupRepository.addUser(groupId, userId).onFailure { throwable ->
                 Log.e("NotificationViewModel", "실패: $throwable")
                 _uiState.update { it.copy(snackBarMessage = "그룹원을 그룹에 추가하는데 실패하였습니다.") }
             }

@@ -50,7 +50,7 @@ fun NotificationItem(
                 .padding(start = 16.dp),
         ) {
             Text(
-                text = notificationInfo.studyGroupName,
+                text = notificationInfo.studyGroupName ?: "",
                 style = MaterialTheme.typography.labelMedium,
             )
             Text(
