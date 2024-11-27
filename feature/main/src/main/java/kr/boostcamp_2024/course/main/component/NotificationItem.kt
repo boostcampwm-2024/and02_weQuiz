@@ -66,7 +66,7 @@ fun NotificationItem(
             ) {
                 Button(
                     onClick = onRejectClick,
-                    modifier = Modifier.size(width = 53.dp, height = 24.dp),
+                    modifier = Modifier.height(24.dp),
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,
@@ -84,7 +84,7 @@ fun NotificationItem(
 
                 Button(
                     onClick = onAcceptClick,
-                    modifier = Modifier.size(width = 53.dp, height = 24.dp),
+                    modifier = Modifier.height(24.dp),
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,
