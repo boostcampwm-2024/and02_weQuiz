@@ -37,11 +37,11 @@ fun NotificationItem(
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // todo: 이미지 넣을 때 추가 수정
         WeQuizAsyncImage(
             modifier = Modifier
-                .size(80.dp).clip(CircleShape),
-            imgUrl = null,
+                .size(80.dp)
+                .clip(CircleShape),
+            imgUrl = notificationInfo.studyGroupImgUrl,
             contentDescription = null,
         )
 

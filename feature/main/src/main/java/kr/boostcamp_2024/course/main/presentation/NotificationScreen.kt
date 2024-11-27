@@ -94,6 +94,7 @@ private fun NotificationScreenPreview() {
                         userid = "1",
                     ),
                     studyGroupName = "스터디 이름",
+                    studyGroupImgUrl = "null",
                 ),
             ),
             onRejectClick = {},
