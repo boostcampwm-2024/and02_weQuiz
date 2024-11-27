@@ -78,7 +78,7 @@ fun QuizDataButton(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         if (isStartRealTimeQuizEnabled) {
-                            onStartRealTimeQuizButtonClick
+                            onStartRealTimeQuizButtonClick()
                         } else if (isWaitingRealTimeQuizEnabled) {
                             onWaitingRealTimeQuizButtonClick(true)
                         }
