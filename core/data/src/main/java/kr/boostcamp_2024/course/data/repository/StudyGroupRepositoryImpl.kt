@@ -15,23 +15,22 @@ class StudyGroupRepositoryImpl @Inject constructor(
 ) : StudyGroupRepository {
     private val studyGroupCollectionRef = firestore.collection("StudyGroup")
 
-    override suspend fun addStudyGroup(studyGroupCreationInfo: StudyGroupCreationInfo): Result<String> =
-        runCatching {
-            val request = StudyGroupDTO(
-                studyGroupImageUrl = studyGroupCreationInfo.studyGroupImageUrl,
-                name = studyGroupCreationInfo.name,
-                description = studyGroupCreationInfo.description,
-                maxUserNum = studyGroupCreationInfo.maxUserNum,
-                ownerId = studyGroupCreationInfo.ownerId,
-                users = listOf(studyGroupCreationInfo.ownerId),
-                categories = emptyList(),
-            )
-            val document = studyGroupCollectionRef.document()
-            document.set(request).await()
+    override suspend fun addStudyGroup(studyGroupCreationInfo: StudyGroupCreationInfo): Result<String> = runCatching {
+        val request = StudyGroupDTO(
+            studyGroupImageUrl = studyGroupCreationInfo.studyGroupImageUrl,
+            name = studyGroupCreationInfo.name,
+            description = studyGroupCreationInfo.description,
+            maxUserNum = studyGroupCreationInfo.maxUserNum,
+            ownerId = studyGroupCreationInfo.ownerId,
+            users = listOf(studyGroupCreationInfo.ownerId),
+            categories = emptyList(),
+        )
+        val document = studyGroupCollectionRef.document()
+        document.set(request).await()
 
-            val result = document.id
-            result
-        }
+        val result = document.id
+        result
+    }
 
     override suspend fun getStudyGroup(studyGroupId: String): Result<StudyGroup> = runCatching {
         val document = studyGroupCollectionRef.document(studyGroupId).get().await()
@@ -56,34 +55,35 @@ class StudyGroupRepositoryImpl @Inject constructor(
         studyGroupCollectionRef.document(studyGroupId).delete().await()
     }
 
-    override suspend fun deleteCategory(studyGroupId: String, categoryId: String): Result<Unit> =
-        runCatching {
-            val document = studyGroupCollectionRef.document(studyGroupId)
-            document.update("categories", FieldValue.arrayRemove(categoryId)).await()
-        }
+    override suspend fun deleteCategory(studyGroupId: String, categoryId: String): Result<Unit> = runCatching {
+        val document = studyGroupCollectionRef.document(studyGroupId)
+        document.update("categories", FieldValue.arrayRemove(categoryId)).await()
+    }
 
-    override suspend fun addCategoryToStudyGroup(studyGroupId: String, categoryId: String): Result<Unit> =
-        runCatching {
-            val document = studyGroupCollectionRef.document(studyGroupId)
-            document.update("categories", FieldValue.arrayUnion(categoryId)).await()
-        }
+    override suspend fun addCategoryToStudyGroup(studyGroupId: String, categoryId: String): Result<Unit> = runCatching {
+        val document = studyGroupCollectionRef.document(studyGroupId)
+        document.update("categories", FieldValue.arrayUnion(categoryId)).await()
+    }
 
-    override suspend fun getStudyGroupName(studyGroupId: String): Result<String> =
-        runCatching {
-            val document = studyGroupCollectionRef.document(studyGroupId).get().await()
-            val response = document.toObject(StudyGroupDTO::class.java)
-            val studyGroupName = requireNotNull(response?.name)
-            studyGroupName
-        }
+    override suspend fun getStudyGroupName(studyGroupId: String): Result<String> = runCatching {
+        val document = studyGroupCollectionRef.document(studyGroupId).get().await()
+        val response = document.toObject(StudyGroupDTO::class.java)
+        val studyGroupName = requireNotNull(response?.name)
+        studyGroupName
+    }
 
-    override suspend fun updateStudyGroup(studyGroupId: String, updatedInfo: StudyGroupUpdatedInfo): Result<Unit> =
-        runCatching {
-            val updatedInfoMap = hashMapOf<String, Any?>(
-                "study_group_image_url" to updatedInfo.studyGroupImageUrl,
-                "name" to updatedInfo.name,
-                "description" to updatedInfo.description,
-                "max_user_num" to updatedInfo.maxUserNum,
-            )
-            studyGroupCollectionRef.document(studyGroupId).update(updatedInfoMap).await()
-        }
+    override suspend fun updateStudyGroup(studyGroupId: String, updatedInfo: StudyGroupUpdatedInfo): Result<Unit> = runCatching {
+        val updatedInfoMap = hashMapOf<String, Any?>(
+            "study_group_image_url" to updatedInfo.studyGroupImageUrl,
+            "name" to updatedInfo.name,
+            "description" to updatedInfo.description,
+            "max_user_num" to updatedInfo.maxUserNum,
+        )
+        studyGroupCollectionRef.document(studyGroupId).update(updatedInfoMap).await()
+    }
+
+    override suspend fun addUser(studyGroupId: String, userId: String): Result<Unit> = runCatching {
+        val document = studyGroupCollectionRef.document(studyGroupId)
+        document.update("users", FieldValue.arrayUnion(userId)).await()
+    }
 }

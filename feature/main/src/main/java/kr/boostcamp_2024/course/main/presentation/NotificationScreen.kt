@@ -71,6 +71,7 @@ fun NotificationScreen(
                 items = notificationInfos,
                 key = { it.notification.id },
             ) { notificationInfo ->
+                notificationInfo.studyGroupName ?: return@items
                 NotificationItem(
                     notificationInfo = notificationInfo,
                     onRejectClick = { onRejectClick(notificationInfo.notification.id) },
@@ -94,6 +95,7 @@ private fun NotificationScreenPreview() {
                         userid = "1",
                     ),
                     studyGroupName = "스터디 이름",
+                    studyGroupImgUrl = "null",
                 ),
             ),
             onRejectClick = {},
