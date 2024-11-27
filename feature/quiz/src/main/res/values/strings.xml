@@ -95,6 +95,7 @@
     <string name="btn_create_blank">빈칸 추가</string>
     <string name="txt_create_blank_question">낱말 맞추기 문제 만들기</string>
     <string name="txt_blank_question">낱말</string>
+    <string name="txt_blank_question_detail_description">문제</string>
     <!-- content description  -->
     <string name="des_btn_back">뒤로가기</string>
     <string name="des_clear_text">텍스트 지우기</string>
@@ -115,7 +116,4 @@
     <string name="err_submit_quetion">퀴즈 제출에 실패하였습니다.</string>
     <string name="des_remove_blank">낱말 제거</string>
     <string name="des_remove_text">텍스트 제거</string>
-    <string name="txt_blank_question_detail_question">문제</string>
-    <string name="txt_blank_question_detail_description">문제</string>
-
 </resources>
