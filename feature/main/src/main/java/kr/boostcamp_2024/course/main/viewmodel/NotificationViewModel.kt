@@ -103,11 +103,22 @@ class NotificationViewModel @Inject constructor(
             userRepository.addStudyGroupToUser(notification.userid, notification.groupId)
                 .onSuccess {
                     deleteInvitation(notification.id)
+                    addGroupMember(notification.userid, notification.groupId)
                 }
                 .onFailure { throwable ->
                     Log.e("NotificationViewModel", "실패: $throwable")
                     _uiState.update { it.copy(snackBarMessage = "알림 수락을 실패하였습니다.") }
                 }
+        }
+    }
+
+    private fun addGroupMember(userId: String, groupId: String) {
+        viewModelScope.launch {
+            studyGroupRepository.addUser(groupId, userId).onSuccess {
+            }.onFailure { throwable ->
+                Log.e("NotificationViewModel", "실패: $throwable")
+                _uiState.update { it.copy(snackBarMessage = "그룹원을 그룹에 추가하는데 실패하였습니다.") }
+            }
         }
     }
 
