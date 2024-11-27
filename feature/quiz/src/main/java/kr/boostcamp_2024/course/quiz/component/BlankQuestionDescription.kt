@@ -8,13 +8,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.quiz.R
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BlankQuestionDescription(questionContent: List<Map<String, String>>) {
+    Text(text = stringResource(R.string.txt_blank_question_detail_description), modifier = Modifier, style = MaterialTheme.typography.bodyMedium)
     FlowRow(
         modifier = Modifier
             .fillMaxWidth()
