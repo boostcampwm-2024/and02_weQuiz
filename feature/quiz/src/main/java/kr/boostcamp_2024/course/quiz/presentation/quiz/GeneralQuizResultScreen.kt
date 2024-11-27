@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.QuestionResult
 import kr.boostcamp_2024.course.domain.model.QuizResult
 import kr.boostcamp_2024.course.quiz.R
@@ -147,7 +148,7 @@ fun GeneralQuestionResultListContent(
         modifier = Modifier.padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        items(items = questionResults, key = { it.question.id }) { questionResult ->
+        items(items = questionResults, key = { it.choiceQuestion.id }) { questionResult ->
             GeneralQuestionResultItem(
                 questionResult = questionResult,
                 onQuestionClick = onQuestionClick,
@@ -165,7 +166,7 @@ fun GeneralQuestionResultItem(
         modifier = Modifier
             .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-            .clickable(onClick = { onQuestionClick(questionResult.question.id) })
+            .clickable(onClick = { onQuestionClick(questionResult.choiceQuestion.id) })
             .padding(10.dp)
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
@@ -182,18 +183,20 @@ fun GeneralQuestionResultItem(
             modifier = Modifier.weight(1f),
         ) {
             Text(
-                text = questionResult.question.title,
+                text = questionResult.choiceQuestion.title,
                 style = MaterialTheme.typography.titleLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Text(
-                text = questionResult.question.description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
+            if (questionResult.choiceQuestion is ChoiceQuestion) {
+                Text(
+                    text = (questionResult.choiceQuestion as ChoiceQuestion).description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 modifier = Modifier

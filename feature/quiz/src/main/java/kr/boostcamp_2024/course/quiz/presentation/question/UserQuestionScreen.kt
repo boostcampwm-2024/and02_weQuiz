@@ -3,15 +3,10 @@ package kr.boostcamp_2024.course.quiz.presentation.question
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -37,10 +32,9 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
-import kr.boostcamp_2024.course.quiz.component.UserQuestion
-import kr.boostcamp_2024.course.quiz.presentation.viewmodel.UserQuestionViewModel
+import kr.boostcamp_2024.course.quiz.component.QuizContent
+import kr.boostcamp_2024.course.quiz.viewmodel.UserQuestionViewModel
 
 @Composable
 fun UserQuestionScreen(
@@ -55,16 +49,22 @@ fun UserQuestionScreen(
     UserQuestionScreen(
         quiz = uiState.quiz,
         currentPage = uiState.currentPage,
-        questions = uiState.questions,
+        choiceQuestions = uiState.questions,
         quizFinishDialog = quizFinishDialog,
         onQuizFinishDialogDismissButtonClick = { quizFinishDialog = false },
         selectedIndexList = uiState.selectedIndexList,
         snackbarHostState = snackbarHostState,
         onOptionSelected = userQuestionViewModel::selectOption,
+        onBlanksSelected = userQuestionViewModel::selectBlanks,
         onNavigationButtonClick = onNavigationButtonClick,
         onSubmitButtonClick = userQuestionViewModel::submitQuestion,
         isSubmitted = uiState.isSubmitted,
         onQuizFinishButtonClick = userQuestionViewModel::submitAnswers,
+        blankQuestionContents = uiState.blankQuestionContents,
+        blankWords = uiState.blankWords,
+        removeBlankContent = userQuestionViewModel.blankQuestionManager::removeBlankContent,
+        addBlankContent = userQuestionViewModel.blankQuestionManager::addBlankContent,
+        getBlankQuestionAnswer = userQuestionViewModel.blankQuestionManager::getAnswer,
     )
 
     uiState.errorMessageId?.let { errorMessageId ->
@@ -90,16 +90,22 @@ fun UserQuestionScreen(
 fun UserQuestionScreen(
     quiz: BaseQuiz?,
     currentPage: Int,
-    questions: List<Question>,
+    choiceQuestions: List<Question>,
     quizFinishDialog: Boolean,
     onQuizFinishDialogDismissButtonClick: () -> Unit,
-    selectedIndexList: List<Int>,
+    selectedIndexList: List<Any?>,
     snackbarHostState: SnackbarHostState,
     onOptionSelected: (Int, Int) -> Unit,
+    onBlanksSelected: (Int, Map<String, String?>) -> Unit,
     onNavigationButtonClick: () -> Unit,
     onSubmitButtonClick: (String) -> Unit,
     isSubmitted: Boolean,
     onQuizFinishButtonClick: () -> Unit,
+    blankQuestionContents: List<Map<String, Any>?>,
+    blankWords: List<Map<String, Any>>,
+    removeBlankContent: (Int) -> Unit,
+    addBlankContent: (Int) -> Unit,
+    getBlankQuestionAnswer: () -> Map<String, String?>,
 ) {
     var showExitDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -127,55 +133,51 @@ fun UserQuestionScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding),
         ) {
-            LazyColumn {
+            LinearProgressIndicator(
+                progress = { (currentPage + 1) / choiceQuestions.size.toFloat() },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            LazyColumn(
+                modifier = Modifier.padding(
+                    vertical = 20.dp,
+                ),
+            ) {
                 item {
-                    LinearProgressIndicator(
-                        progress = { (currentPage + 1) / questions.size.toFloat() },
-                        modifier = Modifier.fillMaxWidth(),
+                    QuizContent(
+                        currentPage = currentPage,
+                        selectedIndexList = selectedIndexList,
+                        onOptionSelected = onOptionSelected,
+                        questions = choiceQuestions,
+                        showErrorMessage = { /* no-op */ },
+                        onBlanksSelected = onBlanksSelected,
+                        blankQuestionContents = blankQuestionContents,
+                        blankWords = blankWords,
+                        removeBlankContent = removeBlankContent,
+                        addBlankContent = addBlankContent,
+                        getBlankQuestionAnswer = getBlankQuestionAnswer,
                     )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-
-                item {
-                    HorizontalPager(
-                        state = rememberPagerState(
-                            initialPage = currentPage,
-                            pageCount = { questions.size },
-                        ),
-                        userScrollEnabled = false,
-                    ) {
-                        Column {
-                            QuestionTitleAndDetail(
-                                title = questions[currentPage].title,
-                                description = questions[currentPage].description,
-                            )
-
-                            UserQuestion(
-                                questions = questions[currentPage].choices,
-                                selectedIndex = selectedIndexList[currentPage],
-                                onOptionSelected = { newIndex ->
-                                    onOptionSelected(currentPage, newIndex)
-                                },
-                                enable = !isSubmitted,
-                            )
-                        }
-                    }
                 }
 
                 item {
                     Button(
                         onClick = {
-                            onSubmitButtonClick(questions[currentPage].id)
+                            onSubmitButtonClick(choiceQuestions[currentPage].id)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
                         enabled = !isSubmitted,
                     ) {
-                        Text(if (isSubmitted) stringResource(R.string.btn_success_submit) else stringResource(R.string.btn_submit))
+                        Text(
+                            if (isSubmitted) {
+                                stringResource(R.string.btn_success_submit)
+                            } else {
+                                stringResource(
+                                    R.string.btn_submit,
+                                )
+                            },
+                        )
                     }
                 }
             }
@@ -196,12 +198,12 @@ fun UserQuestionScreen(
 
     if (showExitDialog) {
         WeQuizBaseDialog(
-            title = if (currentPage == questions.size - 1) {
+            title = if (currentPage == choiceQuestions.size - 1) {
                 stringResource(R.string.dialog_submit_script)
             } else {
                 stringResource(R.string.dialog_exit_script)
             },
-            confirmTitle = if (currentPage == questions.size - 1) {
+            confirmTitle = if (currentPage == choiceQuestions.size - 1) {
                 stringResource(R.string.txt_question_submit)
             } else {
                 stringResource(R.string.txt_question_exit)

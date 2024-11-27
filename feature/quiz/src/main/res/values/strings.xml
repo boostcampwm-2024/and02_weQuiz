@@ -5,6 +5,8 @@
     <string name="txt_question_detail_solution">해설</string>
     <string name="txt_question_detail_title">제목</string>
     <string name="txt_question_title">제목</string>
+    <string name="txt_question">문제</string>
+    <string name="txt_blank">낱말</string>
     <string name="txt_question_description">설명</string>
     <string name="top_app_bar_question_title">퀴즈 제목</string>
     <string name="txt_question_done">완료</string>
@@ -60,6 +62,7 @@
     <string name="txt_real_time_quiz_progressing">퀴즈 진행 중</string>
     <string name="txt_real_time_quiz_finished">시험이 끝났습니다.</string>
     <string name="txt_create_quiz_general">일반 퀴즈</string>
+    <string name="txt_create_general_question">일반</string>
     <string name="txt_create_quiz_realtime">실시간 퀴즈</string>
     <string name="btn_success_submit">제출이 완료 되었습니다!</string>
     <string name="btn_submit">제출</string>
@@ -93,6 +96,12 @@
     <string name="txt_quiz_submit_state">제출: %1$d / %2$d명</string>
     <string name="txt_quiz_finish_notification">퀴즈가 종료되었습니다.\n결과 화면으로 이동합니다.</string>
     <string name="txt_quiz_finish_confirm">확인</string>
+    <!-- blank quiz -->
+    <string name="btn_create_text">텍스트 추가</string>
+    <string name="btn_create_blank">빈칸 추가</string>
+    <string name="txt_create_blank_question">낱말 맞추기 문제 만들기</string>
+    <string name="txt_blank_question">낱말</string>
+    <string name="txt_blank_question_detail_description">문제</string>
     <!-- content description  -->
     <string name="des_btn_back">뒤로가기</string>
     <string name="des_clear_text">텍스트 지우기</string>
@@ -102,6 +111,7 @@
     <string name="des_question_detail_top_app_bar_navigation_icon">뒤로 가기</string>
     <!-- error  -->
     <string name="err_load_quiz">퀴즈 로드에 실패했습니다.</string>
+    <string name="err_update_current_question">퀴즈 문제 현황 업데이트에 실패했습니다.</string>
     <string name="error_quiz_finished">퀴즈 종료에 실패했습니다.</string>
     <string name="err_load_questions">문제 로드에 실패했습니다.</string>
     <string name="err_answer_add">퀴즈에 응답 추가 실패했습니다.</string>
@@ -110,4 +120,6 @@
     <string name="err_load_current_page">페이지 로드에 실패하였습니다.</string>
     <string name="err_load_owner_name">관리자 이름을 가져오는데 실패했습니다.</string>
     <string name="err_submit_quetion">퀴즈 제출에 실패하였습니다.</string>
+    <string name="des_remove_blank">낱말 제거</string>
+    <string name="des_remove_text">텍스트 제거</string>
 </resources>
