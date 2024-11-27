@@ -33,6 +33,7 @@ data class UserQuestionUiState(
     val userOmrId: String? = null,
     val isSubmitted: Boolean = false,
     val isQuizFinished: Boolean = false,
+    val isExitSuccess: Boolean = false,
 )
 
 @HiltViewModel
@@ -175,7 +176,7 @@ class UserQuestionViewModel @Inject constructor(
                 val userOmrCreationInfo = UserOmrCreationInfo(
                     userId = userId,
                     quizId = quizId,
-                    answers = _uiState.value.submittedIndexList.map { it },
+                    answers = _uiState.value.submittedIndexList,
                 )
                 userOmrRepository.submitQuiz(userOmrCreationInfo)
                     .onSuccess { userOmrId ->
@@ -196,6 +197,22 @@ class UserQuestionViewModel @Inject constructor(
                     .onFailure {
                         Log.e("QuestionViewModel", "퀴즈 정답 제출 실패", it)
                         _uiState.update { it.copy(errorMessageId = R.string.err_answer_add_quiz) }
+                    }
+            }
+        }
+    }
+
+    fun exitRealTimeQuiz() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            _uiState.value.currentUserId?.let { currentUserId ->
+                quizRepository.waitingRealTimeQuiz(quizId, false, currentUserId)
+                    .onSuccess {
+                        _uiState.update { it.copy(isLoading = false, isExitSuccess = true) }
+                    }
+                    .onFailure {
+                        _uiState.update { it.copy(isLoading = false, errorMessageId = R.string.err_delete_waiting_user) }
                     }
             }
         }

@@ -7,10 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.Category
@@ -56,8 +54,7 @@ class DetailStudyViewModel @Inject constructor(
 ) : ViewModel() {
     private val studyGroupId: String = savedStateHandle.toRoute<StudyRoute>().studyGroupId
     private val _uiState: MutableStateFlow<DetailStudyUiState> = MutableStateFlow(DetailStudyUiState())
-    val uiState: StateFlow<DetailStudyUiState> = _uiState.onStart {
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), DetailStudyUiState())
+    val uiState: StateFlow<DetailStudyUiState> = _uiState.asStateFlow()
 
     fun initViewmodel() {
         getUserKey()
@@ -193,24 +190,22 @@ class DetailStudyViewModel @Inject constructor(
     fun addNotification(groupId: String, email: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+
             userRepository.findUserByEmail(email)
-                .onSuccess {
-                    notificationRepository.addNotification(groupId, it.id)
-                        .onSuccess {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                )
-                            }
-                        }.onFailure {
-                            Log.e("DetailStudyViewModel", "Failed to add notification", it)
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    errorMessageId = R.string.error_message_add_notification,
-                                )
-                            }
+                .onSuccess { user ->
+                    _uiState.value.currentGroup?.let { currentGroup ->
+                        if (currentGroup.users.contains(user.id).not()) {
+                            notificationRepository.addNotification(groupId, user.id)
+                                .onSuccess {
+                                    _uiState.update { it.copy(isLoading = false) }
+                                }.onFailure {
+                                    Log.e("DetailStudyViewModel", "Failed to add notification", it)
+                                    _uiState.update { it.copy(isLoading = false, errorMessageId = R.string.error_message_add_notification) }
+                                }
+                        } else {
+                            _uiState.update { it.copy(isLoading = false) }
                         }
+                    }
                 }.onFailure {
                     Log.e("DetailStudyViewModel", "Failed to find user", it)
                     _uiState.update {

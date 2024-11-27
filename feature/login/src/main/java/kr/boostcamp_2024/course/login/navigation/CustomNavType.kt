@@ -19,7 +19,7 @@ object CustomNavType {
             Json.decodeFromString(Uri.decode(value))
 
         override fun serializeAsValue(value: UserUiModel?): String =
-            Uri.encode(Json.encodeToString(value))
+            Json.encodeToString(value)
 
         override fun put(bundle: Bundle, key: String, value: UserUiModel?) {
             bundle.putString(key, Json.encodeToString(value))

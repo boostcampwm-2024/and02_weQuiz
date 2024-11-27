@@ -61,10 +61,10 @@ fun UserQuestionScreen(
         selectedIndexList = uiState.selectedIndexList,
         snackbarHostState = snackbarHostState,
         onOptionSelected = userQuestionViewModel::selectOption,
-        onNavigationButtonClick = onNavigationButtonClick,
         onSubmitButtonClick = userQuestionViewModel::submitQuestion,
         isSubmitted = uiState.isSubmitted,
         onQuizFinishButtonClick = userQuestionViewModel::submitAnswers,
+        onExitButtonClick = userQuestionViewModel::exitRealTimeQuiz,
     )
 
     uiState.errorMessageId?.let { errorMessageId ->
@@ -78,6 +78,12 @@ fun UserQuestionScreen(
     uiState.userOmrId?.let { userOmrId ->
         LaunchedEffect(userOmrId) {
             onQuizFinished(userOmrId, null)
+        }
+    }
+
+    LaunchedEffect(uiState.isExitSuccess) {
+        if (uiState.isExitSuccess) {
+            onNavigationButtonClick()
         }
     }
 
@@ -96,10 +102,10 @@ fun UserQuestionScreen(
     selectedIndexList: List<Int>,
     snackbarHostState: SnackbarHostState,
     onOptionSelected: (Int, Int) -> Unit,
-    onNavigationButtonClick: () -> Unit,
     onSubmitButtonClick: (String) -> Unit,
     isSubmitted: Boolean,
     onQuizFinishButtonClick: () -> Unit,
+    onExitButtonClick: () -> Unit,
 ) {
     var showExitDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -209,7 +215,7 @@ fun UserQuestionScreen(
             dismissTitle = stringResource(R.string.txt_question_cancel),
             onConfirm = {
                 showExitDialog = false
-                onNavigationButtonClick()
+                onExitButtonClick()
             },
             onDismissRequest = { showExitDialog = false },
             dialogImage = painterResource(id = R.drawable.quiz_system_profile),

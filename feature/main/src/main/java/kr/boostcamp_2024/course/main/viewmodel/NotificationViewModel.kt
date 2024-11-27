@@ -48,10 +48,24 @@ class NotificationViewModel @Inject constructor(
             authRepository.getUserKey().onSuccess { userKey ->
                 notificationRepository.getNotifications(userKey)
                     .onSuccess { notifications ->
-                        val notificationWithStudyGroupNameList = notifications.map {
-                            val studyGroupNameResult = studyGroupRepository.getStudyGroupName(it.groupId)
-                            val notificationWithGroupInfo =
-                                NotificationWithGroupInfo(it, studyGroupNameResult.getOrNull() ?: "")
+                        val notificationWithStudyGroupNameList = notifications.map { notification ->
+                            val studyGroupResult = studyGroupRepository.getStudyGroup(notification.groupId)
+                            val notificationWithGroupInfo = studyGroupResult.fold(
+                                onSuccess = { studyGroup ->
+                                    NotificationWithGroupInfo(
+                                        notification = notification,
+                                        studyGroupName = studyGroup.name,
+                                        studyGroupImgUrl = studyGroup.studyGroupImageUrl,
+                                    )
+                                },
+                                onFailure = {
+                                    NotificationWithGroupInfo(
+                                        notification = notification,
+                                        studyGroupName = null,
+                                        studyGroupImgUrl = null,
+                                    )
+                                },
+                            )
                             notificationWithGroupInfo
                         }
                         _uiState.update {
@@ -60,7 +74,6 @@ class NotificationViewModel @Inject constructor(
                                 notificationWithGroupInfoList = notificationWithStudyGroupNameList,
                             )
                         }
-
                     }
                     .onFailure {
                         _uiState.update {
@@ -103,11 +116,21 @@ class NotificationViewModel @Inject constructor(
             userRepository.addStudyGroupToUser(notification.userid, notification.groupId)
                 .onSuccess {
                     deleteInvitation(notification.id)
+                    addGroupMember(notification.userid, notification.groupId)
                 }
                 .onFailure { throwable ->
                     Log.e("NotificationViewModel", "실패: $throwable")
                     _uiState.update { it.copy(snackBarMessage = "알림 수락을 실패하였습니다.") }
                 }
+        }
+    }
+
+    private fun addGroupMember(userId: String, groupId: String) {
+        viewModelScope.launch {
+            studyGroupRepository.addUser(groupId, userId).onFailure { throwable ->
+                Log.e("NotificationViewModel", "실패: $throwable")
+                _uiState.update { it.copy(snackBarMessage = "그룹원을 그룹에 추가하는데 실패하였습니다.") }
+            }
         }
     }
 

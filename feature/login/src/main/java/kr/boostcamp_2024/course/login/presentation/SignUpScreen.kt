@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -67,7 +68,6 @@ fun SignUpScreen(
     SignupScreen(
         uiState = uiState,
         snackBarHostState = snackBarHostState,
-        onEmailChanged = viewModel::onEmailChanged,
         onNameChanged = viewModel::onNameChanged,
         onProfileUriChanged = viewModel::onProfileUriChanged,
         onNavigationButtonClick = onNavigationButtonClick,
@@ -88,7 +88,6 @@ fun SignUpScreen(
 private fun SignupScreen(
     uiState: SignUpUiState,
     snackBarHostState: SnackbarHostState,
-    onEmailChanged: (String) -> Unit,
     onNameChanged: (String) -> Unit,
     onProfileUriChanged: (String) -> Unit,
     onNavigationButtonClick: () -> Unit,
@@ -135,10 +134,8 @@ private fun SignupScreen(
                     email = uiState.userSubmitInfo.email,
                     name = uiState.userSubmitInfo.name,
                     profileUri = uiState.userSubmitInfo.profileImageUrl,
-                    onEmailChanged = onEmailChanged,
                     onNameChanged = onNameChanged,
                     onProfileUriChanged = onProfileUriChanged,
-                    isEmailValid = uiState.isEmailValid,
                     setNewSnackBarMessage = setNewSnackBarMessage,
                 )
             }
@@ -161,10 +158,8 @@ fun SignUpContent(
     email: String,
     name: String,
     profileUri: String?,
-    onEmailChanged: (String) -> Unit,
     onNameChanged: (String) -> Unit,
     onProfileUriChanged: (String) -> Unit,
-    isEmailValid: Boolean,
     setNewSnackBarMessage: (Int) -> Unit,
 ) {
     val photoPickerLauncher = rememberLauncherForActivityResult(
@@ -200,12 +195,11 @@ fun SignUpContent(
             fallback = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_photo_picker),
         )
 
-        WeQuizTextField(
-            label = stringResource(R.string.txt_login_email_label),
-            text = email,
-            isError = isEmailValid.not(),
-            onTextChanged = onEmailChanged,
-            placeholder = stringResource(R.string.txt_login_email_placeholder),
+        TextField(
+            value = email,
+            onValueChange = {},
+            modifier = Modifier.fillMaxWidth(),
+            enabled = false,
         )
 
         WeQuizTextField(
