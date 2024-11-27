@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BlankQuestionCreationInfo
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestionCreationInfo
+import kr.boostcamp_2024.course.domain.repository.AiRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.quiz.navigation.CreateQuestionRoute
@@ -30,6 +31,7 @@ sealed class BlankQuestionItem {
 
 data class CreateQuestionUiState(
     val isLoading: Boolean = false,
+    val showDialog: Boolean = false,
     val choiceQuestionCreationInfo: ChoiceQuestionCreationInfo = ChoiceQuestionCreationInfo(
         title = "",
         description = "",
@@ -37,7 +39,6 @@ data class CreateQuestionUiState(
         answer = 0,
         choices = List(4) { "" },
     ),
-    val isCreateQuestionValid: Boolean = false,
     val snackBarMessage: String? = null,
     val creationSuccess: Boolean = false,
     val selectedQuestionTypeIndex: Int = 0,
@@ -46,6 +47,12 @@ data class CreateQuestionUiState(
         BlankQuestionItem.Text("텍스트"),
     ),
 ) {
+    val isCreateQuestionValid: Boolean = choiceQuestionCreationInfo.title.isNotBlank() &&
+        choiceQuestionCreationInfo.description.isNotBlank() &&
+        choiceQuestionCreationInfo.choices.all {
+            it.isNotBlank()
+        }
+
     val isCreateBlankQuestionValid: Boolean
         get() = items.any { it is BlankQuestionItem.Blank } &&
             items.all {
@@ -68,10 +75,10 @@ data class CreateQuestionUiState(
 class CreateQuestionViewModel @Inject constructor(
     private val questionRepository: QuestionRepository,
     private val quizRepository: QuizRepository,
+    private val aiRepository: AiRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val quizId: String = savedStateHandle.toRoute<CreateQuestionRoute>().quizId
-
     private val _createQuestionUiState: MutableStateFlow<CreateQuestionUiState> = MutableStateFlow(CreateQuestionUiState())
     val createQuestionUiState: StateFlow<CreateQuestionUiState> = _createQuestionUiState.asStateFlow()
 
@@ -83,7 +90,6 @@ class CreateQuestionViewModel @Inject constructor(
                 ),
             )
         }
-        checkCreateQuestionValid()
     }
 
     fun onDescriptionChanged(description: String) {
@@ -94,7 +100,6 @@ class CreateQuestionViewModel @Inject constructor(
                 ),
             )
         }
-        checkCreateQuestionValid()
     }
 
     fun onSolutionChanged(solution: String) {
@@ -105,7 +110,6 @@ class CreateQuestionViewModel @Inject constructor(
                 ),
             )
         }
-        checkCreateQuestionValid()
     }
 
     fun onChoiceTextChanged(changedIndex: Int, changedText: String) {
@@ -118,24 +122,12 @@ class CreateQuestionViewModel @Inject constructor(
                 ),
             )
         }
-        checkCreateQuestionValid()
     }
 
     fun onSelectedChoiceNumChanged(changedNum: Int) {
         _createQuestionUiState.update { currentState ->
             currentState.copy(
                 choiceQuestionCreationInfo = currentState.choiceQuestionCreationInfo.copy(answer = changedNum),
-            )
-        }
-        checkCreateQuestionValid()
-    }
-
-    private fun checkCreateQuestionValid() {
-        _createQuestionUiState.update { currentState ->
-            currentState.copy(
-                isCreateQuestionValid = currentState.choiceQuestionCreationInfo.title.isNotBlank() &&
-                    currentState.choiceQuestionCreationInfo.description.isNotBlank() &&
-                    currentState.choiceQuestionCreationInfo.choices.all { it.isNotBlank() },
             )
         }
     }
@@ -189,6 +181,58 @@ class CreateQuestionViewModel @Inject constructor(
             )
         }
     }
+
+    fun showDialog() {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                showDialog = true,
+            )
+        }
+    }
+
+    fun closeDialog() {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                showDialog = false,
+            )
+        }
+    }
+
+    fun getAiRecommendedQuestion(category: String) {
+        setLoadingState(true)
+        viewModelScope.launch {
+            aiRepository.getAiQuestion(category).onSuccess {
+                setAiRecommendedQuestion(
+                    ChoiceQuestionCreationInfo(
+                        title = it.title,
+                        description = it.description,
+                        solution = it.solution,
+                        answer = getAnswerIndex(it.answer, it.choices),
+                        choices = it.choices,
+                    ),
+                )
+                _createQuestionUiState.update { currentState ->
+                    currentState.copy(
+                        isLoading = false,
+                    )
+                }
+            }.onFailure {
+                setNewSnackBarMessage("AI 추천 문제 가져오기에 실패했습니다. 다시 시도해주세요!")
+                Log.d("CreateQuestionViewModel", "AI 추천 문제 가져오기 실패")
+            }
+
+        }
+    }
+
+    private fun setAiRecommendedQuestion(questionCreationInfo: ChoiceQuestionCreationInfo) {
+        _createQuestionUiState.update { currentState ->
+            currentState.copy(
+                choiceQuestionCreationInfo = questionCreationInfo,
+            )
+        }
+    }
+
+    private fun getAnswerIndex(answer: String, choices: List<String>): Int = choices.indexOf(answer)
 
     fun onQuestionTypeIndexChange(index: Int) {
         _createQuestionUiState.update { currentState ->
