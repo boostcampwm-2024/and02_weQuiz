@@ -32,7 +32,7 @@ fun QuizDataButton(
                     onClick = { onCreateQuestionButtonClick(quiz.id) },
                     enabled = quiz.isOpened.not(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        containerColor = MaterialTheme.colorScheme.primary,
                         disabledContainerColor = MaterialTheme.colorScheme.outlineVariant,
                     ),
                 ) {
