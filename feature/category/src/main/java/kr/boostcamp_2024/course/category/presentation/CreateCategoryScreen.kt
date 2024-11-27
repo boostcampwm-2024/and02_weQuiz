@@ -8,17 +8,20 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -85,6 +89,7 @@ fun CreateCategoryScreen(
         onCreateCategoryButtonClick = viewModel::uploadCategory,
         guideText = guideText,
         onCurrentCategoryImageChanged = viewModel::onImageByteArrayChanged,
+        isLoading = uiState.isLoading,
     )
 }
 
@@ -103,6 +108,7 @@ fun CreateCategoryScreen(
     onCreateCategoryButtonClick: () -> Unit,
     guideText: String,
     onCurrentCategoryImageChanged: (ByteArray) -> Unit,
+    isLoading: Boolean,
 ) {
     val context = LocalContext.current
     val photoPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -137,52 +143,67 @@ fun CreateCategoryScreen(
             SnackbarHost(snackbarHostState)
         },
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState()),
+                .fillMaxSize(),
         ) {
-            WeQuizAsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 70.dp)
-                    .aspectRatio(1f)
-                    .clip(shape = MaterialTheme.shapes.large)
-                    .clickable(enabled = true) {
-                        photoPickerLauncher.launch(PickVisualMediaRequest(ImageOnly))
-                    },
-                imgUrl = currentCategoryImage ?: defaultCategoryImageUri,
-                contentDescription = stringResource(R.string.des_category_image),
-                placeholder = painterResource(R.drawable.default_profile_image),
-                error = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_error),
-                fallback = painterResource(R.drawable.default_profile_image),
-            )
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState()),
             ) {
-                WeQuizTextField(
-                    label = stringResource(R.string.txt_create_category_name_label),
-                    text = name,
-                    onTextChanged = onNameChanged,
-                    placeholder = stringResource(R.string.txt_create_category_name_placeholder),
+                WeQuizAsyncImage(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 70.dp)
+                        .aspectRatio(1f)
+                        .clip(shape = MaterialTheme.shapes.large)
+                        .clickable(enabled = true) {
+                            photoPickerLauncher.launch(PickVisualMediaRequest(ImageOnly))
+                        },
+                    imgUrl = currentCategoryImage ?: defaultCategoryImageUri,
+                    contentDescription = stringResource(R.string.des_category_image),
+                    placeholder = painterResource(R.drawable.default_profile_image),
+                    error = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_error),
+                    fallback = painterResource(R.drawable.default_profile_image),
                 )
-                WeQuizTextField(
-                    label = stringResource(R.string.txt_create_category_des_label),
-                    text = description,
-                    maxLines = 6,
-                    minLines = 6,
-                    onTextChanged = onDescriptionChanged,
-                    placeholder = stringResource(R.string.txt_create_category_des_placeholder),
-                )
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = onCreateCategoryButtonClick,
-                    enabled = isCategoryCreationValid,
+
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    Text(text = guideText)
+                    WeQuizTextField(
+                        label = stringResource(R.string.txt_create_category_name_label),
+                        text = name,
+                        onTextChanged = onNameChanged,
+                        placeholder = stringResource(R.string.txt_create_category_name_placeholder),
+                    )
+                    WeQuizTextField(
+                        label = stringResource(R.string.txt_create_category_des_label),
+                        text = description,
+                        maxLines = 6,
+                        minLines = 6,
+                        onTextChanged = onDescriptionChanged,
+                        placeholder = stringResource(R.string.txt_create_category_des_placeholder),
+                    )
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onCreateCategoryButtonClick,
+                        enabled = isCategoryCreationValid,
+                    ) {
+                        Text(text = guideText)
+                    }
                 }
+            }
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .align(Alignment.Center),
+
+                    )
             }
         }
     }

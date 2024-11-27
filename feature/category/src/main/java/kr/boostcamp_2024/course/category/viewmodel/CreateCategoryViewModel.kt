@@ -53,6 +53,7 @@ class CreateCategoryViewModel @Inject constructor(
     }
 
     private suspend fun createCategory() {
+        setLoading()
         val imageUrl = _createCategoryUiState.value.currentImage?.let { image ->
             storageRepository.uploadImage(image).getOrNull()
         }
