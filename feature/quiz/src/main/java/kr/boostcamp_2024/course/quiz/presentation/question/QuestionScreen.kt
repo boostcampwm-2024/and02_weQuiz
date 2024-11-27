@@ -43,7 +43,7 @@ fun QuestionScreen(
         GeneralQuestionScreen(
             quiz = uiState.quiz,
             currentPage = uiState.currentPage,
-            questions = uiState.choiceQuestions,
+            questions = uiState.questions,
             countDownTime = uiState.countDownTime,
             selectedIndexList = uiState.selectedIndexList,
             snackbarHostState = snackbarHostState,
@@ -52,6 +52,13 @@ fun QuestionScreen(
             onPreviousButtonClick = questionViewModel::previousPage,
             onSubmitButtonClick = questionViewModel::submitAnswers,
             onNavigationButtonClick = onNavigationButtonClick,
+            showErrorMessage = questionViewModel::showErrorMessage,
+            onBlanksSelected = questionViewModel::selectBlanks,
+            blankQuestionContents = uiState.blankQuestionContents,
+            blankWords = uiState.blankWords,
+            removeBlankContent = questionViewModel.blankQuestionManager::removeBlankContent,
+            addBlankContent = questionViewModel.blankQuestionManager::addBlankContent,
+            getBlankQuestionAnswer = questionViewModel.blankQuestionManager::getAnswer,
         )
     }
 

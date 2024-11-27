@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.domain.model.BlankQuestion
+import kr.boostcamp_2024.course.domain.model.BlankQuestionManager
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
@@ -22,13 +24,15 @@ import javax.inject.Inject
 
 data class RealTimeWithOwnerQuestionUiState(
     val quiz: RealTimeQuiz? = null,
-    val choiceQuestions: List<Question?> = emptyList(),
+    val questions: List<Question?> = emptyList(),
     val ownerName: String? = null,
     val currentPage: Int = 0,
     val isLoading: Boolean = false,
     val errorMessageId: Int? = null,
     val currentUserId: String? = null,
     val isQuizFinished: Boolean = false,
+    val blankQuestionContents: List<Map<String, Any>?> = emptyList(),
+    val blankWords: List<Map<String, Any>> = emptyList(),
 )
 
 @HiltViewModel
@@ -39,6 +43,7 @@ class OwnerQuestionViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<RealTimeWithOwnerQuestionUiState> = MutableStateFlow(RealTimeWithOwnerQuestionUiState())
     val uiState: StateFlow<RealTimeWithOwnerQuestionUiState> = _uiState.asStateFlow()
+    val blankQuestionManager = BlankQuestionManager(::setNewBlankContents)
 
     fun initQuizData(quiz: RealTimeQuiz?, currentUserId: String?) {
         _uiState.update { currentState ->
@@ -75,7 +80,7 @@ class OwnerQuestionViewModel @Inject constructor(
             _uiState.update { currentState ->
                 currentState.copy(
                     isLoading = true,
-                    choiceQuestions = List(questionIds.size) { null },
+                    questions = List(questionIds.size) { null },
                 )
             }
             questionRepository.getRealTimeQuestions(questionIds)
@@ -85,7 +90,7 @@ class OwnerQuestionViewModel @Inject constructor(
                             questionFlow.onEach { question ->
                                 _uiState.update { currentState ->
                                     currentState.copy(
-                                        choiceQuestions = currentState.choiceQuestions.toMutableList().apply {
+                                        questions = currentState.questions.toMutableList().apply {
                                             this[index] = question
                                         },
                                     )
@@ -124,7 +129,7 @@ class OwnerQuestionViewModel @Inject constructor(
         }
     }
 
-    private fun showErrorMessage(errorMessageId: Int?) {
+    fun showErrorMessage(errorMessageId: Int?) {
         _uiState.update { currentState ->
             currentState.copy(
                 errorMessageId = errorMessageId,
@@ -139,14 +144,46 @@ class OwnerQuestionViewModel @Inject constructor(
     }
 
     fun nextPage() {
-        _uiState.update { currentState ->
-            currentState.copy(currentPage = currentState.currentPage + 1)
-        }
+        updateCurrentPage(_uiState.value.currentPage + 1)
     }
 
     fun previousPage() {
-        _uiState.update { currentState ->
-            currentState.copy(currentPage = currentState.currentPage - 1)
+        updateCurrentPage(_uiState.value.currentPage - 1)
+    }
+
+    private fun updateCurrentPage(pageIdx: Int) {
+        val currentQuizId = requireNotNull(_uiState.value.quiz?.id)
+        viewModelScope.launch {
+            quizRepository.updateQuizCurrentQuestion(currentQuizId, pageIdx)
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(currentPage = pageIdx)
+                    }
+                    setNewBlankQuestionManager(pageIdx)
+                }.onFailure {
+                    Log.e("OwnerQuestionViewModel", "Failed to update current page", it)
+                    showErrorMessage(R.string.err_update_current_question)
+                }
+        }
+    }
+
+    private fun setNewBlankQuestionManager(pageIdx: Int) {
+        val currentQuestion = _uiState.value.questions[pageIdx]
+        if (currentQuestion is BlankQuestion) {
+            blankQuestionManager.setNewQuestions(
+                isOwner = true,
+                questionContents = currentQuestion.questionContent,
+            )
+            setNewBlankContents()
+        }
+    }
+
+    private fun setNewBlankContents() {
+        _uiState.update {
+            it.copy(
+                blankQuestionContents = blankQuestionManager.contents,
+                blankWords = blankQuestionManager.blankWords,
+            )
         }
     }
 

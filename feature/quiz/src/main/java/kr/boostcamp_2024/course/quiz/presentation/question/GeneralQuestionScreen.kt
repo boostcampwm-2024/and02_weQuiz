@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
@@ -37,12 +35,10 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
-import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.component.Question
-import kr.boostcamp_2024.course.quiz.component.QuestionTitleAndDetail
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
+import kr.boostcamp_2024.course.quiz.component.QuizContent
 import kr.boostcamp_2024.course.quiz.utils.timerFormat
 
 @Composable
@@ -51,13 +47,20 @@ fun GeneralQuestionScreen(
     currentPage: Int,
     questions: List<Question>,
     countDownTime: Int,
-    selectedIndexList: List<Int>,
+    selectedIndexList: List<Any>,
     snackbarHostState: SnackbarHostState,
     onNavigationButtonClick: () -> Unit,
     onOptionSelected: (Int, Int) -> Unit,
+    onBlanksSelected: (Int, Map<String, String?>) -> Unit,
     onNextButtonClick: () -> Unit,
     onPreviousButtonClick: () -> Unit,
     onSubmitButtonClick: () -> Unit,
+    showErrorMessage: (Int) -> Unit,
+    blankQuestionContents: List<Map<String, Any>?>,
+    blankWords: List<Map<String, Any>>,
+    removeBlankContent: (Int) -> Unit,
+    addBlankContent: (Int) -> Unit,
+    getBlankQuestionAnswer: () -> Map<String, String?>,
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -81,136 +84,162 @@ fun GeneralQuestionScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding),
         ) {
+            LinearProgressIndicator(
+                progress = { (currentPage + 1) / questions.size.toFloat() },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
             LazyColumn {
                 item {
-                    LinearProgressIndicator(
-                        progress = { (currentPage + 1) / questions.size.toFloat() },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
+                    GeneralQuizGuide(countDownTime = countDownTime)
                 }
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.End),
-                    ) {
-                        WeQuizRightChatBubble(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "${stringResource(R.string.txt_question_timer)} ${timerFormat(countDownTime)}",
-                        )
-                        WeQuizLocalRoundedImage(
-                            modifier = Modifier
-                                .size(120.dp)
-                                .align(Alignment.CenterVertically),
-                            imagePainter = painterResource(id = R.drawable.quiz_system_profile),
-                            contentDescription = stringResource(R.string.des_image_question),
-                        )
-                    }
-                }
-                item {
-                    HorizontalPager(
-                        state = rememberPagerState(
-                            initialPage = currentPage,
-                            pageCount = { questions.size },
-                        ),
-                        userScrollEnabled = false,
-                    ) {
-                        val currentQuestion = questions[currentPage]
-                        if (currentQuestion is ChoiceQuestion) {
-                            Column {
-                                QuestionTitleAndDetail(
-                                    title = currentQuestion.title,
-                                    description = currentQuestion.description,
-                                )
 
-                                Question(
-                                    questions = currentQuestion.choices,
-                                    selectedIndex = selectedIndexList[currentPage],
-                                    onOptionSelected = { newIndex ->
-                                        onOptionSelected(currentPage, newIndex)
-                                    },
-                                )
-                            }
-                        }
-                        // TODO: Blank question 처리 해야 해요!!
-                    }
+                item {
+                    QuizContent(
+                        currentPage = currentPage,
+                        selectedIndexList = selectedIndexList,
+                        onOptionSelected = onOptionSelected,
+                        questions = questions,
+                        showErrorMessage = showErrorMessage,
+                        onBlanksSelected = onBlanksSelected,
+                        blankQuestionContents = blankQuestionContents,
+                        blankWords = blankWords,
+                        removeBlankContent = removeBlankContent,
+                        addBlankContent = addBlankContent,
+                        getBlankQuestionAnswer = getBlankQuestionAnswer,
+                    )
                 }
             }
 
-            Column(
+            GeneralQuizButtons(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .background(Color.Transparent)
                     .fillMaxWidth()
                     .padding(10.dp),
-            ) {
-                Button(
-                    onClick = {
-                        if (currentPage < questions.size - 1) {
-                            onNextButtonClick()
-                        } else {
-                            showDialog = true
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(
-                        text = if (currentPage == questions.size - 1) {
-                            stringResource(R.string.txt_question_done)
-                        } else {
-                            stringResource(R.string.txt_question_next_question)
-                        },
-                    )
-                }
-                Button(
-                    onClick = {
-                        if (currentPage > 0) onPreviousButtonClick()
-                    },
-                    enabled = currentPage > 0,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 5.dp, bottom = 30.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                        disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
-                    ),
-                ) {
-                    Text(text = stringResource(R.string.btn_prev_question))
-                }
-            }
+                nextButtonText = if (currentPage == questions.size - 1) {
+                    stringResource(R.string.txt_question_done)
+                } else {
+                    stringResource(R.string.txt_question_next_question)
+                },
+                onNextButtonClick = {
+                    if (currentPage < questions.size - 1) {
+                        onNextButtonClick()
+                    } else {
+                        showDialog = true
+                    }
+                },
+                onPrevButtonClick = {
+                    if (currentPage > 0) onPreviousButtonClick()
+                },
+                prevButtonEnabled = currentPage > 0,
+            )
         }
 
         if (showDialog) {
-            WeQuizBaseDialog(
-                title = if (currentPage == questions.size - 1) {
-                    stringResource(R.string.dialog_submit_script)
-                } else {
-                    stringResource(R.string.dialog_exit_script)
-                },
-                confirmTitle = if (currentPage == questions.size - 1) {
-                    stringResource(R.string.txt_question_submit)
-                } else {
-                    stringResource(R.string.txt_question_exit)
-                },
-                dismissTitle = stringResource(R.string.txt_question_cancel),
-                onConfirm = {
-                    showDialog = false
-                    if (currentPage == questions.size - 1) {
-                        onSubmitButtonClick()
-                    } else {
-                        onNavigationButtonClick()
-                    }
-                },
-                onDismissRequest = { showDialog = false },
-                dialogImage = painterResource(id = R.drawable.quiz_system_profile),
-                content = { /* no-op */ },
+            GeneralQuizDialog(
+                currentPage = currentPage,
+                questions = questions,
+                closeDialog = { showDialog = false },
+                onNavigationButtonClick = onNavigationButtonClick,
+                onSubmitButtonClick = onSubmitButtonClick,
             )
         }
     }
+}
+
+@Composable
+fun GeneralQuizGuide(
+    countDownTime: Int,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.End),
+    ) {
+        WeQuizRightChatBubble(
+            modifier = Modifier.align(Alignment.CenterVertically),
+            text = "${stringResource(R.string.txt_question_timer)} ${timerFormat(countDownTime)}",
+        )
+        WeQuizLocalRoundedImage(
+            modifier = Modifier
+                .size(120.dp)
+                .align(Alignment.CenterVertically),
+            imagePainter = painterResource(id = R.drawable.quiz_system_profile),
+            contentDescription = stringResource(R.string.des_image_question),
+        )
+    }
+}
+
+@Composable
+fun GeneralQuizButtons(
+    modifier: Modifier = Modifier,
+    nextButtonText: String,
+    onNextButtonClick: () -> Unit,
+    onPrevButtonClick: () -> Unit,
+    prevButtonEnabled: Boolean,
+) {
+    Column(
+        modifier = modifier,
+    ) {
+        Button(
+            onClick = onNextButtonClick,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(text = nextButtonText)
+        }
+        Button(
+            onClick = onPrevButtonClick,
+            enabled = prevButtonEnabled,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 5.dp, bottom = 30.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+            ),
+        ) {
+            Text(text = stringResource(R.string.btn_prev_question))
+        }
+    }
+}
+
+@Composable
+fun GeneralQuizDialog(
+    currentPage: Int,
+    questions: List<Question>,
+    closeDialog: () -> Unit,
+    onNavigationButtonClick: () -> Unit,
+    onSubmitButtonClick: () -> Unit,
+) {
+    WeQuizBaseDialog(
+        title = if (currentPage == questions.size - 1) {
+            stringResource(R.string.dialog_submit_script)
+        } else {
+            stringResource(R.string.dialog_exit_script)
+        },
+        confirmTitle = if (currentPage == questions.size - 1) {
+            stringResource(R.string.txt_question_submit)
+        } else {
+            stringResource(R.string.txt_question_exit)
+        },
+        dismissTitle = stringResource(R.string.txt_question_cancel),
+        onConfirm = {
+            closeDialog()
+            if (currentPage == questions.size - 1) {
+                onSubmitButtonClick()
+            } else {
+                onNavigationButtonClick()
+            }
+        },
+        onDismissRequest = closeDialog,
+        dialogImage = painterResource(id = R.drawable.quiz_system_profile),
+        content = { /* no-op */ },
+    )
 }
 
 @Preview(showBackground = true)
@@ -229,6 +258,13 @@ fun GeneralQuestionScreenPreview() {
             onNextButtonClick = {},
             onPreviousButtonClick = {},
             onSubmitButtonClick = {},
+            showErrorMessage = {},
+            onBlanksSelected = { _, _ -> },
+            blankQuestionContents = emptyList(),
+            blankWords = emptyList(),
+            removeBlankContent = {},
+            addBlankContent = {},
+            getBlankQuestionAnswer = { emptyMap() },
         )
     }
 }

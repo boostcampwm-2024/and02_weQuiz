@@ -13,9 +13,9 @@ data class QuizResult(
                 choiceQuestion = questions[index],
                 userAnswer = userOmrAnswers,
                 isCorrect = when (userOmrAnswers) {
-                    is Int -> evaluateChoiceQuestion(index, userOmrAnswers)
+                    is Number -> evaluateChoiceQuestion(index, userOmrAnswers)
                     is Map<*, *> -> evaluateBlankQuestion(index, userOmrAnswers)
-                    else -> throw Exception("Invalid user answer type")
+                    else -> false
                 },
             )
         }
@@ -25,7 +25,7 @@ data class QuizResult(
 
     private fun evaluateChoiceQuestion(
         index: Int,
-        userAnswer: Int,
+        userAnswer: Number,
     ): Boolean = userAnswer == (questions[index] as ChoiceQuestion).answer
 
     private fun evaluateBlankQuestion(
@@ -35,7 +35,7 @@ data class QuizResult(
         val blankQuestion = questions[index] as BlankQuestion
         val blankQuestionContent = blankQuestion.questionContent.filter { it["type"] == "blank" }
         return blankQuestionContent.withIndex().all { (index, content) ->
-            content["text"] == userAnswer[index]
+            content["text"] == userAnswer[index.toString()]
         }
     }
 }

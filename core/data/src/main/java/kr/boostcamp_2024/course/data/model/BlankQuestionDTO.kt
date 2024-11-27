@@ -16,6 +16,9 @@ data class BlankQuestionDTO(
     @set:PropertyName("question_content")
     var questionContent: List<Map<String, String>>? = null,
     val type: String? = null,
+    @get:PropertyName("user_answers")
+    @set:PropertyName("user_answers")
+    var userAnswers: List<String>? = null,
 ) : QuestionDTO {
     override fun toVO(questionId: String): Question = BlankQuestion(
         id = questionId,
@@ -23,6 +26,7 @@ data class BlankQuestionDTO(
         solution = solution,
         questionContent = requireNotNull(questionContent),
         type = requireNotNull(type),
+        userAnswers = emptyList(),
     )
 }
 
@@ -31,4 +35,5 @@ fun BlankQuestionCreationInfo.toDTO() = BlankQuestionDTO(
     solution = this.solution,
     questionContent = this.questionContent,
     type = this.type,
+    userAnswers = emptyList(),
 )

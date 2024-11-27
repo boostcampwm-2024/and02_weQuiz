@@ -32,9 +32,10 @@ fun ConsumeBlankContentUi(
     word: String,
     index: Int = 0,
     onContentRemove: (Int) -> Unit,
-    removeIconInvisible: Boolean = true,
+    removeIconVisible: Boolean = true,
     onValueChanged: (String, Int) -> Unit,
     textFieldEnabled: Boolean = true,
+    clickableEnabled: Boolean = true,
 ) {
     Row(
         modifier = Modifier
@@ -48,6 +49,7 @@ fun ConsumeBlankContentUi(
                 shape = RoundedCornerShape(4.dp),
             )
             .clickable(
+                enabled = clickableEnabled,
                 onClick = { onContentRemove(index) },
             )
             .padding(10.dp),
@@ -63,7 +65,7 @@ fun ConsumeBlankContentUi(
             modifier = Modifier.width(IntrinsicSize.Min),
             enabled = textFieldEnabled,
         )
-        if (removeIconInvisible) {
+        if (removeIconVisible) {
             Icon(
                 imageVector = Icons.Outlined.Cancel,
                 contentDescription = stringResource(R.string.des_remove_blank),
@@ -76,11 +78,12 @@ fun ConsumeBlankContentUi(
 @Composable
 fun ConsumeTextContentUi(
     word: String,
-    index: Int,
+    index: Int = 0,
     onContentRemove: (Int) -> Unit,
     removeIconInvisible: Boolean = true,
     onValueChanged: (String, Int) -> Unit,
     textFieldEnabled: Boolean = true,
+    clickableEnabled: Boolean = true,
 ) {
     Column(
         modifier = Modifier
@@ -94,6 +97,7 @@ fun ConsumeTextContentUi(
                 )
             }
             .clickable(
+                enabled = clickableEnabled,
                 onClick = { onContentRemove(index) },
             ),
     ) {
@@ -129,7 +133,6 @@ private fun ConsumeBlankContentUiPreview() {
     WeQuizTheme {
         ConsumeBlankContentUi(
             word = "판다",
-            index = 0,
             onContentRemove = {},
             onValueChanged = { _, _ -> },
             textFieldEnabled = true,
@@ -138,15 +141,15 @@ private fun ConsumeBlankContentUiPreview() {
     }
 }
 
-//@Preview
-//@Composable
-//private fun ConsumeTextContentUiPreview() {
-//    WeQuizTheme {
-//        ConsumeTextContentUi(
-//            word = "는",
-//            onContentRemove = {},
-//            onValueChanged = {},
-//            textFieldEnabled = true,
-//        )
-//    }
-//}
+@Preview
+@Composable
+private fun ConsumeTextContentUiPreview() {
+    WeQuizTheme {
+        ConsumeTextContentUi(
+            word = "는",
+            onContentRemove = {},
+            onValueChanged = { _, _ -> },
+            textFieldEnabled = true,
+        )
+    }
+}

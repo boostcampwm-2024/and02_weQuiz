@@ -20,7 +20,7 @@ interface QuestionRepository {
 
     suspend fun deleteQuestions(questionIds: List<String>): Result<Unit>
 
-    suspend fun updateCurrentSubmit(questionId: String, selectedIndex: Int): Result<Unit>
-
     suspend fun createBlankQuestion(blankQuestionCreationInfo: BlankQuestionCreationInfo): Result<String>
+
+    suspend fun updateCurrentSubmit(userId: String, questionId: String, userAnswer: Any?): Result<Unit>
 }

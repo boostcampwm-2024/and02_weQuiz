@@ -32,6 +32,7 @@ import kr.boostcamp_2024.course.domain.model.BlankQuestion
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.quiz.R
+import kr.boostcamp_2024.course.quiz.component.BlankQuestionDescription
 import kr.boostcamp_2024.course.quiz.component.QuestionDescription
 import kr.boostcamp_2024.course.quiz.component.QuestionDetailTopAppBar
 import kr.boostcamp_2024.course.quiz.component.QuestionItems
@@ -73,26 +74,28 @@ fun QuestionDetailScreen(
         topBar = { QuestionDetailTopAppBar(onNavigationButtonClick = onNavigationButtonClick) },
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { showDialog = true },
-                modifier = Modifier.padding(end = 16.dp, bottom = 53.dp),
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                shape = MaterialTheme.shapes.large,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Edit,
-                        contentDescription = stringResource(R.string.fab_quiz_result),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                },
-                text = {
-                    Text(
-                        text = stringResource(R.string.txt_quiz_result),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                },
-            )
+            if (question?.type == "choice") {
+                ExtendedFloatingActionButton(
+                    onClick = { showDialog = true },
+                    modifier = Modifier.padding(end = 16.dp, bottom = 53.dp),
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    shape = MaterialTheme.shapes.large,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = stringResource(R.string.fab_quiz_result),
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(R.string.txt_quiz_result),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    },
+                )
+            }
         },
     ) { paddingValues ->
         Column(
@@ -108,8 +111,8 @@ fun QuestionDetailScreen(
                 if (question is ChoiceQuestion) {
                     QuestionDescription(question.description)
                     QuestionItems(question.choices, question.answer) {}
-                } else {
-                    // TODO: blank question 처리 해야 해요!!
+                } else if (question is BlankQuestion) {
+                    BlankQuestionDescription(question.questionContent)
                 }
 
                 QuestionSolution(question.solution)
@@ -141,9 +144,13 @@ fun QuestionDetailScreenPreview() {
             question = BlankQuestion(
                 id = "1",
                 title = "문제 제목",
-                questionContent = emptyList(),
+                questionContent = listOf(
+                    mapOf("text" to "이훈"),
+                    mapOf("text" to "은 바나나를 좋아한다"),
+                ),
                 solution = "문제 해설",
                 type = "blank",
+                userAnswers = emptyList(),
             ),
             errorMessage = null,
             userAnswer = listOf(0, 0, 0, 0),
