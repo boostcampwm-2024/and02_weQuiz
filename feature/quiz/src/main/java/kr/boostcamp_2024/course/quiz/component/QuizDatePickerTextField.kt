@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
@@ -9,9 +10,11 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,7 +37,10 @@ fun QuizDatePickerTextField(
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
 
-    Box {
+    Box(
+        modifier = Modifier
+            .clickable { showDatePicker = true },
+    ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = quizDate,
@@ -42,7 +48,7 @@ fun QuizDatePickerTextField(
             label = {
                 Text(text = stringResource(R.string.txt_quiz_date_picker))
             },
-            readOnly = true,
+            enabled = false,
             trailingIcon = {
                 IconButton(onClick = { showDatePicker = true }) {
                     Icon(
@@ -51,6 +57,11 @@ fun QuizDatePickerTextField(
                     )
                 }
             },
+            colors = TextFieldDefaults.colors(
+                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
+            )
         )
 
         if (showDatePicker) {
