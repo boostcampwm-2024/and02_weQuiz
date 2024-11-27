@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.presentation.question
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,6 +60,10 @@ fun GeneralQuestionScreen(
     onSubmitButtonClick: () -> Unit,
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
+
+    BackHandler {
+        showDialog = showDialog.not()
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
