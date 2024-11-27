@@ -174,7 +174,6 @@ private fun BlankQuestionContentPreview() {
             mapOf("type" to "blank", "text" to "위키즈팀"),
             mapOf("type" to "text", "text" to "입니다."),
         ),
-        type = "blank",
         userAnswers = emptyList(),
     )
     val blankQuestionManager = BlankQuestionManager(

@@ -24,7 +24,6 @@ data class ChoiceQuestionDTO(
         answer = requireNotNull(answer),
         choices = requireNotNull(choices),
         userAnswers = requireNotNull(userAnswers),
-        type = requireNotNull(type),
     )
 }
 
@@ -35,5 +34,4 @@ fun ChoiceQuestionCreationInfo.toDTO() = ChoiceQuestionDTO(
     answer = this.answer,
     choices = this.choices,
     userAnswers = List(4) { 0 },
-    type = this.type,
 )

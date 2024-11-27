@@ -54,7 +54,6 @@ fun ChoiceQuestionContentPreview() {
                 ),
                 answer = 3,
                 userAnswers = listOf(),
-                type = "choice",
             ),
             selectedIndex = 0,
             onOptionSelected = {},

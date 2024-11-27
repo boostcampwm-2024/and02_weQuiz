@@ -6,5 +6,4 @@ data class BlankQuestion(
     override val solution: String?,
     override val userAnswers: List<String>,
     val questionContent: List<Map<String, String>>,
-    override val type: String,
 ) : Question()

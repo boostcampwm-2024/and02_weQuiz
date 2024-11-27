@@ -74,7 +74,7 @@ fun QuestionDetailScreen(
         topBar = { QuestionDetailTopAppBar(onNavigationButtonClick = onNavigationButtonClick) },
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         floatingActionButton = {
-            if (question?.type == "choice") {
+            if (question is ChoiceQuestion) {
                 ExtendedFloatingActionButton(
                     onClick = { showDialog = true },
                     modifier = Modifier.padding(end = 16.dp, bottom = 53.dp),
@@ -149,7 +149,6 @@ fun QuestionDetailScreenPreview() {
                     mapOf("text" to "은 바나나를 좋아한다"),
                 ),
                 solution = "문제 해설",
-                type = "blank",
                 userAnswers = emptyList(),
             ),
             errorMessage = null,

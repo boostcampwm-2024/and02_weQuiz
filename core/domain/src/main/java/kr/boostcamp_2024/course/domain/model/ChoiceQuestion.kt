@@ -4,7 +4,6 @@ sealed class Question {
     abstract val id: String
     abstract val title: String
     abstract val solution: String?
-    abstract val type: String
     abstract val userAnswers: List<Any>
 }
 
@@ -16,5 +15,4 @@ data class ChoiceQuestion(
     val answer: Int,
     val choices: List<String>,
     override val userAnswers: List<Int>,
-    override val type: String,
 ) : Question()
