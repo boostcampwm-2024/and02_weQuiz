@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,9 +31,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -111,6 +116,7 @@ fun OwnerQuestionScreen(
     var showQuitQuizDialog by rememberSaveable { mutableStateOf(false) }
     var showFinishQuizDialog by rememberSaveable { mutableStateOf(false) }
     val currentQuestion = choiceQuestions.getOrNull(currentPage)
+    var buttonsHeight by remember { mutableStateOf(IntSize.Zero) }
 
     BackHandler {
         showQuitQuizDialog = true
@@ -174,6 +180,9 @@ fun OwnerQuestionScreen(
                             getBlankQuestionAnswer = getBlankQuestionAnswer,
                         )
                     }
+                    item {
+                        Spacer(modifier = Modifier.height(with(LocalDensity.current) { buttonsHeight.height.toDp() }))
+                    }
                 }
             }
 
@@ -199,6 +208,7 @@ fun OwnerQuestionScreen(
                 onPrevButtonClick = {
                     if (currentPage > 0) onPreviousButtonClick()
                 },
+                setButtonsHeight = { buttonsHeight = it },
             )
         }
 
@@ -262,9 +272,10 @@ fun RealTimeQuizWithOwnerButtons(
     nextButtonText: String,
     onNextButtonClick: () -> Unit,
     onPrevButtonClick: () -> Unit,
+    setButtonsHeight: (IntSize) -> Unit,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.onGloballyPositioned { setButtonsHeight(it.size) },
     ) {
         Button(
             onClick = onNextButtonClick,

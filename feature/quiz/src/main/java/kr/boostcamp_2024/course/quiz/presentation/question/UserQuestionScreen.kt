@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -139,11 +138,6 @@ fun UserQuestionScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding),
         ) {
-            LinearProgressIndicator(
-                progress = { (currentPage + 1) / choiceQuestions.size.toFloat() },
-                modifier = Modifier.fillMaxWidth(),
-            )
-
             LazyColumn(
                 modifier = Modifier.padding(
                     vertical = 20.dp,
