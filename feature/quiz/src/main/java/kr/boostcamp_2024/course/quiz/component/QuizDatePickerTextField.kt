@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -26,6 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import kr.boostcamp_2024.course.quiz.R
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneOffset
 import java.util.Date
 import java.util.Locale
 
@@ -60,7 +63,7 @@ fun QuizDatePickerTextField(
                 disabledTextColor = MaterialTheme.colorScheme.onSurface,
                 disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
-            )
+            ),
         )
 
         if (showDatePicker) {
@@ -78,11 +81,19 @@ private fun DatePickerModal(
     onDateSelected: (Long?) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val datePickerState = rememberDatePickerState()
+    val todayStartOfDayMillis = LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+    val datePickerState = rememberDatePickerState(
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis >= todayStartOfDayMillis
+            }
+        },
+    )
 
     DatePickerDialog(
         onDismissRequest = onDismiss,
-        confirmButton = {
+        confirmButton =
+        {
             TextButton(
                 onClick = {
                     onDateSelected(datePickerState.selectedDateMillis)
@@ -92,12 +103,14 @@ private fun DatePickerModal(
                 Text(text = stringResource(R.string.txt_dialog_confirm))
             }
         },
-        dismissButton = {
+        dismissButton =
+        {
             TextButton(onClick = onDismiss) {
                 Text(text = stringResource(R.string.txt_dialog_dismiss))
             }
         },
-    ) {
+    )
+    {
         DatePicker(state = datePickerState)
     }
 }
