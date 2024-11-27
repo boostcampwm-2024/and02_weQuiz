@@ -45,7 +45,7 @@ fun QuestionScreen(
                 quiz = uiState.quiz,
                 currentPage = uiState.currentPage,
                 questions = uiState.questions,
-                countDownTime = uiState.countDownTime,
+                countDownTime = currentCountDownTime,
                 selectedIndexList = uiState.selectedIndexList,
                 snackbarHostState = snackbarHostState,
                 onOptionSelected = questionViewModel::selectOption,
