@@ -93,24 +93,23 @@ private fun DatePickerModal(
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton =
-        {
-            TextButton(
-                onClick = {
-                    onDateSelected(datePickerState.selectedDateMillis)
-                    onDismiss()
-                },
-            ) {
-                Text(text = stringResource(R.string.txt_dialog_confirm))
-            }
-        },
+            {
+                TextButton(
+                    onClick = {
+                        onDateSelected(datePickerState.selectedDateMillis)
+                        onDismiss()
+                    },
+                ) {
+                    Text(text = stringResource(R.string.txt_dialog_confirm))
+                }
+            },
         dismissButton =
-        {
-            TextButton(onClick = onDismiss) {
-                Text(text = stringResource(R.string.txt_dialog_dismiss))
-            }
-        },
-    )
-    {
+            {
+                TextButton(onClick = onDismiss) {
+                    Text(text = stringResource(R.string.txt_dialog_dismiss))
+                }
+            },
+    ) {
         DatePicker(state = datePickerState)
     }
 }

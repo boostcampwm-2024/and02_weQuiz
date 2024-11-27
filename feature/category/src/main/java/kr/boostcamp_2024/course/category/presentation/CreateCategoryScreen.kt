@@ -202,8 +202,7 @@ fun CreateCategoryScreen(
                     modifier = Modifier
                         .size(64.dp)
                         .align(Alignment.Center),
-
-                    )
+                )
             }
         }
     }
