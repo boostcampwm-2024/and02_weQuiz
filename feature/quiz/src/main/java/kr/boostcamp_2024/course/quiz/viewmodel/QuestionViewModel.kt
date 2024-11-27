@@ -174,7 +174,7 @@ class QuestionViewModel @Inject constructor(
                                         }
                                         .onFailure {
                                             Log.e("QuestionViewModel", "user_answers 업데이트 실패")
-                                            _uiState.update { it.copy(isSubmitting = false, errorMessageId = R.string.err_user_answers_add) }
+                                            _uiState.update { it.copy(isSubmitting = false, errorMessageId = R.string.err_add_user_answers) }
                                         }
                                 }
                             }
