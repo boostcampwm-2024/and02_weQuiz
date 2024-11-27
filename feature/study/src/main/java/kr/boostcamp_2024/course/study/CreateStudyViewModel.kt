@@ -20,7 +20,6 @@ import kr.boostcamp_2024.course.domain.repository.StudyGroupRepository
 import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.study.navigation.CreateStudyRoute
 import javax.inject.Inject
-import kotlin.String
 
 data class CreateStudyUiState(
     val isLoading: Boolean = false,
@@ -195,7 +194,9 @@ class CreateStudyViewModel @Inject constructor(
     }
 
     fun onMaxUserNumChange(groupMemberNumber: String) {
-        _uiState.update { it.copy(maxUserNum = groupMemberNumber) }
+        if (groupMemberNumber.isBlank() || groupMemberNumber.toIntOrNull() != null) {
+            _uiState.update { it.copy(maxUserNum = groupMemberNumber) }
+        }
     }
 
     fun onImageByteArrayChanged(imageByteArray: ByteArray) {

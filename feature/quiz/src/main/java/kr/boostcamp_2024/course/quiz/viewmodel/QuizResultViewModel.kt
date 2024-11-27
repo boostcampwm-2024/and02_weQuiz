@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -40,11 +41,26 @@ class QuizResultViewModel @Inject constructor(
     private val userOmrId: String? = savedStateHandle.toRoute<QuizResultRoute>().userOmrId
     private val quizId: String? = savedStateHandle.toRoute<QuizResultRoute>().quizId
 
-    private val userOmrAnswers = MutableStateFlow<List<Int>>(emptyList()) // 사용자 답지
+    private val userOmrAnswers = MutableStateFlow<List<Any>>(emptyList()) // 사용자 답지
     private val questions = MutableStateFlow<List<Question>>(emptyList()) // 퀴즈 리스트
-    private val _uiState = MutableStateFlow(QuizResultUiState())
+    private val _uiState: MutableStateFlow<QuizResultUiState> = MutableStateFlow(QuizResultUiState())
 
-    val uiState = combine(userOmrAnswers, questions, _uiState) { userOmrAnswers, questions, uiState ->
+    val uiState: StateFlow<QuizResultUiState> = combine(userOmrAnswers, questions, _uiState) { userOmrAnswers, questions, uiState ->
+        if (quizId != null) {
+            uiState
+        } else {
+            if (userOmrAnswers.size == questions.size && questions.isNotEmpty()) {
+                try {
+                    val quizResult = QuizResult(userOmrAnswers = userOmrAnswers, questions = questions)
+                    uiState.copy(quizResult = quizResult)
+                } catch (exception: Exception) {
+                    Log.e("QuizResultViewModel", "Failed to create QuizResult", exception)
+                    uiState.copy(errorMessage = "퀴즈 결과 생성에 실패했습니다.")
+                }
+            } else {
+                uiState
+            }
+        }
         val quizResult =
             when (userOmrAnswers.size == questions.size && questions.isNotEmpty()) {
                 true -> QuizResult(userOmrAnswers = userOmrAnswers, questions = questions)
@@ -53,7 +69,11 @@ class QuizResultViewModel @Inject constructor(
         uiState.copy(quizResult = quizResult)
     }.onStart {
         initViewModel()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), QuizResultUiState())
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        QuizResultUiState(),
+    )
 
     fun initViewModel() {
         if (userOmrId != null) {

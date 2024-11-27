@@ -1,8 +1,9 @@
 package kr.boostcamp_2024.course.domain.repository
 
 import kotlinx.coroutines.flow.Flow
+import kr.boostcamp_2024.course.domain.model.BlankQuestionCreationInfo
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestionCreationInfo
 import kr.boostcamp_2024.course.domain.model.Question
-import kr.boostcamp_2024.course.domain.model.QuestionCreationInfo
 
 interface QuestionRepository {
     suspend fun getQuestions(questionIds: List<String>): Result<List<Question>>
@@ -14,10 +15,12 @@ interface QuestionRepository {
     suspend fun getRealTimeQuestions(questionIds: List<String>): Result<List<Flow<Question>>>
 
     suspend fun createQuestion(
-        questionCreationInfo: QuestionCreationInfo,
+        choiceQuestionCreationInfo: ChoiceQuestionCreationInfo,
     ): Result<String>
 
     suspend fun deleteQuestions(questionIds: List<String>): Result<Unit>
 
-    suspend fun updateCurrentSubmit(questionId: String, selectedIndex: Int): Result<Unit>
+    suspend fun createBlankQuestion(blankQuestionCreationInfo: BlankQuestionCreationInfo): Result<String>
+
+    suspend fun updateCurrentSubmit(userId: String?, questionId: String, userAnswer: Any?): Result<Unit>
 }

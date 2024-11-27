@@ -10,7 +10,7 @@ data class UserOmrDTO(
     @get:PropertyName("quiz_id")
     @set:PropertyName("quiz_id")
     var quizId: String? = null,
-    val answers: List<Int>? = null,
+    val answers: List<Any>? = null,
 ) {
     fun toVO(id: String): UserOmr = UserOmr(
         id = id,
