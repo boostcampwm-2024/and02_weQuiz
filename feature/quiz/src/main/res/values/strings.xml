@@ -115,5 +115,6 @@
     <string name="err_submit_quetion">퀴즈 제출에 실패하였습니다.</string>
     <string name="des_remove_blank">낱말 제거</string>
     <string name="des_remove_text">텍스트 제거</string>
+    <string name="txt_blank_question_detail_question">문제</string>
 
 </resources>
