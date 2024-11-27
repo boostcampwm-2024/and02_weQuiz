@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
-import android.util.Patterns
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -49,13 +48,8 @@ data class SignUpUiState(
     val isSubmitSuccess: Boolean = false,
     val snackBarMessage: Int? = null,
 ) {
-    val isEmailValid: Boolean = userSubmitInfo.email.isNotBlank() &&
-        Patterns.EMAIL_ADDRESS.matcher(userSubmitInfo.email)
-            .matches()
-
     val isSignUpButtonEnabled: Boolean = userSubmitInfo.email.isNotBlank() &&
-        userSubmitInfo.name.isNotBlank() &&
-        isEmailValid
+        userSubmitInfo.name.isNotBlank()
 }
 
 @HiltViewModel
@@ -118,14 +112,6 @@ class SignUpViewModel @Inject constructor(
                     Log.e("MainViewModel", "Failed to load user", it)
                 }
             }
-        }
-    }
-
-    fun onEmailChanged(email: String) {
-        _signUpUiState.update { currentState ->
-            currentState.copy(
-                userSubmitInfo = currentState.userSubmitInfo.copy(email = email),
-            )
         }
     }
 
