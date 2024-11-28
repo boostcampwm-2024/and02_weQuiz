@@ -95,18 +95,29 @@ class QuizRepositoryImpl @Inject constructor(
                 .await()
         }
 
-    override suspend fun editQuiz(quizId: String, quizCreateInfo: QuizCreationInfo): Result<Unit> =
+    override suspend fun editQuiz(quizId: String, quizCreateInfo: QuizCreationInfo, selectedQuizTypeIndex: Int): Result<Unit> =
         runCatching {
-            val updatedData = mapOf(
-                "title" to quizCreateInfo.quizTitle,
-                "description" to quizCreateInfo.quizDescription,
-                "start_time" to quizCreateInfo.quizDate,
-                "solve_time" to quizCreateInfo.quizSolveTime,
-                "quiz_image_url" to quizCreateInfo.quizImageUrl,
-            )
-            quizCollectionRef.document(quizId)
-                .update(updatedData)
-                .await()
+            if (selectedQuizTypeIndex == 0) {
+                val updatedData = mapOf(
+                    "title" to quizCreateInfo.quizTitle,
+                    "description" to quizCreateInfo.quizDescription,
+                    "start_time" to quizCreateInfo.quizDate,
+                    "solve_time" to quizCreateInfo.quizSolveTime,
+                    "quiz_image_url" to quizCreateInfo.quizImageUrl,
+                )
+                quizCollectionRef.document(quizId)
+                    .update(updatedData)
+                    .await()
+            } else if (selectedQuizTypeIndex == 1) {
+                val updatedData = mapOf(
+                    "title" to quizCreateInfo.quizTitle,
+                    "description" to quizCreateInfo.quizDescription,
+                    "quiz_image_url" to quizCreateInfo.quizImageUrl,
+                )
+                quizCollectionRef.document(quizId)
+                    .update(updatedData)
+                    .await()
+            }
         }
 
     override suspend fun deleteQuiz(quizId: String): Result<Unit> =

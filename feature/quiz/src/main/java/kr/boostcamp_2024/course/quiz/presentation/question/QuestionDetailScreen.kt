@@ -115,7 +115,9 @@ fun QuestionDetailScreen(
                     BlankQuestionDescription(question.questionContent)
                 }
 
-                QuestionSolution(question.solution)
+                question.solution?.let {
+                    QuestionSolution(question.solution)
+                }
             }
 
             if (showDialog) {

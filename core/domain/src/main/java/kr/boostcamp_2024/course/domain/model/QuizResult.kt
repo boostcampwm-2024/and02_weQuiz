@@ -26,7 +26,7 @@ data class QuizResult(
     private fun evaluateChoiceQuestion(
         index: Int,
         userAnswer: Number,
-    ): Boolean = userAnswer == (questions[index] as ChoiceQuestion).answer
+    ): Boolean = userAnswer.toInt() == (questions[index] as ChoiceQuestion).answer
 
     private fun evaluateBlankQuestion(
         index: Int,
