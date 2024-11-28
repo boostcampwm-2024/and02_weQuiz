@@ -51,7 +51,8 @@ data class CreateQuestionUiState(
         choiceQuestionCreationInfo.description.isNotBlank() &&
         choiceQuestionCreationInfo.choices.all {
             it.isNotBlank()
-        } && choiceQuestionCreationInfo.answer in (0..3)
+        } &&
+        choiceQuestionCreationInfo.answer in (0..3)
 
     val isCreateBlankQuestionValid: Boolean = items.any { it is BlankQuestionItem.Blank } &&
         items.all {

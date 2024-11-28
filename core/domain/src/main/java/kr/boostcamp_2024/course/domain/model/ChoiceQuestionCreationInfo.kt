@@ -6,5 +6,5 @@ data class ChoiceQuestionCreationInfo(
     val solution: String?,
     val answer: Int,
     val choices: List<String>,
-    val type : String = "choice"
+    val type: String = "choice",
 )

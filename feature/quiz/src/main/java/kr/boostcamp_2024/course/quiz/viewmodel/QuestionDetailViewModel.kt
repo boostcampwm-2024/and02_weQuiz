@@ -49,7 +49,7 @@ class QuestionDetailViewModel @Inject constructor(
             }
             questionRepository.getQuestion(questionId).onSuccess { question ->
                 _uiState.update {
-                    when(question){
+                    when (question) {
                         is ChoiceQuestion -> {
                             it.copy(
                                 isLoading = false,
