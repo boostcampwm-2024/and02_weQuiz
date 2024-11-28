@@ -142,6 +142,7 @@ class CreateQuestionViewModel @Inject constructor(
                 }.onFailure { exception ->
                     Log.e("CreateQuestionViewModel", exception.message, exception)
                     setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
+                    _createQuestionUiState.update { it.copy(isLoading = false) }
                 }
         }
     }
@@ -160,6 +161,7 @@ class CreateQuestionViewModel @Inject constructor(
             // todo: 문제를 삭제해야 하지 않을까?
             Log.e("CreateQuestionViewModel", exception.message, exception)
             setNewSnackBarMessage("문제 저장에 실패했습니다. 다시 시도해주세요!")
+            _createQuestionUiState.update { it.copy(isLoading = false) }
         }
     }
 
@@ -216,6 +218,7 @@ class CreateQuestionViewModel @Inject constructor(
             }.onFailure {
                 setNewSnackBarMessage("AI 추천 문제 가져오기에 실패했습니다. 다시 시도해주세요!")
                 Log.d("CreateQuestionViewModel", "AI 추천 문제 가져오기 실패")
+                _createQuestionUiState.update { it.copy(isLoading = false) }
             }
 
         }
