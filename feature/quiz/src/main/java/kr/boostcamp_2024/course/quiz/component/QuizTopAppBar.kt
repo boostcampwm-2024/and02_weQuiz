@@ -41,7 +41,7 @@ fun QuizTopAppBar(
     var showDialog by remember { mutableStateOf(false) }
     var isSettingMenuExpanded by remember { mutableStateOf(false) }
 
-    BackHandler(quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId)) {
+    BackHandler(quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId) && quiz.isStarted.not()) {
         showDialog = true
     }
 
@@ -50,7 +50,7 @@ fun QuizTopAppBar(
         navigationIcon = {
             IconButton(
                 onClick =
-                    if (quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId)) {
+                    if (quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId) && quiz.isStarted.not()) {
                         { showDialog = true }
                     } else {
                         { onNavigationButtonClick() }
