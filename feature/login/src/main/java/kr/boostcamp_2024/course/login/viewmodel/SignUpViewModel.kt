@@ -83,8 +83,8 @@ class SignUpViewModel @Inject constructor(
                 it.copy(
                     userSubmitInfo = UserSubmitInfo(
                         email = requireNotNull(userUiModel?.email),
-                        name = requireNotNull(userUiModel.name),
-                        profileImageUrl = userUiModel.profileImageUrl,
+                        name = requireNotNull(userUiModel?.name),
+                        profileImageUrl = userUiModel?.profileImageUrl,
                     ),
                 )
             }
@@ -134,7 +134,16 @@ class SignUpViewModel @Inject constructor(
     fun updateUser() {
         viewModelScope.launch {
             if (userId != null) {
-                userRepository.updateUser(userId, _signUpUiState.value.userSubmitInfo).onSuccess {
+                val imageByteArray = withContext(Dispatchers.IO) {
+                    signUpUiState.value.userSubmitInfo.profileImageUrl?.let { uriToByteArray(Uri.parse(it)) }
+                }
+                val downloadUrl = uploadImage(imageByteArray)
+                val userCreationInfo = UserSubmitInfo(
+                    email = signUpUiState.value.userSubmitInfo.email,
+                    name = signUpUiState.value.userSubmitInfo.name,
+                    profileImageUrl = downloadUrl,
+                )
+                userRepository.updateUser(userId, userCreationInfo).onSuccess {
                     _signUpUiState.update {
                         it.copy(isSubmitSuccess = true)
                     }
@@ -162,7 +171,7 @@ class SignUpViewModel @Inject constructor(
             )
             userRepository.addUser(requireNotNull(userUiModel?.id), userCreationInfo)
                 .onSuccess {
-                    saveUserKey(requireNotNull(userUiModel.id))
+                    saveUserKey(requireNotNull(userUiModel?.id))
                 }.onFailure {
                     Log.e("SignUpViewModel", "Failed to sign up", it)
                     setNewSnackBarMessage(R.string.error_sign_up)
