@@ -46,9 +46,8 @@ fun PieChartScreen(userAnswers: List<Int>) {
         valueTextColor = Color.Black.toArgb()
         valueTextSize = 16f
         valueFormatter = object : ValueFormatter() {
-            override fun getFormattedValue(value: Float): String {
-                return "${value.toInt()}"
-            }
+            override fun getFormattedValue(value: Float): String =
+                "${value.toInt()}"
         }
     }
     val pieData = PieData(pieDataSet)
