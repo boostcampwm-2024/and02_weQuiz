@@ -5,10 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.StudyGroup
@@ -45,11 +43,7 @@ class MainViewModel @Inject constructor(
     private val storageRepository: StorageRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
-    val uiState: StateFlow<MainUiState> = _uiState
-        .onStart {
-            loadCurrentUser()
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), MainUiState())
+    val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
     fun loadCurrentUser() {
         viewModelScope.launch {

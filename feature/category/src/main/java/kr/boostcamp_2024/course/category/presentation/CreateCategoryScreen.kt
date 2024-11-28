@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,10 +72,15 @@ fun CreateCategoryScreen(
         }
     }
 
-    val guideText = if (viewModel.categoryId == null) {
-        stringResource(R.string.txt_create_category)
-    } else {
-        stringResource(R.string.txt_edit_category)
+    val categoryId = viewModel.categoryId
+    val guideText by remember(categoryId) {
+        mutableIntStateOf(
+            if (viewModel.categoryId == null) {
+                R.string.txt_create_category
+            } else {
+                R.string.txt_edit_category
+            },
+        )
     }
 
     CreateCategoryScreen(
@@ -89,7 +95,7 @@ fun CreateCategoryScreen(
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateCategoryButtonClick = viewModel::uploadCategory,
         isLoading = uiState.isLoading,
-        guideText = guideText,
+        guideText = stringResource(guideText),
         onCurrentCategoryImageChanged = viewModel::onImageByteArrayChanged,
     )
 }
