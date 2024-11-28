@@ -34,4 +34,5 @@ fun ChoiceQuestionCreationInfo.toDTO() = ChoiceQuestionDTO(
     answer = this.answer,
     choices = this.choices,
     userAnswers = List(4) { 0 },
+    type = this.type,
 )
