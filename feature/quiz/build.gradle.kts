@@ -13,4 +13,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     implementation(libs.mpandroidchart)
+    implementation(libs.lottie.compose)
 }
