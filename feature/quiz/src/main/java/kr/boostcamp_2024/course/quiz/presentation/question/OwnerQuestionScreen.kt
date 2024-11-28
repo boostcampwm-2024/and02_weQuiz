@@ -168,7 +168,7 @@ fun OwnerQuestionScreen(
                             isOwner = true,
                             isRealTime = true,
                             currentPage = currentPage,
-                            selectedIndexList = currentQuestion.userAnswers,
+                            selectedIndexList = choiceQuestions.map { it?.userAnswers },
                             onOptionSelected = { _, _ -> },
                             questions = choiceQuestions,
                             showErrorMessage = showErrorMessage,
