@@ -21,13 +21,13 @@ data class CreateCategoryUiState(
     val isLoading: Boolean = false,
     val categoryName: String = "",
     val categoryDescription: String = "",
-    val isCategoryCreationValid: Boolean = false,
     val creationSuccess: Boolean = false,
     val errorMessage: String? = null,
-    val categoryImageUrl: String? = null,
     val currentImage: ByteArray? = null,
     val defaultImageUri: String? = null,
-)
+) {
+    val isCategoryCreationValid: Boolean = categoryName.isNotBlank() && isLoading.not()
+}
 
 @HiltViewModel
 class CreateCategoryViewModel @Inject constructor(
@@ -52,6 +52,30 @@ class CreateCategoryViewModel @Inject constructor(
         }
     }
 
+    fun fetchCategoryInfo() {
+        setLoading()
+        viewModelScope.launch {
+            try {
+                categoryRepository.getCategory(requireNotNull(categoryId))
+                    .onSuccess { categoryInfo ->
+                        _createCategoryUiState.update {
+                            it.copy(
+                                isLoading = false,
+                                categoryName = categoryInfo.name,
+                                categoryDescription = categoryInfo.description ?: "",
+                                defaultImageUri = categoryInfo.categoryImageUrl,
+                            )
+                        }
+                    }.onFailure { exception ->
+                        throw exception
+                    }
+            } catch (exception: Exception) {
+                Log.e("CreateCategoryViewModel", "Failed to fetch category info", exception)
+                setErrorMessage("카테고리 정보를 불러오는데 실패했습니다. 다시 시도해주세요!")
+            }
+        }
+    }
+
     private suspend fun createCategory() {
         val imageUrl = _createCategoryUiState.value.currentImage?.let { image ->
             storageRepository.uploadImage(image).getOrNull()
@@ -72,7 +96,7 @@ class CreateCategoryViewModel @Inject constructor(
     private suspend fun updateCategory(categoryId: String) {
         val imageUrl = _createCategoryUiState.value.currentImage?.let { image ->
             storageRepository.uploadImage(image).getOrNull()
-        }
+        } ?: createCategoryUiState.value.defaultImageUri
 
         categoryRepository.updateCategory(
             categoryId,
@@ -122,21 +146,11 @@ class CreateCategoryViewModel @Inject constructor(
         _createCategoryUiState.update { currentState ->
             currentState.copy(categoryName = name)
         }
-        checkCreateCategoryValid()
     }
 
     fun onDescriptionChanged(description: String) {
         _createCategoryUiState.update { currentState ->
             currentState.copy(categoryDescription = description)
-        }
-        checkCreateCategoryValid()
-    }
-
-    private fun checkCreateCategoryValid() {
-        _createCategoryUiState.update { currentState ->
-            currentState.copy(
-                isCategoryCreationValid = currentState.categoryName.isNotBlank(),
-            )
         }
     }
 

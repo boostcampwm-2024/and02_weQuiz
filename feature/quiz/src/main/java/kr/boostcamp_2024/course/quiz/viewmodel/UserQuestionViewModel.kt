@@ -37,6 +37,7 @@ data class UserQuestionUiState(
     val isQuizFinished: Boolean = false,
     val blankQuestionContents: List<Map<String, Any>?> = emptyList(),
     val blankWords: List<Map<String, Any>> = emptyList(),
+    val isExitSuccess: Boolean = false,
 )
 
 @HiltViewModel
@@ -253,6 +254,22 @@ class UserQuestionViewModel @Inject constructor(
             } catch (exception: Exception) {
                 Log.e("UserQuestionViewModel", "제출 실패 ", exception)
                 _uiState.update { it.copy(errorMessageId = R.string.err_answer_add_quiz) }
+            }
+        }
+    }
+
+    fun exitRealTimeQuiz() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            _uiState.value.currentUserId?.let { currentUserId ->
+                quizRepository.waitingRealTimeQuiz(quizId, false, currentUserId)
+                    .onSuccess {
+                        _uiState.update { it.copy(isLoading = false, isExitSuccess = true) }
+                    }
+                    .onFailure {
+                        _uiState.update { it.copy(isLoading = false, errorMessageId = R.string.err_delete_waiting_user) }
+                    }
             }
         }
     }

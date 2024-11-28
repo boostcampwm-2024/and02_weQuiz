@@ -22,5 +22,5 @@ interface QuestionRepository {
 
     suspend fun createBlankQuestion(blankQuestionCreationInfo: BlankQuestionCreationInfo): Result<String>
 
-    suspend fun updateCurrentSubmit(userId: String, questionId: String, userAnswer: Any?): Result<Unit>
+    suspend fun updateCurrentSubmit(userId: String?, questionId: String, userAnswer: Any?): Result<Unit>
 }

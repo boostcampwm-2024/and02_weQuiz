@@ -44,6 +44,7 @@ import kr.boostcamp_2024.course.category.R
 import kr.boostcamp_2024.course.category.viewModel.CreateCategoryViewModel
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import java.io.ByteArrayOutputStream
 
@@ -55,6 +56,10 @@ fun CreateCategoryScreen(
 ) {
     val uiState by viewModel.createCategoryUiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchCategoryInfo()
+    }
 
     LaunchedEffect(uiState) {
         if (uiState.creationSuccess) {
@@ -83,6 +88,7 @@ fun CreateCategoryScreen(
         onDescriptionChanged = viewModel::onDescriptionChanged,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateCategoryButtonClick = viewModel::uploadCategory,
+        isLoading = uiState.isLoading,
         guideText = guideText,
         onCurrentCategoryImageChanged = viewModel::onImageByteArrayChanged,
     )
@@ -101,6 +107,7 @@ fun CreateCategoryScreen(
     onDescriptionChanged: (String) -> Unit,
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: () -> Unit,
+    isLoading: Boolean,
     guideText: String,
     onCurrentCategoryImageChanged: (ByteArray) -> Unit,
 ) {
@@ -184,6 +191,10 @@ fun CreateCategoryScreen(
                     Text(text = guideText)
                 }
             }
+        }
+
+        if (isLoading) {
+            WeQuizCircularProgressIndicator()
         }
     }
 }

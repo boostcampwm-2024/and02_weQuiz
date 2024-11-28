@@ -2,6 +2,8 @@ package kr.boostcamp_2024.course.quiz.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -25,9 +27,14 @@ fun QuizDataButton(
         when (quiz) {
             is Quiz -> {
                 Button(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     onClick = { onCreateQuestionButtonClick(quiz.id) },
                     enabled = quiz.isOpened.not(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        disabledContainerColor = MaterialTheme.colorScheme.outlineVariant,
+                    ),
                 ) {
                     when (quiz.isOpened.not()) {
                         true -> Text(text = stringResource(R.string.txt_open_create_question))
@@ -71,7 +78,7 @@ fun QuizDataButton(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         if (isStartRealTimeQuizEnabled) {
-                            onStartRealTimeQuizButtonClick
+                            onStartRealTimeQuizButtonClick()
                         } else if (isWaitingRealTimeQuizEnabled) {
                             onWaitingRealTimeQuizButtonClick(true)
                         }

@@ -16,6 +16,7 @@ import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.BlankQuestion
 import kr.boostcamp_2024.course.domain.model.BlankQuestionManager
 import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.UserOmrCreationInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
@@ -31,7 +32,7 @@ data class QuestionUiState(
     val isSubmitting: Boolean = false,
     val currentPage: Int = 0,
     val selectedIndexList: List<Any> = emptyList(),
-    val countDownTime: Int = 20 * 60,
+    val countDownTime: Int? = null,
     val isLoading: Boolean = false,
     val errorMessageId: Int? = null,
     val currentUserId: String? = null,
@@ -61,11 +62,16 @@ class QuestionViewModel @Inject constructor(
     private fun initial() {
         viewModelScope.launch {
             loadCurrentUserId()
-
             _uiState.update { it.copy(isLoading = true) }
             quizRepository.getQuiz(quizId)
                 .onSuccess { quiz ->
-                    _uiState.update { it.copy(isLoading = false, quiz = quiz) }
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            quiz = quiz,
+                        )
+                    }
+                    setTimer()
                     loadQuestions(quiz.questions)
                 }
                 .onFailure {
@@ -76,19 +82,23 @@ class QuestionViewModel @Inject constructor(
         }
     }
 
+    private fun setTimer() {
+        val currentQuiz = _uiState.value.quiz
+        if (currentQuiz is Quiz) {
+            _uiState.update { it.copy(countDownTime = currentQuiz.solveTime * 60) }
+        }
+    }
+
     private fun loadCurrentUserId() {
         viewModelScope.launch {
-
             authRepository.getUserKey()
                 .onSuccess { currentUser ->
-
                     _uiState.update { it.copy(currentUserId = currentUser) }
                 }
                 .onFailure {
                     Log.e("MainViewModel", "Failed to load current user", it)
                     _uiState.update { it.copy(errorMessageId = R.string.err_load_current_user) }
                 }
-
         }
     }
 
@@ -193,13 +203,18 @@ class QuestionViewModel @Inject constructor(
         }
     }
 
-    fun updateTimer() {
-        viewModelScope.launch {
-            while (_uiState.value.countDownTime > 0) {
-                delay(1000L)
-                _uiState.update { currentState ->
-                    currentState.copy(countDownTime = currentState.countDownTime - 1)
+    private fun updateTimer() {
+        _uiState.value.countDownTime?.let { defaultCountDownTime ->
+            viewModelScope.launch {
+                var currentCountDownTime: Int = defaultCountDownTime
+                while (currentCountDownTime > 1) {
+                    currentCountDownTime = requireNotNull(_uiState.value.countDownTime)
+                    delay(1000L)
+                    _uiState.update { currentState ->
+                        currentState.copy(countDownTime = currentCountDownTime - 1)
+                    }
                 }
+                submitAnswers()
             }
         }
     }
@@ -219,6 +234,20 @@ class QuestionViewModel @Inject constructor(
                         quizRepository.addUserOmrToQuiz(quizId, userOmrId)
                             .onSuccess {
                                 _uiState.update { it.copy(isSubmitting = true, userOmrId = userOmrId) }
+                                _uiState.value.questions.forEachIndexed { index, question ->
+                                    questionRepository.updateCurrentSubmit(
+                                        uiState.value.currentUserId,
+                                        question.id,
+                                        uiState.value.selectedIndexList[index],
+                                    )
+                                        .onSuccess {
+                                            _uiState.update { it.copy(isSubmitting = true) }
+                                        }
+                                        .onFailure {
+                                            Log.e("QuestionViewModel", "user_answers 업데이트 실패")
+                                            _uiState.update { it.copy(isSubmitting = false, errorMessageId = R.string.err_add_user_answers) }
+                                        }
+                                }
                             }
                             .onFailure {
                                 Log.e("QuestionViewModel", "userOmrId 업데이트 실패", it)

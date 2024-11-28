@@ -37,11 +37,11 @@ fun NotificationItem(
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // todo: 이미지 넣을 때 추가 수정
         WeQuizAsyncImage(
             modifier = Modifier
-                .size(80.dp).clip(CircleShape),
-            imgUrl = null,
+                .size(80.dp)
+                .clip(CircleShape),
+            imgUrl = notificationInfo.studyGroupImgUrl,
             contentDescription = null,
         )
 
@@ -50,7 +50,7 @@ fun NotificationItem(
                 .padding(start = 16.dp),
         ) {
             Text(
-                text = notificationInfo.studyGroupName,
+                text = notificationInfo.studyGroupName ?: "",
                 style = MaterialTheme.typography.labelMedium,
             )
             Text(
@@ -66,7 +66,7 @@ fun NotificationItem(
             ) {
                 Button(
                     onClick = onRejectClick,
-                    modifier = Modifier.size(width = 53.dp, height = 24.dp),
+                    modifier = Modifier.height(24.dp),
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,
@@ -84,7 +84,7 @@ fun NotificationItem(
 
                 Button(
                     onClick = onAcceptClick,
-                    modifier = Modifier.size(width = 53.dp, height = 24.dp),
+                    modifier = Modifier.height(24.dp),
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,

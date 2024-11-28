@@ -88,7 +88,7 @@ class QuestionRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateCurrentSubmit(userId: String, questionId: String, userAnswer: Any?): Result<Unit> =
+    override suspend fun updateCurrentSubmit(userId: String?, questionId: String, userAnswer: Any?): Result<Unit> =
         runCatching {
             val document = questionCollectionRef.document(questionId)
             firestore.runTransaction { transaction ->

@@ -17,6 +17,7 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate.VORDIPLOM_COLORS
 import kr.boostcamp_2024.course.quiz.R
 
@@ -44,8 +45,11 @@ fun PieChartScreen(userAnswers: List<Int>) {
         }
         valueTextColor = Color.Black.toArgb()
         valueTextSize = 16f
+        valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String =
+                "${value.toInt()}"
+        }
     }
-
     val pieData = PieData(pieDataSet)
     Column(
         modifier = Modifier.fillMaxWidth(),

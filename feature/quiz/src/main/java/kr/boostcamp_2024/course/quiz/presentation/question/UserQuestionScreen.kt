@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -56,7 +55,6 @@ fun UserQuestionScreen(
         snackbarHostState = snackbarHostState,
         onOptionSelected = userQuestionViewModel::selectOption,
         onBlanksSelected = userQuestionViewModel::selectBlanks,
-        onNavigationButtonClick = onNavigationButtonClick,
         onSubmitButtonClick = userQuestionViewModel::submitQuestion,
         isSubmitted = uiState.isSubmitted,
         onQuizFinishButtonClick = userQuestionViewModel::submitAnswers,
@@ -65,6 +63,7 @@ fun UserQuestionScreen(
         removeBlankContent = userQuestionViewModel.blankQuestionManager::removeBlankContent,
         addBlankContent = userQuestionViewModel.blankQuestionManager::addBlankContent,
         getBlankQuestionAnswer = userQuestionViewModel.blankQuestionManager::getAnswer,
+        onExitButtonClick = userQuestionViewModel::exitRealTimeQuiz,
     )
 
     uiState.errorMessageId?.let { errorMessageId ->
@@ -78,6 +77,12 @@ fun UserQuestionScreen(
     uiState.userOmrId?.let { userOmrId ->
         LaunchedEffect(userOmrId) {
             onQuizFinished(userOmrId, null)
+        }
+    }
+
+    LaunchedEffect(uiState.isExitSuccess) {
+        if (uiState.isExitSuccess) {
+            onNavigationButtonClick()
         }
     }
 
@@ -97,7 +102,6 @@ fun UserQuestionScreen(
     snackbarHostState: SnackbarHostState,
     onOptionSelected: (Int, Int) -> Unit,
     onBlanksSelected: (Int, Map<String, String?>) -> Unit,
-    onNavigationButtonClick: () -> Unit,
     onSubmitButtonClick: (String) -> Unit,
     isSubmitted: Boolean,
     onQuizFinishButtonClick: () -> Unit,
@@ -106,6 +110,7 @@ fun UserQuestionScreen(
     removeBlankContent: (Int) -> Unit,
     addBlankContent: (Int) -> Unit,
     getBlankQuestionAnswer: () -> Map<String, String?>,
+    onExitButtonClick: () -> Unit,
 ) {
     var showExitDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -133,11 +138,6 @@ fun UserQuestionScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding),
         ) {
-            LinearProgressIndicator(
-                progress = { (currentPage + 1) / choiceQuestions.size.toFloat() },
-                modifier = Modifier.fillMaxWidth(),
-            )
-
             LazyColumn(
                 modifier = Modifier.padding(
                     vertical = 20.dp,
@@ -211,7 +211,7 @@ fun UserQuestionScreen(
             dismissTitle = stringResource(R.string.txt_question_cancel),
             onConfirm = {
                 showExitDialog = false
-                onNavigationButtonClick()
+                onExitButtonClick()
             },
             onDismissRequest = { showExitDialog = false },
             dialogImage = painterResource(id = R.drawable.quiz_system_profile),
