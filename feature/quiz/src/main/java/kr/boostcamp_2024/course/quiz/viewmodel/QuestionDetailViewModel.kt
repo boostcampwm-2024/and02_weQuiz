@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.domain.model.BlankQuestion
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.quiz.navigation.QuestionDetailRoute
@@ -47,10 +49,21 @@ class QuestionDetailViewModel @Inject constructor(
             }
             questionRepository.getQuestion(questionId).onSuccess { question ->
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        question = question,
-                    )
+                    when(question){
+                        is ChoiceQuestion -> {
+                            it.copy(
+                                isLoading = false,
+                                question = question,
+                                userAnswer = question.userAnswers,
+                            )
+                        }
+                        is BlankQuestion -> {
+                            it.copy(
+                                isLoading = false,
+                                question = question,
+                            )
+                        }
+                    }
                 }
             }.onFailure { throwable ->
                 _uiState.update {
