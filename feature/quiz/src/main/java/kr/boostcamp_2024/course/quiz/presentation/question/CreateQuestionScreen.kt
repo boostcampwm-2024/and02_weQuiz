@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -271,11 +270,7 @@ fun CreateQuestionScreen(
                 }
             }
             if (uiState.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .align(Alignment.Center),
-                )
+                AiLoadingIndicator()
             }
             if (!isBlankQuestion) {
                 FloatingActionButton(
