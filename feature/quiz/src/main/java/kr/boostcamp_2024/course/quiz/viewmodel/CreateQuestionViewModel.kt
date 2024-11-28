@@ -51,24 +51,20 @@ data class CreateQuestionUiState(
         choiceQuestionCreationInfo.description.isNotBlank() &&
         choiceQuestionCreationInfo.choices.all {
             it.isNotBlank()
-        }
+        } && choiceQuestionCreationInfo.answer in (0..3)
 
-    val isCreateBlankQuestionValid: Boolean
-        get() = items.any { it is BlankQuestionItem.Blank } &&
-            items.all {
-                (it is BlankQuestionItem.Text && it.text.isNotBlank()) ||
-                    (it is BlankQuestionItem.Blank && it.text.isNotBlank())
-            } &&
-            choiceQuestionCreationInfo.title.isNotBlank()
+    val isCreateBlankQuestionValid: Boolean = items.any { it is BlankQuestionItem.Blank } &&
+        items.all {
+            (it is BlankQuestionItem.Text && it.text.isNotBlank()) ||
+                (it is BlankQuestionItem.Blank && it.text.isNotBlank())
+        } &&
+        choiceQuestionCreationInfo.title.isNotBlank()
 
-    val isCreateBlankButtonValid: Boolean
-        get() = items.count { it is BlankQuestionItem.Blank } < 5
+    val isCreateBlankButtonValid: Boolean = items.count { it is BlankQuestionItem.Blank } < 5
 
-    val isCreateTextButtonValid: Boolean
-        get() = items.count { it is BlankQuestionItem.Text } < 5
+    val isCreateTextButtonValid: Boolean = items.count { it is BlankQuestionItem.Text } < 5
 
-    val isBlankQuestion: Boolean
-        get() = selectedQuestionTypeIndex == 1
+    val isBlankQuestion: Boolean = selectedQuestionTypeIndex == 1
 }
 
 @HiltViewModel
