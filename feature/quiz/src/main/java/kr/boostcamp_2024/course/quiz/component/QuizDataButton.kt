@@ -72,6 +72,10 @@ fun QuizDataButton(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onCreateQuestionButtonClick(quiz.id) },
                     enabled = quiz.isStarted.not() && isWaiting.not(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        disabledContainerColor = MaterialTheme.colorScheme.outlineVariant,
+                    ),
                 ) {
                     when (quiz.isStarted.not()) {
                         true -> Text(text = stringResource(R.string.txt_open_create_question))
@@ -88,6 +92,10 @@ fun QuizDataButton(
                         }
                     },
                     enabled = isStartRealTimeQuizEnabled || isWaitingRealTimeQuizEnabled,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        disabledContainerColor = MaterialTheme.colorScheme.outlineVariant,
+                    ),
                 ) {
                     if (quiz.questions.isEmpty()) { // (참여자, 관리자) -> 문제가 없는 경우
                         Text(text = stringResource(R.string.txt_quiz_question_count_zero))
