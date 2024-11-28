@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +30,10 @@ fun WeQuizPhotoPickerAsyncImage(
     imageData: Any?,
     onImageDataChanged: (ByteArray) -> Unit,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+    placeholder: Painter = painterResource(R.drawable.img_photo_picker),
+    error: Painter = painterResource(R.drawable.img_photo_picker),
+    fallback: Painter = painterResource(R.drawable.img_photo_picker),
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -69,10 +74,10 @@ fun WeQuizPhotoPickerAsyncImage(
                 photoPickerLauncher.launch(PickVisualMediaRequest(ImageOnly))
             },
         imgUrl = imageData,
-        contentDescription = "",
-        placeholder = painterResource(R.drawable.img_photo_picker),
-        error = painterResource(R.drawable.img_photo_picker),
-        fallback = painterResource(R.drawable.img_photo_picker),
+        contentDescription = contentDescription,
+        placeholder = placeholder,
+        error = error,
+        fallback = fallback,
     )
 }
 
