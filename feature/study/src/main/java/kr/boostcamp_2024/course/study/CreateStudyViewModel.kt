@@ -32,6 +32,7 @@ data class CreateStudyUiState(
     val currentUserId: String? = null,
     val isSubmitStudySuccess: Boolean = false,
     val snackBarMessage: String? = null,
+    val loadedMaxUserNum: String = "",
 ) {
     val canSubmitStudy: Boolean = (name.isNotBlank() && maxUserNum.isNotBlank() && maxUserNum.toInt() in 2..50)
 }
@@ -83,6 +84,7 @@ class CreateStudyViewModel @Inject constructor(
                                 name = studyGroup.name,
                                 description = studyGroup.description ?: "",
                                 maxUserNum = studyGroup.maxUserNum.toString(),
+                                loadedMaxUserNum = studyGroup.maxUserNum.toString(),
                             )
                         }
                     }.onFailure {
@@ -141,21 +143,29 @@ class CreateStudyViewModel @Inject constructor(
                     description = uiState.value.description.takeIf { it.isNotBlank() },
                     maxUserNum = uiState.value.maxUserNum.toInt(),
                 )
-
-                studyGroupRepository.updateStudyGroup(it, studyGroupUpdatedInfo)
-                    .onSuccess {
-                        Log.d("MainViewModel", "Successfully updated study group")
-                        _uiState.update { it.copy(isLoading = true, isSubmitStudySuccess = true) }
+                if (studyGroupUpdatedInfo.maxUserNum < _uiState.value.loadedMaxUserNum.toInt()) {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            snackBarMessage = "스터디 인원은 수정 전보다 많거나 같아야 합니다.",
+                        )
                     }
-                    .onFailure {
-                        Log.e("MainViewModel", "Failed to update study group", it)
-                        _uiState.update {
-                            it.copy(
-                                isLoading = true,
-                                snackBarMessage = "스터디 그룹 업데이트 실패",
-                            )
+                } else {
+                    studyGroupRepository.updateStudyGroup(it, studyGroupUpdatedInfo)
+                        .onSuccess {
+                            Log.d("MainViewModel", "Successfully updated study group")
+                            _uiState.update { it.copy(isLoading = true, isSubmitStudySuccess = true) }
                         }
-                    }
+                        .onFailure {
+                            Log.e("MainViewModel", "Failed to update study group", it)
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    snackBarMessage = "스터디 그룹 업데이트 실패",
+                                )
+                            }
+                        }
+                }
             }
         }
     }

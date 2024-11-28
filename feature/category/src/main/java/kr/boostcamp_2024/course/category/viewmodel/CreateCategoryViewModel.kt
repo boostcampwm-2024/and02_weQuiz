@@ -53,10 +53,10 @@ class CreateCategoryViewModel @Inject constructor(
     }
 
     fun fetchCategoryInfo() {
-        setLoading()
         viewModelScope.launch {
-            try {
-                categoryRepository.getCategory(requireNotNull(categoryId))
+            if (categoryId != null) {
+                setLoading()
+                categoryRepository.getCategory(categoryId)
                     .onSuccess { categoryInfo ->
                         _createCategoryUiState.update {
                             it.copy(
@@ -67,11 +67,9 @@ class CreateCategoryViewModel @Inject constructor(
                             )
                         }
                     }.onFailure { exception ->
-                        throw exception
+                        Log.e("CreateCategoryViewModel", "Failed to fetch category info", exception)
+                        _createCategoryUiState.update { it.copy(isLoading = false, errorMessage = "카테고리 정보를 가져오는데 실패했습니다. 다시 시도해주세요!") }
                     }
-            } catch (exception: Exception) {
-                Log.e("CreateCategoryViewModel", "Failed to fetch category info", exception)
-                setErrorMessage("카테고리 정보를 불러오는데 실패했습니다. 다시 시도해주세요!")
             }
         }
     }

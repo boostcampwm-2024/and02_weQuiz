@@ -51,24 +51,21 @@ data class CreateQuestionUiState(
         choiceQuestionCreationInfo.description.isNotBlank() &&
         choiceQuestionCreationInfo.choices.all {
             it.isNotBlank()
-        }
+        } &&
+        choiceQuestionCreationInfo.answer in (0..3)
 
-    val isCreateBlankQuestionValid: Boolean
-        get() = items.any { it is BlankQuestionItem.Blank } &&
-            items.all {
-                (it is BlankQuestionItem.Text && it.text.isNotBlank()) ||
-                    (it is BlankQuestionItem.Blank && it.text.isNotBlank())
-            } &&
-            choiceQuestionCreationInfo.title.isNotBlank()
+    val isCreateBlankQuestionValid: Boolean = items.any { it is BlankQuestionItem.Blank } &&
+        items.all {
+            (it is BlankQuestionItem.Text && it.text.isNotBlank()) ||
+                (it is BlankQuestionItem.Blank && it.text.isNotBlank())
+        } &&
+        choiceQuestionCreationInfo.title.isNotBlank()
 
-    val isCreateBlankButtonValid: Boolean
-        get() = items.count { it is BlankQuestionItem.Blank } < 5
+    val isCreateBlankButtonValid: Boolean = items.count { it is BlankQuestionItem.Blank } < 5
 
-    val isCreateTextButtonValid: Boolean
-        get() = items.count { it is BlankQuestionItem.Text } < 5
+    val isCreateTextButtonValid: Boolean = items.count { it is BlankQuestionItem.Text } < 5
 
-    val isBlankQuestion: Boolean
-        get() = selectedQuestionTypeIndex == 1
+    val isBlankQuestion: Boolean = selectedQuestionTypeIndex == 1
 }
 
 @HiltViewModel
@@ -145,6 +142,7 @@ class CreateQuestionViewModel @Inject constructor(
                 }.onFailure { exception ->
                     Log.e("CreateQuestionViewModel", exception.message, exception)
                     setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
+                    _createQuestionUiState.update { it.copy(isLoading = false) }
                 }
         }
     }
@@ -163,6 +161,7 @@ class CreateQuestionViewModel @Inject constructor(
             // todo: 문제를 삭제해야 하지 않을까?
             Log.e("CreateQuestionViewModel", exception.message, exception)
             setNewSnackBarMessage("문제 저장에 실패했습니다. 다시 시도해주세요!")
+            _createQuestionUiState.update { it.copy(isLoading = false) }
         }
     }
 
@@ -219,6 +218,7 @@ class CreateQuestionViewModel @Inject constructor(
             }.onFailure {
                 setNewSnackBarMessage("AI 추천 문제 가져오기에 실패했습니다. 다시 시도해주세요!")
                 Log.d("CreateQuestionViewModel", "AI 추천 문제 가져오기 실패")
+                _createQuestionUiState.update { it.copy(isLoading = false) }
             }
 
         }

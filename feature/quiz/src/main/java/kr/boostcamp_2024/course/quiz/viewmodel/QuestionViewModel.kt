@@ -123,6 +123,7 @@ class QuestionViewModel @Inject constructor(
                             isLoading = false,
                         )
                     }
+                    setNewBlankQuestionManager(0)
                 }
                 .onFailure {
                     Log.e("QuestionViewModel", "문제 로드 실패", it)

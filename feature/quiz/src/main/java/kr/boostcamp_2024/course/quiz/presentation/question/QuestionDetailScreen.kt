@@ -77,7 +77,6 @@ fun QuestionDetailScreen(
             if (question is ChoiceQuestion) {
                 ExtendedFloatingActionButton(
                     onClick = { showDialog = true },
-                    modifier = Modifier.padding(end = 16.dp, bottom = 53.dp),
                     containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                     shape = MaterialTheme.shapes.large,
                     icon = {
@@ -115,7 +114,9 @@ fun QuestionDetailScreen(
                     BlankQuestionDescription(question.questionContent)
                 }
 
-                QuestionSolution(question.solution)
+                question.solution?.let {
+                    QuestionSolution(question.solution)
+                }
             }
 
             if (showDialog) {

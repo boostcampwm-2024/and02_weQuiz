@@ -25,7 +25,7 @@ data class BlankQuestionDTO(
         title = requireNotNull(title),
         solution = solution,
         questionContent = requireNotNull(questionContent),
-        userAnswers = emptyList(),
+        userAnswers = requireNotNull(userAnswers),
     )
 }
 

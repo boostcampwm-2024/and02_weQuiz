@@ -152,6 +152,7 @@ fun MainScreen(
                         Icon(
                             imageVector = Icons.Filled.AccountCircle,
                             contentDescription = stringResource(R.string.top_app_bar_nav_btn),
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     MainDropDownMenu(
@@ -169,9 +170,8 @@ fun MainScreen(
                     IconButton(onClick = onNotificationButtonClick) {
                         Icon(
                             imageVector = Icons.Outlined.Notifications,
-                            contentDescription = stringResource(
-                                R.string.des_btn_notification,
-                            ),
+                            contentDescription = stringResource(R.string.des_btn_notification),
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },

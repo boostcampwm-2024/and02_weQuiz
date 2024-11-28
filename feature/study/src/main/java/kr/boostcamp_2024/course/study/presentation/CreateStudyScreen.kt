@@ -1,12 +1,6 @@
 package kr.boostcamp_2024.course.study.presentation
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
-import androidx.compose.foundation.clickable
+import WeQuizPhotoPickerAsyncImage
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,28 +22,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
 import kr.boostcamp_2024.course.study.CreateStudyViewModel
 import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.CreateStudyTopAppBar
 import kr.boostcamp_2024.course.study.component.StudySubmitButton
-import java.io.ByteArrayOutputStream
 
 @Composable
 fun CreateStudyScreen(
@@ -121,23 +109,7 @@ fun CreateStudyScreen(
     onCreationButtonClick: () -> Unit,
     onCurrentStudyImageChanged: (ByteArray) -> Unit,
 ) {
-    val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val coroutineScope = rememberCoroutineScope()
-    val photoPickerLauncher = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
-        if (uri != null) {
-            coroutineScope.launch {
-                val inputStream = context.contentResolver.openInputStream(uri)
-                val bitmap = BitmapFactory.decodeStream(inputStream)
-
-                val baos = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-                val data = baos.toByteArray()
-
-                onCurrentStudyImageChanged(data)
-            }
-        }
-    }
 
     Scaffold(
         topBar = {
@@ -156,20 +128,14 @@ fun CreateStudyScreen(
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            WeQuizAsyncImage(
+            WeQuizPhotoPickerAsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 70.dp)
                     .aspectRatio(1f)
-                    .clip(shape = MaterialTheme.shapes.large)
-                    .clickable(enabled = true) {
-                        photoPickerLauncher.launch(PickVisualMediaRequest(ImageOnly))
-                    },
-                imgUrl = currentStudyImage ?: defaultStudyImageUri,
-                contentDescription = stringResource(R.string.des_study_group_image),
-                placeholder = painterResource(R.drawable.img_photo_picker),
-                error = painterResource(R.drawable.img_photo_picker),
-                fallback = painterResource(R.drawable.img_photo_picker),
+                    .clip(shape = MaterialTheme.shapes.large),
+                imageData = currentStudyImage ?: defaultStudyImageUri,
+                onImageDataChanged = onCurrentStudyImageChanged,
             )
 
             WeQuizTextField(
