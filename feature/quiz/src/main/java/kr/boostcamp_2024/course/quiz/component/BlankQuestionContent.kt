@@ -79,6 +79,7 @@ fun BlankQuestionContents(
                 shape = RoundedCornerShape(10.dp),
             )
             .padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         contents.forEachIndexed { index, content ->
@@ -133,6 +134,7 @@ fun Blanks(
                 shape = RoundedCornerShape(10.dp),
             )
             .padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         words.forEachIndexed { index, word ->
