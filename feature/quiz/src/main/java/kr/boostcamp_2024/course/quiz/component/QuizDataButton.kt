@@ -45,6 +45,10 @@ fun QuizDataButton(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onStartQuizButtonClick(quiz.id) },
                     enabled = (quiz.isOpened && quiz.questions.isNotEmpty()),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        disabledContainerColor = MaterialTheme.colorScheme.outlineVariant,
+                    ),
                 ) {
                     when (quiz.isOpened && quiz.questions.isEmpty()) {
                         true -> Text(text = stringResource(R.string.txt_quiz_question_count_zero))
