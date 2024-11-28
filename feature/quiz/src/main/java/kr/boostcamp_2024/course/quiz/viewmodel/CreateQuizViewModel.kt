@@ -232,7 +232,7 @@ class CreateQuizViewModel @Inject constructor(
                     quizImageUrl = downloadUrl,
                 )
 
-                quizRepository.editQuiz(id, quizCreationInfo)
+                quizRepository.editQuiz(id, quizCreationInfo,_uiState.value.selectedQuizTypeIndex)
                     .onSuccess {
                         _uiState.update {
                             it.copy(
