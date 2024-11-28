@@ -124,4 +124,5 @@
     <string name="des_remove_text">텍스트 제거</string>
     <string name="err_add_user_answers">문제 통계 추가에 실패했습니다.</string>
     <string name="err_delete_waiting_user">실시간 퀴즈 나가기에 실패했습니다.</string>
+    <string name="txt_create_question_ai_choice_error">AI가 보기를 찾지 못했습니다.</string>
 </resources>
