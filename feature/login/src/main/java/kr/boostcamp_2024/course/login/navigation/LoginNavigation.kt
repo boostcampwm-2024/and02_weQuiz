@@ -32,6 +32,12 @@ fun NavController.navigationSignUp(
     navigate(SignUpRoute(userUiModel, userId))
 }
 
+fun NavController.navigationSignUp(
+    userId: String? = null,
+) {
+    navigate(SignUpRoute(userId = userId))
+}
+
 fun NavGraphBuilder.loginNavGraph(
     onNavigationButtonClick: () -> Unit,
     onLoginSuccess: () -> Unit,
