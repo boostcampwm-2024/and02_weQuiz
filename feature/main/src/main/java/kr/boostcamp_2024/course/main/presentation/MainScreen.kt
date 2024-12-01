@@ -50,7 +50,6 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
-import kr.boostcamp_2024.course.login.model.UserUiModel
 import kr.boostcamp_2024.course.main.R
 import kr.boostcamp_2024.course.main.component.MainDropDownMenu
 import kr.boostcamp_2024.course.main.component.StudyGroupItem
@@ -64,7 +63,7 @@ fun MainScreen(
     onEditStudyButtonClick: (String) -> Unit,
     viewModel: MainViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    onEditUserClick: (UserUiModel?, String?) -> Unit,
+    onEditUserClick: (String?) -> Unit,
     onLogOutClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -121,7 +120,7 @@ fun MainScreen(
     onDeleteStudyGroupClick: (StudyGroup) -> Unit,
     onLeaveStudyGroupClick: (String) -> Unit,
     onStudyGroupClick: (String) -> Unit,
-    onEditUserClick: (UserUiModel?, String?) -> Unit,
+    onEditUserClick: (String?) -> Unit,
     onLogOutClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -160,7 +159,7 @@ fun MainScreen(
                         onDismissRequest = { isExpanded = false },
                         onEditUserClick = {
                             if (currentUser?.id != null) {
-                                onEditUserClick(null, currentUser.id)
+                                onEditUserClick(currentUser.id)
                             }
                         },
                         onLogOutClick = onLogOutClick,
@@ -291,7 +290,7 @@ fun MainScreenPreview() {
             onNotificationButtonClick = {},
             onCreateStudyButtonClick = {},
             onStudyGroupClick = {},
-            onEditUserClick = { _, _ -> },
+            onEditUserClick = {},
             onLogOutClick = {},
             onDeleteStudyGroupClick = {},
         )
