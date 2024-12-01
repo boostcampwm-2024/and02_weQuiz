@@ -31,7 +31,7 @@ internal fun Project.configureKotlinAndroid() {
                 isMinifyEnabled = false
                 proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+                    "proguard-rules.pro",
                 )
             }
         }
@@ -61,7 +61,7 @@ internal fun Project.configureKotlin() {
             freeCompilerArgs.set(
                 freeCompilerArgs.get() + listOf(
                     "-opt-in=kotlin.RequiresOptIn",
-                )
+                ),
             )
         }
     }
