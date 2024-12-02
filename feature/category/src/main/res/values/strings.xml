@@ -4,6 +4,8 @@
         <item>In Progress</item>
         <item>Completed</item>
     </string-array>
+    <string name="txt_category_name_error_message">Please enter 20 characters or less.</string>
+    <string name="txt_category_description_error_message">Please enter 100 characters or less.</string>
     <string name="txt_create_category_guide">Please enter information about\nthe category you want to add!</string>
     <string name="txt_create_category_name_label">Name</string>
     <string name="txt_create_category_name_placeholder">Enter the category name</string>

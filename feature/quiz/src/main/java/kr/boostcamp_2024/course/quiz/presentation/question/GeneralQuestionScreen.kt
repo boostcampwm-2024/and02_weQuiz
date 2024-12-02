@@ -68,6 +68,7 @@ fun GeneralQuestionScreen(
     removeBlankContent: (Int) -> Unit,
     addBlankContent: (Int) -> Unit,
     getBlankQuestionAnswer: () -> Map<String, String?>,
+    isLoading: Boolean,
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
     var buttonsHeight by remember { mutableStateOf(IntSize.Zero) }
@@ -149,6 +150,7 @@ fun GeneralQuestionScreen(
                 },
                 prevButtonEnabled = currentPage > 0,
                 setButtonsHeight = { buttonsHeight = it },
+                isNextButtonEnabled = !isLoading,
             )
         }
 
@@ -197,11 +199,13 @@ fun GeneralQuizButtons(
     onNextButtonClick: () -> Unit,
     onPrevButtonClick: () -> Unit,
     prevButtonEnabled: Boolean,
+    isNextButtonEnabled: Boolean,
 ) {
     Column(
         modifier = modifier.onGloballyPositioned { setButtonsHeight(it.size) },
     ) {
         Button(
+            enabled = isNextButtonEnabled,
             onClick = onNextButtonClick,
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -282,6 +286,7 @@ fun GeneralQuestionScreenPreview() {
             removeBlankContent = {},
             addBlankContent = {},
             getBlankQuestionAnswer = { emptyMap() },
+            isLoading = false,
         )
     }
 }

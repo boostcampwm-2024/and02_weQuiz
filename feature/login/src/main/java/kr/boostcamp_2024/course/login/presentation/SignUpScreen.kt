@@ -40,7 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
 import kr.boostcamp_2024.course.login.R
 import kr.boostcamp_2024.course.login.viewmodel.SignUpUiState
 import kr.boostcamp_2024.course.login.viewmodel.SignUpViewModel
@@ -141,7 +141,7 @@ private fun SignupScreen(
             }
             item {
                 SignUpButtons(
-                    isSignUpValid = uiState.isSignUpButtonEnabled,
+                    isSignUpValid = uiState.isSignUpButtonEnabled && !uiState.isLoading,
                     onSubmitButtonClick = if (uiState.isEditMode) onEditButtonClick else onSignUpButtonClick,
                     isEditMode = uiState.isEditMode,
                 )
@@ -202,11 +202,13 @@ fun SignUpContent(
             enabled = false,
         )
 
-        WeQuizTextField(
+        WeQuizValidateTextField(
             label = stringResource(R.string.txt_sign_up_nick_name),
             text = name,
             onTextChanged = onNameChanged,
             placeholder = stringResource(R.string.txt_sign_up_nick_name_placeholder),
+            errorMessage = stringResource(R.string.txt_user_name_error_message),
+            validFun = { it.length <= 10 },
         )
     }
 }

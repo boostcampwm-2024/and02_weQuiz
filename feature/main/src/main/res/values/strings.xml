@@ -16,6 +16,7 @@
     <string name="txt_study_group_menu_edit">Edit</string>
     <string name="txt_study_group_menu_delete">Delete Study</string>
     <string name="txt_study_group_menu_leave">Leave</string>
+    <string name="txt_blank_notification">Your notification box is empty.</string>
     <string-array name="main_tabs_titles">
         <item>Joined Studies</item>
         <item>Archive</item>

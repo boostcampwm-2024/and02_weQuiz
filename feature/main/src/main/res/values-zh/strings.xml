@@ -16,6 +16,7 @@
     <string name="txt_study_group_menu_edit">修正</string>
     <string name="txt_study_group_menu_delete">删除学习小组</string>
     <string name="txt_study_group_menu_leave">退出</string>
+    <string name="txt_blank_notification">您的收件箱是空的。</string>
     <string-array name="main_tabs_titles">
         <item>参与小组</item>
         <item>档案</item>

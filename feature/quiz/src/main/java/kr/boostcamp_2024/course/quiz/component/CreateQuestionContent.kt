@@ -11,7 +11,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
@@ -33,7 +33,7 @@ fun CreateQuestionContent(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        WeQuizTextField(
+        WeQuizValidateTextField(
             modifier = Modifier.focusRequester(focusRequester),
             label = stringResource(id = R.string.txt_question_title_label),
             text = title,
@@ -41,9 +41,11 @@ fun CreateQuestionContent(
             placeholder = stringResource(id = R.string.txt_question_title_placeholder),
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
+            errorMessage = stringResource(id = R.string.txt_question_title_error_message),
+            validFun = { it.length <= 50 },
         )
         if (!isBlankQuestion) {
-            WeQuizTextField(
+            WeQuizValidateTextField(
                 label = stringResource(id = R.string.txt_question_content_label),
                 text = description ?: "",
                 onTextChanged = onDescriptionChanged,
@@ -52,9 +54,11 @@ fun CreateQuestionContent(
                 maxLines = 6,
                 keyboardOptions = keyboardOptions,
                 keyboardActions = keyboardActions,
+                errorMessage = stringResource(id = R.string.txt_question_description_error_message),
+                validFun = { it.length <= 100 },
             )
         }
-        WeQuizTextField(
+        WeQuizValidateTextField(
             label = stringResource(id = R.string.txt_question_description_label),
             text = solution ?: "",
             onTextChanged = onSolutionChanged,
@@ -63,6 +67,8 @@ fun CreateQuestionContent(
             maxLines = 6,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
+            errorMessage = stringResource(id = R.string.txt_question_solution_error_message),
+            validFun = { it.length <= 200 },
         )
     }
 }

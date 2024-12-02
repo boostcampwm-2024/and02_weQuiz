@@ -29,10 +29,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
+import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
 import kr.boostcamp_2024.course.quiz.component.QuizContent
+import kr.boostcamp_2024.course.quiz.component.RealTimeQuizGuideContent
 import kr.boostcamp_2024.course.quiz.viewmodel.UserQuestionViewModel
 
 @Composable
@@ -49,6 +52,7 @@ fun UserQuestionScreen(
         quiz = uiState.quiz,
         currentPage = uiState.currentPage,
         choiceQuestions = uiState.questions,
+        ownerName = uiState.ownerName ?: "",
         quizFinishDialog = quizFinishDialog,
         onQuizFinishDialogDismissButtonClick = { quizFinishDialog = false },
         selectedIndexList = uiState.selectedIndexList,
@@ -96,6 +100,7 @@ fun UserQuestionScreen(
     quiz: BaseQuiz?,
     currentPage: Int,
     choiceQuestions: List<Question>,
+    ownerName: String,
     quizFinishDialog: Boolean,
     onQuizFinishDialogDismissButtonClick: () -> Unit,
     selectedIndexList: List<Any?>,
@@ -113,6 +118,7 @@ fun UserQuestionScreen(
     onExitButtonClick: () -> Unit,
 ) {
     var showExitDialog by rememberSaveable { mutableStateOf(false) }
+    val currentQuestion = choiceQuestions.getOrNull(currentPage)
 
     BackHandler {
         showExitDialog = true
@@ -143,80 +149,97 @@ fun UserQuestionScreen(
                     vertical = 20.dp,
                 ),
             ) {
-                item {
-                    QuizContent(
-                        currentPage = currentPage,
-                        selectedIndexList = selectedIndexList,
-                        onOptionSelected = onOptionSelected,
-                        questions = choiceQuestions,
-                        showErrorMessage = { /* no-op */ },
-                        onBlanksSelected = onBlanksSelected,
-                        blankQuestionContents = blankQuestionContents,
-                        blankWords = blankWords,
-                        removeBlankContent = removeBlankContent,
-                        addBlankContent = addBlankContent,
-                        getBlankQuestionAnswer = getBlankQuestionAnswer,
-                    )
-                }
+                if (quiz is RealTimeQuiz) {
+                    if (currentQuestion != null) {
+                        val submittedParticipants = if (currentQuestion is ChoiceQuestion) {
+                            currentQuestion.userAnswers.sum()
+                        } else {
+                            currentQuestion.userAnswers.size
+                        }
+                        item {
+                            RealTimeQuizGuideContent(
+                                ownerName = ownerName,
+                                totalParticipants = quiz.waitingUsers.size,
+                                submittedParticipants = submittedParticipants,
+                            )
+                        }
+                    }
 
-                item {
-                    Button(
-                        onClick = {
-                            onSubmitButtonClick(choiceQuestions[currentPage].id)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        enabled = !isSubmitted,
-                    ) {
-                        Text(
-                            if (isSubmitted) {
-                                stringResource(R.string.btn_success_submit)
-                            } else {
-                                stringResource(
-                                    R.string.btn_submit,
-                                )
-                            },
+                    item {
+                        QuizContent(
+                            currentPage = currentPage,
+                            selectedIndexList = selectedIndexList,
+                            onOptionSelected = onOptionSelected,
+                            questions = choiceQuestions,
+                            showErrorMessage = { /* no-op */ },
+                            onBlanksSelected = onBlanksSelected,
+                            blankQuestionContents = blankQuestionContents,
+                            blankWords = blankWords,
+                            removeBlankContent = removeBlankContent,
+                            addBlankContent = addBlankContent,
+                            getBlankQuestionAnswer = getBlankQuestionAnswer,
                         )
+                    }
+
+                    item {
+                        Button(
+                            onClick = {
+                                onSubmitButtonClick(choiceQuestions[currentPage].id)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            enabled = !isSubmitted,
+                        ) {
+                            Text(
+                                if (isSubmitted) {
+                                    stringResource(R.string.btn_success_submit)
+                                } else {
+                                    stringResource(
+                                        R.string.btn_submit,
+                                    )
+                                },
+                            )
+                        }
                     }
                 }
             }
         }
-    }
 
-    if (quizFinishDialog) {
-        WeQuizBaseDialog(
-            title = stringResource(R.string.txt_quiz_finish_notification),
-            dialogImage = painterResource(id = R.drawable.quiz_system_profile),
-            confirmTitle = stringResource(R.string.txt_quiz_finish_confirm),
-            onConfirm = onQuizFinishButtonClick,
-            onDismissRequest = onQuizFinishDialogDismissButtonClick,
-            dismissButton = null,
-            content = { /* no-op */ },
-        )
-    }
+        if (quizFinishDialog) {
+            WeQuizBaseDialog(
+                title = stringResource(R.string.txt_quiz_finish_notification),
+                dialogImage = painterResource(id = R.drawable.quiz_system_profile),
+                confirmTitle = stringResource(R.string.txt_quiz_finish_confirm),
+                onConfirm = onQuizFinishButtonClick,
+                onDismissRequest = onQuizFinishDialogDismissButtonClick,
+                dismissButton = null,
+                content = { /* no-op */ },
+            )
+        }
 
-    if (showExitDialog) {
-        WeQuizBaseDialog(
-            title = if (currentPage == choiceQuestions.size - 1) {
-                stringResource(R.string.dialog_submit_script)
-            } else {
-                stringResource(R.string.dialog_exit_script)
-            },
-            confirmTitle = if (currentPage == choiceQuestions.size - 1) {
-                stringResource(R.string.txt_question_submit)
-            } else {
-                stringResource(R.string.txt_question_exit)
-            },
-            dismissTitle = stringResource(R.string.txt_question_cancel),
-            onConfirm = {
-                showExitDialog = false
-                onExitButtonClick()
-            },
-            onDismissRequest = { showExitDialog = false },
-            dialogImage = painterResource(id = R.drawable.quiz_system_profile),
-            content = { /* no-op */ },
-        )
+        if (showExitDialog) {
+            WeQuizBaseDialog(
+                title = if (currentPage == choiceQuestions.size - 1) {
+                    stringResource(R.string.dialog_submit_script)
+                } else {
+                    stringResource(R.string.dialog_exit_script)
+                },
+                confirmTitle = if (currentPage == choiceQuestions.size - 1) {
+                    stringResource(R.string.txt_question_submit)
+                } else {
+                    stringResource(R.string.txt_question_exit)
+                },
+                dismissTitle = stringResource(R.string.txt_question_cancel),
+                onConfirm = {
+                    showExitDialog = false
+                    onExitButtonClick()
+                },
+                onDismissRequest = { showExitDialog = false },
+                dialogImage = painterResource(id = R.drawable.quiz_system_profile),
+                content = { /* no-op */ },
+            )
+        }
     }
 }
 

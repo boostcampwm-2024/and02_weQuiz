@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="txt_category_name_error_message">20자 이하로 입력해주세요.</string>
+    <string name="txt_category_description_error_message">100자 이하로 입력해주세요.</string>
     <string-array name="quiz_tabs">
         <item>진행 중</item>
         <item>진행 완료</item>

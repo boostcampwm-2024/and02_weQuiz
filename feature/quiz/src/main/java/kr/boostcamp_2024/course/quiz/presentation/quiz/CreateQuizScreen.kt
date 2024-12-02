@@ -7,13 +7,11 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -47,7 +43,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuizDatePickerTextField
 import kr.boostcamp_2024.course.quiz.component.QuizSolveTimeSlider
@@ -69,7 +66,7 @@ fun CreateQuizScreen(
         quizDescription = uiState.value.quizDescription,
         quizDate = uiState.value.quizDate,
         quizSolveTime = uiState.value.quizSolveTime,
-        createQuizButtonEnabled = uiState.value.isCreateQuizButtonEnabled,
+        createQuizButtonEnabled = uiState.value.isCreateQuizButtonEnabled && !uiState.value.isLoading,
         isEditing = uiState.value.isEditing,
         selectedQuizTypeIndex = uiState.value.selectedQuizTypeIndex,
         snackBarHostState = snackBarHostState,
@@ -100,13 +97,7 @@ fun CreateQuizScreen(
     }
 
     if (uiState.value.isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
+        WeQuizCircularProgressIndicator()
     }
 
     LaunchedEffect(uiState.value.snackBarMessage) {
@@ -220,21 +211,25 @@ fun CreateQuizScreen(
 
             // QuizInfo
             // Title
-            WeQuizTextField(
+            WeQuizValidateTextField(
                 text = quizTitle,
                 onTextChanged = onQuizTitleChange,
                 label = stringResource(R.string.txt_quiz_title_label),
                 placeholder = stringResource(R.string.txt_quiz_title_placeholder),
+                errorMessage = stringResource(R.string.txt_quiz_title_error_message),
+                validFun = { it.length <= 20 },
             )
 
             //Description
-            WeQuizTextField(
+            WeQuizValidateTextField(
                 text = quizDescription,
                 onTextChanged = onQuizDescriptionChange,
                 label = stringResource(R.string.txt_quiz_description_label),
                 placeholder = stringResource(R.string.txt_quiz_description_placeholder),
                 minLines = 6,
                 maxLines = 6,
+                errorMessage = stringResource(R.string.txt_quiz_description_error_message),
+                validFun = { it.length <= 100 },
             )
             if (!isRealtimeQuiz) {
 

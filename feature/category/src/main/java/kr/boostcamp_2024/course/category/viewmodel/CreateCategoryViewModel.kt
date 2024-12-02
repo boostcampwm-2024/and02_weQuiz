@@ -26,7 +26,7 @@ data class CreateCategoryUiState(
     val currentImage: ByteArray? = null,
     val defaultImageUri: String? = null,
 ) {
-    val isCategoryCreationValid: Boolean = categoryName.isNotBlank() && isLoading.not()
+    val isCategoryCreationValid: Boolean = categoryName.length in 1..20 && categoryDescription.length in 0..100 && isLoading.not()
 }
 
 @HiltViewModel

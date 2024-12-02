@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.Badge
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -71,6 +73,7 @@ fun MainScreen(
     MainScreen(
         currentUser = uiState.currentUser,
         studyGroups = uiState.studyGroups,
+        notifications = uiState.notificationNumber,
         snackBarHostState = snackBarHostState,
         onNotificationButtonClick = onNotificationButtonClick,
         onCreateStudyButtonClick = onCreateStudyButtonClick,
@@ -113,6 +116,7 @@ fun MainScreen(
 fun MainScreen(
     currentUser: User?,
     studyGroups: List<StudyGroup>,
+    notifications: Int,
     snackBarHostState: SnackbarHostState,
     onNotificationButtonClick: () -> Unit,
     onCreateStudyButtonClick: () -> Unit,
@@ -167,11 +171,27 @@ fun MainScreen(
                 },
                 actions = {
                     IconButton(onClick = onNotificationButtonClick) {
-                        Icon(
-                            imageVector = Icons.Outlined.Notifications,
-                            contentDescription = stringResource(R.string.des_btn_notification),
-                            tint = MaterialTheme.colorScheme.onSurface,
-                        )
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Outlined.Notifications,
+                                contentDescription = stringResource(R.string.des_btn_notification),
+                                tint = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Badge(
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .offset(x = 5.dp, y = (-4).dp)
+                                    .size(16.dp),
+                                containerColor = MaterialTheme.colorScheme.error,
+                            ) {
+                                Text(
+                                    text = notifications.toString(),
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                        }
                     }
                 },
             )
@@ -293,6 +313,7 @@ fun MainScreenPreview() {
             onEditUserClick = {},
             onLogOutClick = {},
             onDeleteStudyGroupClick = {},
+            notifications = 0,
         )
     }
 }

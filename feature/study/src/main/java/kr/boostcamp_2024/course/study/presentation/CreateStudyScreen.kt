@@ -2,17 +2,14 @@ package kr.boostcamp_2024.course.study.presentation
 
 import WeQuizPhotoPickerAsyncImage
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -32,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
 import kr.boostcamp_2024.course.study.CreateStudyViewModel
 import kr.boostcamp_2024.course.study.R
@@ -55,7 +51,7 @@ fun CreateStudyScreen(
         titleText = uiState.name,
         descriptionText = uiState.description,
         groupMemberNumber = uiState.maxUserNum,
-        canSubmitStudy = uiState.canSubmitStudy,
+        canSubmitStudy = uiState.canSubmitStudy && !uiState.isLoading,
         snackBarHostState = snackBarHostState,
         onNavigationButtonClick = onNavigationButtonClick,
         onTitleTextChange = viewmodel::onNameChanged,
@@ -67,13 +63,7 @@ fun CreateStudyScreen(
     )
 
     if (uiState.isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
+        WeQuizCircularProgressIndicator()
     }
 
     if (uiState.isSubmitStudySuccess) {
@@ -138,20 +128,24 @@ fun CreateStudyScreen(
                 onImageDataChanged = onCurrentStudyImageChanged,
             )
 
-            WeQuizTextField(
+            WeQuizValidateTextField(
                 label = stringResource(R.string.txt_create_study_title_text_field_label),
                 text = titleText,
                 onTextChanged = onTitleTextChange,
                 placeholder = stringResource(R.string.txt_create_study_title_text_field_placeholder),
+                errorMessage = stringResource(R.string.txt_study_group_name_error_message),
+                validFun = { it.length <= 20 },
             )
 
-            WeQuizTextField(
+            WeQuizValidateTextField(
                 label = stringResource(R.string.txt_create_study_description_label),
                 text = descriptionText,
                 minLines = 6,
                 maxLines = 6,
                 onTextChanged = onDescriptionTextChange,
                 placeholder = stringResource(R.string.txt_create_study_description_placeholder),
+                errorMessage = stringResource(R.string.txt_study_group_description_error_message),
+                validFun = { it.length <= 100 },
             )
 
             WeQuizValidateTextField(

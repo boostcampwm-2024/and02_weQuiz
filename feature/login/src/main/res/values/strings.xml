@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="txt_user_name_error_message">Please enter 10 characters or less.</string>
     <!-- Login -->
     <string name="txt_introduce_app1">Shall we solve quizzes together?</string>
     <string name="txt_introduce_app2">We Quiz~?🍦🍨</string>

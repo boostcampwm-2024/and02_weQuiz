@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="txt_study_group_name_error_message">Please enter 20 characters or less.</string>
+    <string name="txt_study_group_description_error_message">Please enter 100 characters or less.</string>
     <string name="bottom_nav_btn_category">Category</string>
     <string name="bottom_nav_btn_group">Members</string>
     <string name="property_tab_category_text">Category</string>

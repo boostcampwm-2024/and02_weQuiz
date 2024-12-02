@@ -36,6 +36,7 @@ fun QuizAiDialog(
             onConfirmButtonClick(category)
         },
         onDismissRequest = onDismissButtonClick,
+        confirmButtonEnabled = category.isNotEmpty(),
     )
 }
 

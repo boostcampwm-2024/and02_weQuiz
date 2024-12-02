@@ -46,7 +46,7 @@ import kr.boostcamp_2024.course.category.viewModel.CreateCategoryViewModel
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
 import java.io.ByteArrayOutputStream
 
 @Composable
@@ -175,24 +175,28 @@ fun CreateCategoryScreen(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                WeQuizTextField(
+                WeQuizValidateTextField(
                     label = stringResource(R.string.txt_create_category_name_label),
                     text = name,
                     onTextChanged = onNameChanged,
                     placeholder = stringResource(R.string.txt_create_category_name_placeholder),
+                    errorMessage = stringResource(R.string.txt_category_name_error_message),
+                    validFun = { name.length <= 20 },
                 )
-                WeQuizTextField(
+                WeQuizValidateTextField(
                     label = stringResource(R.string.txt_create_category_des_label),
                     text = description,
                     maxLines = 6,
                     minLines = 6,
                     onTextChanged = onDescriptionChanged,
                     placeholder = stringResource(R.string.txt_create_category_des_placeholder),
+                    errorMessage = stringResource(R.string.txt_category_description_error_message),
+                    validFun = { description.length <= 100 },
                 )
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onCreateCategoryButtonClick,
-                    enabled = isCategoryCreationValid,
+                    enabled = isCategoryCreationValid && !isLoading,
                 ) {
                     Text(text = guideText)
                 }

@@ -25,6 +25,7 @@
     <string name="des_img_photo_picker">添加照片</string>
     <string name="btn_sign_up_edit_user">编辑用户信息</string>
     <string name="top_app_bar_edit_user">编辑用户信息</string>
+    <string name="txt_user_name_error_message">请输入10字以下。</string>
     <!-- Content Description -->
     <string name="des_clear_text">清除文本</string>
     <string name="des_google_login">使用谷歌登录</string>
