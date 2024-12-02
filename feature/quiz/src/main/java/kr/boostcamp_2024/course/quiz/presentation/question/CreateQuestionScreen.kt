@@ -238,7 +238,7 @@ fun CreateQuestionScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            enabled = uiState.isCreateQuestionValid,
+                            enabled = uiState.isCreateQuestionValid && !uiState.isLoading,
                             onClick = onCreateQuestionButtonClick,
                         ) {
                             Text(
@@ -259,7 +259,7 @@ fun CreateQuestionScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            enabled = uiState.isCreateBlankQuestionValid,
+                            enabled = uiState.isCreateBlankQuestionValid && !uiState.isLoading,
                             onClick = onCreateBlankQuestionButtonClick,
                         ) {
                             Text(
