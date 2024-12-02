@@ -192,7 +192,7 @@ fun CreateCategoryScreen(
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onCreateCategoryButtonClick,
-                    enabled = isCategoryCreationValid,
+                    enabled = isCategoryCreationValid && !isLoading,
                 ) {
                     Text(text = guideText)
                 }
