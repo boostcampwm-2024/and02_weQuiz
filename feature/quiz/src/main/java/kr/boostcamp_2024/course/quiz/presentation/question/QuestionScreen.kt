@@ -60,6 +60,7 @@ fun QuestionScreen(
                 removeBlankContent = questionViewModel.blankQuestionManager::removeBlankContent,
                 addBlankContent = questionViewModel.blankQuestionManager::addBlankContent,
                 getBlankQuestionAnswer = questionViewModel.blankQuestionManager::getAnswer,
+                isLoading = uiState.isLoading,
             )
         }
     }
