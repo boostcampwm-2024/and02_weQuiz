@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--  로그인  -->
-    <string name="txt_introduce_app1">우리 같이 퀴즈 풀지 않을래??</string>
+    <!-- Login -->
+    <string name="txt_introduce_app1">Shall we solve quizzes together?</string>
     <string name="txt_introduce_app2">We Quiz~?🍦🍨</string>
-    <string name="txt_login_email_label">이메일</string>
-    <string name="txt_login_password_label">패스워드</string>
-    <string name="txt_login_email_placeholder">이메일을 입력해주세요.</string>
-    <string name="txt_login_password_placeholder">패스워드를 입력해주세요.</string>
-    <string name="btn_sign_in">로그인</string>
-    <string name="btn_sign_up">회원가입</string>
-    <string name="txt_experience">체험하기</string>
-    <string name="des_ic_visible_password">패스워드 보기</string>
-    <string name="des_ic_invisible_password">패스워드 감추기</string>
-    <!--  회원가입  -->
-    <string name="top_app_bar_sign_up">회원가입</string>
-    <string name="txt_sign_up_email_label">이메일</string>
-    <string name="txt_sign_up_password_label">패스워드</string>
-    <string name="txt_sign_up_nick_name">닉네임</string>
-    <string name="txt_sign_up_email_placeholder">이메일을 입력해주세요.</string>
-    <string name="txt_sign_up_password_placeholder">패스워드를 입력해주세요.</string>
-    <string name="txt_sign_up_nick_name_placeholder">닉네임을 입력해주세요.</string>
-    <string name="btn_sign_up_cancel">회원탈퇴</string>
-    <string name="des_ic_back">뒤로가기</string>
-    <string name="des_img_photo_picker">사진 추가</string>
-    <!--  content description  -->
-    <string name="des_clear_text">텍스트 지우기</string>
-    <string name="des_google_login">구글 로그인</string>
-    <!--  error   -->
-    <string name="error_login">로그인에 실패했습니다.</string>
-    <string name="error_google_oauth">구글 정보 연동에 실패했습니다.</string>
-    <string name="error_sign_up">회원가입에 실패했습니다.</string>
-    <string name="error_photo_picker">사진 로드에 실패했습니다.</string>
-    <string name="error_upload_image">사진 업로드에 실패했습니다.</string>
-    <!--  web client id  -->
-    <string name="web_client_id"> 735245765717-mdpc20cc8rs37lmfh8qfnqn0h814ldf2.apps.googleusercontent.com</string>
+    <string name="txt_login_email_label">Email</string>
+    <string name="txt_login_password_label">Password</string>
+    <string name="txt_login_email_placeholder">Please enter your email.</string>
+    <string name="txt_login_password_placeholder">Please enter your password.</string>
+    <string name="btn_sign_in">Sign In</string>
+    <string name="btn_sign_up">Sign Up</string>
+    <string name="txt_experience">Try Now</string>
+    <string name="des_ic_visible_password">Show Password</string>
+    <string name="des_ic_invisible_password">Hide Password</string>
+    <!-- Sign Up -->
+    <string name="top_app_bar_sign_up">Sign Up</string>
+    <string name="txt_sign_up_email_label">Email</string>
+    <string name="txt_sign_up_password_label">Password</string>
+    <string name="txt_sign_up_nick_name">Nickname</string>
+    <string name="txt_sign_up_email_placeholder">Please enter your email.</string>
+    <string name="txt_sign_up_password_placeholder">Please enter your password.</string>
+    <string name="txt_sign_up_nick_name_placeholder">Please enter your nickname.</string>
+    <string name="btn_sign_up_cancel">Cancel Membership</string>
+    <string name="des_ic_back">Go Back</string>
+    <string name="des_img_photo_picker">Add Photo</string>
+    <string name="btn_sign_up_edit_user">Edit User Info</string>
+    <string name="top_app_bar_edit_user">Edit User Info</string>
+    <!-- Content Description -->
+    <string name="des_clear_text">Clear Text</string>
+    <string name="des_google_login">Login with Google</string>
+    <!-- Error -->
+    <string name="error_login">Failed to login.</string>
+    <string name="error_google_oauth">Failed to link Google account.</string>
+    <string name="error_sign_up">Failed to sign up.</string>
+    <string name="error_photo_picker">Failed to load photo.</string>
+    <string name="error_upload_image">Failed to upload photo.</string>
+    <!-- Web Client ID -->
+    <string name="web_client_id">735245765717-mdpc20cc8rs37lmfh8qfnqn0h814ldf2.apps.googleusercontent.com</string>
 </resources>
