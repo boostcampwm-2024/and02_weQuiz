@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="quiz_tabs">
-        <item>진행 중</item>
-        <item>진행 완료</item>
+        <item>In Progress</item>
+        <item>Completed</item>
     </string-array>
-    <string name="txt_create_category_guide">추가할 카테고리에 대한\n정보를 입력해주세요!</string>
-    <string name="txt_create_category_name_label">이름</string>
-    <string name="txt_create_category_name_placeholder">카테고리 이름을 입력해주세요</string>
-    <string name="txt_create_category_des_label">설명</string>
-    <string name="txt_create_category_des_placeholder">카테고리 설명을 입력해주세요</string>
-    <string name="txt_create_category">카테고리 생성</string>
-    <string name="txt_edit_category">카테고리 수정</string>
     <string name="txt_category_name_error_message">Please enter 20 characters or less.</string>
     <string name="txt_category_description_error_message">Please enter 100 characters or less.</string>
+    <string name="txt_create_category_guide">Please enter information about\nthe category you want to add!</string>
+    <string name="txt_create_category_name_label">Name</string>
+    <string name="txt_create_category_name_placeholder">Enter the category name</string>
+    <string name="txt_create_category_des_label">Description</string>
+    <string name="txt_create_category_des_placeholder">Enter the category description</string>
+    <string name="txt_create_category">Create Category</string>
+    <string name="txt_edit_category">Edit Category</string>
     <!--  content description  -->
-    <string name="des_btn_back">뒤로가기</string>
-    <string name="des_btn_settings">카테고리 설정</string>
-    <string name="des_fab_create_quiz">퀴즈 생성</string>
-    <string name="des_quiz_item_image">퀴즈 이미지</string>
-    <string name="des_category_image">카테고리 이미지</string>
-    <string name="txt_category_delete">카테고리 제거</string>
-    <string name="txt_category_fix">수정</string>
+    <string name="des_btn_back">Back</string>
+    <string name="des_btn_settings">Category Settings</string>
+    <string name="des_fab_create_quiz">Create Quiz</string>
+    <string name="des_quiz_item_image">Quiz Image</string>
+    <string name="des_category_image">Category Image</string>
+    <string name="txt_category_delete">Delete Category</string>
+    <string name="txt_category_fix">Edit</string>
 </resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_notification_item_invite_message">您收到了一个小组邀请！组员正在等您。</string>
+    <string name="txt_notification_item_reject">拒绝</string>
+    <string name="txt_notification_item_message">接受</string>
+    <string name="txt_notification_top_app_bar_title">通知</string>
+    <string name="txt_notification_top_app_bar_navigation_icon">返回</string>
+    <string name="des_btn_notification">通知</string>
+    <string name="des_fab_create_study">创建学习小组</string>
+    <string name="des_img_study_image">学习小组图片</string>
+    <string name="des_btn_study_menu">学习小组菜单</string>
+    <string name="txt_study_user_count">人数: %1$s</string>
+    <string name="top_app_bar_nav_btn">我的页面图标按钮</string>
+    <string name="txt_main_menu_edit">修正</string>
+    <string name="txt_main_menu_logout">退出</string>
+    <string name="txt_study_group_menu_edit">修正</string>
+    <string name="txt_study_group_menu_delete">删除学习小组</string>
+    <string name="txt_study_group_menu_leave">退出</string>
+    <string-array name="main_tabs_titles">
+        <item>参与小组</item>
+        <item>档案</item>
+    </string-array>
+</resources>

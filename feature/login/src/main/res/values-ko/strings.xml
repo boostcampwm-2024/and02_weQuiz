@@ -1,4 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--  로그인  -->
+    <string name="txt_introduce_app1">우리 같이 퀴즈 풀지 않을래??</string>
+    <string name="txt_introduce_app2">We Quiz~?🍦🍨</string>
+    <string name="txt_login_email_label">이메일</string>
+    <string name="txt_login_password_label">패스워드</string>
+    <string name="txt_login_email_placeholder">이메일을 입력해주세요.</string>
+    <string name="txt_login_password_placeholder">패스워드를 입력해주세요.</string>
+    <string name="btn_sign_in">로그인</string>
+    <string name="btn_sign_up">회원가입</string>
+    <string name="txt_experience">체험하기</string>
+    <string name="des_ic_visible_password">패스워드 보기</string>
+    <string name="des_ic_invisible_password">패스워드 감추기</string>
+    <!--  회원가입  -->
+    <string name="top_app_bar_sign_up">회원가입</string>
+    <string name="txt_sign_up_email_label">이메일</string>
+    <string name="txt_sign_up_password_label">패스워드</string>
+    <string name="txt_sign_up_nick_name">닉네임</string>
+    <string name="txt_sign_up_email_placeholder">이메일을 입력해주세요.</string>
+    <string name="txt_sign_up_password_placeholder">패스워드를 입력해주세요.</string>
+    <string name="txt_sign_up_nick_name_placeholder">닉네임을 입력해주세요.</string>
+    <string name="btn_sign_up_cancel">회원탈퇴</string>
+    <string name="des_ic_back">뒤로가기</string>
+    <string name="des_img_photo_picker">사진 추가</string>
+    <string name="btn_sign_up_edit_user">회원 정보 수정</string>
+    <string name="top_app_bar_edit_user">회원 수정</string>
     <string name="txt_user_name_error_message">10자 이하로 입력해주세요.</string>
+    <!--  content description  -->
+    <string name="des_clear_text">텍스트 지우기</string>
+    <string name="des_google_login">구글 로그인</string>
+    <!--  error   -->
+    <string name="error_login">로그인에 실패했습니다.</string>
+    <string name="error_google_oauth">구글 정보 연동에 실패했습니다.</string>
+    <string name="error_sign_up">회원가입에 실패했습니다.</string>
+    <string name="error_photo_picker">사진 로드에 실패했습니다.</string>
+    <string name="error_upload_image">사진 업로드에 실패했습니다.</string>
+    <!--  web client id  -->
+    <string name="web_client_id"> 735245765717-mdpc20cc8rs37lmfh8qfnqn0h814ldf2.apps.googleusercontent.com</string>
 </resources>

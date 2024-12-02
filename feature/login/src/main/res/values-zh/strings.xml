@@ -1,4 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Login -->
+    <string name="txt_introduce_app1">我们一起答题吧？</string>
+    <string name="txt_introduce_app2">We Quiz~?🍦🍨</string>
+    <string name="txt_login_email_label">邮箱</string>
+    <string name="txt_login_password_label">密码</string>
+    <string name="txt_login_email_placeholder">请输入您的邮箱。</string>
+    <string name="txt_login_password_placeholder">请输入您的密码。</string>
+    <string name="btn_sign_in">登录</string>
+    <string name="btn_sign_up">注册</string>
+    <string name="txt_experience">体验一下</string>
+    <string name="des_ic_visible_password">显示密码</string>
+    <string name="des_ic_invisible_password">隐藏密码</string>
+    <!-- Sign Up -->
+    <string name="top_app_bar_sign_up">注册</string>
+    <string name="txt_sign_up_email_label">邮箱</string>
+    <string name="txt_sign_up_password_label">密码</string>
+    <string name="txt_sign_up_nick_name">昵称</string>
+    <string name="txt_sign_up_email_placeholder">请输入您的邮箱。</string>
+    <string name="txt_sign_up_password_placeholder">请输入您的密码。</string>
+    <string name="txt_sign_up_nick_name_placeholder">请输入您的昵称。</string>
+    <string name="btn_sign_up_cancel">注销会员</string>
+    <string name="des_ic_back">返回</string>
+    <string name="des_img_photo_picker">添加照片</string>
+    <string name="btn_sign_up_edit_user">编辑用户信息</string>
+    <string name="top_app_bar_edit_user">编辑用户信息</string>
     <string name="txt_user_name_error_message">请输入10字以下。</string>
+    <!-- Content Description -->
+    <string name="des_clear_text">清除文本</string>
+    <string name="des_google_login">使用谷歌登录</string>
+    <!-- Error -->
+    <string name="error_login">登录失败。</string>
+    <string name="error_google_oauth">谷歌账户关联失败。</string>
+    <string name="error_sign_up">注册会员失败。</string>
+    <string name="error_photo_picker">加载照片失败。</string>
+    <string name="error_upload_image">上传照片失败。</string>
+    <!-- Web Client ID -->
+    <string name="web_client_id">735245765717-mdpc20cc8rs37lmfh8qfnqn0h814ldf2.apps.googleusercontent.com</string>
 </resources>

@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="txt_notification_item_invite_message">그룹 초대가 왔어요! 그룹원이 회원님을 기다립니다.</string>
-    <string name="txt_notification_item_reject">거절</string>
-    <string name="txt_notification_item_message">수락</string>
-    <string name="txt_notification_top_app_bar_title">알림</string>
-    <string name="txt_notification_top_app_bar_navigation_icon">뒤로 가기</string>
-    <string name="des_btn_notification">알림</string>
-    <string name="des_fab_create_study">스터디 생성</string>
-    <string name="des_img_study_image">스터디 이미지</string>
-    <string name="des_btn_study_menu">스터디 메뉴</string>
-    <string name="txt_study_user_count">인원: %1$s명</string>
-    <string name="top_app_bar_nav_btn">마이 페이지 아이콘 버튼</string>
-    <string name="txt_main_menu_edit">수정</string>
-    <string name="txt_main_menu_logout">로그아웃</string>
-    <string name="txt_study_group_menu_edit">수정</string>
-    <string name="txt_study_group_menu_delete">스터디 제거</string>
-    <string name="txt_study_group_menu_leave">나가기</string>
-    <string name="txt_blank_notification">알림함이 텅 비었어요!</string>
+    <string name="txt_notification_item_invite_message">You have received a group invitation! The members are waiting for you.</string>
+    <string name="txt_notification_item_reject">Reject</string>
+    <string name="txt_notification_item_message">Accept</string>
+    <string name="txt_notification_top_app_bar_title">Notification</string>
+    <string name="txt_notification_top_app_bar_navigation_icon">Go Back</string>
+    <string name="des_btn_notification">Notification</string>
+    <string name="des_fab_create_study">Create Study</string>
+    <string name="des_img_study_image">Study Image</string>
+    <string name="des_btn_study_menu">Study Menu</string>
+    <string name="txt_study_user_count">Members: %1$s</string>
+    <string name="top_app_bar_nav_btn">My Page Icon Button</string>
+    <string name="txt_main_menu_edit">Edit</string>
+    <string name="txt_main_menu_logout">Logout</string>
+    <string name="txt_study_group_menu_edit">Edit</string>
+    <string name="txt_study_group_menu_delete">Delete Study</string>
+    <string name="txt_study_group_menu_leave">Leave</string>
     <string-array name="main_tabs_titles">
-        <item>참여 스터디</item>
-        <item>보관함</item>
+        <item>Joined Studies</item>
+        <item>Archive</item>
     </string-array>
 </resources>

@@ -2,4 +2,23 @@
 <resources>
     <string name="txt_category_name_error_message">请输入20字以下。</string>
     <string name="txt_category_description_error_message">请输入100字以下。</string>
+    <string-array name="quiz_tabs">
+        <item>进行中</item>
+        <item>进展完成</item>
+    </string-array>
+    <string name="txt_create_category_guide">请输入您想添加的\n类别信息！</string>
+    <string name="txt_create_category_name_label">名称</string>
+    <string name="txt_create_category_name_placeholder">请输入类别名称</string>
+    <string name="txt_create_category_des_label">描述</string>
+    <string name="txt_create_category_des_placeholder">请输入类别描述</string>
+    <string name="txt_create_category">创建类别</string>
+    <string name="txt_edit_category">编辑类别</string>
+    <!--  content description  -->
+    <string name="des_btn_back">返回</string>
+    <string name="des_btn_settings">类别设置</string>
+    <string name="des_fab_create_quiz">创建测验</string>
+    <string name="des_quiz_item_image">测验图片</string>
+    <string name="des_category_image">类别图片</string>
+    <string name="txt_category_delete">删除类别</string>
+    <string name="txt_category_fix">修正</string>
 </resources>
