@@ -11,6 +11,8 @@
     <string name="txt_create_category_des_placeholder">카테고리 설명을 입력해주세요</string>
     <string name="txt_create_category">카테고리 생성</string>
     <string name="txt_edit_category">카테고리 수정</string>
+    <string name="txt_category_name_error_message">Please enter 20 characters or less.</string>
+    <string name="txt_category_description_error_message">Please enter 100 characters or less.</string>
     <!--  content description  -->
     <string name="des_btn_back">뒤로가기</string>
     <string name="des_btn_settings">카테고리 설정</string>
