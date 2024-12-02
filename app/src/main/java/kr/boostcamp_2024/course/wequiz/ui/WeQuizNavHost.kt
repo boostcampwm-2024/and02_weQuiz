@@ -54,7 +54,7 @@ fun WeQuizNavHost(
             onCreateStudyButtonClick = navController::navigateCreateStudy,
             onStudyGroupClick = navController::navigateStudy,
             onEditStudyButtonClick = navController::navigateCreateStudy,
-            onEditUserClick = navController::navigationSignUp,
+            onEditUserClick = { userId -> navController.navigationSignUp(null, userId) },
             onLoginOutClick = navController::navigationLogin,
         )
 
