@@ -34,7 +34,7 @@ data class CreateStudyUiState(
     val snackBarMessage: String? = null,
     val loadedMaxUserNum: String = "",
 ) {
-    val canSubmitStudy: Boolean = (name.length in 1..20 && description.length in 1..100 && maxUserNum.isNotBlank() && maxUserNum.toInt() in 2..50)
+    val canSubmitStudy: Boolean = (name.length in 1..20 && description.length in 0..100 && maxUserNum.isNotBlank() && maxUserNum.toInt() in 2..50)
 }
 
 @HiltViewModel
@@ -54,7 +54,7 @@ class CreateStudyViewModel @Inject constructor(
             loadStudyGroup()
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), CreateStudyUiState())
 
-    fun loadCurrentUserId() {
+    private fun loadCurrentUserId() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 

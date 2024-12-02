@@ -38,7 +38,7 @@ data class CreateQuizUiState(
     val selectedQuizTypeIndex: Int = 0,
 ) {
     val isCreateQuizButtonEnabled: Boolean
-        get() = quizTitle.isNotBlank() && (isRealtimeQuiz || (quizDate.isNotBlank() && quizSolveTime > 0))
+        get() = quizTitle.length in 1..20 && quizDescription.length in 0..100 && (isRealtimeQuiz || (quizDate.isNotBlank() && quizSolveTime > 0))
     val isRealtimeQuiz: Boolean
         get() = selectedQuizTypeIndex == 1
 }
