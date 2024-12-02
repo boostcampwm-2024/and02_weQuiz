@@ -16,14 +16,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.domain.model.Notification
 import kr.boostcamp_2024.course.domain.model.NotificationWithGroupInfo
+import kr.boostcamp_2024.course.main.R
 import kr.boostcamp_2024.course.main.component.NotificationItem
 import kr.boostcamp_2024.course.main.component.NotificationTopAppBar
 import kr.boostcamp_2024.course.main.viewmodel.NotificationViewModel
@@ -72,9 +72,9 @@ fun NotificationScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
-                Text(text = "알림함이 텅 비었어요!")
+                Text(text = stringResource(R.string.txt_blank_notification))
             }
         } else {
             LazyColumn(

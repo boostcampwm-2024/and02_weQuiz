@@ -16,6 +16,7 @@
     <string name="txt_study_group_menu_edit">수정</string>
     <string name="txt_study_group_menu_delete">스터디 제거</string>
     <string name="txt_study_group_menu_leave">나가기</string>
+    <string name="txt_blank_notification">알림함이 텅 비었어요!</string>
     <string-array name="main_tabs_titles">
         <item>참여 스터디</item>
         <item>보관함</item>
