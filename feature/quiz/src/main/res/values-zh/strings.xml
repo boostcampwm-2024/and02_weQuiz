@@ -2,4 +2,7 @@
 <resources>
     <string name="txt_quiz_title_error_message">请输入20字以下。</string>
     <string name="txt_quiz_description_error_message">请输入100字以下。</string>
+    <string name="txt_question_title_error_message">请输入50字以下。</string>
+    <string name="txt_question_description_error_message">请输入100字以下。</string>
+    <string name="txt_question_solution_error_message">请输入200字以下。</string>
 </resources>
