@@ -13,6 +13,7 @@ import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
+import kr.boostcamp_2024.course.domain.repository.GuideRepository
 import kr.boostcamp_2024.course.domain.repository.NotificationRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
@@ -29,6 +30,8 @@ data class MainUiState(
     val errorMessage: String? = null,
     val isLogout: Boolean = false,
     val notificationNumber: Int = 0,
+    val isDialog: Boolean = false,
+    val isGuideShown: Boolean = true,
 )
 
 @HiltViewModel
@@ -42,14 +45,18 @@ class MainViewModel @Inject constructor(
     private val userOmrRepository: UserOmrRepository,
     private val notificationRepository: NotificationRepository,
     private val storageRepository: StorageRepository,
+    private val guideRepository: GuideRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<MainUiState> = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
+    init {
+        checkGuideStatus()
+    }
+
     fun loadCurrentUser() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-
             authRepository.getUserKey()
                 .onSuccess { currentUserId ->
                     userRepository.getUser(currentUserId)
@@ -82,6 +89,27 @@ class MainViewModel @Inject constructor(
                 Log.e("MainViewModel", "Failed to load notification numbers", it)
                 _uiState.update { it.copy(notificationNumber = 0, isLoading = false, errorMessage = "알림 수 로드에 실패했습니다.") }
             }
+        }
+    }
+
+    private fun checkGuideStatus() {
+        viewModelScope.launch {
+            guideRepository.getGuideStatus()
+                .onSuccess { isGuideShown ->
+                    if (!isGuideShown) {
+                        _uiState.update { it.copy(isGuideShown = false) }
+                    }
+                }
+                .onFailure { error ->
+                    Log.e("MainViewModel", "Failed to get guide status", error)
+                }
+        }
+    }
+
+    fun onGuideShown() {
+        viewModelScope.launch {
+            guideRepository.setGuideStatus(true)
+            _uiState.update { it.copy(isGuideShown = true) }
         }
     }
 
@@ -309,4 +337,13 @@ class MainViewModel @Inject constructor(
     fun shownErrorMessage() {
         _uiState.update { it.copy(errorMessage = null) }
     }
+
+    fun showDialog() {
+        _uiState.update { it.copy(isDialog = true) }
+    }
+
+    fun closeDialog() {
+        _uiState.update { it.copy(isDialog = false) }
+    }
+
 }
