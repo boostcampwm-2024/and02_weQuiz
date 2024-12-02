@@ -132,6 +132,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updateUser() {
+        setLoading(true)
         viewModelScope.launch {
             if (userId != null) {
                 val imageByteArray = withContext(Dispatchers.IO) {
@@ -145,13 +146,14 @@ class SignUpViewModel @Inject constructor(
                 )
                 userRepository.updateUser(userId, userCreationInfo).onSuccess {
                     _signUpUiState.update {
-                        it.copy(isSubmitSuccess = true)
+                        it.copy(
+                            isSubmitSuccess = true,
+                            isLoading = false,
+                        )
                     }
                 }.onFailure {
                     Log.e("MainViewModel", "Failed to update user")
-                    _signUpUiState.update {
-                        it.copy(isSubmitSuccess = false)
-                    }
+                    setLoading(false)
                 }
             }
         }

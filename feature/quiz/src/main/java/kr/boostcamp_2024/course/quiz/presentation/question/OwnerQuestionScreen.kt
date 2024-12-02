@@ -68,6 +68,7 @@ fun OwnerQuestionScreen(
 
     OwnerQuestionScreen(
         quiz = uiState.quiz,
+        isNextButtonEnabled = !uiState.isQuizFinished,
         currentPage = uiState.currentPage,
         choiceQuestions = uiState.questions,
         ownerName = uiState.ownerName ?: "",
@@ -99,6 +100,7 @@ fun OwnerQuestionScreen(
 @Composable
 fun OwnerQuestionScreen(
     quiz: RealTimeQuiz?,
+    isNextButtonEnabled: Boolean,
     currentPage: Int,
     choiceQuestions: List<Question?>,
     ownerName: String,
@@ -209,6 +211,7 @@ fun OwnerQuestionScreen(
                     if (currentPage > 0) onPreviousButtonClick()
                 },
                 setButtonsHeight = { buttonsHeight = it },
+                isNextButtonEnabled = isNextButtonEnabled,
             )
         }
 
@@ -273,6 +276,7 @@ fun RealTimeQuizWithOwnerButtons(
     onNextButtonClick: () -> Unit,
     onPrevButtonClick: () -> Unit,
     setButtonsHeight: (IntSize) -> Unit,
+    isNextButtonEnabled: Boolean,
 ) {
     Column(
         modifier = modifier.onGloballyPositioned { setButtonsHeight(it.size) },
@@ -280,6 +284,7 @@ fun RealTimeQuizWithOwnerButtons(
         Button(
             onClick = onNextButtonClick,
             modifier = Modifier.fillMaxWidth(),
+            enabled = isNextButtonEnabled,
         ) {
             Text(
                 text = nextButtonText,

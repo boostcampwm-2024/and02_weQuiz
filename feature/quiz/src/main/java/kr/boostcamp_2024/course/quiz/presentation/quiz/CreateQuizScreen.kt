@@ -69,7 +69,7 @@ fun CreateQuizScreen(
         quizDescription = uiState.value.quizDescription,
         quizDate = uiState.value.quizDate,
         quizSolveTime = uiState.value.quizSolveTime,
-        createQuizButtonEnabled = uiState.value.isCreateQuizButtonEnabled,
+        createQuizButtonEnabled = uiState.value.isCreateQuizButtonEnabled && !uiState.value.isLoading,
         isEditing = uiState.value.isEditing,
         selectedQuizTypeIndex = uiState.value.selectedQuizTypeIndex,
         snackBarHostState = snackBarHostState,

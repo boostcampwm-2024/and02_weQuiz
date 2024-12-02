@@ -55,7 +55,7 @@ fun CreateStudyScreen(
         titleText = uiState.name,
         descriptionText = uiState.description,
         groupMemberNumber = uiState.maxUserNum,
-        canSubmitStudy = uiState.canSubmitStudy,
+        canSubmitStudy = uiState.canSubmitStudy && !uiState.isLoading,
         snackBarHostState = snackBarHostState,
         onNavigationButtonClick = onNavigationButtonClick,
         onTitleTextChange = viewmodel::onNameChanged,

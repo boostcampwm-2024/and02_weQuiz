@@ -141,7 +141,7 @@ private fun SignupScreen(
             }
             item {
                 SignUpButtons(
-                    isSignUpValid = uiState.isSignUpButtonEnabled,
+                    isSignUpValid = uiState.isSignUpButtonEnabled && !uiState.isLoading,
                     onSubmitButtonClick = if (uiState.isEditMode) onEditButtonClick else onSignUpButtonClick,
                     isEditMode = uiState.isEditMode,
                 )

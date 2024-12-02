@@ -1,13 +1,11 @@
 package kr.boostcamp_2024.course.quiz.viewmodel
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +16,6 @@ import kr.boostcamp_2024.course.domain.model.ChoiceQuestionCreationInfo
 import kr.boostcamp_2024.course.domain.repository.AiRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
-import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.navigation.CreateQuestionRoute
 import javax.inject.Inject
 
@@ -76,7 +73,6 @@ class CreateQuestionViewModel @Inject constructor(
     private val questionRepository: QuestionRepository,
     private val quizRepository: QuizRepository,
     private val aiRepository: AiRepository,
-    @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val quizId: String = savedStateHandle.toRoute<CreateQuestionRoute>().quizId
@@ -211,7 +207,7 @@ class CreateQuestionViewModel @Inject constructor(
                         description = it.description,
                         solution = it.solution,
                         answer = getAnswerIndex(it.answer, it.choices),
-                        choices = List(4) { context.getString(R.string.txt_create_question_ai_choice_error) },
+                        choices = List(4) { "AI가 보기를 찾지 못했습니다." },
                     )
                 } else {
                     ChoiceQuestionCreationInfo(
@@ -231,9 +227,9 @@ class CreateQuestionViewModel @Inject constructor(
                     )
                 }
             }.onFailure {
-                setNewSnackBarMessage("AI 추천 문제 가져오기에 실패했습니다. 다시 시도해주세요!")
-                Log.d("CreateQuestionViewModel", "AI 추천 문제 가져오기 실패")
                 _createQuestionUiState.update { it.copy(isLoading = false) }
+                setNewSnackBarMessage("AI 추천 문제 가져오기에 실패했습니다. 다시 시도해주세요!")
+                Log.e("CreateQuestionViewModel", "AI 추천 문제 가져오기 실패")
             }
 
         }
