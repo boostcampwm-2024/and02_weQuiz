@@ -28,6 +28,7 @@ data class MainUiState(
     val studyGroups: List<StudyGroup> = emptyList(),
     val errorMessage: String? = null,
     val isLogout: Boolean = false,
+    val notificationNumber: Int = 0,
 )
 
 @HiltViewModel
@@ -51,7 +52,6 @@ class MainViewModel @Inject constructor(
 
             authRepository.getUserKey()
                 .onSuccess { currentUserId ->
-
                     userRepository.getUser(currentUserId)
                         .onSuccess { currentUser ->
                             loadStudyGroups(currentUser)
@@ -65,12 +65,23 @@ class MainViewModel @Inject constructor(
                                 )
                             }
                         }
+                    loadNotifications(currentUserId)
                 }
                 .onFailure {
                     Log.e("MainViewModel", "Failed to load current user", it)
                     _uiState.update { it.copy(isLoading = false, errorMessage = "로그인한 유저가 없습니다.") }
                 }
+        }
+    }
 
+    private fun loadNotifications(userId: String) {
+        viewModelScope.launch {
+            notificationRepository.getNotifications(userId).onSuccess { notificationList ->
+                _uiState.update { it.copy(notificationNumber = notificationList.size, isLoading = false) }
+            }.onFailure { it ->
+                Log.e("MainViewModel", "Failed to load notification numbers", it)
+                _uiState.update { it.copy(notificationNumber = 0, isLoading = false, errorMessage = "알림 수 로드에 실패했습니다.") }
+            }
         }
     }
 
