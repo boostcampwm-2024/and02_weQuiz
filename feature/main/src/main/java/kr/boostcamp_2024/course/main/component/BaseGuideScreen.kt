@@ -69,4 +69,3 @@ fun BaseGuideScreen(onGuideShown: () -> Unit) {
         }
     }
 }
-

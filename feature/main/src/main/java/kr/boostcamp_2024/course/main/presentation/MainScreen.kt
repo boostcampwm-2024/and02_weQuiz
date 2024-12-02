@@ -139,8 +139,7 @@ fun MainScreen(
     onEditUserClick: (String?) -> Unit,
     onLogOutClick: () -> Unit,
     showDialog: () -> Unit,
-
-    ) {
+) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     var isExpanded by remember { mutableStateOf(false) }
     var state by rememberSaveable { mutableIntStateOf(0) }

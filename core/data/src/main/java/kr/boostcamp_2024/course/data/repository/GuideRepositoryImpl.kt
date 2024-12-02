@@ -9,11 +9,9 @@ import kotlinx.coroutines.flow.map
 import kr.boostcamp_2024.course.domain.repository.GuideRepository
 import javax.inject.Inject
 
-
 class GuideRepositoryImpl @Inject constructor(
     private val weQuizDataStore: DataStore<Preferences>,
 ) : GuideRepository {
-
     override suspend fun getGuideStatus(): Result<Boolean> =
         runCatching {
             val guideStatus = weQuizDataStore.data.map { preferences ->
@@ -32,4 +30,3 @@ class GuideRepositoryImpl @Inject constructor(
         private val GUIDE_STATUS_KEY = booleanPreferencesKey("guide_status")
     }
 }
-
