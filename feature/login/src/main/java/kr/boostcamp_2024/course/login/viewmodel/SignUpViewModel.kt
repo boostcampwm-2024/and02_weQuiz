@@ -49,7 +49,7 @@ data class SignUpUiState(
     val snackBarMessage: Int? = null,
 ) {
     val isSignUpButtonEnabled: Boolean = userSubmitInfo.email.isNotBlank() &&
-        userSubmitInfo.name.isNotBlank()
+        userSubmitInfo.name.length in 1..20
 }
 
 @HiltViewModel

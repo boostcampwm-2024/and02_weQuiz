@@ -34,7 +34,7 @@ data class CreateStudyUiState(
     val snackBarMessage: String? = null,
     val loadedMaxUserNum: String = "",
 ) {
-    val canSubmitStudy: Boolean = (name.isNotBlank() && maxUserNum.isNotBlank() && maxUserNum.toInt() in 2..50)
+    val canSubmitStudy: Boolean = (name.length in 1..20 && description.length in 1..100 && maxUserNum.isNotBlank() && maxUserNum.toInt() in 2..50)
 }
 
 @HiltViewModel
