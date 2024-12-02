@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_user_name_error_message">请输入10字以下。</string>
+</resources>

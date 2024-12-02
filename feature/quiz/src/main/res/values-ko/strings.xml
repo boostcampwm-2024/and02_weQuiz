@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_quiz_title_error_message">20자 이하로 입력해주세요.</string>
+    <string name="txt_quiz_description_error_message">100자 이하로 입력해주세요.</string>
+    <string name="txt_question_title_error_message">50자 이하로 입력해주세요.</string>
+    <string name="txt_question_description_error_message">100자 이하로 입력해주세요.</string>
+    <string name="txt_question_solution_error_message">200자 이하로 입력해주세요.</string>
+</resources>

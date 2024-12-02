@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_study_group_name_error_message">20자 이하로 입력해주세요.</string>
+    <string name="txt_study_group_description_error_message">100자 이하로 입력해주세요.</string>
+</resources>

@@ -47,8 +47,9 @@ data class CreateQuestionUiState(
         BlankQuestionItem.Text("텍스트"),
     ),
 ) {
-    val isCreateQuestionValid: Boolean = choiceQuestionCreationInfo.title.isNotBlank() &&
-        choiceQuestionCreationInfo.description.isNotBlank() &&
+    val isCreateQuestionValid: Boolean = choiceQuestionCreationInfo.title.length in 1..50 &&
+        choiceQuestionCreationInfo.description.length in 1..100 &&
+        choiceQuestionCreationInfo.solution?.length in 0..200 &&
         choiceQuestionCreationInfo.choices.all {
             it.isNotBlank()
         } &&
@@ -59,7 +60,8 @@ data class CreateQuestionUiState(
             (it is BlankQuestionItem.Text && it.text.isNotBlank()) ||
                 (it is BlankQuestionItem.Blank && it.text.isNotBlank())
         } &&
-        choiceQuestionCreationInfo.title.isNotBlank()
+        choiceQuestionCreationInfo.title.length in 1..50 &&
+        choiceQuestionCreationInfo.solution?.length in 0..200
 
     val isCreateBlankButtonValid: Boolean = items.count { it is BlankQuestionItem.Blank } < 5
 
