@@ -1,70 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="bottom_nav_btn_category">카테고리</string>
-    <string name="bottom_nav_btn_group">그룹원</string>
-    <string name="property_tab_category_text">카테고리</string>
-    <string name="bottom_nav_icon_category">카테고리</string>
-    <string name="bottom_nav_icon_group">그룹원</string>
-    <string name="btn_remove_group">제거</string>
-    <string name="property_tab_group_text">그룹원</string>
-    <string name="top_app_bar_create_study">스터디 생성</string>
-    <string name="txt_create_study_description_label">설명</string>
-    <string name="txt_create_study_description_placeholder">스터디 설명을 입력해주세요.</string>
-    <string name="txt_members_drop_down_menu">최대 인원은 몇 명인가요?</string>
-    <string name="txt_members_drop_down_menu_label">인원</string>
-    <string name="txt_study_creation_button">스터디 생성</string>
-    <string name="des_create_study_character">스터디 생성 설명 캐릭터</string>
-    <string name="txt_create_study_chat_bubble_first">스터디를 추가하시군요! 👏</string>
-    <string name="txt_create_study_chat_bubble_second">추가할 스터디에 대한\n정보를 입력해주세요!</string>
-    <string name="txt_create_study_title_text_field_label">제목</string>
-    <string name="txt_create_study_title_text_field_placeholder">스터디 제목을 입력해주세요.</string>
-    <string name="des_clear_text">텍스트 지우기</string>
-    <string name="txt_create_study_top_app_bar">스터디 생성</string>
-    <string name="dialog_create_group_title">그룹원의 이메일을 입력해주세요!\n초대 메일이 갑니다!</string>
-    <string name="btn_dialog_create_group_confirm">초대</string>
-    <string name="btn_dialog_create_group_dismiss">취소</string>
-    <string name="textfield_label_create_group">그룹원 이메일</string>
-    <string name="textfield_placeholder_create_group">그룹원 이메일을 입력주세요.</string>
-    <string name="top_bar_detail_study_image">배경 이미지</string>
-    <string name="btn_detail_study_top_bar_back">뒤로 가기 아이콘 버튼</string>
-    <string name="btn_top_bar_detail_study_setting">설정 아이콘 버튼</string>
-    <string name="assist_chip_top_bar_detail_study">그룹원 수 칩</string>
-    <string name="des_icon_bottom_nav_detail_study">스터디 상세 화면 네비게이션 아이콘</string>
-    <string name="des_study_detail_category_item_profile">스터디 상세 화면 카테고리 프로필 사진</string>
-    <string name="des_study_detail_group_profile">스터디 상세 화면 그룹원 프로필</string>
-    <string name="des_detail_study_remove_group_btn">스터디 상세 화면 그룹원 제거 버튼</string>
-    <string name="assist_chip_detail_study_group_member_number">%1$s명 / %2$s명</string>
-    <string name="txt_detail_study_no_category_description">내용 없음</string>
-    <string name="txt_detail_study_no_category_owner">비회원</string>
-    <string name="txt_study_group_menu_edit">수정</string>
-    <string name="txt_study_group_menu_delete">스터디 제거</string>
-    <string name="txt_study_group_menu_leave">나가기</string>
-    <string name="error_message_load_study_group">스터디 그룹 로드에 실패했습니다.</string>
-    <string name="error_message_load_categories">카테고리 로드에 실패했습니다.</string>
-    <string name="error_message_load_users">유저 로드에 실패했습니다.</string>
-    <string name="error_message_load_owner">카테고리 생성자 로드에 실패했습니다.</string>
-    <string name="btn_setting_snack_bar_message">추후 제공될 기능입니다.</string>
-    <string name="error_message_delete_users_group">유저의 그룹 삭제가 실패했습니다.</string>
-    <string name="error_message_delete_study_group_member">스터디 그룹의 멤버 삭제가 실패했습니다.</string>
-    <string name="error_message_add_notification">알림 추가가 실패했습니다.</string>
-    <string name="error_message_find_user">유저 조회에 실패했습니다.</string>
-    <string name="error_message_delete_study_group">스터디 그룹에서 나가지 못했습니다.</string>
-    <string name="txt_create_study_group_member_number_label">인원</string>
-    <string name="txt_create_study_group_member_number_placeholder">최대 인원은 몇 명인가요?</string>
-    <string name="txt_create_study_group_number_error_message">2에서 50 사이의 정수를 입력해주세요.</string>
-    <string name="txt_edit_study_top_app_bar">스터디 수정</string>
-    <string name="txt_study_edition_button">스터디 수정</string>
-    <string name="des_study_group_image">스터디 배경 이미지</string>
+    <string name="bottom_nav_btn_category">Category</string>
+    <string name="bottom_nav_btn_group">Members</string>
+    <string name="property_tab_category_text">Category</string>
+    <string name="bottom_nav_icon_category">Category</string>
+    <string name="bottom_nav_icon_group">Members</string>
+    <string name="btn_remove_group">Remove</string>
+    <string name="property_tab_group_text">Members</string>
+    <string name="top_app_bar_create_study">Create Study</string>
+    <string name="txt_create_study_description_label">Description</string>
+    <string name="txt_create_study_description_placeholder">Enter the study description.</string>
+    <string name="txt_members_drop_down_menu">What is the maximum number of members?</string>
+    <string name="txt_members_drop_down_menu_label">Members</string>
+    <string name="txt_study_creation_button">Create Study</string>
+    <string name="des_create_study_character">Character explaining study creation</string>
+    <string name="txt_create_study_chat_bubble_first">You\'re adding a study! 👏</string>
+    <string name="txt_create_study_chat_bubble_second">Enter information about the study you want to add!</string>
+    <string name="txt_create_study_title_text_field_label">Title</string>
+    <string name="txt_create_study_title_text_field_placeholder">Enter the study title.</string>
+    <string name="des_clear_text">Clear Text</string>
+    <string name="txt_create_study_top_app_bar">Create Study</string>
+    <string name="dialog_create_group_title">Enter the member\'s email!\nAn invitation will be sent!</string>
+    <string name="btn_dialog_create_group_confirm">Invite</string>
+    <string name="btn_dialog_create_group_dismiss">Cancel</string>
+    <string name="textfield_label_create_group">Member Email</string>
+    <string name="textfield_placeholder_create_group">Enter the member\'s email.</string>
+    <string name="top_bar_detail_study_image">Background Image</string>
+    <string name="btn_detail_study_top_bar_back">Back Icon Button</string>
+    <string name="btn_top_bar_detail_study_setting">Settings Icon Button</string>
+    <string name="assist_chip_top_bar_detail_study">Member Count Chip</string>
+    <string name="des_icon_bottom_nav_detail_study">Study Detail Navigation Icon</string>
+    <string name="des_study_detail_category_item_profile">Study Detail Category Profile Picture</string>
+    <string name="des_study_detail_group_profile">Study Detail Member Profile</string>
+    <string name="des_detail_study_remove_group_btn">Study Detail Member Remove Button</string>
+    <string name="assist_chip_detail_study_group_member_number">%1$s / %2$s members</string>
+    <string name="txt_detail_study_no_category_description">No Content</string>
+    <string name="txt_detail_study_no_category_owner">Non-Member</string>
+    <string name="txt_study_group_menu_edit">Edit</string>
+    <string name="txt_study_group_menu_delete">Delete Study</string>
+    <string name="txt_study_group_menu_leave">Leave</string>
+    <string name="error_message_load_study_group">Failed to load the study group.</string>
+    <string name="error_message_load_categories">Failed to load categories.</string>
+    <string name="error_message_load_users">Failed to load users.</string>
+    <string name="error_message_load_owner">Failed to load the category owner.</string>
+    <string name="btn_setting_snack_bar_message">This feature will be available later.</string>
+    <string name="error_message_delete_users_group">Failed to delete the user\'s group.</string>
+    <string name="error_message_delete_study_group_member">Failed to remove the member from the study group.</string>
+    <string name="error_message_add_notification">Failed to add notification.</string>
+    <string name="error_message_find_user">Failed to find the user.</string>
+    <string name="error_message_delete_study_group">Failed to leave the study group.</string>
+    <string name="txt_create_study_group_member_number_label">Members</string>
+    <string name="txt_create_study_group_member_number_placeholder">What is the maximum number of members?</string>
+    <string name="txt_create_study_group_number_error_message">Enter an integer between 2 and 50.</string>
+    <string name="txt_edit_study_top_app_bar">Edit Study</string>
+    <string name="txt_study_edition_button">Edit Study</string>
+    <string name="des_study_group_image">Study Background Image</string>
     <string-array name="drop_down_menu_options">
-        <item>1명</item>
-        <item>2명</item>
-        <item>3명</item>
-        <item>4명</item>
-        <item>5명</item>
-        <item>6명</item>
-        <item>7명</item>
-        <item>8명</item>
-        <item>9명</item>
-        <item>10명</item>
+        <item>1 person</item>
+        <item>2 people</item>
+        <item>3 people</item>
+        <item>4 people</item>
+        <item>5 people</item>
+        <item>6 people</item>
+        <item>7 people</item>
+        <item>8 people</item>
+        <item>9 people</item>
+        <item>10 people</item>
     </string-array>
 </resources>
