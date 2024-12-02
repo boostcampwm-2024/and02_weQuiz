@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="quiz_tabs">
+        <item>진행 중</item>
+        <item>진행 완료</item>
+    </string-array>
+    <string name="txt_create_category_guide">추가할 카테고리에 대한\n정보를 입력해주세요!</string>
+    <string name="txt_create_category_name_label">이름</string>
+    <string name="txt_create_category_name_placeholder">카테고리 이름을 입력해주세요</string>
+    <string name="txt_create_category_des_label">설명</string>
+    <string name="txt_create_category_des_placeholder">카테고리 설명을 입력해주세요</string>
+    <string name="txt_create_category">카테고리 생성</string>
+    <string name="txt_edit_category">카테고리 수정</string>
+    <!--  content description  -->
+    <string name="des_btn_back">뒤로가기</string>
+    <string name="des_btn_settings">카테고리 설정</string>
+    <string name="des_fab_create_quiz">퀴즈 생성</string>
+    <string name="des_quiz_item_image">퀴즈 이미지</string>
+    <string name="des_category_image">카테고리 이미지</string>
+    <string name="txt_category_delete">카테고리 제거</string>
+    <string name="txt_category_fix">수정</string>
+</resources>

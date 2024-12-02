@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bottom_nav_btn_category">类别</string>
+    <string name="bottom_nav_btn_group">组员</string>
+    <string name="property_tab_category_text">类别</string>
+    <string name="bottom_nav_icon_category">类别</string>
+    <string name="bottom_nav_icon_group">组员</string>
+    <string name="btn_remove_group">移除</string>
+    <string name="property_tab_group_text">组员</string>
+    <string name="top_app_bar_create_study">创建学习组</string>
+    <string name="txt_create_study_description_label">描述</string>
+    <string name="txt_create_study_description_placeholder">请输入学习组描述。</string>
+    <string name="txt_members_drop_down_menu">最大人数是多少？</string>
+    <string name="txt_members_drop_down_menu_label">人数</string>
+    <string name="txt_study_creation_button">创建学习组</string>
+    <string name="des_create_study_character">创建学习组说明角色</string>
+    <string name="txt_create_study_chat_bubble_first">您要添加一个学习组！ 👏</string>
+    <string name="txt_create_study_chat_bubble_second">请输入要添加的学习组信息！</string>
+    <string name="txt_create_study_title_text_field_label">标题</string>
+    <string name="txt_create_study_title_text_field_placeholder">请输入学习组标题。</string>
+    <string name="des_clear_text">清除文本</string>
+    <string name="txt_create_study_top_app_bar">创建学习组</string>
+    <string name="dialog_create_group_title">请输入组员的电子邮件！\n邀请邮件将被发送！</string>
+    <string name="btn_dialog_create_group_confirm">邀请</string>
+    <string name="btn_dialog_create_group_dismiss">取消</string>
+    <string name="textfield_label_create_group">组员电子邮件</string>
+    <string name="textfield_placeholder_create_group">请输入组员电子邮件。</string>
+    <string name="top_bar_detail_study_image">背景图片</string>
+    <string name="btn_detail_study_top_bar_back">返回按钮图标</string>
+    <string name="btn_top_bar_detail_study_setting">设置按钮图标</string>
+    <string name="assist_chip_top_bar_detail_study">组员数量标签</string>
+    <string name="des_icon_bottom_nav_detail_study">学习组详情页面导航图标</string>
+    <string name="des_study_detail_category_item_profile">学习组详情页面类别头像</string>
+    <string name="des_study_detail_group_profile">学习组详情页面组员头像</string>
+    <string name="des_detail_study_remove_group_btn">学习组详情页面移除组员按钮</string>
+    <string name="assist_chip_detail_study_group_member_number">%1$s人 / %2$s人</string>
+    <string name="txt_detail_study_no_category_description">无内容</string>
+    <string name="txt_detail_study_no_category_owner">非会员</string>
+    <string name="txt_study_group_menu_edit">编辑</string>
+    <string name="txt_study_group_menu_delete">移除学习组</string>
+    <string name="txt_study_group_menu_leave">退出</string>
+    <string name="error_message_load_study_group">加载学习组失败。</string>
+    <string name="error_message_load_categories">加载类别失败。</string>
+    <string name="error_message_load_users">加载用户失败。</string>
+    <string name="error_message_load_owner">加载类别创建者失败。</string>
+    <string name="btn_setting_snack_bar_message">此功能即将推出。</string>
+    <string name="error_message_delete_users_group">移除用户组失败。</string>
+    <string name="error_message_delete_study_group_member">移除学习组成员失败。</string>
+    <string name="error_message_add_notification">添加通知失败。</string>
+    <string name="error_message_find_user">查询用户失败。</string>
+    <string name="error_message_delete_study_group">无法退出学习组。</string>
+    <string name="txt_create_study_group_member_number_label">人数</string>
+    <string name="txt_create_study_group_member_number_placeholder">最大人数是多少？</string>
+    <string name="txt_create_study_group_number_error_message">请输入2到50之间的整数。</string>
+    <string name="txt_edit_study_top_app_bar">编辑学习组</string>
+    <string name="txt_study_edition_button">编辑学习组</string>
+    <string name="des_study_group_image">学习组背景图片</string>
+    <string-array name="drop_down_menu_options">
+        <item>1人</item>
+        <item>2人</item>
+        <item>3人</item>
+        <item>4人</item>
+        <item>5人</item>
+        <item>6人</item>
+        <item>7人</item>
+        <item>8人</item>
+        <item>9人</item>
+        <item>10人</item>
+    </string-array>
+</resources>

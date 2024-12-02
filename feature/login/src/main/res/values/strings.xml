@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="btn_sign_up_edit_user">회원 정보 수정</string>
-    <string name="top_app_bar_edit_user">회원 수정</string>
+    <!-- Login -->
+    <string name="txt_introduce_app1">Shall we solve quizzes together?</string>
+    <string name="txt_introduce_app2">We Quiz~?🍦🍨</string>
+    <string name="txt_login_email_label">Email</string>
+    <string name="txt_login_password_label">Password</string>
+    <string name="txt_login_email_placeholder">Please enter your email.</string>
+    <string name="txt_login_password_placeholder">Please enter your password.</string>
+    <string name="btn_sign_in">Sign In</string>
+    <string name="btn_sign_up">Sign Up</string>
+    <string name="txt_experience">Try Now</string>
+    <string name="des_ic_visible_password">Show Password</string>
+    <string name="des_ic_invisible_password">Hide Password</string>
+    <!-- Sign Up -->
+    <string name="top_app_bar_sign_up">Sign Up</string>
+    <string name="txt_sign_up_email_label">Email</string>
+    <string name="txt_sign_up_password_label">Password</string>
+    <string name="txt_sign_up_nick_name">Nickname</string>
+    <string name="txt_sign_up_email_placeholder">Please enter your email.</string>
+    <string name="txt_sign_up_password_placeholder">Please enter your password.</string>
+    <string name="txt_sign_up_nick_name_placeholder">Please enter your nickname.</string>
+    <string name="btn_sign_up_cancel">Cancel Membership</string>
+    <string name="des_ic_back">Go Back</string>
+    <string name="des_img_photo_picker">Add Photo</string>
+    <string name="btn_sign_up_edit_user">Edit User Info</string>
+    <string name="top_app_bar_edit_user">Edit User Info</string>
+    <!-- Content Description -->
+    <string name="des_clear_text">Clear Text</string>
+    <string name="des_google_login">Login with Google</string>
+    <!-- Error -->
+    <string name="error_login">Failed to login.</string>
+    <string name="error_google_oauth">Failed to link Google account.</string>
+    <string name="error_sign_up">Failed to sign up.</string>
+    <string name="error_photo_picker">Failed to load photo.</string>
+    <string name="error_upload_image">Failed to upload photo.</string>
+    <!-- Web Client ID -->
+    <string name="web_client_id">735245765717-mdpc20cc8rs37lmfh8qfnqn0h814ldf2.apps.googleusercontent.com</string>
 </resources>
