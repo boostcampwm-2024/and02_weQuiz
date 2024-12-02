@@ -14,11 +14,13 @@ import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.BlankQuestion
 import kr.boostcamp_2024.course.domain.model.BlankQuestionManager
 import kr.boostcamp_2024.course.domain.model.Question
+import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.domain.model.UserOmrCreationInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
+import kr.boostcamp_2024.course.domain.repository.UserRepository
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.navigation.QuestionRoute
 import javax.inject.Inject
@@ -26,6 +28,7 @@ import javax.inject.Inject
 data class UserQuestionUiState(
     val quiz: BaseQuiz? = null,
     val questions: List<Question> = emptyList(),
+    val ownerName: String? = null,
     val currentPage: Int = 0,
     val selectedIndexList: List<Any?> = emptyList(),
     val submittedIndexList: List<Any?> = emptyList(),
@@ -46,11 +49,11 @@ class UserQuestionViewModel @Inject constructor(
     private val questionRepository: QuestionRepository,
     private val quizRepository: QuizRepository,
     private val userOmrRepository: UserOmrRepository,
+    private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val quizId = savedStateHandle.toRoute<QuestionRoute>().quizId
-    private val _uiState: MutableStateFlow<UserQuestionUiState> =
-        MutableStateFlow(UserQuestionUiState())
+    private val _uiState: MutableStateFlow<UserQuestionUiState> = MutableStateFlow(UserQuestionUiState())
     val blankQuestionManager = BlankQuestionManager(::setNewBlankContents)
 
     init {
@@ -64,20 +67,36 @@ class UserQuestionViewModel @Inject constructor(
             loadCurrentUserId()
 
             _uiState.update { it.copy(isLoading = true) }
-            quizRepository.getQuiz(quizId)
-                .onSuccess { quiz ->
-                    _uiState.update { it.copy(isLoading = false, quiz = quiz) }
-                    loadQuestions(quiz.questions)
+            quizRepository.getQuiz(quizId).onSuccess { quiz ->
+                _uiState.update { it.copy(isLoading = false, quiz = quiz) }
+                loadQuestions(quiz.questions)
+                if (quiz is RealTimeQuiz) {
+                    getQuizOwnerName(quiz.ownerId)
                 }
-                .onFailure {
-                    Log.e("QuestionViewModel", "퀴즈 로드 실패", it)
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessageId = R.string.err_load_quiz,
-                        )
-                    }
+            }.onFailure {
+                Log.e("QuestionViewModel", "퀴즈 로드 실패", it)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessageId = R.string.err_load_quiz,
+                    )
                 }
+            }
+        }
+    }
+
+    private fun getQuizOwnerName(ownerId: String) {
+        viewModelScope.launch {
+            userRepository.getUser(ownerId).onSuccess { user ->
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        ownerName = user.name,
+                    )
+                }
+            }.onFailure {
+                Log.e("OwnerQuestionViewModel", "Failed to get quiz owner name", it)
+                _uiState.update { it.copy(errorMessageId = R.string.err_load_owner_name) }
+            }
         }
     }
 
@@ -86,48 +105,35 @@ class UserQuestionViewModel @Inject constructor(
             _uiState.update { currentState ->
                 currentState.copy(isLoading = true)
             }
-            questionRepository.getQuestions(questionIds)
-                .onSuccess { questions ->
-                    val baseSelectedList = questions.map {
-                        if (it is BlankQuestion) {
-                            mapOf<Int, String?>()
-                        } else {
-                            -1
-                        }
-                    }
-                    _uiState.update { currentState ->
+            questionRepository.getQuestions(questionIds).onSuccess { questions ->
 
-                        currentState.copy(
-                            questions = questions,
-                            selectedIndexList = baseSelectedList,
-                            submittedIndexList = baseSelectedList,
-                            isLoading = false,
-                        )
-                    }
-                    updatePageAndSubmitByOwner()
+                _uiState.update { currentState ->
+
+                    currentState.copy(
+                        questions = questions,
+                    )
                 }
-                .onFailure {
-                    Log.e("QuestionViewModel", "문제 로드 실패", it)
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessageId = R.string.err_load_questions,
-                        )
-                    }
+                updatePageAndSubmitByOwner()
+            }.onFailure {
+                Log.e("QuestionViewModel", "문제 로드 실패", it)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessageId = R.string.err_load_questions,
+                    )
                 }
+            }
         }
     }
 
     private fun loadCurrentUserId() {
         viewModelScope.launch {
-            authRepository.getUserKey()
-                .onSuccess { currentUser ->
-                    _uiState.update { it.copy(currentUserId = currentUser) }
-                }
-                .onFailure {
-                    Log.e("MainViewModel", "Failed to load current user", it)
-                    _uiState.update { it.copy(errorMessageId = R.string.err_load_current_user) }
-                }
+            authRepository.getUserKey().onSuccess { currentUser ->
+                _uiState.update { it.copy(currentUserId = currentUser) }
+            }.onFailure {
+                Log.e("MainViewModel", "Failed to load current user", it)
+                _uiState.update { it.copy(errorMessageId = R.string.err_load_current_user) }
+            }
         }
     }
 
@@ -159,23 +165,21 @@ class UserQuestionViewModel @Inject constructor(
 
     private fun updatePageAndSubmitByOwner() {
         viewModelScope.launch {
-            quizRepository.observeRealTimeQuiz(quizId)
-                .collect { result ->
-                    result
-                        .onSuccess { quiz ->
-                            _uiState.update {
-                                setNewBlankQuestionManager(quiz.currentQuestion)
-                                it.copy(
-                                    currentPage = quiz.currentQuestion,
-                                    isSubmitted = false,
-                                    isQuizFinished = quiz.isFinished,
-                                )
-                            }
-                        }.onFailure {
-                            Log.e("UserQuestionViewModel", "페이지 로드 실패", it)
-                            _uiState.update { it.copy(errorMessageId = R.string.err_load_current_page) }
-                        }
+            quizRepository.observeRealTimeQuiz(quizId).collect { result ->
+                result.onSuccess { quiz ->
+                    _uiState.update {
+                        setNewBlankQuestionManager(quiz.currentQuestion)
+                        it.copy(
+                            currentPage = quiz.currentQuestion,
+                            isSubmitted = false,
+                            isQuizFinished = quiz.isFinished,
+                        )
+                    }
+                }.onFailure {
+                    Log.e("UserQuestionViewModel", "페이지 로드 실패", it)
+                    _uiState.update { it.copy(errorMessageId = R.string.err_load_current_page) }
                 }
+            }
         }
     }
 
@@ -208,8 +212,7 @@ class UserQuestionViewModel @Inject constructor(
                 _uiState.value.selectedIndexList[_uiState.value.currentPage],
             )
             val updatedList = _uiState.value.submittedIndexList.toMutableList().apply {
-                this[_uiState.value.currentPage] =
-                    _uiState.value.selectedIndexList[_uiState.value.currentPage]
+                this[_uiState.value.currentPage] = _uiState.value.selectedIndexList[_uiState.value.currentPage]
             }
             result.onSuccess {
                 _uiState.update { it.copy(isSubmitted = true, submittedIndexList = updatedList) }
@@ -230,26 +233,22 @@ class UserQuestionViewModel @Inject constructor(
                         quizId = quizId,
                         answers = _uiState.value.submittedIndexList as List<Any>,
                     )
-                    userOmrRepository.submitQuiz(userOmrCreationInfo)
-                        .onSuccess { userOmrId ->
-                            quizRepository.addUserOmrToQuiz(quizId, userOmrId)
-                                .onSuccess {
-                                    _uiState.update {
-                                        it.copy(
-                                            userOmrId = userOmrId,
-                                            isLoading = false,
-                                        )
-                                    }
-                                }
-                                .onFailure {
-                                    Log.e("QuestionViewModel", "userOmrId 업데이트 실패", it)
-                                    _uiState.update { it.copy(errorMessageId = R.string.err_answer_add) }
-                                }
+                    userOmrRepository.submitQuiz(userOmrCreationInfo).onSuccess { userOmrId ->
+                        quizRepository.addUserOmrToQuiz(quizId, userOmrId).onSuccess {
+                            _uiState.update {
+                                it.copy(
+                                    userOmrId = userOmrId,
+                                    isLoading = false,
+                                )
+                            }
+                        }.onFailure {
+                            Log.e("QuestionViewModel", "userOmrId 업데이트 실패", it)
+                            _uiState.update { it.copy(errorMessageId = R.string.err_answer_add) }
                         }
-                        .onFailure {
-                            Log.e("QuestionViewModel", "퀴즈 정답 제출 실패", it)
-                            _uiState.update { it.copy(errorMessageId = R.string.err_answer_add_quiz) }
-                        }
+                    }.onFailure {
+                        Log.e("QuestionViewModel", "퀴즈 정답 제출 실패", it)
+                        _uiState.update { it.copy(errorMessageId = R.string.err_answer_add_quiz) }
+                    }
                 }
             } catch (exception: Exception) {
                 Log.e("UserQuestionViewModel", "제출 실패 ", exception)
@@ -263,13 +262,11 @@ class UserQuestionViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             _uiState.value.currentUserId?.let { currentUserId ->
-                quizRepository.waitingRealTimeQuiz(quizId, false, currentUserId)
-                    .onSuccess {
-                        _uiState.update { it.copy(isLoading = false, isExitSuccess = true) }
-                    }
-                    .onFailure {
-                        _uiState.update { it.copy(isLoading = false, errorMessageId = R.string.err_delete_waiting_user) }
-                    }
+                quizRepository.waitingRealTimeQuiz(quizId, false, currentUserId).onSuccess {
+                    _uiState.update { it.copy(isLoading = false, isExitSuccess = true) }
+                }.onFailure {
+                    _uiState.update { it.copy(isLoading = false, errorMessageId = R.string.err_delete_waiting_user) }
+                }
             }
         }
     }
