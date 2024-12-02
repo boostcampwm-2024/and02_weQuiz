@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
@@ -106,14 +107,23 @@ class UserQuestionViewModel @Inject constructor(
                 currentState.copy(isLoading = true)
             }
             questionRepository.getQuestions(questionIds).onSuccess { questions ->
-
+                val baseSelectedList = questions.map {
+                    if (it is BlankQuestion) {
+                        mapOf<Int, String?>()
+                    } else {
+                        -1
+                    }
+                }
                 _uiState.update { currentState ->
-
                     currentState.copy(
                         questions = questions,
+                        selectedIndexList = baseSelectedList,
+                        submittedIndexList = baseSelectedList,
+                        isLoading = false,
                     )
                 }
                 updatePageAndSubmitByOwner()
+                loadRealTimeQuestions(questionIds)
             }.onFailure {
                 Log.e("QuestionViewModel", "문제 로드 실패", it)
                 _uiState.update {
@@ -122,6 +132,38 @@ class UserQuestionViewModel @Inject constructor(
                         errorMessageId = R.string.err_load_questions,
                     )
                 }
+            }
+        }
+    }
+
+    private fun loadRealTimeQuestions(questionIds: List<String>) {
+        viewModelScope.launch {
+            _uiState.update { currentState ->
+                currentState.copy(isLoading = true)
+            }
+            questionRepository.getRealTimeQuestions(questionIds).onSuccess { questionList ->
+                questionList.forEachIndexed { index, questionFlow ->
+                    viewModelScope.launch {
+                        questionFlow.catch {
+                            Log.e("OwnerQuestionViewModel", "Failed to load real time questions", it)
+                            //showErrorMessage(R.string.err_load_questions)
+                        }.collect { question ->
+                            _uiState.update { currentState ->
+                                currentState.copy(
+                                    questions = currentState.questions.toMutableList().apply {
+                                        this[index] = question
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+                _uiState.update { currentState ->
+                    currentState.copy(isLoading = false)
+                }
+            }.onFailure {
+                Log.e("OwnerQuestionViewModel", "Failed to load real time questions", it)
+                // showErrorMessage(R.string.err_load_questions)
             }
         }
     }
