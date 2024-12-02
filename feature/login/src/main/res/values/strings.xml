@@ -2,4 +2,5 @@
 <resources>
     <string name="btn_sign_up_edit_user">회원 정보 수정</string>
     <string name="top_app_bar_edit_user">회원 수정</string>
+    <string name="txt_user_name_error_message">Please enter 10 characters or less.</string>
 </resources>
