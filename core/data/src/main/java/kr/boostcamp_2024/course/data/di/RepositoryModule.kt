@@ -7,6 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import kr.boostcamp_2024.course.data.repository.AiRepositoryImpl
 import kr.boostcamp_2024.course.data.repository.AuthRepositoryImpl
 import kr.boostcamp_2024.course.data.repository.CategoryRepositoryImpl
+import kr.boostcamp_2024.course.data.repository.GuideRepositoryImpl
 import kr.boostcamp_2024.course.data.repository.NotificationRepositoryImpl
 import kr.boostcamp_2024.course.data.repository.QuestionRepositoryImpl
 import kr.boostcamp_2024.course.data.repository.QuizRepositoryImpl
@@ -17,6 +18,7 @@ import kr.boostcamp_2024.course.data.repository.UserRepositoryImpl
 import kr.boostcamp_2024.course.domain.repository.AiRepository
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.CategoryRepository
+import kr.boostcamp_2024.course.domain.repository.GuideRepository
 import kr.boostcamp_2024.course.domain.repository.NotificationRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
@@ -77,4 +79,9 @@ abstract class RepositoryModule {
     abstract fun provideAiRepository(
         aiRepositoryImpl: AiRepositoryImpl,
     ): AiRepository
+
+    @Binds
+    abstract fun provideGuideRepository(
+        guideRepositoryImpl: GuideRepositoryImpl,
+    ): GuideRepository
 }
