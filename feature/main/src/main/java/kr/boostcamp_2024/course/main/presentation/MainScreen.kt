@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Notifications
@@ -53,6 +54,8 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLarge
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.main.R
+import kr.boostcamp_2024.course.main.component.BaseGuideScreen
+import kr.boostcamp_2024.course.main.component.GuideDialog
 import kr.boostcamp_2024.course.main.component.MainDropDownMenu
 import kr.boostcamp_2024.course.main.component.StudyGroupItem
 import kr.boostcamp_2024.course.main.viewmodel.MainViewModel
@@ -83,7 +86,16 @@ fun MainScreen(
         onStudyGroupClick = onStudyGroupClick,
         onEditUserClick = onEditUserClick,
         onLogOutClick = viewModel::logout,
+        showDialog = viewModel::showDialog,
     )
+
+    if (!uiState.isGuideShown) {
+        BaseGuideScreen { viewModel.onGuideShown() }
+    }
+
+    if (uiState.isDialog) {
+        GuideDialog { viewModel.closeDialog() }
+    }
 
     if (uiState.isLogout) {
         onLogOutClick()
@@ -126,7 +138,9 @@ fun MainScreen(
     onStudyGroupClick: (String) -> Unit,
     onEditUserClick: (String?) -> Unit,
     onLogOutClick: () -> Unit,
-) {
+    showDialog: () -> Unit,
+
+    ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     var isExpanded by remember { mutableStateOf(false) }
     var state by rememberSaveable { mutableIntStateOf(0) }
@@ -170,6 +184,13 @@ fun MainScreen(
                     )
                 },
                 actions = {
+                    IconButton(onClick = showDialog) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.LibraryBooks,
+                            stringResource(R.string.des_main_guide_icon),
+                            tint = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
                     IconButton(onClick = onNotificationButtonClick) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
@@ -314,6 +335,7 @@ fun MainScreenPreview() {
             onLogOutClick = {},
             onDeleteStudyGroupClick = {},
             notifications = 0,
+            showDialog = {},
         )
     }
 }
