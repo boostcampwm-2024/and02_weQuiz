@@ -2,16 +2,13 @@ package kr.boostcamp_2024.course.quiz.presentation.question
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -33,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
@@ -41,8 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
@@ -50,6 +44,7 @@ import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
 import kr.boostcamp_2024.course.quiz.component.QuizContent
 import kr.boostcamp_2024.course.quiz.component.QuizOwnerDialog
+import kr.boostcamp_2024.course.quiz.component.RealTimeQuizGuideContent
 import kr.boostcamp_2024.course.quiz.viewmodel.OwnerQuestionViewModel
 
 @Composable
@@ -159,7 +154,7 @@ fun OwnerQuestionScreen(
                         currentQuestion.userAnswers.size
                     }
                     item {
-                        RealTimeQuizWithOwnerGuideContent(
+                        RealTimeQuizGuideContent(
                             ownerName = ownerName,
                             totalParticipants = quiz.waitingUsers.size,
                             submittedParticipants = submittedParticipants,
@@ -228,43 +223,6 @@ fun OwnerQuestionScreen(
                 onFinishQuizButtonClick = onQuizFinishButtonClick,
             )
         }
-    }
-}
-
-@Composable
-fun RealTimeQuizWithOwnerGuideContent(
-    ownerName: String,
-    totalParticipants: Int,
-    submittedParticipants: Int,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.End),
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            horizontalAlignment = Alignment.End,
-            modifier = Modifier,
-        ) {
-            WeQuizRightChatBubble(
-                modifier = Modifier,
-                text = stringResource(R.string.txt_quiz_owner, ownerName),
-            )
-            WeQuizRightChatBubble(
-                modifier = Modifier,
-                text = stringResource(R.string.txt_quiz_submit_state, submittedParticipants, totalParticipants),
-            )
-        }
-        WeQuizLocalRoundedImage(
-            modifier = Modifier
-                .size(120.dp)
-                .align(Alignment.CenterVertically),
-            imagePainter = painterResource(id = R.drawable.quiz_system_profile),
-            contentDescription = stringResource(R.string.des_image_question),
-        )
     }
 }
 
