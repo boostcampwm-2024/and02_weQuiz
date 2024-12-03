@@ -21,8 +21,8 @@
 
 |     화면 분류      |                                                        관리자 - 참여자                                                        |
 |:--------------:|:-----------------------------------------------------------------------------------------------------------------------:|
-|   실시간 퀴즈 진행    | <img src = "https://github.com/user-attachments/assets/0cb33ce4-a531-4f7d-9648-25fb31da3df5" width="500" height="560" > |
-| 실시간 퀴즈 결과 및 통계 | <img src = "https://github.com/user-attachments/assets/8aff2b13-52d2-4d6e-8ad4-f9cc3eff633b" width="500" height="560">  |
+|   실시간 퀴즈 진행    | <img src = "https://github.com/user-attachments/assets/5159faa2-dc85-42d7-b68a-953c12aa9e4d" width="500" height="560" > |
+| 실시간 퀴즈 결과 및 통계 | <img src = "https://github.com/user-attachments/assets/2f2234b2-105c-4ba9-b919-29689a2a17a0" width="500" height="560">  |
 
 <br>
 
