@@ -1,3 +1,4 @@
+![weQuiz 배너](https://github.com/user-attachments/assets/34804a72-378c-4fd9-bc07-51d546bc8361)
 # WeQuiz~?🍦
 
 스터디 그룹 내에서 학습을 더욱 **효과적으로** 그리고 **즐겁게** 진행할 수 있는 퀴즈 기반 학습 서비스 **WeQuiz~?🍦**에 오신 것을 환영합니다!
