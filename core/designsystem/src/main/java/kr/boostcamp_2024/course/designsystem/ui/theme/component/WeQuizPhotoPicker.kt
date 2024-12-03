@@ -46,9 +46,9 @@ fun WeQuizPhotoPickerAsyncImage(
                 val baos = ByteArrayOutputStream()
 
                 val resizedBitmap =
-                    if (bitmap.width > 800) {
-                        val scaleFactor = 800f / bitmap.width
-                        val newWidth = 800
+                    if (bitmap.width > 2560) {
+                        val scaleFactor = 2560f / bitmap.width
+                        val newWidth = 2560
                         val newHeight = (bitmap.height * scaleFactor).toInt()
 
                         Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
@@ -57,9 +57,9 @@ fun WeQuizPhotoPickerAsyncImage(
                     }
 
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                    resizedBitmap.compress(Bitmap.CompressFormat.WEBP_LOSSY, 70, baos)
+                    resizedBitmap.compress(Bitmap.CompressFormat.WEBP_LOSSY, 60, baos)
                 } else {
-                    resizedBitmap.compress(Bitmap.CompressFormat.WEBP, 70, baos)
+                    resizedBitmap.compress(Bitmap.CompressFormat.WEBP, 60, baos)
                 }
 
                 val data = baos.toByteArray()

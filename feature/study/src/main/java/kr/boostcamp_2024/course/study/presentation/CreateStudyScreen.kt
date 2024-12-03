@@ -126,6 +126,7 @@ fun CreateStudyScreen(
                     .clip(shape = MaterialTheme.shapes.large),
                 imageData = currentStudyImage ?: defaultStudyImageUri,
                 onImageDataChanged = onCurrentStudyImageChanged,
+                contentDescription = stringResource(R.string.des_study_group_image),
             )
 
             WeQuizValidateTextField(
