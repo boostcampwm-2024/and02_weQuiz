@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.quiz.presentation.quiz
 
+import WeQuizPhotoPickerAsyncImage
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
@@ -82,6 +84,7 @@ fun CreateQuizScreen(
         onCurrentStudyImageChanged = viewModel::changeCurrentStudyImage,
         isRealtimeQuiz = uiState.value.isRealtimeQuiz,
         onQuizTypeIndexChange = viewModel::setSelectedQuizTypeIndex,
+        onImageDataChanged = viewModel::changeCurrentStudyImage,
     )
 
     if (uiState.value.isCreateQuizSuccess) {
@@ -131,6 +134,7 @@ fun CreateQuizScreen(
     onEditButtonClick: () -> Unit,
     onCurrentStudyImageChanged: (ByteArray) -> Unit,
     onQuizTypeIndexChange: (Int) -> Unit,
+    onImageDataChanged: (ByteArray) -> Unit,
 ) {
     val context = LocalContext.current
     val options = listOf(stringResource(R.string.txt_create_quiz_general), stringResource(R.string.txt_create_quiz_realtime))
@@ -195,8 +199,8 @@ fun CreateQuizScreen(
                     }
                 }
             }
-            WeQuizAsyncImage(
-                imgUrl = currentImage ?: defaultImageUrl,
+            WeQuizPhotoPickerAsyncImage(
+                imageData = currentImage ?: defaultImageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -207,6 +211,7 @@ fun CreateQuizScreen(
                 placeholder = painterResource(R.drawable.image_guide),
                 error = painterResource(R.drawable.image_guide),
                 fallback = painterResource(R.drawable.image_guide),
+                onImageDataChanged = onImageDataChanged,
             )
 
             // QuizInfo
@@ -297,6 +302,7 @@ fun CreateQuizScreenPreview() {
             onCurrentStudyImageChanged = {},
             onQuizTypeIndexChange = {},
             selectedQuizTypeIndex = 0,
+            onImageDataChanged = {},
         )
     }
 }
