@@ -152,7 +152,6 @@ fun QuizScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 30.dp)
                     .background(
                         brush = Brush.verticalGradient(listOf(Color.Transparent, Color.Black)),
                         alpha = 0.6f,
