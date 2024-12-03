@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -65,25 +66,12 @@ fun ConsumeBlankContentUi(
             onValueChange = { newValue ->
                 onValueChanged(newValue, index)
             },
-            modifier = Modifier.width(IntrinsicSize.Min),
+            modifier = Modifier
+                .width(IntrinsicSize.Min)
+                .widthIn(min = 1.dp),
             enabled = textFieldEnabled,
-            decorationBox = { innerTextField ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    if (word.isEmpty()) {
-                        Text(
-                            text = "",
-                            modifier = Modifier.padding(start = 1.dp),
-                        )
-                    }
-                    Box(modifier = Modifier.weight(1f)) {
-                        innerTextField()
-                    }
-                }
-            },
-        )
+
+            )
         if (removeIconVisible) {
             Icon(
                 imageVector = Icons.Outlined.Cancel,
@@ -130,24 +118,10 @@ fun ConsumeTextContentUi(
                 onValueChange = { newValue ->
                     onValueChanged(newValue, index)
                 },
-                modifier = Modifier.width(IntrinsicSize.Min),
+                modifier = Modifier
+                    .width(IntrinsicSize.Min)
+                    .widthIn(1.dp),
                 enabled = textFieldEnabled,
-                decorationBox = { innerTextField ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        if (word.isEmpty()) {
-                            Text(
-                                text = "",
-                                modifier = Modifier.padding(start = 1.dp),
-                            )
-                        }
-                        Box(modifier = Modifier.weight(1f)) {
-                            innerTextField()
-                        }
-                    }
-                },
             )
 
             if (removeIconInvisible) {
