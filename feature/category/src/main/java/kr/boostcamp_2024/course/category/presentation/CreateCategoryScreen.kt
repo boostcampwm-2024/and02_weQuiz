@@ -1,12 +1,6 @@
 package kr.boostcamp_2024.course.category.presentation
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
-import androidx.compose.foundation.clickable
+import WeQuizPhotoPickerAsyncImage
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -34,8 +28,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,10 +36,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.category.R
 import kr.boostcamp_2024.course.category.viewModel.CreateCategoryViewModel
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
-import java.io.ByteArrayOutputStream
 
 @Composable
 fun CreateCategoryScreen(
@@ -117,19 +107,6 @@ fun CreateCategoryScreen(
     guideText: String,
     onCurrentCategoryImageChanged: (ByteArray) -> Unit,
 ) {
-    val context = LocalContext.current
-    val photoPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        if (uri != null) {
-            val inputStream = context.contentResolver.openInputStream(uri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-
-            val baos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
-            val data = baos.toByteArray()
-
-            onCurrentCategoryImageChanged(data)
-        }
-    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -156,20 +133,14 @@ fun CreateCategoryScreen(
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState()),
         ) {
-            WeQuizAsyncImage(
+            WeQuizPhotoPickerAsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 70.dp)
                     .aspectRatio(1f)
-                    .clip(shape = MaterialTheme.shapes.large)
-                    .clickable(enabled = true) {
-                        photoPickerLauncher.launch(PickVisualMediaRequest(ImageOnly))
-                    },
-                imgUrl = currentCategoryImage ?: defaultCategoryImageUri,
-                contentDescription = stringResource(R.string.des_category_image),
-                placeholder = painterResource(R.drawable.default_profile_image),
-                error = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_error),
-                fallback = painterResource(R.drawable.default_profile_image),
+                    .clip(shape = MaterialTheme.shapes.large),
+                imageData = currentCategoryImage ?: defaultCategoryImageUri,
+                onImageDataChanged = onCurrentCategoryImageChanged,
             )
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
