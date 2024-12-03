@@ -30,7 +30,6 @@ fun WeQuizChatBubble(
             text = text,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
         )
     }
 }
