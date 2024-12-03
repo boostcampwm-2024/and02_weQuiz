@@ -5,10 +5,6 @@
     <string name="txt_notification_item_message">接受</string>
     <string name="txt_notification_top_app_bar_title">通知</string>
     <string name="txt_notification_top_app_bar_navigation_icon">返回</string>
-    <string name="des_btn_notification">通知</string>
-    <string name="des_fab_create_study">创建学习小组</string>
-    <string name="des_img_study_image">学习小组图片</string>
-    <string name="des_btn_study_menu">学习小组菜单</string>
     <string name="txt_study_user_count">人数: %1$s</string>
     <string name="top_app_bar_nav_btn">我的页面图标按钮</string>
     <string name="txt_main_menu_edit">修正</string>
@@ -17,6 +13,17 @@
     <string name="txt_study_group_menu_delete">删除学习小组</string>
     <string name="txt_study_group_menu_leave">退出</string>
     <string name="txt_blank_notification">您的收件箱是空的。</string>
+    <string name="txt_main_guide">如果您在使用应用程序时遇到困难，请阅读右上角的指南！</string>
+    <string name="txt_guide_dialog_title">转到指南链接</string>
+    <string name="txt_guide_dialog_confirm">移动</string>
+    <string name="txt_guide_dialog_cancel">取消</string>
+    <string name="txt_guide_dialog_content">想要查看指南链接？</string>
+    <!--  content description  -->
+    <string name="des_btn_notification">通知</string>
+    <string name="des_fab_create_study">创建学习小组</string>
+    <string name="des_img_study_image">学习小组图片</string>
+    <string name="des_btn_study_menu">学习小组菜单</string>
+    <string name="des_main_guide_icon">指南</string>
     <string-array name="main_tabs_titles">
         <item>参与小组</item>
         <item>档案</item>
