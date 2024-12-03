@@ -1,5 +1,6 @@
 package kr.boostcamp_2024.course.designsystem.ui.theme.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -49,15 +51,23 @@ fun WeQuizImageLargeTopAppBar(
         )
 
         LargeTopAppBar(
-            modifier = Modifier.onSizeChanged { size ->
-                imageHeight = size.height
-            },
+            modifier = Modifier
+                .background(
+                    brush = Brush.verticalGradient(listOf(Color.Black, Color.Transparent)),
+                    alpha = 0.6f,
+                )
+                .onSizeChanged { size ->
+                    imageHeight = size.height
+                },
             title = title,
             navigationIcon = navigationIcon,
             actions = actions,
             colors = TopAppBarDefaults.largeTopAppBarColors(
                 containerColor = Color.Transparent,
                 scrolledContainerColor = Color.Transparent,
+                navigationIconContentColor = Color.White,
+                titleContentColor = Color.White,
+                actionIconContentColor = Color.White,
             ),
             scrollBehavior = scrollBehavior,
         )

@@ -155,7 +155,6 @@ fun MainScreen(
                         Icon(
                             imageVector = Icons.Filled.AccountCircle,
                             contentDescription = stringResource(R.string.top_app_bar_nav_btn),
-                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     MainDropDownMenu(
@@ -175,7 +174,6 @@ fun MainScreen(
                             Icon(
                                 imageVector = Icons.Outlined.Notifications,
                                 contentDescription = stringResource(R.string.des_btn_notification),
-                                tint = MaterialTheme.colorScheme.onSurface,
                             )
                             Badge(
                                 modifier = Modifier
