@@ -1,5 +1,7 @@
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -40,30 +42,46 @@ fun WeQuizPhotoPickerAsyncImage(
     val photoPickerLauncher = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
         if (uri != null) {
             coroutineScope.launch {
-                val inputStream = context.contentResolver.openInputStream(uri)
+                val inputStream = context.contentResolver.openInputStream(uri) ?: return@launch
                 val bitmap = BitmapFactory.decodeStream(inputStream)
+
+                val newInputStream = context.contentResolver.openInputStream(uri) ?: return@launch
+                val exifInterface = ExifInterface(newInputStream)
+
+                val rotatedBitmap = when (exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply { postRotate(90f) }, true)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply { postRotate(180f) }, true)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply { postRotate(270f) }, true)
+                    else -> bitmap
+                }
 
                 val baos = ByteArrayOutputStream()
 
                 val resizedBitmap =
-                    if (bitmap.width > 800) {
-                        val scaleFactor = 800f / bitmap.width
-                        val newWidth = 800
-                        val newHeight = (bitmap.height * scaleFactor).toInt()
+                    if (rotatedBitmap.width > 2560) {
+                        val scaleFactor = 2560f / rotatedBitmap.width
+                        val newWidth = 2560
+                        val newHeight = (rotatedBitmap.height * scaleFactor).toInt()
 
-                        Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+                        Bitmap.createScaledBitmap(rotatedBitmap, newWidth, newHeight, true)
                     } else {
                         bitmap
                     }
 
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                    resizedBitmap.compress(Bitmap.CompressFormat.WEBP_LOSSY, 70, baos)
+                    resizedBitmap.compress(Bitmap.CompressFormat.WEBP_LOSSY, 60, baos)
                 } else {
-                    resizedBitmap.compress(Bitmap.CompressFormat.WEBP, 70, baos)
+                    resizedBitmap.compress(Bitmap.CompressFormat.WEBP, 60, baos)
                 }
 
                 val data = baos.toByteArray()
                 onImageDataChanged(data)
+
+                inputStream.close()
+                newInputStream.close()
+                bitmap.recycle()
+                rotatedBitmap.recycle()
+                resizedBitmap.recycle()
             }
         }
     }
