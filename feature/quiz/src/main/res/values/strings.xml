@@ -79,6 +79,7 @@
     <string name="txt_label_pie_chart_2">Option 2</string>
     <string name="txt_label_pie_chart_3">Option 3</string>
     <string name="txt_label_pie_chart_4">Option 4</string>
+    <string name="txt_label_pie_chart_not_submitted">Not submitted</string>
     <string name="fab_quiz_result">View Quiz Result</string>
     <string name="txt_quiz_result">View Results</string>
     <string name="btn_create_quiz_ai">AI Quiz Creation</string>

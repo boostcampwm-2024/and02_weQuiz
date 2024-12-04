@@ -113,7 +113,7 @@ class QuestionViewModel @Inject constructor(
                         if (it is BlankQuestion) {
                             mapOf<Int, String?>()
                         } else {
-                            -1
+                            4
                         }
                     }
                     _uiState.update { currentState ->

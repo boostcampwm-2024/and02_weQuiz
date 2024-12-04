@@ -56,7 +56,6 @@ fun NotificationItem(
             Text(
                 text = stringResource(R.string.txt_notification_item_invite_message),
                 style = MaterialTheme.typography.bodyLarge,
-                maxLines = 2,
             )
 
             Spacer(Modifier.height(10.dp))

@@ -18,7 +18,7 @@
     <string name="txt_guide_dialog_title">Go to the guide link</string>
     <string name="txt_guide_dialog_confirm">move</string>
     <string name="txt_guide_dialog_cancel">cancel</string>
-    <string name="txt_guide_dialog_content">Want to see\bthe guide link?</string>
+    <string name="txt_guide_dialog_content">Want to see\nthe guide link?</string>
     <!--  content description  -->
     <string name="des_btn_notification">Notification</string>
     <string name="des_fab_create_study">Create Study</string>

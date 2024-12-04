@@ -29,6 +29,7 @@ fun PieChartScreen(userAnswers: List<Int>) {
         stringResource(R.string.txt_label_pie_chart_2),
         stringResource(R.string.txt_label_pie_chart_3),
         stringResource(R.string.txt_label_pie_chart_4),
+        stringResource(R.string.txt_label_pie_chart_not_submitted),
     )
 
     userAnswers.forEachIndexed { index, i ->
