@@ -5,10 +5,6 @@
     <string name="txt_notification_item_message">수락</string>
     <string name="txt_notification_top_app_bar_title">알림</string>
     <string name="txt_notification_top_app_bar_navigation_icon">뒤로 가기</string>
-    <string name="des_btn_notification">알림</string>
-    <string name="des_fab_create_study">스터디 생성</string>
-    <string name="des_img_study_image">스터디 이미지</string>
-    <string name="des_btn_study_menu">스터디 메뉴</string>
     <string name="txt_study_user_count">인원: %1$s명</string>
     <string name="top_app_bar_nav_btn">마이 페이지 아이콘 버튼</string>
     <string name="txt_main_menu_edit">수정</string>
@@ -17,6 +13,18 @@
     <string name="txt_study_group_menu_delete">스터디 제거</string>
     <string name="txt_study_group_menu_leave">나가기</string>
     <string name="txt_blank_notification">알림함이 텅 비었습니다.</string>
+    <string name="txt_main_guide">앱 사용에 어려움이 있으시면 \n 우측 상단의 가이드를 읽어주세요!</string>
+    <string name="txt_guide_dialog_title">가이드 링크 이동</string>
+    <string name="txt_guide_dialog_confirm">이동</string>
+    <string name="txt_guide_dialog_cancel">취소</string>
+    <string name="txt_guide_dialog_content">가이드 링크로 이동하시겠습니까?</string>
+    <string name="txt_no_implementation">추후 제공될 기능입니다.</string>
+    <!--  content description  -->
+    <string name="des_btn_notification">알림</string>
+    <string name="des_fab_create_study">스터디 생성</string>
+    <string name="des_img_study_image">스터디 이미지</string>
+    <string name="des_btn_study_menu">스터디 메뉴</string>
+    <string name="des_main_guide_icon">가이드</string>
     <string-array name="main_tabs_titles">
         <item>참여 스터디</item>
         <item>보관함</item>
