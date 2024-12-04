@@ -12,12 +12,13 @@
     <string name="txt_study_group_menu_edit">Edit</string>
     <string name="txt_study_group_menu_delete">Delete Study</string>
     <string name="txt_study_group_menu_leave">Leave</string>
+    <string name="txt_blank_notification">Your notification box is empty.</string>
+    <string name="txt_no_implementation">This is a feature\nthat will be provided in the future.</string>
     <string name="txt_main_guide">If you\'re having trouble using the app \n read our guide in the top right corner!</string>
     <string name="txt_guide_dialog_title">Go to the guide link</string>
     <string name="txt_guide_dialog_confirm">move</string>
     <string name="txt_guide_dialog_cancel">cancel</string>
-    <string name="txt_guide_dialog_content">Want to see the guide link?</string>
-    <string name="txt_blank_notification">Your notification box is empty.</string>
+    <string name="txt_guide_dialog_content">Want to see\bthe guide link?</string>
     <!--  content description  -->
     <string name="des_btn_notification">Notification</string>
     <string name="des_fab_create_study">Create Study</string>

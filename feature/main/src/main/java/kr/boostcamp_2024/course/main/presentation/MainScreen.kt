@@ -44,6 +44,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -168,7 +169,6 @@ fun MainScreen(
                         Icon(
                             imageVector = Icons.Filled.AccountCircle,
                             contentDescription = stringResource(R.string.top_app_bar_nav_btn),
-                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     MainDropDownMenu(
@@ -187,7 +187,6 @@ fun MainScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.LibraryBooks,
                             stringResource(R.string.des_main_guide_icon),
-                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     IconButton(onClick = onNotificationButtonClick) {
@@ -195,7 +194,6 @@ fun MainScreen(
                             Icon(
                                 imageVector = Icons.Outlined.Notifications,
                                 contentDescription = stringResource(R.string.des_btn_notification),
-                                tint = MaterialTheme.colorScheme.onSurface,
                             )
                             Badge(
                                 modifier = Modifier
@@ -266,10 +264,25 @@ fun MainScreen(
                     )
                 }
 
-                1 -> { // TODO 보관함
+                1 -> {
+                    ArchiveTab()
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ArchiveTab() {
+    // TODO: 보관함 기능 구현
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.txt_no_implementation),
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -308,7 +321,7 @@ fun MainScreenPreview() {
             currentUser = User(
                 id = "123",
                 email = "email@email.com",
-                name = "홍준표",
+                name = "아이비",
                 profileUrl = "testUrl",
                 studyGroups = listOf(),
             ),

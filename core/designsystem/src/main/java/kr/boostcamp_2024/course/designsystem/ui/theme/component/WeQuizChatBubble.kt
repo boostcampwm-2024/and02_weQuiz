@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
@@ -19,6 +20,7 @@ fun WeQuizChatBubble(
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     modifier: Modifier = Modifier,
     shape: RoundedCornerShape = RoundedCornerShape(10.dp),
+    isBold: Boolean = false,
 ) {
     Surface(
         modifier = modifier.clip(shape),
@@ -29,6 +31,7 @@ fun WeQuizChatBubble(
             text = text,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodyLarge,
+            fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
         )
     }
 }
@@ -38,6 +41,7 @@ fun WeQuizRightChatBubble(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     text: String,
+    isBold: Boolean = true,
 ) {
     WeQuizChatBubble(
         modifier = modifier,
@@ -49,6 +53,7 @@ fun WeQuizRightChatBubble(
             bottomStart = 20.dp,
             bottomEnd = 8.dp,
         ),
+        isBold = isBold,
     )
 }
 
@@ -57,6 +62,7 @@ fun WeQuizLeftChatBubble(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     text: String,
+    isBold: Boolean = true,
 ) {
     WeQuizChatBubble(
         modifier = modifier,
@@ -68,6 +74,7 @@ fun WeQuizLeftChatBubble(
             bottomStart = 8.dp,
             bottomEnd = 20.dp,
         ),
+        isBold = isBold,
     )
 }
 
@@ -78,6 +85,7 @@ fun WeQuizChatBubblePreview() {
         WeQuizChatBubble(
             text = "Hello, World!",
             shape = RoundedCornerShape(16.dp),
+            isBold = true,
         )
     }
 }
@@ -88,6 +96,7 @@ fun ChatBubbleRightPreview() {
     WeQuizTheme {
         WeQuizRightChatBubble(
             text = "Hello, World!",
+            isBold = true,
         )
     }
 }
@@ -98,6 +107,7 @@ fun WeQuizLeftChatBubblePreview() {
     WeQuizTheme {
         WeQuizLeftChatBubble(
             text = "Hello, World!",
+            isBold = true,
         )
     }
 }

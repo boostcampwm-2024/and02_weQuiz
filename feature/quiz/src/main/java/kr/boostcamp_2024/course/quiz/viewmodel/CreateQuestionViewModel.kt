@@ -43,8 +43,8 @@ data class CreateQuestionUiState(
     val creationSuccess: Boolean = false,
     val selectedQuestionTypeIndex: Int = 0,
     val items: List<BlankQuestionItem> = listOf(
-        BlankQuestionItem.Blank("낱말"),
-        BlankQuestionItem.Text("텍스트"),
+        BlankQuestionItem.Blank("blank"),
+        BlankQuestionItem.Text("text"),
     ),
 ) {
     val isCreateQuestionValid: Boolean = choiceQuestionCreationInfo.title.length in 1..50 &&
@@ -209,7 +209,7 @@ class CreateQuestionViewModel @Inject constructor(
                         description = it.description,
                         solution = it.solution,
                         answer = getAnswerIndex(it.answer, it.choices),
-                        choices = List(4) { "AI가 보기를 찾지 못했습니다." },
+                        choices = List(4) { "AI could not generate choices." },
                     )
                 } else {
                     ChoiceQuestionCreationInfo(

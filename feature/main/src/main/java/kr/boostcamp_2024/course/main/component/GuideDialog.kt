@@ -2,7 +2,6 @@ package kr.boostcamp_2024.course.main.component
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -18,15 +17,14 @@ fun GuideDialog(
 ) {
     val context = LocalContext.current
     WeQuizBaseDialog(
-        title = stringResource(R.string.txt_guide_dialog_title),
+        title = stringResource(R.string.txt_guide_dialog_content),
         dialogImage = painterResource(id = R.drawable.sample_profile1),
         confirmTitle = stringResource(R.string.txt_guide_dialog_confirm),
         dismissTitle = stringResource(R.string.txt_guide_dialog_cancel),
-        content = {
-            Text(stringResource(R.string.txt_guide_dialog_content))
-        },
+        content = {},
         onConfirm = {
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://trite-ice-00b.notion.site/WeQuiz-1505bfe2c24f80b1ae39dc15026da991?pvs=4")))
+            onDismissButtonClick()
         },
         onDismissRequest = {
             onDismissButtonClick()

@@ -18,6 +18,7 @@
     <string name="txt_guide_dialog_confirm">移动</string>
     <string name="txt_guide_dialog_cancel">取消</string>
     <string name="txt_guide_dialog_content">想要查看指南链接？</string>
+    <string name="txt_no_implementation">这是未来将提供的功能。</string>
     <!--  content description  -->
     <string name="des_btn_notification">通知</string>
     <string name="des_fab_create_study">创建学习小组</string>

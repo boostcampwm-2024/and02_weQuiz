@@ -1,6 +1,7 @@
 package kr.boostcamp_2024.course.quiz.component
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
@@ -9,7 +10,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -18,6 +18,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,6 +48,11 @@ fun QuizTopAppBar(
     }
 
     TopAppBar(
+        modifier = Modifier
+            .background(
+                brush = Brush.verticalGradient(listOf(Color.Black, Color.Transparent)),
+                alpha = 0.6f,
+            ),
         title = {},
         navigationIcon = {
             IconButton(
@@ -59,6 +66,7 @@ fun QuizTopAppBar(
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,
+                    tint = Color.White,
                 )
             }
         },
@@ -67,7 +75,7 @@ fun QuizTopAppBar(
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = stringResource(R.string.des_quiz_screen_top_app_bar_action_icon),
-                    tint = MaterialTheme.colorScheme.onSurface,
+                    tint = Color.White,
                 )
             }
             DropdownMenu(

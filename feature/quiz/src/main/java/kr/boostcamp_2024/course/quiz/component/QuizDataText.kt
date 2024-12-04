@@ -3,6 +3,7 @@ package kr.boostcamp_2024.course.quiz.component
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
@@ -17,7 +18,7 @@ fun QuizDataText(
             text = quiz.title,
             style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = Color.White,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -26,7 +27,7 @@ fun QuizDataText(
         quiz.description?.let { description ->
             Text(
                 text = description,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = Color.White,
             )
         }
     }

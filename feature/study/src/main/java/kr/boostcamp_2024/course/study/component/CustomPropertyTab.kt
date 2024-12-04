@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,11 +33,12 @@ fun CustomPropertyTab(
 ) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(text = stringResource(title), style = MaterialTheme.typography.titleLarge)
-        CustomIconButton(
-            onClicked = { onClicked(studyGroupId, null) },
-            imageVector = imageVector,
-            description = description,
-        )
+        IconButton(onClick = { onClicked(studyGroupId, null) }) {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = description,
+            )
+        }
         Spacer(modifier = Modifier.weight(1f))
         AssistChip(
             onClick = {},
