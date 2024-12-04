@@ -1,11 +1,6 @@
 package kr.boostcamp_2024.course.quiz.presentation.quiz
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
+import WeQuizPhotoPickerAsyncImage
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -34,22 +29,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuizDatePickerTextField
 import kr.boostcamp_2024.course.quiz.component.QuizSolveTimeSlider
 import kr.boostcamp_2024.course.quiz.viewmodel.CreateQuizViewModel
-import java.io.ByteArrayOutputStream
 
 @Composable
 fun CreateQuizScreen(
@@ -132,19 +123,7 @@ fun CreateQuizScreen(
     onCurrentStudyImageChanged: (ByteArray) -> Unit,
     onQuizTypeIndexChange: (Int) -> Unit,
 ) {
-    val context = LocalContext.current
     val options = listOf(stringResource(R.string.txt_create_quiz_general), stringResource(R.string.txt_create_quiz_realtime))
-    val photoPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        if (uri != null) {
-            val inputStream = context.contentResolver.openInputStream(uri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-
-            val baos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-            val data = baos.toByteArray()
-            onCurrentStudyImageChanged(data)
-        }
-    }
 
     Scaffold(
         topBar = {
@@ -195,18 +174,15 @@ fun CreateQuizScreen(
                     }
                 }
             }
-            WeQuizAsyncImage(
-                imgUrl = currentImage ?: defaultImageUrl,
+            WeQuizPhotoPickerAsyncImage(
+                imageData = currentImage ?: defaultImageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 70.dp, vertical = 5.dp)
                     .aspectRatio(1f)
-                    .clip(RoundedCornerShape(18.dp))
-                    .clickable(onClick = { photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }),
-                placeholder = painterResource(R.drawable.image_guide),
-                error = painterResource(R.drawable.image_guide),
-                fallback = painterResource(R.drawable.image_guide),
+                    .clip(RoundedCornerShape(18.dp)),
+                onImageDataChanged = onCurrentStudyImageChanged,
             )
 
             // QuizInfo
