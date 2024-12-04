@@ -1,10 +1,6 @@
 package kr.boostcamp_2024.course.login.presentation
 
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
+import WeQuizPhotoPickerAsyncImage
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -31,14 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
-import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
 import kr.boostcamp_2024.course.login.R
@@ -69,11 +63,10 @@ fun SignUpScreen(
         uiState = uiState,
         snackBarHostState = snackBarHostState,
         onNameChanged = viewModel::onNameChanged,
-        onProfileUriChanged = viewModel::onProfileUriChanged,
         onNavigationButtonClick = onNavigationButtonClick,
         onSignUpButtonClick = viewModel::signUp,
-        setNewSnackBarMessage = viewModel::setNewSnackBarMessage,
         onEditButtonClick = viewModel::updateUser,
+        onProfileByteArrayChanged = viewModel::onProfileByteArrayChanged,
     )
 
     LaunchedEffect(uiState.isSubmitSuccess) {
@@ -89,10 +82,9 @@ private fun SignupScreen(
     uiState: SignUpUiState,
     snackBarHostState: SnackbarHostState,
     onNameChanged: (String) -> Unit,
-    onProfileUriChanged: (String) -> Unit,
+    onProfileByteArrayChanged: (ByteArray) -> Unit,
     onNavigationButtonClick: () -> Unit,
     onSignUpButtonClick: () -> Unit,
-    setNewSnackBarMessage: (Int) -> Unit,
     onEditButtonClick: () -> Unit,
 ) {
     Scaffold(
@@ -134,9 +126,9 @@ private fun SignupScreen(
                     email = uiState.userSubmitInfo.email,
                     name = uiState.userSubmitInfo.name,
                     profileUri = uiState.userSubmitInfo.profileImageUrl,
+                    profileImageByteArray = uiState.profileImageByteArray,
                     onNameChanged = onNameChanged,
-                    onProfileUriChanged = onProfileUriChanged,
-                    setNewSnackBarMessage = setNewSnackBarMessage,
+                    onProfileByteArrayChanged = onProfileByteArrayChanged,
                 )
             }
             item {
@@ -158,41 +150,21 @@ fun SignUpContent(
     email: String,
     name: String,
     profileUri: String?,
+    profileImageByteArray: ByteArray?,
     onNameChanged: (String) -> Unit,
-    onProfileUriChanged: (String) -> Unit,
-    setNewSnackBarMessage: (Int) -> Unit,
+    onProfileByteArrayChanged: (ByteArray) -> Unit,
 ) {
-    val photoPickerLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickVisualMedia(),
-    ) { uri ->
-        try {
-            uri?.let {
-                onProfileUriChanged(it.toString())
-            }
-        } catch (e: Exception) {
-            Log.e("SignUpScreen", "Failed to load image from gallery", e)
-            setNewSnackBarMessage(R.string.error_photo_picker)
-        }
-    }
-
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp),
     ) {
-        WeQuizAsyncImage(
+        WeQuizPhotoPickerAsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 70.dp)
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(18.dp))
-                .clickable(enabled = true) {
-                    photoPickerLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-                    )
-                },
-            imgUrl = profileUri,
-            placeholder = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_photo_picker),
-            contentDescription = stringResource(R.string.des_img_photo_picker),
-            fallback = painterResource(kr.boostcamp_2024.course.designsystem.R.drawable.img_photo_picker),
+                .clip(RoundedCornerShape(18.dp)),
+            imageData = profileImageByteArray ?: profileUri,
+            onImageDataChanged = onProfileByteArrayChanged,
         )
 
         TextField(

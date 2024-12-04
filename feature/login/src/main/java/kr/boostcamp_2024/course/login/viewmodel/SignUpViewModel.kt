@@ -1,9 +1,6 @@
 package kr.boostcamp_2024.course.login.viewmodel
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -11,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +15,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kr.boostcamp_2024.course.domain.model.UserSubmitInfo
 import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.StorageRepository
@@ -28,10 +23,6 @@ import kr.boostcamp_2024.course.login.R
 import kr.boostcamp_2024.course.login.model.UserUiModel
 import kr.boostcamp_2024.course.login.navigation.CustomNavType.UserUiModelType
 import kr.boostcamp_2024.course.login.navigation.SignUpRoute
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 import javax.inject.Inject
 import kotlin.reflect.typeOf
 
@@ -43,13 +34,13 @@ data class SignUpUiState(
         profileImageUrl = null,
         studyGroups = emptyList(),
     ),
+    val profileImageByteArray: ByteArray? = null,
     val isSignUpSuccess: Boolean = false,
     val isEditMode: Boolean = false,
     val isSubmitSuccess: Boolean = false,
     val snackBarMessage: Int? = null,
 ) {
-    val isSignUpButtonEnabled: Boolean = userSubmitInfo.email.isNotBlank() &&
-        userSubmitInfo.name.length in 1..20
+    val isSignUpButtonEnabled: Boolean = userSubmitInfo.email.isNotBlank() && userSubmitInfo.name.length in 1..20
 }
 
 @HiltViewModel
@@ -123,10 +114,10 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun onProfileUriChanged(profileUri: String) {
+    fun onProfileByteArrayChanged(profileImageByteArray: ByteArray?) {
         _signUpUiState.update { currentState ->
             currentState.copy(
-                userSubmitInfo = currentState.userSubmitInfo.copy(profileImageUrl = profileUri),
+                profileImageByteArray = profileImageByteArray,
             )
         }
     }
@@ -135,10 +126,7 @@ class SignUpViewModel @Inject constructor(
         setLoading(true)
         viewModelScope.launch {
             if (userId != null) {
-                val imageByteArray = withContext(Dispatchers.IO) {
-                    signUpUiState.value.userSubmitInfo.profileImageUrl?.let { uriToByteArray(Uri.parse(it)) }
-                }
-                val downloadUrl = uploadImage(imageByteArray)
+                val downloadUrl = uploadImage(_signUpUiState.value.profileImageByteArray)
                 val userCreationInfo = UserSubmitInfo(
                     email = signUpUiState.value.userSubmitInfo.email,
                     name = signUpUiState.value.userSubmitInfo.name,
@@ -162,10 +150,7 @@ class SignUpViewModel @Inject constructor(
     fun signUp() {
         setLoading(true)
         viewModelScope.launch {
-            val imageByteArray = withContext(Dispatchers.IO) {
-                signUpUiState.value.userSubmitInfo.profileImageUrl?.let { uriToByteArray(Uri.parse(it)) }
-            }
-            val downloadUrl = uploadImage(imageByteArray)
+            val downloadUrl = uploadImage(_signUpUiState.value.profileImageByteArray)
             val userCreationInfo = UserSubmitInfo(
                 email = signUpUiState.value.userSubmitInfo.email,
                 name = signUpUiState.value.userSubmitInfo.name,
@@ -207,37 +192,6 @@ class SignUpViewModel @Inject constructor(
         }
         return null
     }
-
-    private fun uriToByteArray(
-        uri: Uri,
-    ): ByteArray {
-        val inputStream = if (uri.scheme == "http" || uri.scheme == "https") {
-            downloadImage(uri.toString())
-        } else {
-            context.contentResolver.openInputStream(uri)
-        }
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-        return baos.toByteArray()
-    }
-
-    private fun downloadImage(urlString: String): InputStream? =
-        try {
-            val url = URL(urlString)
-            val connection = url.openConnection() as HttpURLConnection
-            connection.doInput = true
-            connection.connect()
-            if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                connection.inputStream
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            Log.e("SignUpViewModel", "Failed to download image", e)
-            null
-        }
 
     private fun setLoading(isLoading: Boolean) {
         _signUpUiState.update {
