@@ -1,8 +1,12 @@
 package kr.boostcamp_2024.course.quiz.presentation.question
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,7 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -161,10 +167,19 @@ fun CreateQuestionScreen(
             )
         },
     ) { innerPadding ->
+        val imeInsets = WindowInsets.ime
+        val density = LocalDensity.current
+        val keyboardHeight = with(density) { imeInsets.getBottom(density).toDp() }
+        val isKeyboardVisible = keyboardHeight > 0.dp
         Box(
             modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(
+                    start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
+                    top = innerPadding.calculateTopPadding(),
+                    end = innerPadding.calculateEndPadding(LocalLayoutDirection.current),
+                    bottom = if (isKeyboardVisible) keyboardHeight else innerPadding.calculateBottomPadding(),
+                ),
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
