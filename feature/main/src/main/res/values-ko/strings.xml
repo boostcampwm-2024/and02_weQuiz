@@ -17,7 +17,7 @@
     <string name="txt_guide_dialog_title">가이드 링크 이동</string>
     <string name="txt_guide_dialog_confirm">이동</string>
     <string name="txt_guide_dialog_cancel">취소</string>
-    <string name="txt_guide_dialog_content">가이드 링크로 이동하시겠습니까?</string>
+    <string name="txt_guide_dialog_content">가이드 링크로\n이동하시겠습니까?</string>
     <string name="txt_no_implementation">추후 제공될 기능입니다.</string>
     <!--  content description  -->
     <string name="des_btn_notification">알림</string>
