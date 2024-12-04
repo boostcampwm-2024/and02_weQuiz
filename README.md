@@ -50,7 +50,7 @@
 |--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Architecture | <img src="https://img.shields.io/badge/Clean Architecture-000000?style=flat-square&logo=Clean Architecture&logoColor=white"/> <img src="https://img.shields.io/badge/Multi Module-57B685?style=flat-square&logo=Multi Module&logoColor=white"/> <img src="https://img.shields.io/badge/MVVM-3F4551?style=flat-square&logo=MVVM&logoColor=white"/> | [클린 아키텍쳐 선택 근거](https://www.notion.so/65af7f3ff4de425ba5ef818a123c13c3?pvs=21)⎮[gradle plugin 활용하기(1)](https://915dbfl.github.io/android/gradle-plugin(1)/) ⎮[gradle plugin 활용하기(2)](https://915dbfl.github.io/android/gradle-plugin(2)/) |  |
 | DI           | <img src="https://img.shields.io/badge/Hilt-1E4380?style=flat-square&logo=Hilt&logoColor=white"/>                                                                                                                                                                                                                                                 | [Why Hilt?](https://www.notion.so/65af7f3ff4de425ba5ef818a123c13c3?pvs=21)                                                                                                                                                                |
-| Network      | <img src="https://img.shields.io/badge/Retrofit-CC0000?style=flat-square&logo=Retrofit&logoColor=white"/> <img src="https://img.shields.io/badge/OkHttp-512BD4?style=flat-square&logo=OkHttp&logoColor=white"/> <img src="https://img.shields.io/badge/Kotlin Serialization-3F4551?style=flat-square&logo=Kotlin Serialization&logoColor=white"/> |                                                                                                                                                                                                                                           |
+| Network      | <img src="https://img.shields.io/badge/Retrofit-CC0000?style=flat-square&logo=Retrofit&logoColor=white"/> <img src="https://img.shields.io/badge/OkHttp-512BD4?style=flat-square&logo=OkHttp&logoColor=white"/> <img src="https://img.shields.io/badge/Kotlin Serialization-3F4551?style=flat-square&logo=Kotlin Serialization&logoColor=white"/> |[역/직렬화 라이브러리 비교](https://trite-ice-00b.notion.site/android-serialization-library-a656495ba4f7481abc3dc06a25383db6?pvs=4)                                                                                                                                                                                                                                           |
 | Asynchronous | <img src="https://img.shields.io/badge/Coroutines-83254F?style=flat-square&logo=Coroutines&logoColor=white"/>  <img src="https://img.shields.io/badge/Flow-FF9800?style=flat-square&logo=Flow&logoColor=white"/>                                                                                                                                  | [load 데이터를 언제 하면 좋을까?](https://www.notion.so/load-viewModel-init-13d5bfe2c24f8019b310f3d195174655?pvs=21)                                                                                                                                 |
 | UI/UX        | <img src="https://img.shields.io/badge/Jetpack Compose-4285F4?style=flat-square&logo=Jetpack Compose&logoColor=white"/> <img src="https://img.shields.io/badge/Navigation-E7157B?style=flat-square&logo=Navigation &logoColor=white"/>                                                                                                            | [LazyColumn/Row의 사실과 오해](https://www.notion.so/LazyColumn-Row-3c6f5b41183a4962b1338c1e582b07ee?pvs=21)⎮[Compose Navigation 적용하기](https://www.notion.so/Compose-navigation-cca9b5763d77445a9288a03831b26352?pvs=21)                        |
 | Image        | <img src="https://img.shields.io/badge/Coil-000000?style=flat-square&logo=Coil&logoColor=white"/>                                                                                                                                                                                                                                                 | [Why Coil? (with Glide)](https://www.notion.so/65af7f3ff4de425ba5ef818a123c13c3?pvs=21)                                                                                                                                                   | [확장자, 리사이징 비교](https://www.notion.so/2f1de70729874dc1a57b903a72ff3ff1?pvs=21) |
@@ -79,13 +79,15 @@
 
 <br>
 
-**2. 문제 유형 확장 가능한 구조 설계**
+**2. 확장 가능한 구조 설계**
 
-> 추상화를 활용해 문제 유형에 대해 확장 가능한 구조를 설계하였습니다.
+> 추상화를 활용해 확장 가능한 구조를 설계하였습니다.
 >
 >
-> 추후 새로운 문제 유형이 추가될 경우, 기존 코드를 수정하지 않고도 확장이 가능합니다.
->
+> 추후 새로운 퀴즈 / 문제 유형이 추가될 경우, 기존 코드를 수정하지 않고도 기능 확장이 가능합니다.
+> 
+> 대표적으로 문제 유형에 대한 구조 설계 과정을 문서화 하였습니다.
+> 
 > [🧩문제 유형 확장 가능한 구조 설계](https://www.notion.so/f86d5a85bb6c42ed9d06d2c7a76b07d1?pvs=21)
 >
 
@@ -96,7 +98,7 @@
 > 서버 구현을 하지 않고 실시간 기능을 구현하고자 하였습니다. 
 >
 >
-> 여러 기능들을 비교분석 후, Firestore를 활용하여 구현을 진행한 과정을 작성하였습니다.
+> 여러 기능들을 비교 / 분석 후, Firestore를 활용하여 구현을 진행한 과정을 작성하였습니다.
 >
 > [⏰실시간 퀴즈 구현](https://trite-ice-00b.notion.site/1315bfe2c24f8064837fc11fa838e586?pvs=4)
 >
