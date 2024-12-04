@@ -79,6 +79,7 @@
     <string name="txt_label_pie_chart_2">2번</string>
     <string name="txt_label_pie_chart_3">3번</string>
     <string name="txt_label_pie_chart_4">4번</string>
+    <string name="txt_label_pie_chart_not_submitted">제출 안함</string>
     <string name="fab_quiz_result">퀴즈 결과 화면 보기 버튼</string>
     <string name="txt_quiz_result">결과 보기</string>
     <string name="btn_create_quiz_ai">AI 문제 출제 버튼</string>

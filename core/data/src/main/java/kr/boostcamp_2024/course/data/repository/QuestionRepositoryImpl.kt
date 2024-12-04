@@ -98,7 +98,7 @@ class QuestionRepositoryImpl @Inject constructor(
                     when (userAnswer) {
                         is Int -> {
                             val choices = snapshot.get("user_answers") as? MutableList<Int> ?: throw Exception("user_answers 배열이 존재하지 않거나 잘못되었습니다.")
-                            if (userAnswer in 0..3) {
+                            if (userAnswer in 0..4) {
                                 choices[userAnswer] += 1
                                 transaction.update(document, "user_answers", choices)
                             } else {
