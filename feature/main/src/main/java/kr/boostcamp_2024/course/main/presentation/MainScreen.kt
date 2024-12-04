@@ -187,7 +187,6 @@ fun MainScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.LibraryBooks,
                             stringResource(R.string.des_main_guide_icon),
-                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     IconButton(onClick = onNotificationButtonClick) {
