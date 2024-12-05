@@ -7,28 +7,29 @@
 > 2. 한 명의 주도 아래 `실시간으로 참여` 가능한 퀴즈
 
 
+
 # 🎹 주요 기능
 
 ### 실시간 퀴즈 진행 및 결과
 
 |     화면 분류      |                                                        관리자 - 참여자                                                        |
 |:--------------:|:-----------------------------------------------------------------------------------------------------------------------:|
-|   실시간 퀴즈 진행    | <img src = "https://github.com/user-attachments/assets/5159faa2-dc85-42d7-b68a-953c12aa9e4d" width="500" height="560" > |
-| 실시간 퀴즈 결과 및 통계 | <img src = "https://github.com/user-attachments/assets/2f2234b2-105c-4ba9-b919-29689a2a17a0" width="500" height="560">  |
+|   실시간 퀴즈 진행    | <img src = "https://github.com/user-attachments/assets/83229876-8ecd-4338-9c27-3f872d3c9f8e" width="500" height="560" > |
+| 실시간 퀴즈 결과 및 통계 | <img src = "https://github.com/user-attachments/assets/ecbca3aa-5f20-4006-8776-5dc532c22193" width="500" height="560">  |
 
 
 ### 일반 퀴즈 진행 및 결과
 
 |                                                         퀴즈 진행                                                          |                                                        결과 및 통계                                                         |
 |:----------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------:|
-| <img src = "https://github.com/user-attachments/assets/1aeb294c-23b3-410a-8ccc-3d8f1b5652d8" width="252" height="560"> | <img src = "https://github.com/user-attachments/assets/be421142-ef45-4977-a2fe-d50a6c63d97b" width="252" height="560">
+| <img src = "https://github.com/user-attachments/assets/37cd56cc-09f7-4698-95ae-30830e4722c3" width="252" height="560"> | <img src = "https://github.com/user-attachments/assets/9e413b3a-7b05-4eeb-bce1-e904b5328166" width="252" height="560">
 
 
 ### 퀴즈 생성
 
 |                                                        AI 퀴즈 생성                                                        |                                                        낱말 퀴즈 생성                                                        |                                                       객관식 퀴즈 생성                                                        |
 |:----------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------:|
-| <img src = "https://github.com/user-attachments/assets/c1484d17-02c4-4147-b4de-ca6a1cf5f6c1" width="252" height="560"> | <img src = "https://github.com/user-attachments/assets/3fc71bf5-e7c2-4be7-9a28-c84bd156a1e9" width="252" height="560"> | <img src = "https://github.com/user-attachments/assets/ba2ede25-c8c8-4af5-b989-6226abb4332a" width="252" height="560">
+| <img src = "https://github.com/user-attachments/assets/56e59bd7-1629-4d25-9f92-9ee94afbce17" width="252" height="560"> | <img src = "https://github.com/user-attachments/assets/3fc71bf5-e7c2-4be7-9a28-c84bd156a1e9" width="252" height="560"> | <img src = "https://github.com/user-attachments/assets/ba2ede25-c8c8-4af5-b989-6226abb4332a" width="252" height="560">
 
 
 ### 스터디 그룹 관리
@@ -48,7 +49,7 @@
 
 | Category     | TechStack                                                                                                                                                                                                                                                                                                                                         | 관련 문서                                                                                                                                                                                                                                     |
 |--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Architecture | <img src="https://img.shields.io/badge/Clean Architecture-000000?style=flat-square&logo=Clean Architecture&logoColor=white"/> <img src="https://img.shields.io/badge/Multi Module-57B685?style=flat-square&logo=Multi Module&logoColor=white"/> <img src="https://img.shields.io/badge/MVVM-3F4551?style=flat-square&logo=MVVM&logoColor=white"/> | [클린 아키텍쳐 선택 근거](https://www.notion.so/65af7f3ff4de425ba5ef818a123c13c3?pvs=21)⎮[gradle plugin 활용하기(1)](https://915dbfl.github.io/android/gradle-plugin(1)/) ⎮[gradle plugin 활용하기(2)](https://915dbfl.github.io/android/gradle-plugin(2)/) |  |
+| Architecture | <img src="https://img.shields.io/badge/Clean Architecture-000000?style=flat-square&logo=Clean Architecture&logoColor=white"/> <img src="https://img.shields.io/badge/Multi Module-57B685?style=flat-square&logo=Multi Module&logoColor=white"/> | [Why CleanArchitecture?](https://www.notion.so/65af7f3ff4de425ba5ef818a123c13c3?pvs=21)⎮[gradle plugin 활용하기(1)](https://915dbfl.github.io/android/gradle-plugin(1)/) ⎮[gradle plugin 활용하기(2)](https://915dbfl.github.io/android/gradle-plugin(2)/) |  |
 | DI           | <img src="https://img.shields.io/badge/Hilt-1E4380?style=flat-square&logo=Hilt&logoColor=white"/>                                                                                                                                                                                                                                                 | [Why Hilt?](https://www.notion.so/65af7f3ff4de425ba5ef818a123c13c3?pvs=21)                                                                                                                                                                |
 | Network      | <img src="https://img.shields.io/badge/Retrofit-CC0000?style=flat-square&logo=Retrofit&logoColor=white"/> <img src="https://img.shields.io/badge/OkHttp-512BD4?style=flat-square&logo=OkHttp&logoColor=white"/> <img src="https://img.shields.io/badge/Kotlin Serialization-3F4551?style=flat-square&logo=Kotlin Serialization&logoColor=white"/> |[역/직렬화 라이브러리 비교](https://trite-ice-00b.notion.site/android-serialization-library-a656495ba4f7481abc3dc06a25383db6?pvs=4)                                                                                                                                                                                                                                           |
 | Asynchronous | <img src="https://img.shields.io/badge/Coroutines-83254F?style=flat-square&logo=Coroutines&logoColor=white"/>  <img src="https://img.shields.io/badge/Flow-FF9800?style=flat-square&logo=Flow&logoColor=white"/>                                                                                                                                  | [load 데이터를 언제 하면 좋을까?](https://www.notion.so/load-viewModel-init-13d5bfe2c24f8019b310f3d195174655?pvs=21)                                                                                                                                 |
@@ -117,11 +118,8 @@
 </div>
 
 # 팀원 소개
----
 
 |                                     [K014_김지훈](https://github.com/jay200333)                                     |                                    [K022_모영민](https://github.com/moyeongmin)                                     |                                      [K023_문유리](https://github.com/915dbfl)                                      |                                      [K041_이훈](https://github.com/pengcon)                                       |                                   [K051_천일영](https://github.com/Cheonilyeong)                                    |
 |:----------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------:|
 | <img src= https://github.com/user-attachments/assets/6e7b38c8-c6f6-451c-a233-83f9007256ab width=190 height=200 > | <img src= https://github.com/user-attachments/assets/1dc9f39a-edda-4665-bf5a-d01fba4924d3 width=190 height=200 > | <img src="https://github.com/user-attachments/assets/4215d583-1690-4c23-8330-5b5bd8ad125a" width=190 height=200> | <img src="https://github.com/user-attachments/assets/83af745e-f77e-4032-97f4-2cadf0d99556" width=180 height=200> | <img src="https://github.com/user-attachments/assets/46cdda87-30d9-4e51-a9b2-d29f5d5b87b3" width=180 height=200> |
 |                                                     즐거운 마음으로                                                     |                                                    말 많은 감자입니다                                                    |                                                  (스텝 바이 스텝🎶🎶)                                                  |                                                    7시간은 자야합니다                                                    |                                                      100010                                                      |
-
----
