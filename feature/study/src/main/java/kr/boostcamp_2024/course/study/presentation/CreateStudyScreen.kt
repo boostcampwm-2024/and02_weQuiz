@@ -175,7 +175,7 @@ fun isValidateNumber(inputNumber: String): Boolean {
     return isValid && inputNumber.toIntOrNull()?.let { it in 2..50 } == true
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ko")
 @Composable
 fun CreateStudyScreenPreview() {
     WeQuizTheme {
