@@ -12,7 +12,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
@@ -65,5 +67,49 @@ fun CategoryLazyColumn(
                 HorizontalDivider()
             }
         }
+    }
+}
+
+@Preview(showBackground = true, locale = "ko")
+@Composable
+fun CategoryListScreenPreview() {
+    WeQuizTheme {
+        CategoryListScreen(
+            owner = User(
+                id = "id",
+                email = "WeQuiz@gmail.com",
+                name = "Ivy",
+                profileUrl = null,
+                studyGroups = listOf("id"),
+            ),
+            currentGroup = StudyGroup(
+                id = "id",
+                name = "그룹이름",
+                studyGroupImageUrl = null,
+                description = null,
+                maxUserNum = 10,
+                ownerId = "id",
+                users = listOf("test1", "test2"),
+                categories = listOf(),
+            ),
+            categories = listOf(
+                Category(
+                    id = "id",
+                    name = "카테고리 테스트1",
+                    quizzes = listOf(),
+                    description = null,
+                    categoryImageUrl = null,
+                ),
+                Category(
+                    id = "id2",
+                    name = "카테고리 테스트2",
+                    quizzes = listOf(),
+                    description = null,
+                    categoryImageUrl = null,
+                ),
+            ),
+            createCategoryClick = { _, _ -> },
+            categoryItemClick = { _, _ -> },
+        )
     }
 }
