@@ -70,6 +70,8 @@ fun DetailStudyScreen(
         users = uiState.users,
         owner = uiState.owner,
         currentUserId = uiState.userId,
+        email = uiState.email,
+        isEmailValid = uiState.isEmailValid,
         snackBarHostState = snackBarHostState,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateCategoryButtonClick = onCreateCategoryButtonClick,
@@ -79,6 +81,8 @@ fun DetailStudyScreen(
         onEditStudyGroupClick = onEditStudyGroupButtonClick,
         onDeleteStudyGroupClick = viewModel::deleteStudyGroup,
         onLeaveStudyGroupClick = viewModel::deleteUserFromStudyGroup,
+        onEmailChange = viewModel::onEmailChange,
+        resetEmail = viewModel::resetEmail,
     )
 
     if (uiState.isLoading) {
@@ -120,6 +124,8 @@ fun DetailStudyScreen(
     users: List<User>,
     owner: User?,
     currentUserId: String?,
+    email: String?,
+    isEmailValid: Boolean,
     snackBarHostState: SnackbarHostState,
     onNavigationButtonClick: () -> Unit,
     onCreateCategoryButtonClick: (String?, String?) -> Unit,
@@ -129,6 +135,8 @@ fun DetailStudyScreen(
     onEditStudyGroupClick: (String) -> Unit,
     onDeleteStudyGroupClick: () -> Unit,
     onLeaveStudyGroupClick: () -> Unit,
+    onEmailChange: (String) -> Unit,
+    resetEmail: () -> Unit,
 ) {
     var selectedScreenIndex by remember { mutableIntStateOf(0) }
     val screenList = listOf(DetailScreenRoute, GroupScreenRoute)
@@ -216,8 +224,12 @@ fun DetailStudyScreen(
                         owner,
                         currentUserId,
                         users,
+                        email,
+                        isEmailValid,
                         onInviteConfirmButtonClick,
                         onRemoveStudyGroupMemberButtonClick,
+                        onEmailChange,
+                        resetEmail,
                     )
                 }
             }

@@ -1,6 +1,7 @@
 package kr.boostcamp_2024.course.study.viewmodel
 
 import android.util.Log
+import android.util.Patterns
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,6 +38,8 @@ data class DetailStudyUiState(
     val userId: String? = null,
     val isDeleteStudyGroupSuccess: Boolean = false,
     val isLeaveStudyGroupSuccess: Boolean = false,
+    val email: String? = null,
+    val isEmailValid: Boolean = false,
 )
 
 @HiltViewModel
@@ -367,5 +370,13 @@ class DetailStudyViewModel @Inject constructor(
 
     fun shownErrorMessage() {
         _uiState.update { it.copy(errorMessageId = null) }
+    }
+
+    fun onEmailChange(email: String) {
+        _uiState.update { it.copy(email = email, isEmailValid = Patterns.EMAIL_ADDRESS.matcher(email).matches()) }
+    }
+
+    fun resetEmail() {
+        _uiState.update { it.copy(email = null, isEmailValid = false) }
     }
 }
