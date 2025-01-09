@@ -162,7 +162,6 @@ class QuestionDetailScreenPreviewParameterProvider : PreviewParameterProvider<Qu
     )
 }
 
-
 @Preview(locale = "ko")
 @Composable
 fun QuestionDetailScreenPreview(
