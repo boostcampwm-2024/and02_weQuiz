@@ -188,17 +188,18 @@ fun OwnerQuestionResultItem(
 
 @Preview(
     showBackground = true,
+    locale = "ko",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ko")
 @Composable
 fun OwnerQuizResultScreenPreview() {
     WeQuizTheme {
         OwnerQuizResultScreen(
             onNavigationButtonClick = {},
             onQuestionClick = {},
-            questions = emptyList(),
-            quizTitle = "",
+            questions = quizResultPreviewQuestions,
+            quizTitle = "퀴즈 결과 프리뷰",
             snackbarHostState = remember { SnackbarHostState() },
         )
     }
