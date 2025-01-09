@@ -98,7 +98,7 @@ fun NotificationScreen(
     }
 }
 
-@Preview
+@Preview(locale = "ko")
 @Composable
 private fun NotificationScreenPreview() {
     WeQuizTheme {
