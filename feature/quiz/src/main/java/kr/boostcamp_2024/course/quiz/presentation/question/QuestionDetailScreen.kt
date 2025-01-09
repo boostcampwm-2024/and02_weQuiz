@@ -24,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -136,22 +138,40 @@ fun QuestionDetailScreen(
     }
 }
 
-@Preview
+class QuestionDetailScreenPreviewParameterProvider : PreviewParameterProvider<Question> {
+    override val values = sequenceOf(
+        BlankQuestion(
+            id = "1",
+            title = "문제 제목",
+            questionContent = listOf(
+                mapOf("text" to "바나나", "type" to "blank"),
+                mapOf("text" to "는 원래 하얗다", "type" to "text"),
+            ),
+            solution = "문제 해설",
+            userAnswers = emptyList(),
+        ),
+        ChoiceQuestion(
+            id = "2",
+            "문제 제목",
+            description = "문제 설명",
+            solution = "문제 해설",
+            answer = 0,
+            choices = listOf("객관식 1", "객관식 2", "객관식 3", "객관식 4"),
+            userAnswers = emptyList(),
+        ),
+    )
+}
+
+
+@Preview(locale = "ko")
 @Composable
-fun QuestionDetailScreenPreview() {
+fun QuestionDetailScreenPreview(
+    @PreviewParameter(QuestionDetailScreenPreviewParameterProvider::class) question: Question,
+) {
     WeQuizTheme {
         QuestionDetailScreen(
             onNavigationButtonClick = {},
-            question = BlankQuestion(
-                id = "1",
-                title = "문제 제목",
-                questionContent = listOf(
-                    mapOf("text" to "이훈"),
-                    mapOf("text" to "은 바나나를 좋아한다"),
-                ),
-                solution = "문제 해설",
-                userAnswers = emptyList(),
-            ),
+            question = question,
             errorMessage = null,
             userAnswer = listOf(0, 0, 0, 0),
         )
