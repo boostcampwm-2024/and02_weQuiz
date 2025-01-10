@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,16 +16,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -48,9 +42,11 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
+import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.QuestionResult
 import kr.boostcamp_2024.course.domain.model.QuizResult
 import kr.boostcamp_2024.course.quiz.R
+import kr.boostcamp_2024.course.quiz.component.Question
 import kr.boostcamp_2024.course.quiz.viewmodel.QuizResultViewModel
 
 @Composable
@@ -61,34 +57,16 @@ fun QuizResultScreen(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     val uiState by quizResultViewModel.uiState.collectAsStateWithLifecycle()
-
-    if (uiState.isManager) {
-        OwnerQuizResultScreen(
-            questions = uiState.questions,
-            quizTitle = uiState.quizTitle,
-            snackbarHostState = snackbarHostState,
-            onNavigationButtonClick = onNavigationButtonClick,
-            onQuestionClick = onQuestionClick,
-        )
-    } else {
-        GeneralQuizResultScreen(
-            quizTitle = uiState.quizTitle,
-            quizResult = uiState.quizResult,
-            onNavigationButtonClick = onNavigationButtonClick,
-            snackbarHostState = snackbarHostState,
-            onQuestionClick = onQuestionClick,
-        )
-    }
-
-    if (uiState.isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
-    }
+    QuizResultScreen(
+        isManager = uiState.isManager,
+        isLoading = uiState.isLoading,
+        questions = uiState.questions,
+        quizTitle = uiState.quizTitle,
+        quizResult = uiState.quizResult,
+        snackbarHostState = snackbarHostState,
+        onNavigationButtonClick = onNavigationButtonClick,
+        onQuestionClick = onQuestionClick,
+    )
 
     uiState.errorMessage?.let { errorMessage ->
         LaunchedEffect(errorMessage) {
@@ -96,60 +74,44 @@ fun QuizResultScreen(
             quizResultViewModel.shownErrorMessage()
         }
     }
+}
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun QuizResultScreen(
-        quizTitle: String?,
-        quizResult: QuizResult?,
-        snackbarHostState: SnackbarHostState,
-        onNavigationButtonClick: () -> Unit,
-        onQuestionClick: (String) -> Unit,
-    ) {
+@Composable
+fun QuizResultScreen(
+    isManager: Boolean,
+    isLoading: Boolean,
+    questions: List<Question>?,
+    quizTitle: String?,
+    quizResult: QuizResult?,
+    snackbarHostState: SnackbarHostState,
+    onNavigationButtonClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
+) {
+    if (isManager) {
+        OwnerQuizResultScreen(
+            questions = questions,
+            quizTitle = quizTitle,
+            snackbarHostState = snackbarHostState,
+            onNavigationButtonClick = onNavigationButtonClick,
+            onQuestionClick = onQuestionClick,
+        )
+    } else {
+        GeneralQuizResultScreen(
+            quizTitle = quizTitle,
+            quizResult = quizResult,
+            onNavigationButtonClick = onNavigationButtonClick,
+            snackbarHostState = snackbarHostState,
+            onQuestionClick = onQuestionClick,
+        )
+    }
 
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            topBar = {
-                CenterAlignedTopAppBar(
-                    title = {
-                        Text(
-                            text = quizTitle ?: "",
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = onNavigationButtonClick) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                contentDescription = stringResource(R.string.btn_navigation),
-                            )
-                        }
-                    },
-                )
-            },
-            snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        ) { innerPadding ->
-
-            quizResult?.let { quizResult ->
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                ) {
-                    // 캐릭터 & 점수
-                    QuizResultContent(
-                        totalQuestions = quizResult.totalQuestions,
-                        correctQuestions = quizResult.correctQuestions,
-                    )
-                    // 문제 리스트
-                    QuestionResultListContent(
-                        questionResults = quizResult.questionResults,
-                        onQuestionClick = onQuestionClick,
-                    )
-                }
-            }
+    if (isLoading) {
+        Box {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+            )
         }
     }
 }
@@ -270,15 +232,66 @@ fun QuestionResultItem(
     }
 }
 
+
+
 @Preview(
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Preview(showBackground = true)
 @Composable
-fun QuizResultScreenPreview() {
+fun OwnerResultScreenPreview() {
     WeQuizTheme {
         QuizResultScreen(
+            isManager = true,
+            isLoading = false,
+            questions = listOf(
+                ChoiceQuestion(
+                    id = "1",
+                    title = "Question Title",
+                    description = "Question Description",
+                    choices = listOf("Choice1", "Choice2"),
+                    solution = "Solution",
+                    answer = 0,
+                    userAnswers = listOf(0),
+                ),
+            ),
+            quizTitle = "Quiz Title",
+            quizResult = null,
+            snackbarHostState = SnackbarHostState(),
+            onNavigationButtonClick = {},
+            onQuestionClick = {},
+        )
+    }
+}
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Preview(showBackground = true)
+@Composable
+fun GeneralResultScreenPreview() {
+    WeQuizTheme {
+        QuizResultScreen(
+            isManager = false,
+            isLoading = false,
+            questions = null,
+            quizTitle = "Quiz Title",
+            quizResult = QuizResult(
+                userOmrAnswers = listOf(0),
+                questions = listOf(
+                    ChoiceQuestion(
+                        id = "1",
+                        title = "Question Title",
+                        description = "Question Description",
+                        choices = listOf("Choice1", "Choice2"),
+                        solution = "Solution",
+                        answer = 0,
+                        userAnswers = listOf(0),
+                    ),
+                ),
+            ),
+            snackbarHostState = SnackbarHostState(),
             onNavigationButtonClick = {},
             onQuestionClick = {},
         )
