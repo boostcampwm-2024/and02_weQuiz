@@ -46,7 +46,6 @@ import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.domain.model.QuestionResult
 import kr.boostcamp_2024.course.domain.model.QuizResult
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.component.Question
 import kr.boostcamp_2024.course.quiz.viewmodel.QuizResultViewModel
 
 @Composable
@@ -232,8 +231,6 @@ fun QuestionResultItem(
     }
 }
 
-
-
 @Preview(
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
@@ -264,6 +261,7 @@ fun OwnerResultScreenPreview() {
         )
     }
 }
+
 @Preview(
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
