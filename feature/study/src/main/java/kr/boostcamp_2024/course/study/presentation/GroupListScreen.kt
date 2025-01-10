@@ -9,12 +9,14 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
@@ -90,5 +92,57 @@ fun GroupLazyColumn(
                 HorizontalDivider()
             }
         }
+    }
+}
+
+@Preview(showBackground = true, locale = "ko")
+@Composable
+fun GroupListScreenPreview() {
+    MaterialTheme {
+        GroupListScreen(
+            currentGroup = StudyGroup(
+                id = "study1",
+                name = "study1",
+                description = "description",
+                maxUserNum = 12,
+                studyGroupImageUrl = "",
+                ownerId = "",
+                users = emptyList(),
+                categories = emptyList(),
+            ),
+            owner = User(
+                id = "user1",
+                name = "user1",
+                email = "email1",
+                profileUrl = "",
+                studyGroups = emptyList(),
+            ),
+            curUserId = "user1",
+            users = listOf(
+                User(
+                    id = "user1",
+                    name = "user1",
+                    email = "email1",
+                    profileUrl = "",
+                    studyGroups = emptyList(),
+                ),
+                User(
+                    id = "user2",
+                    name = "user2",
+                    email = "email2",
+                    profileUrl = "",
+                    studyGroups = emptyList(),
+                ),
+                User(
+                    id = "user3",
+                    name = "user3",
+                    email = "email3",
+                    profileUrl = "",
+                    studyGroups = emptyList(),
+                ),
+            ),
+            inviteClick = { _, _ -> },
+            removeClick = { _, _ -> },
+        )
     }
 }
