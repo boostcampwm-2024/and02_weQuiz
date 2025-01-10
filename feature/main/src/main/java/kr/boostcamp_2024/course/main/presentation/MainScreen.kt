@@ -131,14 +131,14 @@ fun MainScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     var userMenuIsExpanded by remember { mutableStateOf(false) }
-    var guideDialogIsExpanded by rememberSaveable { mutableStateOf(false) }
+    var showGuideDialog by rememberSaveable { mutableStateOf(false) }
     var state by rememberSaveable { mutableIntStateOf(0) }
     val titles = stringArrayResource(R.array.main_tabs_titles)
 
-    if (guideDialogIsExpanded) {
+    if (showGuideDialog) {
         GuideDialog(
             guideUrl = stringResource(R.string.guide_url),
-            onDismissButtonClick = { guideDialogIsExpanded = false },
+            onDismissButtonClick = { showGuideDialog = false },
         )
     }
 
@@ -179,7 +179,7 @@ fun MainScreen(
                     )
                 },
                 actions = {
-                    IconButton(onClick = { guideDialogIsExpanded = true }) {
+                    IconButton(onClick = { showGuideDialog = true }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.LibraryBooks,
                             stringResource(R.string.des_main_guide_icon),
