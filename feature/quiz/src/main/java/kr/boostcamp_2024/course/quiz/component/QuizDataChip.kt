@@ -8,15 +8,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
+import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
 
@@ -83,5 +86,35 @@ fun QuizDataChip(
                 },
             )
         }
+    }
+}
+
+@Preview(showBackground = true, locale = "ko")
+@Composable
+fun QuizDataChipPreview() {
+    MaterialTheme {
+        QuizDataChip(
+            category = Category(
+                id = "id",
+                name = "카테고리 이름",
+                description = "description",
+                categoryImageUrl = "categoryImageUrl",
+                quizzes = emptyList(),
+            ),
+            quiz = Quiz(
+                id = "id",
+                title = "퀴즈 제목",
+                description = "퀴즈 설명",
+                startTime = "2024-12-12",
+                solveTime = 60,
+                questions = listOf(
+                    "문제1",
+                    "문제2",
+                    "문제3",
+                ),
+                userOmrs = emptyList(),
+                quizImageUrl = "quizImageUrl",
+            ),
+        )
     }
 }
