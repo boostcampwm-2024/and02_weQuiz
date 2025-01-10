@@ -59,9 +59,6 @@ fun CategoryScreen(
 
     LaunchedEffect(Unit) {
         categoryViewModel.initViewmodel()
-    }
-
-    LaunchedEffect(Unit) {
         categoryUiState.value.snackBarMessage?.let { message ->
             snackBarHostState.showSnackbar(message)
             categoryViewModel.setNewSnackBarMessage(null)
@@ -235,10 +232,50 @@ fun QuizItem(
 fun CategoryScreenPreview() {
     WeQuizTheme {
         CategoryScreen(
+            category = Category(
+                id = "1",
+                name = "Category Name",
+                categoryImageUrl = "",
+                description = "카테고리 설명" ,
+                quizzes = listOf(" ", " ", " ")
+                ),
+            quizList = listOf(
+                Quiz(
+                    id = "1",
+                    title = "Quiz Title",
+                    description = "Quiz Description",
+                    startTime = "2021-09-01",
+                    solveTime = 10,
+                    questions = listOf(" ", " ", " "),
+                    userOmrs = listOf(" ", " ", " "),
+                    quizImageUrl = "",
+                ),
+                Quiz(
+                    id = "2",
+                    title = "Quiz Title",
+                    description = "Quiz Description",
+                    startTime = "2021-09-01",
+                    solveTime = 10,
+                    questions = listOf(" ", " ", " "),
+                    userOmrs = listOf(" ", " ", " "),
+                    quizImageUrl = "",
+                ),
+                Quiz(
+                    id = "3",
+                    title = "Quiz Title",
+                    description = "Quiz Description",
+                    startTime = "2021-09-01",
+                    solveTime = 10,
+                    questions = listOf(" ", " ", " "),
+                    userOmrs = listOf(" ", " ", " "),
+                    quizImageUrl = "",
+                ),
+            ) ,
+            onCategoryDeleteClick = {},
             onNavigationButtonClick = {},
             onCreateQuizButtonClick = {},
             onQuizClick = { _, _ -> },
             onCreateCategoryButtonClick = { _, _ -> },
-        )
+            )
     }
 }
