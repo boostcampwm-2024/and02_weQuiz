@@ -185,8 +185,19 @@ fun CreateCategoryScreen(
 fun CreateCategoryScreenPreview() {
     WeQuizTheme {
         CreateCategoryScreen(
+            name = "Category Name",
+            description = "Category Description",
+            currentCategoryImage = null,
+            defaultCategoryImageUri = null,
+            isCategoryCreationValid = true,
+            snackbarHostState = SnackbarHostState(),
+            onNameChanged = {},
+            onDescriptionChanged = {},
             onNavigationButtonClick = {},
-            onCreateCategorySuccess = {},
+            onCreateCategoryButtonClick = {},
+            isLoading = false,
+            guideText = "Create Category",
+            onCurrentCategoryImageChanged = {},
         )
     }
 }
