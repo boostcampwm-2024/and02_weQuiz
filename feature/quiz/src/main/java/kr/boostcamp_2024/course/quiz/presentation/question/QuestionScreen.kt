@@ -18,9 +18,9 @@ fun QuestionScreen(
     onNavigationButtonClick: () -> Unit,
     onQuizFinished: (String?, String?) -> Unit,
     questionViewModel: QuestionViewModel = hiltViewModel(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     val uiState by questionViewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     if (uiState.quiz is RealTimeQuiz) {
         val quiz = uiState.quiz as RealTimeQuiz
