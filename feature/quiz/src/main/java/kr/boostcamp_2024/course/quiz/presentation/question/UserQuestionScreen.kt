@@ -24,9 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
@@ -43,10 +46,10 @@ fun UserQuestionScreen(
     onNavigationButtonClick: () -> Unit,
     onQuizFinished: (String?, String?) -> Unit,
     userQuestionViewModel: UserQuestionViewModel = hiltViewModel(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     val uiState by userQuestionViewModel.uiState.collectAsStateWithLifecycle()
     var quizFinishDialog by rememberSaveable { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     UserQuestionScreen(
         quiz = uiState.quiz,
@@ -104,7 +107,7 @@ fun UserQuestionScreen(
     quizFinishDialog: Boolean,
     onQuizFinishDialogDismissButtonClick: () -> Unit,
     selectedIndexList: List<Any?>,
-    snackbarHostState: SnackbarHostState,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onOptionSelected: (Int, Int) -> Unit,
     onBlanksSelected: (Int, Map<String, String?>) -> Unit,
     onSubmitButtonClick: (String) -> Unit,
@@ -243,11 +246,32 @@ fun UserQuestionScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(locale = "ko")
+@PreviewLightDark
 @Composable
-fun UserQuestionScreenPreview() {
-    UserQuestionScreen(
-        onNavigationButtonClick = {},
-        onQuizFinished = { _, _ -> },
-    )
+fun UserQuestionScreenPreview(
+    @PreviewParameter(QuizParameterProvider::class) quiz: BaseQuiz,
+) {
+    WeQuizTheme {
+        UserQuestionScreen(
+            quiz = quiz,
+            currentPage = 0,
+            choiceQuestions = emptyList(),
+            ownerName = "Owner Name",
+            quizFinishDialog = false,
+            onQuizFinishDialogDismissButtonClick = {},
+            selectedIndexList = emptyList(),
+            onOptionSelected = { _, _ -> },
+            onBlanksSelected = { _, _ -> },
+            onSubmitButtonClick = {},
+            isSubmitted = false,
+            onQuizFinishButtonClick = {},
+            blankQuestionContents = emptyList(),
+            blankWords = emptyList(),
+            removeBlankContent = {},
+            addBlankContent = {},
+            getBlankQuestionAnswer = { emptyMap() },
+            onExitButtonClick = {},
+        )
+    }
 }
