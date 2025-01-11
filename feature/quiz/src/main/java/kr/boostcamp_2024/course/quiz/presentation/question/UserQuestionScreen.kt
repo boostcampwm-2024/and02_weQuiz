@@ -42,7 +42,7 @@ import kr.boostcamp_2024.course.quiz.component.RealTimeQuizGuideContent
 import kr.boostcamp_2024.course.quiz.viewmodel.UserQuestionViewModel
 
 @Composable
-fun UserQuestionScreen(
+internal fun UserQuestionScreen(
     onNavigationButtonClick: () -> Unit,
     onQuizFinished: (String?, String?) -> Unit,
     userQuestionViewModel: UserQuestionViewModel = hiltViewModel(),

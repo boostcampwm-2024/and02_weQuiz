@@ -49,7 +49,7 @@ import kr.boostcamp_2024.course.quiz.component.QuizContent
 import kr.boostcamp_2024.course.quiz.utils.timerFormat
 
 @Composable
-fun GeneralQuestionScreen(
+internal fun GeneralQuestionScreen(
     quizTitle: String?,
     currentPage: Int,
     questions: List<Question>,

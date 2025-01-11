@@ -41,7 +41,7 @@ import kr.boostcamp_2024.course.login.R
 import kr.boostcamp_2024.course.login.viewmodel.SignUpViewModel
 
 @Composable
-fun SignUpScreen(
+internal fun SignUpScreen(
     onSignUpSuccess: () -> Unit,
     onNavigationButtonClick: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel(),

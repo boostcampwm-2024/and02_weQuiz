@@ -48,7 +48,7 @@ import java.security.MessageDigest
 import java.util.UUID
 
 @Composable
-fun LoginScreen(
+internal fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onSignUp: (UserUiModel) -> Unit,
     loginViewModel: LoginViewModel = hiltViewModel(),

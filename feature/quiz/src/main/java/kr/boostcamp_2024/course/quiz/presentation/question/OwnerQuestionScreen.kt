@@ -50,7 +50,7 @@ import kr.boostcamp_2024.course.quiz.component.RealTimeQuizGuideContent
 import kr.boostcamp_2024.course.quiz.viewmodel.OwnerQuestionViewModel
 
 @Composable
-fun OwnerQuestionScreen(
+internal fun OwnerQuestionScreen(
     quiz: RealTimeQuiz?,
     currentUserId: String?,
     onQuizFinished: (String?, String?) -> Unit,
