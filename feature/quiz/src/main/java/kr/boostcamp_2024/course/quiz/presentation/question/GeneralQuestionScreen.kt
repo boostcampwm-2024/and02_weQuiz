@@ -35,13 +35,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
-import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Question
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
@@ -50,12 +50,12 @@ import kr.boostcamp_2024.course.quiz.utils.timerFormat
 
 @Composable
 fun GeneralQuestionScreen(
-    quiz: BaseQuiz?,
+    quizTitle: String?,
     currentPage: Int,
     questions: List<Question>,
     countDownTime: Int,
     selectedIndexList: List<Any>,
-    snackbarHostState: SnackbarHostState,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onNavigationButtonClick: () -> Unit,
     onOptionSelected: (Int, Int) -> Unit,
     onBlanksSelected: (Int, Map<String, String?>) -> Unit,
@@ -80,9 +80,9 @@ fun GeneralQuestionScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            quiz?.let {
+            quizTitle?.let {
                 QuestionTopBar(
-                    title = it.title,
+                    title = it,
                     onShowDialog = { showDialog = true },
                 )
             }
@@ -263,14 +263,15 @@ fun GeneralQuizDialog(
     )
 }
 
-@Preview(showBackground = true)
+@Preview(locale = "ko")
+@PreviewLightDark
 @Composable
 fun GeneralQuestionScreenPreview() {
     WeQuizTheme {
         GeneralQuestionScreen(
-            quiz = null,
+            quizTitle = "Quiz Title",
             currentPage = 0,
-            questions = emptyList(),
+            questions = listOf(),
             countDownTime = 0,
             selectedIndexList = emptyList(),
             snackbarHostState = SnackbarHostState(),

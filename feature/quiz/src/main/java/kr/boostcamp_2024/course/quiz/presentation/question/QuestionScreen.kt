@@ -41,7 +41,7 @@ fun QuestionScreen(
     } else if (uiState.quiz is Quiz) {
         uiState.countDownTime?.let { currentCountDownTime ->
             GeneralQuestionScreen(
-                quiz = uiState.quiz,
+                quizTitle = uiState.quiz?.title,
                 currentPage = uiState.currentPage,
                 questions = uiState.questions,
                 countDownTime = currentCountDownTime,
