@@ -32,6 +32,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -99,7 +101,7 @@ fun OwnerQuestionScreen(
     currentPage: Int,
     choiceQuestions: List<Question?>,
     ownerName: String,
-    snackbarHostState: SnackbarHostState,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onNextButtonClick: () -> Unit,
     onPreviousButtonClick: () -> Unit,
     onQuizFinishButtonClick: () -> Unit,
@@ -266,14 +268,28 @@ fun RealTimeQuizWithOwnerButtons(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(locale = "ko")
+@PreviewLightDark
 @Composable
-fun OwnerQuestionScreenPreview() {
+fun OwnerQuestionScreenPreview(
+    @PreviewParameter(QuizParameterProvider::class, 1) quiz: RealTimeQuiz,
+) {
     WeQuizTheme {
         OwnerQuestionScreen(
-            quiz = null,
-            currentUserId = null,
-            onQuizFinished = { _, _ -> },
+            quiz = quiz,
+            isNextButtonEnabled = true,
+            currentPage = 0,
+            choiceQuestions = emptyList(),
+            ownerName = "Owner",
+            onNextButtonClick = {},
+            onPreviousButtonClick = {},
+            onQuizFinishButtonClick = {},
+            showErrorMessage = {},
+            blankQuestionContents = emptyList(),
+            blankWords = emptyList(),
+            removeBlankWord = {},
+            addBlankWord = {},
+            getBlankQuestionAnswer = { emptyMap() },
         )
     }
 }
