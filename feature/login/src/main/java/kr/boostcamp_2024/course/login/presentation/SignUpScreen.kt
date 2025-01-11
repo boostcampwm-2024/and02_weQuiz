@@ -29,14 +29,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
+import kr.boostcamp_2024.course.domain.model.UserSubmitInfo
 import kr.boostcamp_2024.course.login.R
-import kr.boostcamp_2024.course.login.viewmodel.SignUpUiState
 import kr.boostcamp_2024.course.login.viewmodel.SignUpViewModel
 
 @Composable
@@ -59,8 +60,12 @@ fun SignUpScreen(
         }
     }
 
-    SignupScreen(
-        uiState = uiState,
+    SignUpScreen(
+        isLoading = uiState.isLoading,
+        userSubmitInfo = uiState.userSubmitInfo,
+        isSignUpButtonEnabled = uiState.isSignUpButtonEnabled,
+        isEditMode = uiState.isEditMode,
+        profileImageByteArray = uiState.profileImageByteArray,
         snackBarHostState = snackBarHostState,
         onNameChanged = viewModel::onNameChanged,
         onNavigationButtonClick = onNavigationButtonClick,
@@ -78,9 +83,13 @@ fun SignUpScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SignupScreen(
-    uiState: SignUpUiState,
-    snackBarHostState: SnackbarHostState,
+private fun SignUpScreen(
+    isLoading: Boolean,
+    userSubmitInfo: UserSubmitInfo,
+    isSignUpButtonEnabled: Boolean,
+    isEditMode: Boolean,
+    profileImageByteArray: ByteArray?,
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onNameChanged: (String) -> Unit,
     onProfileByteArrayChanged: (ByteArray) -> Unit,
     onNavigationButtonClick: () -> Unit,
@@ -92,7 +101,7 @@ private fun SignupScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = when (uiState.isEditMode) {
+                        text = when (isEditMode) {
                             true -> stringResource(R.string.top_app_bar_edit_user)
                             false -> stringResource(R.string.top_app_bar_sign_up)
                         },
@@ -123,23 +132,23 @@ private fun SignupScreen(
         ) {
             item {
                 SignUpContent(
-                    email = uiState.userSubmitInfo.email,
-                    name = uiState.userSubmitInfo.name,
-                    profileUri = uiState.userSubmitInfo.profileImageUrl,
-                    profileImageByteArray = uiState.profileImageByteArray,
+                    email = userSubmitInfo.email,
+                    name = userSubmitInfo.name,
+                    profileUri = userSubmitInfo.profileImageUrl,
+                    profileImageByteArray = profileImageByteArray,
                     onNameChanged = onNameChanged,
                     onProfileByteArrayChanged = onProfileByteArrayChanged,
                 )
             }
             item {
                 SignUpButtons(
-                    isSignUpValid = uiState.isSignUpButtonEnabled && !uiState.isLoading,
-                    onSubmitButtonClick = if (uiState.isEditMode) onEditButtonClick else onSignUpButtonClick,
-                    isEditMode = uiState.isEditMode,
+                    isSignUpValid = isSignUpButtonEnabled && !isLoading,
+                    onSubmitButtonClick = if (isEditMode) onEditButtonClick else onSignUpButtonClick,
+                    isEditMode = isEditMode,
                 )
             }
         }
-        if (uiState.isLoading) {
+        if (isLoading) {
             WeQuizCircularProgressIndicator()
         }
     }
@@ -219,13 +228,27 @@ fun SignUpButtons(
     }
 }
 
-@Preview
+@Preview(locale = "ko")
+@PreviewLightDark
 @Composable
 fun PreviewSignUpScreen() {
     WeQuizTheme {
         SignUpScreen(
-            onSignUpSuccess = {},
+            isLoading = false,
+            userSubmitInfo = UserSubmitInfo(
+                email = "test@gmail.com",
+                name = "위퀴즈",
+                profileImageUrl = null,
+                studyGroups = emptyList(),
+            ),
+            isSignUpButtonEnabled = true,
+            isEditMode = false,
+            profileImageByteArray = null,
+            onNameChanged = {},
+            onProfileByteArrayChanged = {},
             onNavigationButtonClick = {},
+            onSignUpButtonClick = {},
+            onEditButtonClick = {},
         )
     }
 }
