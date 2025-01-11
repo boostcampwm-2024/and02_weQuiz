@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
@@ -81,7 +82,7 @@ fun LoginScreen(
 
 @Composable
 private fun LoginScreen(
-    snackBarHostState: SnackbarHostState,
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onLoginSuccess: () -> Unit,
     handleSignIn: (GetCredentialResponse, Int) -> Unit,
     setNewSnackBarMessage: (Int?) -> Unit,
@@ -218,12 +219,12 @@ fun LoginButtons(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
+@Preview(locale = "ko")
+@PreviewLightDark
 fun LoginScreenPreview() {
     WeQuizTheme {
         LoginScreen(
-            snackBarHostState = SnackbarHostState(),
             onLoginSuccess = {},
             handleSignIn = { _, _ -> },
             setNewSnackBarMessage = {},
