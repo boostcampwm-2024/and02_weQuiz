@@ -19,13 +19,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
+import kr.boostcamp_2024.course.domain.model.Notification
 import kr.boostcamp_2024.course.domain.model.NotificationWithGroupInfo
 import kr.boostcamp_2024.course.main.R
 
 @Composable
-fun NotificationItem(
+internal fun NotificationItem(
     notificationInfo: NotificationWithGroupInfo,
     onRejectClick: () -> Unit,
     onAcceptClick: () -> Unit,
@@ -104,4 +107,25 @@ fun NotificationItem(
     Spacer(modifier = modifier.width(12.dp))
 
     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+}
+
+@Preview(showBackground = true, locale = "ko")
+@Composable
+private fun NotificationItemPreview() {
+    WeQuizTheme {
+        NotificationItem(
+            notificationInfo = NotificationWithGroupInfo(
+                notification = Notification(
+                    id = "id",
+                    groupId = "groupId1",
+                    userId = "userId1",
+                ),
+                studyGroupName = "안드로이드 구조",
+                studyGroupImgUrl = null,
+            ),
+            modifier = Modifier,
+            onRejectClick = {},
+            onAcceptClick = {},
+        )
+    }
 }
