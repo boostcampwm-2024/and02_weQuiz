@@ -9,10 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
+import kr.boostcamp_2024.course.quiz.presentation.question.QuizParameterProvider
 
 @Composable
 fun QuizDataButton(
@@ -116,5 +121,23 @@ fun QuizDataButton(
             null -> { // no-op
             }
         }
+    }
+}
+
+@Preview(locale = "ko")
+@PreviewLightDark
+@Composable
+fun QuizDataButtonPreview(
+    @PreviewParameter(QuizParameterProvider::class) quiz: BaseQuiz,
+) {
+    WeQuizTheme {
+        QuizDataButton(
+            quiz = quiz,
+            currentUserId = "0",
+            onCreateQuestionButtonClick = { },
+            onStartQuizButtonClick = { },
+            onStartRealTimeQuizButtonClick = { },
+            onWaitingRealTimeQuizButtonClick = { },
+        )
     }
 }

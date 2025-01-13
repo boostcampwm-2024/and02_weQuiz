@@ -14,11 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
+import kr.boostcamp_2024.course.quiz.presentation.question.QuizParameterProvider
 
 @Composable
 fun QuizDataChip(
@@ -83,5 +88,25 @@ fun QuizDataChip(
                 },
             )
         }
+    }
+}
+
+@Preview(locale = "ko")
+@PreviewLightDark
+@Composable
+fun QuizDataChipPreview(
+    @PreviewParameter(QuizParameterProvider::class) quiz: BaseQuiz,
+) {
+    WeQuizTheme {
+        QuizDataChip(
+            quiz = quiz,
+            category = Category(
+                id = "id",
+                name = "category name",
+                description = "description",
+                categoryImageUrl = "categoryImageUrl",
+                quizzes = emptyList(),
+            ),
+        )
     }
 }

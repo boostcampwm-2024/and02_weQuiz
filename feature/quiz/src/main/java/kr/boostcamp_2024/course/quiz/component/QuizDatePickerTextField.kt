@@ -25,6 +25,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.quiz.R
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -32,7 +34,6 @@ import java.time.ZoneOffset
 import java.util.Date
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizDatePickerTextField(
     quizDate: String,
@@ -116,11 +117,14 @@ private fun convertMillisToDate(millis: Long): String {
     return formatter.format(Date(millis))
 }
 
-@Preview(showBackground = true)
+@Preview(locale = "ko")
+@PreviewLightDark
 @Composable
 fun QuizDatePickerTextFieldPreview() {
-    QuizDatePickerTextField(
-        quizDate = "",
-        onDateSelected = {},
-    )
+    WeQuizTheme {
+        QuizDatePickerTextField(
+            quizDate = "",
+            onDateSelected = {},
+        )
+    }
 }

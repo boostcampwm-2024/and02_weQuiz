@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.quiz.R
@@ -44,7 +45,8 @@ fun QuestionTitleAndDetail(title: String, description: String) {
     }
 }
 
-@Preview
+@Preview(locale = "ko")
+@PreviewLightDark
 @Composable
 private fun QuestionTitleAndDetailPreview() {
     WeQuizTheme {

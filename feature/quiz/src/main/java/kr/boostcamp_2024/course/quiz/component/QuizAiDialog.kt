@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
@@ -40,7 +41,8 @@ fun QuizAiDialog(
     )
 }
 
-@Preview(showBackground = true)
+@Preview(locale = "ko")
+@PreviewLightDark
 @Composable
 private fun CreateGroupScreenPreview() {
     WeQuizTheme {
