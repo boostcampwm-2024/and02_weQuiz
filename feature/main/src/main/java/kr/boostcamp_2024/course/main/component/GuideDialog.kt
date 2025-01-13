@@ -12,7 +12,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.main.R
 
 @Composable
-fun GuideDialog(
+internal fun GuideDialog(
     onDismissButtonClick: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -32,7 +32,7 @@ fun GuideDialog(
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ko")
 @Composable
 private fun CreateGroupScreenPreview() {
     WeQuizTheme {
