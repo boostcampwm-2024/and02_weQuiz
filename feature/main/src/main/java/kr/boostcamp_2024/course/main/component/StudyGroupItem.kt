@@ -33,7 +33,7 @@ import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.main.R
 
 @Composable
-fun StudyGroupItem(
+internal fun StudyGroupItem(
     isOwner: Boolean,
     studyGroup: StudyGroup,
     onStudyGroupClick: (String) -> Unit,
@@ -143,9 +143,9 @@ fun StudyGroupItem(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ko")
 @Composable
-fun StudyGroupItemPreview() {
+private fun StudyGroupItemPreview() {
     WeQuizTheme {
         StudyGroupItem(
             isOwner = true,
