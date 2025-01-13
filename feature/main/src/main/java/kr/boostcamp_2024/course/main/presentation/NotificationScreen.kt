@@ -108,7 +108,7 @@ private fun NotificationScreenPreview() {
                     notification = Notification(
                         id = "1",
                         groupId = "1",
-                        userid = "1",
+                        userId = "1",
                     ),
                     studyGroupName = "스터디 이름",
                     studyGroupImgUrl = "null",
