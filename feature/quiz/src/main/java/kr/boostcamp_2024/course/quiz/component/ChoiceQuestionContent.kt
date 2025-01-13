@@ -7,7 +7,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 
 @Composable
-fun ChoiceQuestionContent(
+internal fun ChoiceQuestionContent(
     isOwner: Boolean = false,
     isRealTime: Boolean = false,
     question: ChoiceQuestion,
@@ -36,9 +36,9 @@ fun ChoiceQuestionContent(
     }
 }
 
-@Preview
+@Preview(showBackground = true, locale = "ko")
 @Composable
-fun ChoiceQuestionContentPreview() {
+private fun ChoiceQuestionContentPreview() {
     WeQuizTheme {
         ChoiceQuestionContent(
             question = ChoiceQuestion(
