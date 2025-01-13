@@ -29,7 +29,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
-fun ConsumeBlankContentUi(
+internal fun ConsumeBlankContentUi(
     word: String,
     index: Int = 0,
     onContentRemove: (Int) -> Unit,
@@ -133,7 +133,7 @@ fun ConsumeTextContentUi(
 
 }
 
-@Preview
+@Preview(showBackground = true, locale = "ko")
 @Composable
 private fun ConsumeBlankContentUiPreview() {
     WeQuizTheme {
@@ -143,11 +143,10 @@ private fun ConsumeBlankContentUiPreview() {
             onValueChanged = { _, _ -> },
             textFieldEnabled = true,
         )
-
     }
 }
 
-@Preview
+@Preview(showBackground = true, locale = "ko")
 @Composable
 private fun ConsumeTextContentUiPreview() {
     WeQuizTheme {
