@@ -6,10 +6,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.main.R
 
 @Composable
-fun MainDropDownMenu(
+internal fun MainDropDownMenu(
     isExpanded: Boolean,
     onDismissRequest: () -> Unit,
     onEditUserClick: () -> Unit,
@@ -33,6 +35,19 @@ fun MainDropDownMenu(
                 onLogOutClick()
                 onDismissRequest()
             },
+        )
+    }
+}
+
+@Preview(showBackground = true, locale = "ko")
+@Composable
+private fun MainDropDownMenuPreview() {
+    WeQuizTheme {
+        MainDropDownMenu(
+            isExpanded = true,
+            onDismissRequest = {},
+            onEditUserClick = {},
+            onLogOutClick = {},
         )
     }
 }
