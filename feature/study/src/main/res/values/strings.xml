@@ -57,6 +57,7 @@
     <string name="txt_edit_study_top_app_bar">Edit Study</string>
     <string name="txt_study_edition_button">Edit Study</string>
     <string name="des_study_group_image">Study Background Image</string>
+    <string name="des_navigation_back">Go Back</string>
     <string-array name="drop_down_menu_options">
         <item>1 person</item>
         <item>2 people</item>

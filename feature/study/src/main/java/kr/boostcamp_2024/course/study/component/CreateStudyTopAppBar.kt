@@ -10,11 +10,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.study.R
 
 @ExperimentalMaterial3Api
 @Composable
-fun CreateStudyTopAppBar(
+internal fun CreateStudyTopAppBar(
     isEditMode: Boolean,
     onNavigationButtonClick: () -> Unit,
 ) {
@@ -32,9 +34,21 @@ fun CreateStudyTopAppBar(
             IconButton(onClick = onNavigationButtonClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.des_navigation_back),
                 )
             }
         },
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true, locale = "ko")
+@Composable
+private fun CreateStudyTopAppBarPreview() {
+    WeQuizTheme {
+        CreateStudyTopAppBar(
+            isEditMode = false,
+            onNavigationButtonClick = {},
+        )
+    }
 }

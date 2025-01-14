@@ -57,6 +57,7 @@
     <string name="txt_edit_study_top_app_bar">스터디 수정</string>
     <string name="txt_study_edition_button">스터디 수정</string>
     <string name="des_study_group_image">스터디 배경 이미지</string>
+    <string name="des_navigation_back">뒤로 가기</string>
     <string-array name="drop_down_menu_options">
         <item>1명</item>
         <item>2명</item>

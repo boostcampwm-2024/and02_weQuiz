@@ -57,6 +57,7 @@
     <string name="txt_edit_study_top_app_bar">编辑学习组</string>
     <string name="txt_study_edition_button">编辑学习组</string>
     <string name="des_study_group_image">学习组背景图片</string>
+    <string name="des_navigation_back">后退</string>
     <string-array name="drop_down_menu_options">
         <item>1人</item>
         <item>2人</item>
