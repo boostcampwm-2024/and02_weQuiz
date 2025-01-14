@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -48,4 +50,14 @@ fun RealTimeQuestion(
             }
         }
     }
+}
+
+@Preview(showBackground = true, locale = "ko")
+@PreviewLightDark
+@Composable
+private fun RealTimeQuestionPreview() {
+    RealTimeQuestion(
+        questions = listOf("문제1", "문제2", "문제3", "문제4", "문제5"),
+        selectedIndex = 0,
+    )
 }
