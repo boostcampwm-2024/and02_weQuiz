@@ -62,7 +62,6 @@ class QuestionViewModel @Inject constructor(
     private fun initial() {
         viewModelScope.launch {
             loadCurrentUserId()
-            _uiState.value = _uiState.value.copy(isLoading = true)
             _uiState.update { it.copy(isLoading = true) }
             quizRepository.getQuiz(quizId)
                 .onSuccess { quiz ->
