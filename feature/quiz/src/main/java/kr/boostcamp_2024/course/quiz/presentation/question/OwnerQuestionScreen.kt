@@ -47,6 +47,7 @@ import kr.boostcamp_2024.course.quiz.component.QuestionTopBar
 import kr.boostcamp_2024.course.quiz.component.QuizContent
 import kr.boostcamp_2024.course.quiz.component.QuizOwnerDialog
 import kr.boostcamp_2024.course.quiz.component.RealTimeQuizGuideContent
+import kr.boostcamp_2024.course.quiz.utils.QuizParameterProvider
 import kr.boostcamp_2024.course.quiz.viewmodel.OwnerQuestionViewModel
 
 @Composable

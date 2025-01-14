@@ -1,4 +1,4 @@
-package kr.boostcamp_2024.course.quiz.presentation.question
+package kr.boostcamp_2024.course.quiz.utils
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import kr.boostcamp_2024.course.domain.model.BaseQuiz

@@ -17,7 +17,7 @@ import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.R
-import kr.boostcamp_2024.course.quiz.presentation.question.QuizParameterProvider
+import kr.boostcamp_2024.course.quiz.utils.QuizParameterProvider
 
 @Composable
 fun QuizDataButton(
