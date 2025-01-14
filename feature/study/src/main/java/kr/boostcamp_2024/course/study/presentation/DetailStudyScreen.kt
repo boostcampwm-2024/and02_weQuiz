@@ -196,7 +196,7 @@ fun DetailStudyScreen(
             SnackbarHost(hostState = snackBarHostState)
         },
     ) { innerPadding ->
-        if (currentGroup != null) {
+        if (currentGroup != null && owner != null) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()

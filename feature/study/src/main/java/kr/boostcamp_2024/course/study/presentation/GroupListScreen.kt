@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
@@ -26,8 +27,8 @@ import kr.boostcamp_2024.course.study.component.GroupItem
 
 @Composable
 fun GroupListScreen(
-    currentGroup: StudyGroup?,
-    owner: User?,
+    currentGroup: StudyGroup,
+    owner: User,
     curUserId: String?,
     users: List<User>,
     inviteClick: (String, String) -> Unit,
@@ -35,17 +36,17 @@ fun GroupListScreen(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     val isOwner: Boolean = owner?.id == curUserId
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp, top = 8.dp),
     ) {
         CustomPropertyTab(
-            studyGroupId = currentGroup?.id ?: "",
-            onClicked = { _, _ -> showDialog = true },
             imageVector = Icons.Outlined.AddCircle,
-            title = R.string.property_tab_group_text,
-            currentGroup = currentGroup ?: StudyGroup("", "", "", "", 0, "", emptyList(), emptyList()),
+            title = stringResource(R.string.property_tab_group_text),
+            currentGroup = currentGroup,
+            onTabClick = { _, _ -> showDialog = true },
         )
         if (showDialog) {
             CreateGroupDialog(
@@ -69,7 +70,7 @@ fun GroupListScreen(
 
 @Composable
 fun GroupLazyColumn(
-    owner: User?,
+    owner: User,
     groupId: String?,
     isOwner: Boolean,
     users: List<User>,
@@ -82,7 +83,7 @@ fun GroupLazyColumn(
     ) {
         itemsIndexed(items = users, key = { _, user -> user.id }) { index, user ->
             GroupItem(
-                owner?.id,
+                owner.id,
                 groupId,
                 isOwner,
                 removeClick,

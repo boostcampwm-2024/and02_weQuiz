@@ -22,7 +22,7 @@ import kr.boostcamp_2024.course.study.component.CustomPropertyTab
 
 @Composable
 fun CategoryListScreen(
-    owner: User?,
+    owner: User,
     currentGroup: StudyGroup,
     categories: List<Category>,
     createCategoryClick: (String?, String?) -> Unit,
@@ -34,11 +34,10 @@ fun CategoryListScreen(
             .padding(start = 16.dp, end = 16.dp, top = 8.dp),
     ) {
         CustomPropertyTab(
-            studyGroupId = currentGroup.id,
-            onClicked = createCategoryClick,
             imageVector = Icons.Outlined.AddCircle,
-            title = R.string.property_tab_category_text,
             currentGroup = currentGroup,
+            title = stringResource(R.string.property_tab_category_text),
+            onTabClick = createCategoryClick,
         )
         CategoryLazyColumn(owner, categories, categoryItemClick, currentGroup.id)
     }
