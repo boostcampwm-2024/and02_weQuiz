@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
 import kr.boostcamp_2024.course.domain.model.Category
@@ -57,11 +59,11 @@ fun QuizTopAppBar(
         navigationIcon = {
             IconButton(
                 onClick =
-                    if (quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId) && quiz.isStarted.not()) {
-                        { showDialog = true }
-                    } else {
-                        { onNavigationButtonClick() }
-                    },
+                if (quiz is RealTimeQuiz && quiz.waitingUsers.contains(currentUserId) && quiz.isStarted.not()) {
+                    { showDialog = true }
+                } else {
+                    { onNavigationButtonClick() }
+                },
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -126,4 +128,32 @@ fun QuizTopAppBar(
             content = { /* no-op */ },
         )
     }
+}
+
+
+@Preview(showBackground = true)
+@PreviewLightDark
+@Composable
+fun QuizTopAppBarPreview() {
+    QuizTopAppBar(
+        category = Category(id = "", name = "", description = "", categoryImageUrl = "", quizzes = emptyList()),
+        quiz = RealTimeQuiz(
+            id = "",
+            title = "",
+            isStarted = false,
+            questions = emptyList(),
+            userOmrs = emptyList(),
+            currentQuestion = 0,
+            ownerId = "",
+            isFinished = false,
+            waitingUsers = emptyList(),
+            description = "",
+            quizImageUrl = null,
+        ),
+        currentUserId = "",
+        onWaitingRealTimeQuizButtonClick = {},
+        onNavigationButtonClick = {},
+        onSettingMenuClick = { _, _ -> },
+        onDeleteMenuClick = { _, _ -> },
+    )
 }
