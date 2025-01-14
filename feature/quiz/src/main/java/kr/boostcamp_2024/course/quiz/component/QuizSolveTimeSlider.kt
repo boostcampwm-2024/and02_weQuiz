@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuizSolveTimeSlider(
+internal fun QuizSolveTimeSlider(
     value: Float,
     steps: Int,
     valueRange: ClosedFloatingPointRange<Float>,

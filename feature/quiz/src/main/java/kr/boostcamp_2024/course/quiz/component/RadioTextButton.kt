@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RadioTextButton(
+internal fun RadioTextButton(
     text: String,
     selected: Boolean,
     onclick: () -> Unit,

@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RealTimeQuestion(
+internal fun RealTimeQuestion(
     isOwner: Boolean = false,
     questions: List<String>,
     selectedIndex: Int,

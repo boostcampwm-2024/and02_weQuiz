@@ -10,7 +10,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
-fun QuizOwnerDialog(
+internal fun QuizOwnerDialog(
     isQuit: Boolean = false,
     onDismissButtonClick: () -> Unit,
     onFinishQuizButtonClick: () -> Unit,

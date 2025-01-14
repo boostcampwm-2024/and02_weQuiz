@@ -19,7 +19,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatB
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
-fun RealTimeQuizGuideContent(
+internal fun RealTimeQuizGuideContent(
     ownerName: String,
     totalParticipants: Int,
     submittedParticipants: Int,

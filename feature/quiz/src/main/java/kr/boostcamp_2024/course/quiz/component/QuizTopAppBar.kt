@@ -33,7 +33,7 @@ import kr.boostcamp_2024.course.quiz.R
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun QuizTopAppBar(
+internal fun QuizTopAppBar(
     category: Category?,
     quiz: BaseQuiz?,
     currentUserId: String?,
