@@ -16,7 +16,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
-fun QuestionTitleAndDetail(title: String, description: String) {
+internal fun QuestionTitleAndDetail(title: String, description: String) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier

@@ -26,7 +26,7 @@ import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.utils.QuizParameterProvider
 
 @Composable
-fun QuizDataChip(
+internal fun QuizDataChip(
     category: Category?,
     quiz: BaseQuiz?,
 ) {

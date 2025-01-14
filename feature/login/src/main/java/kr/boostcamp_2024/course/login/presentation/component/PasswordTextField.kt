@@ -24,7 +24,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.login.R
 
 @Composable
-fun PasswordTextField(
+internal fun PasswordTextField(
     password: String,
     onPasswordChanged: (String) -> Unit,
 ) {

@@ -15,7 +15,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizTextField
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
-fun QuizAiDialog(
+internal fun QuizAiDialog(
     onDismissButtonClick: () -> Unit,
     onConfirmButtonClick: (String) -> Unit,
 ) {

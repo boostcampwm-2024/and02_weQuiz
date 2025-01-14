@@ -35,7 +35,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun QuizDatePickerTextField(
+internal fun QuizDatePickerTextField(
     quizDate: String,
     onDateSelected: (String) -> Unit,
 ) {

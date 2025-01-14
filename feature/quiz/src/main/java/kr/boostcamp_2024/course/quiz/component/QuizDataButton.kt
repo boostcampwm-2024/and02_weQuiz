@@ -20,7 +20,7 @@ import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.utils.QuizParameterProvider
 
 @Composable
-fun QuizDataButton(
+internal fun QuizDataButton(
     quiz: BaseQuiz?,
     currentUserId: String?,
     onCreateQuestionButtonClick: (String) -> Unit,

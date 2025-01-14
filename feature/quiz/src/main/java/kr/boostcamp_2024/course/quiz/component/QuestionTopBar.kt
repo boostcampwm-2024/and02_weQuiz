@@ -16,7 +16,7 @@ import kr.boostcamp_2024.course.quiz.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuestionTopBar(
+internal fun QuestionTopBar(
     title: String,
     onShowDialog: () -> Unit,
 ) {

@@ -16,7 +16,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizChatBubble
 import kr.boostcamp_2024.course.quiz.R
 
 @Composable
-fun QuestionTitle(title: String) {
+internal fun QuestionTitle(title: String) {
     Column(
         modifier = Modifier,
     ) {
