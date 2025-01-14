@@ -8,14 +8,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.study.R
 
 @Composable
-fun StudySubmitButton(
+internal fun StudySubmitButton(
     isEditMode: Boolean,
+    canSubmitStudy: Boolean,
     onStudyEditButtonClick: () -> Unit,
     onStudyCreateButtonClick: () -> Unit,
-    canSubmitStudy: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Button(
@@ -35,6 +37,19 @@ fun StudySubmitButton(
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontWeight = FontWeight.Medium,
             ),
+        )
+    }
+}
+
+@Preview(showBackground = true, locale = "ko")
+@Composable
+private fun StudySubmitButtonPreview() {
+    WeQuizTheme {
+        StudySubmitButton(
+            isEditMode = false,
+            onStudyEditButtonClick = {},
+            onStudyCreateButtonClick = {},
+            canSubmitStudy = true,
         )
     }
 }
