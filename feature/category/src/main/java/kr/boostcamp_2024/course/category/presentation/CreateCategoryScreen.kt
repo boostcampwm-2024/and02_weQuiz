@@ -40,7 +40,7 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularPr
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizValidateTextField
 
 @Composable
-fun CreateCategoryScreen(
+internal fun CreateCategoryScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateCategorySuccess: () -> Unit,
     viewModel: CreateCategoryViewModel = hiltViewModel(),
@@ -92,7 +92,7 @@ fun CreateCategoryScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateCategoryScreen(
+internal fun CreateCategoryScreen(
     name: String,
     description: String,
     currentCategoryImage: ByteArray?,
@@ -182,7 +182,7 @@ fun CreateCategoryScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun CreateCategoryScreenPreview() {
+private fun CreateCategoryScreenPreview() {
     WeQuizTheme {
         CreateCategoryScreen(
             name = "Category Name",

@@ -13,12 +13,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.quiz.R
 
 @ExperimentalMaterial3Api
 @Composable
-fun QuestionDetailTopAppBar(
+internal fun QuestionDetailTopAppBar(
     modifier: Modifier = Modifier,
     onNavigationButtonClick: () -> Unit,
 ) {
@@ -47,4 +49,13 @@ fun QuestionDetailTopAppBar(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun QuestionDetailTopAppBarPreview() {
+    WeQuizTheme {
+        QuestionDetailTopAppBar(onNavigationButtonClick = { })
+    }
 }
