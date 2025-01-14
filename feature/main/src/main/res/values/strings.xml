@@ -29,4 +29,6 @@
         <item>Joined Studies</item>
         <item>Archive</item>
     </string-array>
+    <!-- guideUrl -->
+    <string name="guide_url">https://trite-ice-00b.notion.site/WeQuiz-1505bfe2c24f80b1ae39dc15026da991?pvs=4</string>
 </resources>

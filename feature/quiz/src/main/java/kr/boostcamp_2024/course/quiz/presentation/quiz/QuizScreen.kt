@@ -186,25 +186,29 @@ fun QuizScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ko")
 @Composable
 fun QuizStartScreenPreview() {
     WeQuizTheme {
         QuizScreen(
             category = Category(
                 id = "id",
-                name = "name",
+                name = "카테고리 이름",
                 description = "description",
                 categoryImageUrl = "categoryImageUrl",
                 quizzes = emptyList(),
             ),
             quiz = Quiz(
                 id = "id",
-                title = "퀴즈 제목임",
-                description = "퀴즈 설명임",
-                startTime = "startTime",
+                title = "퀴즈 제목",
+                description = "퀴즈 설명",
+                startTime = "2024-12-12",
                 solveTime = 60,
-                questions = emptyList(),
+                questions = listOf(
+                    "문제1",
+                    "문제2",
+                    "문제3",
+                ),
                 userOmrs = emptyList(),
                 quizImageUrl = "quizImageUrl",
             ),

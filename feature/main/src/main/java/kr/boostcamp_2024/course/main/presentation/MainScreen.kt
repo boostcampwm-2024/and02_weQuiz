@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Badge
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -51,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
 import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
@@ -67,10 +67,10 @@ fun MainScreen(
     onCreateStudyButtonClick: () -> Unit,
     onStudyGroupClick: (String) -> Unit,
     onEditStudyButtonClick: (String) -> Unit,
-    viewModel: MainViewModel = hiltViewModel(),
-    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onEditUserClick: (String?) -> Unit,
     onLogOutClick: () -> Unit,
+    viewModel: MainViewModel = hiltViewModel(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -87,15 +87,10 @@ fun MainScreen(
         onStudyGroupClick = onStudyGroupClick,
         onEditUserClick = onEditUserClick,
         onLogOutClick = viewModel::logout,
-        showDialog = viewModel::showDialog,
     )
 
     if (!uiState.isGuideShown) {
         BaseGuideScreen { viewModel.onGuideShown() }
-    }
-
-    if (uiState.isDialog) {
-        GuideDialog { viewModel.closeDialog() }
     }
 
     if (uiState.isLogout) {
@@ -103,13 +98,7 @@ fun MainScreen(
     }
 
     if (uiState.isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
+        WeQuizCircularProgressIndicator()
     }
 
     uiState.errorMessage?.let { errorMessage ->
@@ -139,12 +128,19 @@ fun MainScreen(
     onStudyGroupClick: (String) -> Unit,
     onEditUserClick: (String?) -> Unit,
     onLogOutClick: () -> Unit,
-    showDialog: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    var isExpanded by remember { mutableStateOf(false) }
+    var userMenuIsExpanded by remember { mutableStateOf(false) }
+    var showGuideDialog by rememberSaveable { mutableStateOf(false) }
     var state by rememberSaveable { mutableIntStateOf(0) }
     val titles = stringArrayResource(R.array.main_tabs_titles)
+
+    if (showGuideDialog) {
+        GuideDialog(
+            guideUrl = stringResource(R.string.guide_url),
+            onDismissButtonClick = { showGuideDialog = false },
+        )
+    }
 
     Scaffold(
         modifier = Modifier
@@ -165,15 +161,15 @@ fun MainScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { isExpanded = true }) {
+                    IconButton(onClick = { userMenuIsExpanded = true }) {
                         Icon(
                             imageVector = Icons.Filled.AccountCircle,
                             contentDescription = stringResource(R.string.top_app_bar_nav_btn),
                         )
                     }
                     MainDropDownMenu(
-                        isExpanded = isExpanded,
-                        onDismissRequest = { isExpanded = false },
+                        isExpanded = userMenuIsExpanded,
+                        onDismissRequest = { userMenuIsExpanded = false },
                         onEditUserClick = {
                             if (currentUser?.id != null) {
                                 onEditUserClick(currentUser.id)
@@ -183,7 +179,7 @@ fun MainScreen(
                     )
                 },
                 actions = {
-                    IconButton(onClick = showDialog) {
+                    IconButton(onClick = { showGuideDialog = true }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.LibraryBooks,
                             stringResource(R.string.des_main_guide_icon),
@@ -313,27 +309,27 @@ fun StudyGroupTab(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ko")
 @Composable
 fun MainScreenPreview() {
     WeQuizTheme {
         MainScreen(
             currentUser = User(
-                id = "123",
+                id = "user1",
                 email = "email@email.com",
                 name = "아이비",
-                profileUrl = "testUrl",
+                profileUrl = "",
                 studyGroups = listOf(),
             ),
             studyGroups = listOf(
                 StudyGroup(
-                    id = "1234",
-                    name = "일본어 스터디",
+                    id = "study1",
+                    name = "안드로이드 스터디",
                     studyGroupImageUrl = null,
-                    description = "일본어 스터디그룹 와압~!",
+                    description = "안드로이드 스터디입니다.",
                     maxUserNum = 12,
-                    ownerId = "test",
-                    users = listOf("test"),
+                    ownerId = "user1",
+                    users = listOf("user1", "user2"),
                     categories = emptyList(),
                 ),
             ),
@@ -347,7 +343,6 @@ fun MainScreenPreview() {
             onLogOutClick = {},
             onDeleteStudyGroupClick = {},
             notifications = 0,
-            showDialog = {},
         )
     }
 }
