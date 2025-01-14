@@ -23,7 +23,7 @@ import kr.boostcamp_2024.course.domain.model.StudyGroup
 import kr.boostcamp_2024.course.domain.model.User
 import kr.boostcamp_2024.course.study.R
 import kr.boostcamp_2024.course.study.component.CustomPropertyTab
-import kr.boostcamp_2024.course.study.component.GroupItem
+import kr.boostcamp_2024.course.study.component.StudyGroupMemberItem
 
 @Composable
 fun GroupListScreen(
@@ -35,7 +35,6 @@ fun GroupListScreen(
     removeClick: (String, String) -> Unit,
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    val isOwner: Boolean = owner?.id == curUserId
 
     Column(
         modifier = Modifier
@@ -55,24 +54,22 @@ fun GroupListScreen(
                     inviteClick(groupId, email)
                     showDialog = false
                 },
-                groupId = currentGroup?.id ?: "",
+                groupId = currentGroup.id,
             )
         }
-        GroupLazyColumn(
-            owner,
-            currentGroup?.id,
-            isOwner,
-            users,
-            removeClick,
+        StudyGroupMemberLazyColumn(
+            owner = owner,
+            groupId = currentGroup.id,
+            users = users,
+            removeClick = removeClick,
         )
     }
 }
 
 @Composable
-fun GroupLazyColumn(
+fun StudyGroupMemberLazyColumn(
     owner: User,
     groupId: String?,
-    isOwner: Boolean,
     users: List<User>,
     removeClick: (String, String) -> Unit,
 ) {
@@ -82,12 +79,11 @@ fun GroupLazyColumn(
             .padding(),
     ) {
         itemsIndexed(items = users, key = { _, user -> user.id }) { index, user ->
-            GroupItem(
-                owner.id,
-                groupId,
-                isOwner,
-                removeClick,
-                user,
+            StudyGroupMemberItem(
+                ownerId = owner.id,
+                groupId = groupId,
+                user = user,
+                removeButtonClick = removeClick,
             )
             if (index < 9) {
                 HorizontalDivider()
