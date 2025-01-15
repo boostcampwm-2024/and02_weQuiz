@@ -11,12 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @Composable
-fun QuestionTextBox(
+internal fun QuestionTextBox(
     text: String,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
@@ -40,9 +40,9 @@ fun QuestionTextBox(
     }
 }
 
-@Preview
+@PreviewKoLightDark
 @Composable
-fun QuestionTextBoxPreview() {
+private fun QuestionTextBoxPreview() {
     WeQuizTheme {
         QuestionTextBox(
             text = "다음 중 가장 큰 수를 고르시오.",

@@ -28,7 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
@@ -37,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLeftChatBubble
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
@@ -47,7 +47,7 @@ import java.security.MessageDigest
 import java.util.UUID
 
 @Composable
-fun LoginScreen(
+internal fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onSignUp: (UserUiModel) -> Unit,
     loginViewModel: LoginViewModel = hiltViewModel(),
@@ -81,7 +81,7 @@ fun LoginScreen(
 
 @Composable
 private fun LoginScreen(
-    snackBarHostState: SnackbarHostState,
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onLoginSuccess: () -> Unit,
     handleSignIn: (GetCredentialResponse, Int) -> Unit,
     setNewSnackBarMessage: (Int?) -> Unit,
@@ -112,7 +112,7 @@ private fun LoginScreen(
 }
 
 @Composable
-fun LoginGuideImageAndText() {
+private fun LoginGuideImageAndText() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -145,7 +145,7 @@ fun LoginGuideImageAndText() {
 }
 
 @Composable
-fun LoginButtons(
+private fun LoginButtons(
     onLoginSuccess: () -> Unit,
     handleSignIn: (GetCredentialResponse, Int) -> Unit,
     setNewSnackBarMessage: (Int?) -> Unit,
@@ -218,12 +218,11 @@ fun LoginButtons(
     }
 }
 
-@Preview(showBackground = true)
+@PreviewKoLightDark
 @Composable
-fun LoginScreenPreview() {
+private fun LoginScreenPreview() {
     WeQuizTheme {
         LoginScreen(
-            snackBarHostState = SnackbarHostState(),
             onLoginSuccess = {},
             handleSignIn = { _, _ -> },
             setNewSnackBarMessage = {},

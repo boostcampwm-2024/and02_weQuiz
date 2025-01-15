@@ -6,7 +6,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kr.boostcamp_2024.course.domain.model.Quiz
@@ -14,13 +13,13 @@ import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.viewmodel.QuestionViewModel
 
 @Composable
-fun QuestionScreen(
+internal fun QuestionScreen(
     onNavigationButtonClick: () -> Unit,
     onQuizFinished: (String?, String?) -> Unit,
     questionViewModel: QuestionViewModel = hiltViewModel(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     val uiState by questionViewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     if (uiState.quiz is RealTimeQuiz) {
         val quiz = uiState.quiz as RealTimeQuiz
@@ -42,7 +41,7 @@ fun QuestionScreen(
     } else if (uiState.quiz is Quiz) {
         uiState.countDownTime?.let { currentCountDownTime ->
             GeneralQuestionScreen(
-                quiz = uiState.quiz,
+                quizTitle = uiState.quiz?.title,
                 currentPage = uiState.currentPage,
                 questions = uiState.questions,
                 countDownTime = currentCountDownTime,
@@ -78,13 +77,4 @@ fun QuestionScreen(
             onQuizFinished(userOmrId, null)
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun QuestionScreenPreview() {
-    QuestionScreen(
-        onNavigationButtonClick = {},
-        onQuizFinished = { _, _ -> },
-    )
 }

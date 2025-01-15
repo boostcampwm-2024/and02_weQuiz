@@ -1,13 +1,11 @@
 package kr.boostcamp_2024.course.login.viewmodel
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -49,7 +47,6 @@ class SignUpViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val storageRepository: StorageRepository,
     private val userRepository: UserRepository,
-    @ApplicationContext private val context: Context,
 ) : ViewModel() {
     private val userUiModel = savedStateHandle.toRoute<SignUpRoute>(mapOf(typeOf<UserUiModel?>() to UserUiModelType)).userUiModel
     private val userId = savedStateHandle.toRoute<SignUpRoute>(mapOf(typeOf<UserUiModel?>() to UserUiModelType)).userId

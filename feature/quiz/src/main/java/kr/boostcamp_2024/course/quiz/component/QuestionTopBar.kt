@@ -9,11 +9,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.quiz.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuestionTopBar(
+internal fun QuestionTopBar(
     title: String,
     onShowDialog: () -> Unit,
 ) {
@@ -28,4 +30,15 @@ fun QuestionTopBar(
             }
         },
     )
+}
+
+@PreviewKoLightDark
+@Composable
+private fun QuestionTopBarPreview() {
+    WeQuizTheme {
+        QuestionTopBar(
+            title = "test title",
+            onShowDialog = {},
+        )
+    }
 }
