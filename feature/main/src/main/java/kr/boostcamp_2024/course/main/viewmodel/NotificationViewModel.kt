@@ -113,10 +113,10 @@ class NotificationViewModel @Inject constructor(
 
     fun acceptInvitation(notification: Notification) {
         viewModelScope.launch {
-            userRepository.addStudyGroupToUser(notification.userid, notification.groupId)
+            userRepository.addStudyGroupToUser(notification.userId, notification.groupId)
                 .onSuccess {
                     deleteInvitation(notification.id)
-                    addGroupMember(notification.userid, notification.groupId)
+                    addGroupMember(notification.userId, notification.groupId)
                 }
                 .onFailure { throwable ->
                     Log.e("NotificationViewModel", "실패: $throwable")

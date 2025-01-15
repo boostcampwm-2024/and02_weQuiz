@@ -52,7 +52,7 @@ fun QuizStatisticsDialog(
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ko")
 @Composable
 private fun QuizStaticsDialogPreview() {
     WeQuizTheme {

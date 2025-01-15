@@ -17,13 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.domain.model.BlankQuestion
-import kr.boostcamp_2024.course.domain.model.BlankQuestionManager
 import kr.boostcamp_2024.course.quiz.R
 
 private const val NULL_BLANK_TEXT = "_"
 
 @Composable
-fun BlankQuestionContent(
+internal fun BlankQuestionContent(
     isOwner: Boolean = false,
     isRealTime: Boolean = false,
     questionTitle: String,
@@ -164,31 +163,36 @@ fun QuestionContentLabel(
     )
 }
 
-@Preview
+@Preview(showBackground = true, locale = "ko")
 @Composable
 private fun BlankQuestionContentPreview() {
     val question = BlankQuestion(
         id = "",
-        title = "제목",
+        title = "WeQuiz 팀의 구성원 수",
         solution = null,
         questionContent = listOf(
-            mapOf("type" to "text", "text" to "우리는"),
-            mapOf("type" to "blank", "text" to "위키즈팀"),
+            mapOf("type" to "text", "text" to "WeQuiz팀은"),
+            mapOf("type" to "blank", "text" to "5명"),
             mapOf("type" to "text", "text" to "입니다."),
         ),
         userAnswers = emptyList(),
     )
-    val blankQuestionManager = BlankQuestionManager(
-        updateCallback = {},
+    val contents = listOf(
+        mapOf("type" to "text", "text" to "WeQuiz팀은"),
+        mapOf("type" to "blank", "text" to "5명"),
+        mapOf("type" to "text", "text" to "입니다."),
+    )
+    val blankWords = listOf(
+        mapOf("text" to "5명", "isUsed" to false),
     )
 
     WeQuizTheme {
         BlankQuestionContent(
             isOwner = true,
             isRealTime = false,
-            contents = blankQuestionManager.contents,
+            contents = contents,
             questionTitle = question.title,
-            blankWords = blankQuestionManager.blankWords,
+            blankWords = blankWords,
             removeBlankWord = {},
             addBlankWord = {},
         )

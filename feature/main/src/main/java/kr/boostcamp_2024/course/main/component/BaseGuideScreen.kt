@@ -18,15 +18,17 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.main.R
 
 @Composable
-fun BaseGuideScreen(onGuideShown: () -> Unit) {
+internal fun BaseGuideScreen(onGuideShown: () -> Unit) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.anim_arrow))
     val lottieAnimatable = rememberLottieAnimatable()
 
@@ -67,5 +69,13 @@ fun BaseGuideScreen(onGuideShown: () -> Unit) {
                 modifier = Modifier.fillMaxSize(),
             )
         }
+    }
+}
+
+@Preview(showBackground = true, locale = "ko")
+@Composable
+private fun BaseGuideScreenPreview() {
+    WeQuizTheme {
+        BaseGuideScreen { }
     }
 }

@@ -13,7 +13,7 @@ data class NotificationDTO(
 ) {
     fun toVO(notificationId: String): Notification = Notification(
         id = notificationId,
-        userid = requireNotNull(userId),
+        userId = requireNotNull(userId),
         groupId = requireNotNull(groupId),
     )
 }
