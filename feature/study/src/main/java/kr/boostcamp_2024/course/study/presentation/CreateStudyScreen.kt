@@ -1,6 +1,8 @@
 package kr.boostcamp_2024.course.study.presentation
 
 import WeQuizPhotoPickerAsyncImage
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -175,7 +177,8 @@ fun isValidateNumber(inputNumber: String): Boolean {
     return isValid && inputNumber.toIntOrNull()?.let { it in 2..50 } == true
 }
 
-@Preview(showBackground = true, locale = "ko")
+@Preview(locale = "ko")
+@Preview(uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL, locale = "ko")
 @Composable
 fun CreateStudyScreenPreview() {
     WeQuizTheme {
