@@ -1,5 +1,7 @@
 package kr.boostcamp_2024.course.main.presentation
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -99,6 +101,7 @@ fun NotificationScreen(
 }
 
 @Preview(locale = "ko")
+@Preview(uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL, locale = "ko")
 @Composable
 private fun NotificationScreenPreview() {
     WeQuizTheme {
