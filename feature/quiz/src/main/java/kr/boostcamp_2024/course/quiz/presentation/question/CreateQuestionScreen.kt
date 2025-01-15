@@ -1,5 +1,7 @@
 package kr.boostcamp_2024.course.quiz.presentation.question
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -307,7 +309,8 @@ fun CreateQuestionScreen(
     }
 }
 
-@Preview(showBackground = true, locale = "ko")
+@Preview(locale = "ko")
+@Preview(uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL, locale = "ko")
 @Composable
 fun CreateQuestionScreenPreview() {
     val previewCreateQuestionUiState = CreateQuestionUiState(
