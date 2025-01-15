@@ -1,6 +1,7 @@
 package kr.boostcamp_2024.course.quiz.presentation.quiz
 
-import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -209,15 +210,8 @@ fun GeneralQuestionResultItem(
     }
 }
 
-@Preview(
-    showBackground = true,
-    locale = "ko",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Preview(
-    showBackground = true,
-    locale = "ko",
-)
+@Preview(locale = "ko")
+@Preview(uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL, locale = "ko")
 @Composable
 fun GeneralQuizResultScreenPreview() {
     val generalQuizResultPreviewUserOmrAnswers = listOf(0, 1, "")
