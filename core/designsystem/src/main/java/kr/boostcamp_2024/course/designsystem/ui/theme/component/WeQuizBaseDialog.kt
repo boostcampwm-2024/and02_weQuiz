@@ -15,9 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.R
+import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @Composable
@@ -72,7 +72,7 @@ fun WeQuizBaseDialog(
     )
 }
 
-@Preview
+@PreviewKoLightDark
 @Composable
 private fun WeQuizBaseDialogPreview() {
     WeQuizTheme {
