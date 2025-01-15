@@ -23,6 +23,7 @@ data class CategoryUiState(
     val quizList: List<BaseQuiz>? = null,
     val snackBarMessage: String? = null,
     val isDeleteCategorySuccess: Boolean = false,
+    val isDropDownMenuExpanded: Boolean = false,
 )
 
 @HiltViewModel
@@ -95,4 +96,17 @@ class CategoryViewModel @Inject constructor(
                 }
         }
     }
+
+    fun onDropDownMenuClick() {
+        _categoryUiState.update {
+            it.copy(isDropDownMenuExpanded = !it.isDropDownMenuExpanded)
+        }
+    }
+
+    fun onDropDownMenuDismiss() {
+        _categoryUiState.update {
+            it.copy(isDropDownMenuExpanded = false)
+        }
+    }
+
 }

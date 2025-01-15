@@ -47,7 +47,7 @@ import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.Quiz
 
 @Composable
-fun CategoryScreen(
+internal fun CategoryScreen(
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: (String) -> Unit,
     onQuizClick: (String, String) -> Unit,
@@ -59,9 +59,6 @@ fun CategoryScreen(
 
     LaunchedEffect(Unit) {
         categoryViewModel.initViewmodel()
-    }
-
-    LaunchedEffect(Unit) {
         categoryUiState.value.snackBarMessage?.let { message ->
             snackBarHostState.showSnackbar(message)
             categoryViewModel.setNewSnackBarMessage(null)
@@ -75,24 +72,30 @@ fun CategoryScreen(
     CategoryScreen(
         category = categoryUiState.value.category,
         quizList = categoryUiState.value.quizList,
+        isDropDownMenuExpanded = categoryUiState.value.isDropDownMenuExpanded,
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuizButtonClick = onCreateQuizButtonClick,
         onQuizClick = onQuizClick,
         onCategoryDeleteClick = categoryViewModel::onCategoryDeleteClick,
         onCreateCategoryButtonClick = onCreateCategoryButtonClick,
+        onDropDownMenuClick = categoryViewModel::onDropDownMenuClick,
+        onDropDownMenuDismiss = categoryViewModel::onDropDownMenuDismiss,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CategoryScreen(
+internal fun CategoryScreen(
     category: Category?,
     quizList: List<BaseQuiz>?,
+    isDropDownMenuExpanded: Boolean,
     onNavigationButtonClick: () -> Unit,
     onCreateQuizButtonClick: (String) -> Unit,
     onQuizClick: (String, String) -> Unit,
     onCategoryDeleteClick: () -> Unit,
     onCreateCategoryButtonClick: (String?, String?) -> Unit,
+    onDropDownMenuClick: () -> Unit,
+    onDropDownMenuDismiss: () -> Unit,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -130,6 +133,9 @@ private fun CategoryScreen(
                             onCreateCategoryButtonClick(null, category?.id)
                         },
                         onDeleteClick = onCategoryDeleteClick,
+                        expanded = isDropDownMenuExpanded,
+                        onDropDownMenuClick = onDropDownMenuClick,
+                        onDropDownMenuDismiss = onDropDownMenuDismiss,
                     )
                 },
             )
@@ -167,7 +173,7 @@ private fun CategoryScreen(
 }
 
 @Composable
-fun QuizList(
+internal fun QuizList(
     modifier: Modifier = Modifier,
     categoryId: String,
     quizzes: List<BaseQuiz>?,
@@ -195,7 +201,7 @@ fun QuizList(
 }
 
 @Composable
-fun QuizItem(
+internal fun QuizItem(
     quiz: BaseQuiz,
     onQuizClick: () -> Unit,
 ) {
@@ -232,13 +238,56 @@ fun QuizItem(
 
 @Preview(showBackground = true)
 @Composable
-fun CategoryScreenPreview() {
+internal fun CategoryScreenPreview() {
     WeQuizTheme {
         CategoryScreen(
+
+            category = Category(
+                id = "1",
+                name = "Category Name",
+                categoryImageUrl = "",
+                description = "카테고리 설명",
+                quizzes = listOf(" ", " ", " ")
+            ),
+            quizList = listOf(
+                Quiz(
+                    id = "1",
+                    title = "Quiz Title",
+                    description = "Quiz Description",
+                    startTime = "2021-09-01",
+                    solveTime = 10,
+                    questions = listOf(" ", " ", " "),
+                    userOmrs = listOf(" ", " ", " "),
+                    quizImageUrl = "",
+                ),
+                Quiz(
+                    id = "2",
+                    title = "Quiz Title",
+                    description = "Quiz Description",
+                    startTime = "2021-09-01",
+                    solveTime = 10,
+                    questions = listOf(" ", " ", " "),
+                    userOmrs = listOf(" ", " ", " "),
+                    quizImageUrl = "",
+                ),
+                Quiz(
+                    id = "3",
+                    title = "Quiz Title",
+                    description = "Quiz Description",
+                    startTime = "2021-09-01",
+                    solveTime = 10,
+                    questions = listOf(" ", " ", " "),
+                    userOmrs = listOf(" ", " ", " "),
+                    quizImageUrl = "",
+                ),
+            ),
+            isDropDownMenuExpanded = false,
+            onCategoryDeleteClick = {},
             onNavigationButtonClick = {},
             onCreateQuizButtonClick = {},
             onQuizClick = { _, _ -> },
             onCreateCategoryButtonClick = { _, _ -> },
-        )
+            onDropDownMenuClick = {},
+        ) { }
     }
 }

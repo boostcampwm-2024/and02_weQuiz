@@ -12,10 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @Composable
-fun Question(
+internal fun Question(
     questions: List<String>,
     selectedIndex: Int,
     onOptionSelected: (Int) -> Unit,
@@ -50,4 +52,17 @@ fun Question(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun QuestionPreview() {
+    WeQuizTheme {
+        Question(
+            questions = listOf("A", "B", "C", "D"),
+            selectedIndex = 0,
+            onOptionSelected = { },
+        )
+    }
+
 }
