@@ -1,5 +1,7 @@
 package kr.boostcamp_2024.course.quiz.component
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,10 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RealTimeQuestion(
+internal fun RealTimeQuestion(
     isOwner: Boolean = false,
     questions: List<String>,
     selectedIndex: Int,
@@ -48,4 +51,14 @@ fun RealTimeQuestion(
             }
         }
     }
+}
+
+@Preview(showBackground = true, locale = "ko")
+@Preview(uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL, locale = "ko")
+@Composable
+private fun RealTimeQuestionPreview() {
+    RealTimeQuestion(
+        questions = listOf("문제1", "문제2", "문제3", "문제4", "문제5"),
+        selectedIndex = 0,
+    )
 }

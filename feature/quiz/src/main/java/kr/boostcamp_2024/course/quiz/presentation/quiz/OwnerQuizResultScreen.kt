@@ -1,6 +1,5 @@
 package kr.boostcamp_2024.course.quiz.presentation.quiz
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,8 +34,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizLocalRoundedImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizRightChatBubble
@@ -186,19 +185,16 @@ fun OwnerQuestionResultItem(
     }
 }
 
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Preview(showBackground = true)
+
+@PreviewKoLightDark
 @Composable
 fun OwnerQuizResultScreenPreview() {
     WeQuizTheme {
         OwnerQuizResultScreen(
             onNavigationButtonClick = {},
             onQuestionClick = {},
-            questions = emptyList(),
-            quizTitle = "",
+            questions = quizResultPreviewQuestions,
+            quizTitle = "퀴즈 결과 프리뷰",
             snackbarHostState = remember { SnackbarHostState() },
         )
     }

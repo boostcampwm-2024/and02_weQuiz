@@ -1,5 +1,7 @@
 package kr.boostcamp_2024.course.quiz.component
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
@@ -18,7 +20,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuizSolveTimeSlider(
+internal fun QuizSolveTimeSlider(
     value: Float,
     steps: Int,
     valueRange: ClosedFloatingPointRange<Float>,
@@ -48,7 +50,8 @@ fun QuizSolveTimeSlider(
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ko")
+@Preview(uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL, locale = "ko")
 @Composable
 fun QuizSolveTimeSliderPreview() {
     QuizSolveTimeSlider(

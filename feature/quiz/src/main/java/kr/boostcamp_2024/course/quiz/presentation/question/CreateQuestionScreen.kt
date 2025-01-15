@@ -43,10 +43,10 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.component.CreateBlankQuestionContent
@@ -307,13 +307,46 @@ fun CreateQuestionScreen(
     }
 }
 
-@Preview(showBackground = true)
+@PreviewKoLightDark
 @Composable
 fun CreateQuestionScreenPreview() {
+    val previewCreateQuestionUiState = CreateQuestionUiState(
+        isLoading = false,
+        showDialog = false,
+        snackBarMessage = null,
+        creationSuccess = false,
+        selectedQuestionTypeIndex = 0,
+    )
+    val previewOption = listOf(
+        stringResource(R.string.txt_create_general_question),
+        stringResource(R.string.txt_blank_question),
+    )
+
     WeQuizTheme {
         CreateQuestionScreen(
+            uiState = previewCreateQuestionUiState,
+            focusRequester = remember { FocusRequester() },
+            snackBarHostState = remember { SnackbarHostState() },
+            onTitleChanged = {},
+            onDescriptionChanged = {},
+            onSolutionChanged = {},
             onNavigationButtonClick = {},
-            onCreateQuestionSuccess = {},
+            onChoiceTextChanged = { _, _ -> },
+            onSelectedChoiceNumChanged = {},
+            onCreateQuestionButtonClick = {},
+            onQuestionTypeIndexChange = {},
+            selectedQuestionTypeIndex = 0,
+            options = previewOption,
+            isBlankQuestion = false,
+            blankQuestionItems = listOf(),
+            onAddBlankItemButtonClick = {},
+            onAddTextItemButtonClick = {},
+            onBlankQuestionItemValueChanged = { _, _ -> },
+            onContentRemove = {},
+            onCreateBlankQuestionButtonClick = {},
+            isCreateBlankButtonValid = true,
+            isCreateTextButtonValid = true,
+            onShowDialog = {},
         )
     }
 }
