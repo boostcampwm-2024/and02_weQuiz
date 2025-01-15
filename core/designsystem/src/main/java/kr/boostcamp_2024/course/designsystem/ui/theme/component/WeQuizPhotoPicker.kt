@@ -19,10 +19,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.designsystem.R
+import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import java.io.ByteArrayOutputStream
@@ -99,7 +99,7 @@ fun WeQuizPhotoPickerAsyncImage(
     )
 }
 
-@Preview(showBackground = true)
+@PreviewKoLightDark
 @Composable
 private fun WeQuizPhotoPickerAsyncImagePreview() {
     WeQuizTheme {

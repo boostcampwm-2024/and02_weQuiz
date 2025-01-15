@@ -23,7 +23,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,7 +75,7 @@ fun WeQuizImageLargeTopAppBar(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
+@PreviewKoLightDark
 @Composable
 private fun WeQuizImageLargeTopAppBarPreview() {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
