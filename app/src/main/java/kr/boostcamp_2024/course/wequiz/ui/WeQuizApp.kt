@@ -3,19 +3,23 @@ package kr.boostcamp_2024.course.wequiz.ui
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
+import kr.boostcamp_2024.course.data.network.NetworkChecker
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.wequiz.R
 
 @Composable
-fun WeQuizApp() {
+fun WeQuizApp(networkChecker: NetworkChecker) {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val localContextResource = LocalContext.current.resources
+    val networkState by networkChecker.networkState.collectAsState()
     val onShowErrorSnackbar: (throwable: Throwable) -> Unit = { throwable ->
         coroutineScope.launch {
             snackbarHostState.showSnackbar(
@@ -31,5 +35,6 @@ fun WeQuizApp() {
                 .fillMaxSize(),
             onShowErrorSnackbar = onShowErrorSnackbar,
         )
+        NetworkDialog(networkState = networkState)
     }
 }

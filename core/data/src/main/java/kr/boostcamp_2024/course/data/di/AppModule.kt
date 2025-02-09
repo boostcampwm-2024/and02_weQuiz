@@ -14,6 +14,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import kr.boostcamp_2024.course.data.network.AiService
+import kr.boostcamp_2024.course.data.network.NetworkChecker
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -69,4 +70,9 @@ object AppModule {
         .client(client)
         .build()
         .create(AiService::class.java)
+
+    @Provides
+    fun provideNetworkChecker(
+        @ApplicationContext context: Context,
+    ): NetworkChecker = NetworkChecker(context)
 }
