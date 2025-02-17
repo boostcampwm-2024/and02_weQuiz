@@ -10,16 +10,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
-import kr.boostcamp_2024.course.data.network.NetworkChecker
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.domain.NetworkMonitor
 import kr.boostcamp_2024.course.wequiz.R
 
 @Composable
-fun WeQuizApp(networkChecker: NetworkChecker) {
+fun WeQuizApp(networkMonitor: NetworkMonitor) {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val localContextResource = LocalContext.current.resources
-    val networkState by networkChecker.networkState.collectAsState()
+    val networkState by networkMonitor.networkState.collectAsState()
     val onShowErrorSnackbar: (throwable: Throwable) -> Unit = { throwable ->
         coroutineScope.launch {
             snackbarHostState.showSnackbar(
