@@ -16,7 +16,9 @@ import kr.boostcamp_2024.course.domain.NetworkMonitor
 import kr.boostcamp_2024.course.domain.NetworkState
 import javax.inject.Inject
 
-class NetworkMonitorImpl @Inject constructor(appContext: Context) : NetworkMonitor {
+class NetworkMonitorImpl @Inject constructor(
+    appContext: Context,
+) : NetworkMonitor {
     private val _networkState = MutableStateFlow<NetworkState>(NetworkState.None)
     override val networkState: StateFlow<NetworkState> = _networkState
 
