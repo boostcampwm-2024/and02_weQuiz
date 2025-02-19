@@ -1,6 +1,5 @@
 package kr.boostcamp_2024.course.wequiz.ui
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue

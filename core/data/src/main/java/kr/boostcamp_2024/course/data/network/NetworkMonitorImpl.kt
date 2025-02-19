@@ -29,7 +29,6 @@ class NetworkMonitorImpl @Inject constructor(appContext: Context) : NetworkMonit
 
     private val connectivityManager: ConnectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
