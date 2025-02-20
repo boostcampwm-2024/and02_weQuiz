@@ -69,10 +69,6 @@ class NetworkMonitorImpl @Inject constructor(
         }
     }
 
-    override fun checkCurrentNetworkState() {
-        initiateNetworkState()
-    }
-
     private fun isNetworkAvailable(): Boolean {
         val capabilities =
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)

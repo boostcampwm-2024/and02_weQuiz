@@ -4,6 +4,4 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface NetworkMonitor {
     val networkState: StateFlow<NetworkState>
-
-    fun checkCurrentNetworkState()
 }
