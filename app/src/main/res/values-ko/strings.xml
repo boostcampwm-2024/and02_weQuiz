@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="default_error_message">오류가 발생했습니다.\n다시 시도해 주세요.</string>
+    <string name="network_dialog_title">이용중인 네트워크 환경이 불안정합니다. 무선통신(5G/LTE 또는 Wi-Fi)상태를 확인 후 다시 이용 부탁드립니다.</string>
+    <string name="network_dialog_confirm_title">재시도</string>
 </resources>

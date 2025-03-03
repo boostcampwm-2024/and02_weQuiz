@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="default_error_message">发生错误\n请重试。</string>
+    <string name="network_dialog_title">您使用的网络环境不稳定。请检查无线通信（5G/LTE 或 Wi-Fi）状态并重试。</string>
+    <string name="network_dialog_confirm_title">重试</string>
 </resources>
