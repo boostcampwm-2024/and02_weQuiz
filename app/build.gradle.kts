@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId = "kr.boostcamp_2024.course.wequiz"
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 6
         versionName = "1.2.1"
 
