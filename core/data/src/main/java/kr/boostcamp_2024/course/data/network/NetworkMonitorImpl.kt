@@ -5,79 +5,61 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import kotlinx.coroutines.CoroutineScope
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.domain.NetworkMonitor
-import kr.boostcamp_2024.course.domain.NetworkState
 import javax.inject.Inject
 
 class NetworkMonitorImpl @Inject constructor(
-    appContext: Context,
+    @ApplicationContext appContext: Context,
 ) : NetworkMonitor {
-    private val _networkState = MutableStateFlow<NetworkState>(NetworkState.None)
-    override val networkState: StateFlow<NetworkState> = _networkState
-
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     private val validTransportTypes = listOf(
         NetworkCapabilities.TRANSPORT_WIFI,
         NetworkCapabilities.TRANSPORT_CELLULAR,
     )
 
-    private val connectivityManager: ConnectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    override val networkState: Flow<Boolean> = callbackFlow {
+        val networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                trySend(true)
+            }
 
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            super.onAvailable(network)
-            _networkState.value = NetworkState.Connected
-        }
-
-        override fun onLost(network: Network) {
-            super.onLost(network)
-            scope.launch {
-                delay(NETWORK_CHECK_DELAY)
-                if (isNetworkAvailable().not()) {
-                    _networkState.value = NetworkState.NotConnected
+            override fun onLost(network: Network) {
+                launch {
+                    delay(NETWORK_CHECK_DELAY)
+                    if (isNetworkAvailable().not()) {
+                        trySend(false)
+                    }
                 }
             }
         }
-    }
 
-    init {
-        initiateNetworkState()
-        registerNetworkCallback()
-    }
+        val networkRequest = NetworkRequest.Builder()
+            .apply {
+                validTransportTypes.forEach { addTransportType(it) }
+                addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            }
+            .build()
 
-    private fun initiateNetworkState() {
-        _networkState.value = if (isNetworkAvailable()) {
-            NetworkState.Connected
-        } else {
-            NetworkState.NotConnected
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+
+        awaitClose {
+            connectivityManager.unregisterNetworkCallback(networkCallback) // 콜백 해제
         }
-    }
-
-    private fun registerNetworkCallback() {
-        NetworkRequest.Builder().apply {
-            validTransportTypes.forEach { addTransportType(it) }
-        }.let {
-            connectivityManager.registerNetworkCallback(it.build(), networkCallback)
-        }
-    }
+    }.flowOn(Dispatchers.IO)
 
     private fun isNetworkAvailable(): Boolean {
-        val capabilities =
-            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-
-        if (capabilities != null) {
-            return validTransportTypes.any { capabilities.hasTransport(it) }
-        }
-
-        return false
+        val activeNetwork = connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && validTransportTypes.any(capabilities::hasTransport)
     }
 
     companion object {
