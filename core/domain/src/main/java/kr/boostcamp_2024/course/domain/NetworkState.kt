@@ -1,9 +1,9 @@
 package kr.boostcamp_2024.course.domain
 
 sealed class NetworkState {
-    object None : NetworkState()
+    data object None : NetworkState()
 
-    object Connected : NetworkState()
+    data object Connected : NetworkState()
 
-    object NotConnected : NetworkState()
+    data object NotConnected : NetworkState()
 }
