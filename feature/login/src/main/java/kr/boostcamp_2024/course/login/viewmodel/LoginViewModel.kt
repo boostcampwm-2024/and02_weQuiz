@@ -48,7 +48,7 @@ class LoginViewModel @Inject constructor(
 
     fun loginForExperience() {
         viewModelScope.launch {
-            val defaultUserKey = "M2PzD8bxVaDAwNrLhr6E"
+            val defaultUserKey = "62o0t2rwnZfsdI1WNHNpIRkwEmu2"
             saveUserKey(defaultUserKey)
         }
     }
