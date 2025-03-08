@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
@@ -52,6 +53,22 @@ internal fun CreateQuizScreen(
     viewModel: CreateQuizViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
+
+    LaunchedEffect(uiState.value.isCreateQuizSuccess) {
+        if (uiState.value.isCreateQuizSuccess) {
+            onCreateQuizSuccess()
+        }
+    }
+
+    LaunchedEffect(uiState.value.isEditQuizSuccess) {
+        if (uiState.value.isEditQuizSuccess) {
+            onEditQuizSuccess()
+        }
+    }
 
     CreateQuizScreen(
         quizTitle = uiState.value.quizTitle,
@@ -76,27 +93,8 @@ internal fun CreateQuizScreen(
         snackbarHostState = snackbarHostState,
     )
 
-    if (uiState.value.isCreateQuizSuccess) {
-        LaunchedEffect(Unit) {
-            onCreateQuizSuccess()
-        }
-    }
-
-    if (uiState.value.isEditQuizSuccess) {
-        LaunchedEffect(Unit) {
-            onEditQuizSuccess()
-        }
-    }
-
     if (uiState.value.isLoading) {
         WeQuizCircularProgressIndicator()
-    }
-
-    LaunchedEffect(uiState.value.snackBarMessage) {
-        uiState.value.snackBarMessage?.let { snackBarMessage ->
-            onShowErrorSnackbar(Exception(snackBarMessage))
-            viewModel.shownErrorMessage()
-        }
     }
 }
 

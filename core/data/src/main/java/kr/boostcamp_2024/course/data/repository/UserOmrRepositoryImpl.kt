@@ -13,35 +13,31 @@ class UserOmrRepositoryImpl @Inject constructor(
 ) : UserOmrRepository {
     private val userOmrCollectionRef = firestore.collection("UserOmr")
 
-    override suspend fun getUserOmr(userOmrId: String): Result<UserOmr> =
-        runCatching {
-            val document = userOmrCollectionRef.document(userOmrId).get().await()
-            val response = document.toObject(UserOmrDTO::class.java)
-            requireNotNull(response).toVO(userOmrId)
-        }
+    override suspend fun getUserOmr(userOmrId: String): UserOmr {
+        val document = userOmrCollectionRef.document(userOmrId).get().await()
+        val response = document.toObject(UserOmrDTO::class.java)
+        return requireNotNull(response).toVO(userOmrId)
+    }
 
-    override suspend fun submitQuiz(userOmrCreationInfo: UserOmrCreationInfo): Result<String> =
-        runCatching {
-            val userOmrDTO = UserOmrDTO(
-                userId = userOmrCreationInfo.userId,
-                quizId = userOmrCreationInfo.quizId,
-                answers = userOmrCreationInfo.answers,
-            )
-            userOmrCollectionRef.add(userOmrDTO).await().id
-        }
+    override suspend fun submitQuiz(userOmrCreationInfo: UserOmrCreationInfo): String {
+        val userOmrDTO = UserOmrDTO(
+            userId = userOmrCreationInfo.userId,
+            quizId = userOmrCreationInfo.quizId,
+            answers = userOmrCreationInfo.answers,
+        )
+        return userOmrCollectionRef.add(userOmrDTO).await().id
+    }
 
-    override suspend fun deleteUserOmr(quizId: String): Result<Unit> =
-        runCatching {
-            val querySnapshot = userOmrCollectionRef.whereEqualTo("quiz_id", quizId).get().await()
-            querySnapshot.documents.forEach { document ->
-                document.reference.delete().await()
-            }
+    override suspend fun deleteUserOmr(quizId: String) {
+        val querySnapshot = userOmrCollectionRef.whereEqualTo("quiz_id", quizId).get().await()
+        querySnapshot.documents.forEach { document ->
+            document.reference.delete().await()
         }
+    }
 
-    override suspend fun deleteUserOmrs(userOmrIds: List<String>): Result<Unit> =
-        runCatching {
-            userOmrIds.forEach { userOmrId ->
-                userOmrCollectionRef.document(userOmrId).delete().await()
-            }
+    override suspend fun deleteUserOmrs(userOmrIds: List<String>) {
+        userOmrIds.forEach { userOmrId ->
+            userOmrCollectionRef.document(userOmrId).delete().await()
         }
+    }
 }

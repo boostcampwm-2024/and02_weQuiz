@@ -1,13 +1,14 @@
 package kr.boostcamp_2024.course.category.viewModel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -22,7 +23,6 @@ data class CreateCategoryUiState(
     val categoryName: String = "",
     val categoryDescription: String = "",
     val creationSuccess: Boolean = false,
-    val errorMessage: String? = null,
     val currentImage: ByteArray? = null,
     val defaultImageUri: String? = null,
 ) {
@@ -36,64 +36,68 @@ class CreateCategoryViewModel @Inject constructor(
     private val studyGroupRepository: StudyGroupRepository,
     private val storageRepository: StorageRepository,
 ) : ViewModel() {
-    private val _createCategoryUiState: MutableStateFlow<CreateCategoryUiState> = MutableStateFlow(CreateCategoryUiState())
-    val createCategoryUiState: StateFlow<CreateCategoryUiState> = _createCategoryUiState.asStateFlow()
     private val studyGroupId = savedStateHandle.toRoute<CreateCategoryRoute>().studyGroupId
     val categoryId = savedStateHandle.toRoute<CreateCategoryRoute>().categoryId
 
-    fun uploadCategory() {
-        setLoading()
-        viewModelScope.launch {
-            when (categoryId) {
-                null -> createCategory()
-                else -> updateCategory(categoryId)
-            }
+    private val _createCategoryUiState: MutableStateFlow<CreateCategoryUiState> = MutableStateFlow(CreateCategoryUiState())
+    val createCategoryUiState: StateFlow<CreateCategoryUiState> = _createCategoryUiState.asStateFlow()
 
+    private val _errorFlow = MutableSharedFlow<Throwable>()
+    val errorFlow = _errorFlow.asSharedFlow()
+
+    fun uploadCategory() {
+        viewModelScope.launch {
+            try {
+                setLoading(true)
+                when (categoryId) {
+                    null -> createCategory()
+                    else -> updateCategory(categoryId)
+                }
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+                setLoading(false)
+            }
         }
     }
 
     fun fetchCategoryInfo() {
         viewModelScope.launch {
-            if (categoryId != null) {
-                setLoading()
-                categoryRepository.getCategory(categoryId)
-                    .onSuccess { categoryInfo ->
-                        _createCategoryUiState.update {
-                            it.copy(
-                                isLoading = false,
-                                categoryName = categoryInfo.name,
-                                categoryDescription = categoryInfo.description ?: "",
-                                defaultImageUri = categoryInfo.categoryImageUrl,
-                            )
-                        }
-                    }.onFailure { exception ->
-                        Log.e("CreateCategoryViewModel", "Failed to fetch category info", exception)
-                        _createCategoryUiState.update { it.copy(isLoading = false, errorMessage = "카테고리 정보를 가져오는데 실패했습니다. 다시 시도해주세요!") }
+            try {
+                categoryId?.let {
+                    setLoading(true)
+                    val category = categoryRepository.getCategory(categoryId)
+                    _createCategoryUiState.update {
+                        it.copy(
+                            isLoading = false,
+                            categoryName = category.name,
+                            categoryDescription = category.description ?: "",
+                            defaultImageUri = category.categoryImageUrl,
+                        )
                     }
+                }
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+                setLoading(false)
             }
         }
     }
 
     private suspend fun createCategory() {
         val imageUrl = _createCategoryUiState.value.currentImage?.let { image ->
-            storageRepository.uploadImage(image).getOrNull()
+            storageRepository.uploadImage(image)
         }
-        categoryRepository.createCategory(
+
+        val categoryId = categoryRepository.createCategory(
             _createCategoryUiState.value.categoryName,
             _createCategoryUiState.value.categoryDescription.takeIf { it.isNotBlank() },
             imageUrl,
-        ).onSuccess { categoryId ->
-            saveCategoryToStudyGroup(categoryId)
-        }.onFailure {
-            Log.e("CreateCategoryViewModel", "Failed to create category", it)
-            setErrorMessage("카테고리 생성에 실패했습니다. 다시 시도해주세요!")
-            _createCategoryUiState.update { it.copy(isLoading = false) }
-        }
+        )
+        saveCategoryToStudyGroup(categoryId)
     }
 
     private suspend fun updateCategory(categoryId: String) {
         val imageUrl = _createCategoryUiState.value.currentImage?.let { image ->
-            storageRepository.uploadImage(image).getOrNull()
+            storageRepository.uploadImage(image)
         } ?: createCategoryUiState.value.defaultImageUri
 
         categoryRepository.updateCategory(
@@ -101,42 +105,26 @@ class CreateCategoryViewModel @Inject constructor(
             _createCategoryUiState.value.categoryName,
             _createCategoryUiState.value.categoryDescription.takeIf { it.isNotBlank() },
             imageUrl,
-        ).onSuccess {
-            saveCategoryToStudyGroup(categoryId)
-        }.onFailure {
-            Log.e("CreateCategoryViewModel", "Failed to update category", it)
-            setErrorMessage("카테고리 업데이트에 실패했습니다. 다시 시도해주세요!")
-            _createCategoryUiState.update { it.copy(isLoading = false) }
-        }
+        )
+        saveCategoryToStudyGroup(categoryId)
     }
 
     private suspend fun saveCategoryToStudyGroup(categoryId: String) {
-        try {
-            if (studyGroupId != null) {
-                studyGroupRepository.addCategoryToStudyGroup(studyGroupId, categoryId).getOrThrow()
-            }
+        studyGroupId?.let {
+            studyGroupRepository.addCategoryToStudyGroup(studyGroupId, categoryId)
+        }
 
-            _createCategoryUiState.update { currentState ->
-                currentState.copy(
-                    isLoading = false,
-                    creationSuccess = true,
-                )
-            }
-        } catch (exception: Exception) {
-            Log.e("CreateCategoryViewModel", "Failed to save category to study group", exception)
-            setErrorMessage("카테고리 저장에 실패했습니다. 다시 시도해주세요!")
+        _createCategoryUiState.update { currentState ->
+            currentState.copy(
+                isLoading = false,
+                creationSuccess = true,
+            )
         }
     }
 
-    fun setErrorMessage(message: String?) {
+    private fun setLoading(isLoading: Boolean) {
         _createCategoryUiState.update { currentState ->
-            currentState.copy(errorMessage = message)
-        }
-    }
-
-    private fun setLoading() {
-        _createCategoryUiState.update { currentState ->
-            currentState.copy(isLoading = true)
+            currentState.copy(isLoading = isLoading)
         }
     }
 

@@ -60,13 +60,13 @@ internal fun GeneralQuestionScreen(
     onNextButtonClick: () -> Unit,
     onPreviousButtonClick: () -> Unit,
     onSubmitButtonClick: () -> Unit,
-    showErrorMessage: (Int) -> Unit,
     blankQuestionContents: List<Map<String, Any>?>,
     blankWords: List<Map<String, Any>>,
     removeBlankContent: (Int) -> Unit,
     addBlankContent: (Int) -> Unit,
     getBlankQuestionAnswer: () -> Map<String, String?>,
     isLoading: Boolean,
+    onShowErrorSnackbar: (Throwable) -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
@@ -110,13 +110,13 @@ internal fun GeneralQuestionScreen(
                         selectedIndexList = selectedIndexList,
                         onOptionSelected = onOptionSelected,
                         questions = questions,
-                        showErrorMessage = showErrorMessage,
                         onBlanksSelected = onBlanksSelected,
                         blankQuestionContents = blankQuestionContents,
                         blankWords = blankWords,
                         removeBlankContent = removeBlankContent,
                         addBlankContent = addBlankContent,
                         getBlankQuestionAnswer = getBlankQuestionAnswer,
+                        onShowErrorSnackbar = onShowErrorSnackbar,
                     )
                 }
                 item {
@@ -275,7 +275,6 @@ private fun GeneralQuestionScreenPreview() {
             onNextButtonClick = {},
             onPreviousButtonClick = {},
             onSubmitButtonClick = {},
-            showErrorMessage = {},
             onBlanksSelected = { _, _ -> },
             blankQuestionContents = emptyList(),
             blankWords = emptyList(),
@@ -283,6 +282,7 @@ private fun GeneralQuestionScreenPreview() {
             addBlankContent = {},
             getBlankQuestionAnswer = { emptyMap() },
             isLoading = false,
+            onShowErrorSnackbar = {},
         )
     }
 }

@@ -6,31 +6,31 @@ import kr.boostcamp_2024.course.domain.model.QuizCreationInfo
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 
 interface QuizRepository {
-    suspend fun getQuiz(quizId: String): Result<BaseQuiz>
+    suspend fun getQuiz(quizId: String): BaseQuiz
 
-    suspend fun getQuizList(quizIdList: List<String>): Result<List<BaseQuiz>>
+    suspend fun getQuizList(quizIdList: List<String>): List<BaseQuiz>
 
-    suspend fun addQuestionToQuiz(quizId: String, questionId: String): Result<Unit>
+    suspend fun addQuestionToQuiz(quizId: String, questionId: String)
 
-    suspend fun createQuiz(quizCreateInfo: QuizCreationInfo, ownerId: String?): Result<String>
+    suspend fun createQuiz(quizCreateInfo: QuizCreationInfo, ownerId: String?): String
 
-    suspend fun addUserOmrToQuiz(quizId: String, userOmrId: String): Result<Unit>
+    suspend fun addUserOmrToQuiz(quizId: String, userOmrId: String)
 
-    suspend fun editQuiz(quizId: String, quizCreateInfo: QuizCreationInfo, selectedQuizTypeIndex: Int): Result<Unit>
+    suspend fun editQuiz(quizId: String, quizCreateInfo: QuizCreationInfo, selectedQuizTypeIndex: Int)
 
-    suspend fun deleteQuiz(quizId: String): Result<Unit>
+    suspend fun deleteQuiz(quizId: String)
 
-    suspend fun deleteQuizzes(quizzes: List<String>): Result<Unit>
+    suspend fun deleteQuizzes(quizzes: List<String>)
 
-    fun observeRealTimeQuiz(quizId: String): Flow<Result<RealTimeQuiz>>
+    fun observeRealTimeQuiz(quizId: String): Flow<RealTimeQuiz>
 
-    suspend fun setQuizFinished(quizId: String): Result<Unit>
+    suspend fun setQuizFinished(quizId: String)
 
-    suspend fun updateQuizCurrentQuestion(quizId: String, currentQuestion: Int): Result<Unit>
+    suspend fun updateQuizCurrentQuestion(quizId: String, currentQuestion: Int)
 
-    suspend fun startRealTimeQuiz(quizId: String): Result<Unit>
+    suspend fun startRealTimeQuiz(quizId: String)
 
-    suspend fun waitingRealTimeQuiz(quizId: String, waiting: Boolean, userId: String): Result<Unit>
+    suspend fun waitingRealTimeQuiz(quizId: String, waiting: Boolean, userId: String)
 
     fun observeQuiz(quizId: String): Flow<BaseQuiz>
 }

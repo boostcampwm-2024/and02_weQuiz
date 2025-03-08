@@ -12,36 +12,32 @@ class NotificationRepositoryImpl @Inject constructor(
 ) : NotificationRepository {
     private val notificationCollectionRef = firestore.collection("Notification")
 
-    override suspend fun getNotifications(userId: String): Result<List<Notification>> =
-        runCatching {
-            val notifications = mutableListOf<Notification>()
-            val snapshot = notificationCollectionRef.whereEqualTo("user_id", userId).get().await()
-            for (document in snapshot.documents) {
-                val notification = document.toObject(NotificationDTO::class.java)
-                notifications.add(requireNotNull(notification).toVO(document.id))
+    override suspend fun getNotifications(userId: String): List<Notification> {
+        val notifications = mutableListOf<Notification>()
+        val snapshot = notificationCollectionRef.whereEqualTo("user_id", userId).get().await()
+        for (document in snapshot.documents) {
+            val notification = document.toObject(NotificationDTO::class.java)
+            notifications.add(requireNotNull(notification).toVO(document.id))
+        }
+        return notifications
+    }
+
+    override suspend fun deleteNotification(notificationId: String) {
+        notificationCollectionRef.document(notificationId).delete().await()
+    }
+
+    override suspend fun addNotification(groupId: String, userId: String) {
+        val notification = mapOf(
+            "group_id" to groupId,
+            "user_id" to userId,
+        )
+        notificationCollectionRef.add(notification).await()
+    }
+
+    override suspend fun deleteNotificationByStudyGroupId(studyGroupId: String) {
+        notificationCollectionRef.whereEqualTo("group_id", studyGroupId).get().await()
+            .forEach { document ->
+                document.reference.delete().await()
             }
-            notifications
-        }
-
-    override suspend fun deleteNotification(notificationId: String): Result<Unit> =
-        runCatching {
-            notificationCollectionRef.document(notificationId).delete().await()
-        }
-
-    override suspend fun addNotification(groupId: String, userId: String): Result<Unit> =
-        runCatching {
-            val notification = mapOf(
-                "group_id" to groupId,
-                "user_id" to userId,
-            )
-            notificationCollectionRef.add(notification).await()
-        }
-
-    override suspend fun deleteNotificationByStudyGroupId(studyGroupId: String): Result<Unit> =
-        runCatching {
-            notificationCollectionRef.whereEqualTo("group_id", studyGroupId).get().await()
-                .forEach { document ->
-                    document.reference.delete().await()
-                }
-        }
+    }
 }

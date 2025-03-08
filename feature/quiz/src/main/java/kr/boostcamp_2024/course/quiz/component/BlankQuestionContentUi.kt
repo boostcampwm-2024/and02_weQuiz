@@ -23,6 +23,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
@@ -38,8 +40,10 @@ internal fun ConsumeBlankContentUi(
     textFieldEnabled: Boolean = true,
     clickableEnabled: Boolean = true,
 ) {
+    val blankItemContentDes = stringResource(R.string.des_blank_item, word)
     Row(
         modifier = Modifier
+            .semantics(mergeDescendants = true) { contentDescription = blankItemContentDes }
             .shadow(
                 elevation = 10.dp,
                 shape = RoundedCornerShape(4.dp),
@@ -70,6 +74,7 @@ internal fun ConsumeBlankContentUi(
         )
         if (removeIconVisible) {
             Icon(
+                modifier = Modifier.semantics(mergeDescendants = true) {},
                 imageVector = Icons.Outlined.Cancel,
                 contentDescription = stringResource(R.string.des_remove_blank),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -88,8 +93,10 @@ internal fun ConsumeTextContentUi(
     textFieldEnabled: Boolean = true,
     clickableEnabled: Boolean = true,
 ) {
+    val textItemContentDes = stringResource(R.string.des_text_item, word)
     Column(
         modifier = Modifier
+            .semantics(mergeDescendants = true) { contentDescription = textItemContentDes }
             .drawBehind {
                 val borderSize = 1.dp.toPx()
                 drawLine(
@@ -122,6 +129,7 @@ internal fun ConsumeTextContentUi(
 
             if (removeIconInvisible) {
                 Icon(
+                    modifier = Modifier.semantics(mergeDescendants = true) {},
                     imageVector = Icons.Outlined.Cancel,
                     contentDescription = stringResource(R.string.des_remove_blank),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,

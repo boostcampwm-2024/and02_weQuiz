@@ -15,6 +15,8 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDarkBackground
@@ -68,8 +70,11 @@ fun ChoiceItem(
     keyboardOptions: KeyboardOptions,
     keyboardActions: KeyboardActions,
 ) {
+    val choiceItemContentDes = stringResource(R.string.des_choice_item)
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .semantics { contentDescription = choiceItemContentDes }
+            .fillMaxWidth(),
     ) {
         RadioButton(
             selected = isSelected,

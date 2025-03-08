@@ -1,6 +1,5 @@
 package kr.boostcamp_2024.course.quiz.component
 
-import android.util.Log
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -10,7 +9,6 @@ import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.domain.model.BlankQuestion
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.Question
-import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.utils.QuizContentPreviewParameterProvider
 
 @Composable
@@ -22,12 +20,12 @@ internal fun QuizContent(
     onOptionSelected: (Int, Int) -> Unit,
     onBlanksSelected: (Int, Map<String, String?>) -> Unit,
     questions: List<Question?>,
-    showErrorMessage: (Int) -> Unit,
     blankQuestionContents: List<Map<String, Any>?>,
     blankWords: List<Map<String, Any>>,
     removeBlankContent: (Int) -> Unit,
     addBlankContent: (Int) -> Unit,
     getBlankQuestionAnswer: () -> Map<String, String?>,
+    onShowErrorSnackbar: (Throwable) -> Unit,
 ) {
     HorizontalPager(
         state = rememberPagerState(
@@ -67,9 +65,9 @@ internal fun QuizContent(
                 )
             }
 
-            null -> {
-                Log.e("QuizContent", "Question is null")
-                showErrorMessage(R.string.err_load_questions)
+            else -> {
+                // TODO 재시도 처리(?)
+                onShowErrorSnackbar(Exception("Question is null"))
             }
         }
     }
@@ -89,7 +87,6 @@ private fun QuizContentPreview(
             onOptionSelected = { _, _ -> },
             onBlanksSelected = { _, _ -> },
             questions = listOf(question),
-            showErrorMessage = { },
             blankQuestionContents = listOf(
                 mapOf("1" to "1", "2" to "2", "3" to "3"),
                 mapOf("1" to "1", "2" to "2", "3" to "3"),
@@ -103,6 +100,7 @@ private fun QuizContentPreview(
             removeBlankContent = { },
             addBlankContent = { },
             getBlankQuestionAnswer = { mapOf("1" to "1", "2" to "2", "3" to "3") },
+            onShowErrorSnackbar = {},
         )
     }
 

@@ -1,0 +1,62 @@
+name: setup
+
+inputs:
+  base-url:
+    description: 'Base URL for the AI API'
+    required: true
+  post-url:
+    description: 'Post URL for the AI API'
+    required: true
+  google-services-json:
+    description: 'Google Services JSON'
+    required: true
+  x-ncp-clovastudio-api-key:
+    description: 'X-NCP-CLOVASTUDIO-API-KEY'
+    required: true
+  x-ncp-apigw-api-key:
+    description: 'X-NCP-APIGW-API-KEY'
+    required: true
+  x-ncp-clovastudio-request-id:
+    description: 'X-NCP-CLOVASTUDIO-REQUEST-ID'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Gradle Caching
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Decode Google Services JSON
+      env:
+        GOOGLE_SERVICES_JSON: ${{ inputs.google-services-json }}
+      run: echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
+      shell: bash
+
+    - name: Configure local.properties
+      env:
+        BASE_URL: ${{ inputs.base-url }}
+        POST_URL: ${{ inputs.post-url }}
+        X_NCP_CLOVASTUDIO_API_KEY: ${{ inputs.x-ncp-clovastudio-api-key }}
+        X_NCP_APIGW_API_KEY: ${{ inputs.x-ncp-apigw-api-key }}
+        X_NCP_CLOVASTUDIO_REQUEST_ID: ${{ inputs.x-ncp-clovastudio-request-id }}
+      run: |
+        echo "base_url=${BASE_URL}" >> local.properties
+        echo "post_url=${POST_URL}" >> local.properties
+        echo "X-NCP-CLOVASTUDIO-API-KEY=${X_NCP_CLOVASTUDIO_API_KEY}" >> local.properties
+        echo "X-NCP-APIGW-API-KEY=${X_NCP_APIGW_API_KEY}" >> local.properties
+        echo "X-NCP-CLOVASTUDIO-REQUEST-ID=${X_NCP_CLOVASTUDIO_REQUEST_ID}" >> local.properties
+      shell: bash

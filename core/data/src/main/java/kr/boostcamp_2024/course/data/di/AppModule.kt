@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -30,6 +31,9 @@ const val BASE_URL = "https://clovastudio.stream.ntruss.com"
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    @Provides
+    fun provideFirebaseAuth() = Firebase.auth
+
     @Provides
     fun provideFirebaseFireStore() = Firebase.firestore
 

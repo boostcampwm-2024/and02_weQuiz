@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="des_clear_text">文本清除</string>
+    <string name="des_loading_indicator">加载中</string>
+</resources>

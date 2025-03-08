@@ -1,14 +1,15 @@
 package kr.boostcamp_2024.course.quiz.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -23,7 +24,6 @@ import javax.inject.Inject
 data class DetailUiState(
     val question: Question? = null,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null,
     val userAnswer: List<Int> = listOf(0, 0, 0, 0),
     // TODO 출제자 이미지 추가
 )
@@ -42,12 +42,16 @@ class QuestionDetailViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), DetailUiState())
 
+    private val _errorFlow = MutableSharedFlow<Throwable>()
+    val errorFlow = _errorFlow.asSharedFlow()
+
     private fun loadQuestionDetail() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(isLoading = true)
-            }
-            questionRepository.getQuestion(questionId).onSuccess { question ->
+            try {
+                _uiState.update { it.copy(isLoading = true) }
+
+                val question = questionRepository.getQuestion(questionId)
+
                 _uiState.update {
                     when (question) {
                         is ChoiceQuestion -> {
@@ -57,6 +61,7 @@ class QuestionDetailViewModel @Inject constructor(
                                 userAnswer = question.userAnswers,
                             )
                         }
+
                         is BlankQuestion -> {
                             it.copy(
                                 isLoading = false,
@@ -65,23 +70,11 @@ class QuestionDetailViewModel @Inject constructor(
                         }
                     }
                 }
-            }.onFailure { throwable ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = "문제 로딩에 실패하였습니다.",
-                    )
-                }
-                Log.e("DetailViewModel", "loadQuestionDetail: $throwable")
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+                _uiState.update { it.copy(isLoading = false) }
             }
 
         }
-    }
-
-    fun shownErrorMessage() {
-        _uiState.update {
-            it.copy(errorMessage = null)
-        }
-
     }
 }

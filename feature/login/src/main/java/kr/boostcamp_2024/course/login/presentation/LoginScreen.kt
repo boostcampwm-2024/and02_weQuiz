@@ -35,6 +35,7 @@ import androidx.credentials.GetCredentialResponse
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
@@ -52,40 +53,42 @@ internal fun LoginScreen(
     onSignUp: (UserUiModel) -> Unit,
     snackbarHostState: SnackbarHostState,
     onShowErrorSnackbar: (Throwable) -> Unit,
-    loginViewModel: LoginViewModel = hiltViewModel(),
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
-    val loginUiState by loginViewModel.loginUiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val loginUiState by viewModel.loginUiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(loginUiState) {
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
+
+    LaunchedEffect(loginUiState.isLoginSuccess) {
         if (loginUiState.isLoginSuccess) {
             onLoginSuccess()
         }
-        loginUiState.snackBarMessage?.let { messageId ->
-            onShowErrorSnackbar(Exception(context.getString(messageId)))
-            loginViewModel.setNewSnackBarMessage(null)
-        }
+    }
+
+    LaunchedEffect(loginUiState.isNewUser) {
         if (loginUiState.isNewUser) {
             val userInfo = requireNotNull(loginUiState.userInfo)
-            loginViewModel.resetUserState()
+            viewModel.resetUserState()
             onSignUp(userInfo)
         }
     }
 
     LoginScreen(
-        loginViewModel::loginForExperience,
-        handleSignIn = loginViewModel::handleSignIn,
+        onLoginForExperienceButtonClick = viewModel::loginForExperience,
+        handleSignIn = viewModel::handleSignIn,
         snackbarHostState = snackbarHostState,
-        setNewSnackBarMessage = loginViewModel::setNewSnackBarMessage,
+        onShowErrorSnackbar = onShowErrorSnackbar,
     )
 }
 
 @Composable
 private fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    handleSignIn: (GetCredentialResponse, Int) -> Unit,
+    onLoginForExperienceButtonClick: () -> Unit,
+    handleSignIn: (GetCredentialResponse) -> Unit,
+    onShowErrorSnackbar: (Throwable) -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    setNewSnackBarMessage: (Int?) -> Unit,
 ) {
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -104,9 +107,9 @@ private fun LoginScreen(
         ) {
             LoginGuideImageAndText()
             LoginButtons(
-                onLoginSuccess = onLoginSuccess,
+                onLoginForExperienceButtonClick = onLoginForExperienceButtonClick,
                 handleSignIn = handleSignIn,
-                setNewSnackBarMessage = setNewSnackBarMessage,
+                onShowErrorSnackbar = onShowErrorSnackbar,
             )
         }
     }
@@ -147,9 +150,9 @@ private fun LoginGuideImageAndText() {
 
 @Composable
 private fun LoginButtons(
-    onLoginSuccess: () -> Unit,
-    handleSignIn: (GetCredentialResponse, Int) -> Unit,
-    setNewSnackBarMessage: (Int?) -> Unit,
+    onLoginForExperienceButtonClick: () -> Unit,
+    handleSignIn: (GetCredentialResponse) -> Unit,
+    onShowErrorSnackbar: (Throwable) -> Unit,
 ) {
     val webClientId = stringResource(R.string.web_client_id)
     val context = LocalContext.current
@@ -180,13 +183,10 @@ private fun LoginButtons(
                     request = request,
                     context = context,
                 )
-                handleSignIn(
-                    result,
-                    R.string.error_login,
-                )
+                handleSignIn(result)
             } catch (e: Exception) {
                 Log.e("LoginScreen", "Error: ${e.message}")
-                setNewSnackBarMessage(R.string.error_login)
+                onShowErrorSnackbar(e)
             }
         }
     }
@@ -210,7 +210,7 @@ private fun LoginButtons(
             text = stringResource(R.string.txt_experience),
             modifier = Modifier.clickable(
                 enabled = true,
-                onClick = onLoginSuccess,
+                onClick = onLoginForExperienceButtonClick,
             ),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.primary,
@@ -224,9 +224,9 @@ private fun LoginButtons(
 private fun LoginScreenPreview() {
     WeQuizTheme {
         LoginScreen(
-            onLoginSuccess = {},
-            handleSignIn = { _, _ -> },
-            setNewSnackBarMessage = {},
+            onLoginForExperienceButtonClick = {},
+            handleSignIn = { _ -> },
+            onShowErrorSnackbar = {},
         )
     }
 }

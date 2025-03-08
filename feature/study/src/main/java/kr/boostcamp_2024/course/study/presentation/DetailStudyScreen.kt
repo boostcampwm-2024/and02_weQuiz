@@ -3,11 +3,9 @@ package kr.boostcamp_2024.course.study.presentation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,7 +28,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
@@ -41,7 +38,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizImageLargeTopAppBar
 import kr.boostcamp_2024.course.domain.model.Category
 import kr.boostcamp_2024.course.domain.model.StudyGroup
@@ -65,7 +64,25 @@ fun DetailStudyScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { viewModel.initViewmodel() }
+    LaunchedEffect(Unit) {
+        viewModel.initViewmodel()
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
+
+    LaunchedEffect(uiState.isDeleteStudyGroupSuccess) {
+        if (uiState.isDeleteStudyGroupSuccess) {
+            onDeleteStudyGroupSuccess()
+        }
+    }
+
+    LaunchedEffect(uiState.isLeaveStudyGroupSuccess) {
+        if (uiState.isLeaveStudyGroupSuccess) {
+            onLeaveStudyGroupSuccess()
+        }
+    }
 
     DetailStudyScreen(
         currentGroup = uiState.currentGroup,
@@ -89,33 +106,7 @@ fun DetailStudyScreen(
     )
 
     if (uiState.isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
-    }
-
-    uiState.errorMessageId?.let { errorMessageId ->
-        val errorMessage = stringResource(errorMessageId)
-        LaunchedEffect(errorMessageId) {
-            onShowErrorSnackbar(Exception(errorMessage))
-            viewModel.shownErrorMessage()
-        }
-    }
-
-    if (uiState.isDeleteStudyGroupSuccess) {
-        LaunchedEffect(Unit) {
-            onDeleteStudyGroupSuccess()
-        }
-    }
-
-    if (uiState.isLeaveStudyGroupSuccess) {
-        LaunchedEffect(Unit) {
-            onLeaveStudyGroupSuccess()
-        }
+        WeQuizCircularProgressIndicator()
     }
 }
 

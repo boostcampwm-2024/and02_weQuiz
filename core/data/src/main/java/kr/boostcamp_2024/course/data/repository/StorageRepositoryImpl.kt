@@ -11,22 +11,22 @@ class StorageRepositoryImpl @Inject constructor(
 ) : StorageRepository {
     private val storageRef = storage.reference
 
-    override suspend fun uploadImage(imageByteArray: ByteArray): Result<String> = runCatching {
+    override suspend fun uploadImage(imageByteArray: ByteArray): String {
         val uuid = UUID.randomUUID().toString()
         val fileRef = storageRef.child(uuid)
 
         fileRef.putBytes(imageByteArray).await()
 
-        fileRef.downloadUrl.await().toString()
+        return fileRef.downloadUrl.await().toString()
     }
 
-    override suspend fun deleteImage(imageUrl: String): Result<Unit> = runCatching {
+    override suspend fun deleteImage(imageUrl: String) {
         val filePath = extractPathFromUrl(imageUrl)
         val fileRef = storageRef.child(filePath)
         fileRef.delete().await()
     }
 
-    override suspend fun deleteImages(imageUrls: List<String>): Result<Unit> = runCatching {
+    override suspend fun deleteImages(imageUrls: List<String>) {
         imageUrls.forEach { imageUrl ->
             val filePath = extractPathFromUrl(imageUrl)
             val fileRef = storageRef.child(filePath)

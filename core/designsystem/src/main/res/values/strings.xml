@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="des_clear_text">텍스트 지우기</string>
+    <string name="des_clear_text">remove text</string>
+    <string name="des_loading_indicator">loading</string>
 </resources>

@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.Question
@@ -56,12 +57,22 @@ internal fun OwnerQuestionScreen(
     onQuizFinished: (String?, String?) -> Unit,
     snackbarHostState: SnackbarHostState,
     onShowErrorSnackbar: (Throwable) -> Unit,
-    questionViewModel: OwnerQuestionViewModel = hiltViewModel(),
+    viewModel: OwnerQuestionViewModel = hiltViewModel(),
 ) {
-    val uiState by questionViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        questionViewModel.initQuizData(quiz, currentUserId)
+        viewModel.initQuizData(quiz, currentUserId)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
+
+    LaunchedEffect(uiState.isQuizFinished) {
+        if (uiState.isQuizFinished) {
+            onQuizFinished(null, requireNotNull(uiState.quiz?.id))
+        }
     }
 
     OwnerQuestionScreen(
@@ -70,29 +81,17 @@ internal fun OwnerQuestionScreen(
         currentPage = uiState.currentPage,
         choiceQuestions = uiState.questions,
         ownerName = uiState.ownerName ?: "",
-        onNextButtonClick = questionViewModel::nextPage,
-        onPreviousButtonClick = questionViewModel::previousPage,
-        onQuizFinishButtonClick = questionViewModel::setQuizFinished,
-        showErrorMessage = questionViewModel::showErrorMessage,
+        onNextButtonClick = viewModel::nextPage,
+        onPreviousButtonClick = viewModel::previousPage,
+        onQuizFinishButtonClick = viewModel::setQuizFinished,
         blankQuestionContents = uiState.blankQuestionContents,
         blankWords = uiState.blankWords,
-        removeBlankWord = questionViewModel.blankQuestionManager::removeBlankContent,
-        addBlankWord = questionViewModel.blankQuestionManager::addBlankContent,
-        getBlankQuestionAnswer = questionViewModel.blankQuestionManager::getAnswer,
+        removeBlankWord = viewModel.blankQuestionManager::removeBlankContent,
+        addBlankWord = viewModel.blankQuestionManager::addBlankContent,
+        getBlankQuestionAnswer = viewModel.blankQuestionManager::getAnswer,
+        onShowErrorSnackbar = onShowErrorSnackbar,
         snackbarHostState = snackbarHostState,
     )
-
-    if (uiState.isQuizFinished) {
-        onQuizFinished(null, requireNotNull(uiState.quiz?.id))
-    }
-
-    uiState.errorMessageId?.let { errorMessageId ->
-        val errorMessage = stringResource(errorMessageId)
-        LaunchedEffect(errorMessageId) {
-            onShowErrorSnackbar(Exception(errorMessage))
-            questionViewModel.shownErrorMessage()
-        }
-    }
 }
 
 @Composable
@@ -105,12 +104,12 @@ private fun OwnerQuestionScreen(
     onNextButtonClick: () -> Unit,
     onPreviousButtonClick: () -> Unit,
     onQuizFinishButtonClick: () -> Unit,
-    showErrorMessage: (Int) -> Unit,
     blankQuestionContents: List<Map<String, Any>?>,
     blankWords: List<Map<String, Any>>,
     removeBlankWord: (Int) -> Unit,
     addBlankWord: (Int) -> Unit,
     getBlankQuestionAnswer: () -> Map<String, String?>,
+    onShowErrorSnackbar: (Throwable) -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     var showQuitQuizDialog by rememberSaveable { mutableStateOf(false) }
@@ -169,13 +168,13 @@ private fun OwnerQuestionScreen(
                             selectedIndexList = choiceQuestions.map { it?.userAnswers },
                             onOptionSelected = { _, _ -> },
                             questions = choiceQuestions,
-                            showErrorMessage = showErrorMessage,
                             onBlanksSelected = { _, _ -> },
                             blankQuestionContents = blankQuestionContents,
                             blankWords = blankWords,
                             removeBlankContent = removeBlankWord,
                             addBlankContent = addBlankWord,
                             getBlankQuestionAnswer = getBlankQuestionAnswer,
+                            onShowErrorSnackbar = onShowErrorSnackbar,
                         )
                     }
                     item {
@@ -282,12 +281,12 @@ private fun OwnerQuestionScreenPreview(
             onNextButtonClick = {},
             onPreviousButtonClick = {},
             onQuizFinishButtonClick = {},
-            showErrorMessage = {},
             blankQuestionContents = emptyList(),
             blankWords = emptyList(),
             removeBlankWord = {},
             addBlankWord = {},
             getBlankQuestionAnswer = { emptyMap() },
+            onShowErrorSnackbar = {},
         )
     }
 }

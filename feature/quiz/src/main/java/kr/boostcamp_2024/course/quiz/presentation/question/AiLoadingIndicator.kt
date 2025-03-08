@@ -9,6 +9,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -24,6 +27,7 @@ fun AiLoadingIndicator() {
         verticalArrangement = Arrangement.Center,
     ) {
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.anim_ai))
+        val loadingContentDes = stringResource(R.string.des_ai_loading)
         val lottieAnimatable = rememberLottieAnimatable()
 
         LaunchedEffect(composition) {
@@ -37,7 +41,9 @@ fun AiLoadingIndicator() {
         LottieAnimation(
             composition = composition,
             progress = { lottieAnimatable.progress },
-            modifier = Modifier.size(200.dp),
+            modifier = Modifier
+                .semantics { contentDescription = loadingContentDes }
+                .size(200.dp),
         )
     }
 }

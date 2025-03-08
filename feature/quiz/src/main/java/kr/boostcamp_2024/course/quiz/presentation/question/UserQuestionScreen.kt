@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizBaseDialog
 import kr.boostcamp_2024.course.domain.model.BaseQuiz
@@ -47,10 +48,14 @@ internal fun UserQuestionScreen(
     onQuizFinished: (String?, String?) -> Unit,
     snackbarHostState: SnackbarHostState,
     onShowErrorSnackbar: (Throwable) -> Unit,
-    userQuestionViewModel: UserQuestionViewModel = hiltViewModel(),
+    viewModel: UserQuestionViewModel = hiltViewModel(),
 ) {
-    val uiState by userQuestionViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var quizFinishDialog by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
 
     UserQuestionScreen(
         quiz = uiState.quiz,
@@ -60,27 +65,20 @@ internal fun UserQuestionScreen(
         quizFinishDialog = quizFinishDialog,
         onQuizFinishDialogDismissButtonClick = { quizFinishDialog = false },
         selectedIndexList = uiState.selectedIndexList,
-        onOptionSelected = userQuestionViewModel::selectOption,
-        onBlanksSelected = userQuestionViewModel::selectBlanks,
-        onSubmitButtonClick = userQuestionViewModel::submitQuestion,
+        onOptionSelected = viewModel::selectOption,
+        onBlanksSelected = viewModel::selectBlanks,
+        onSubmitButtonClick = viewModel::submitQuestion,
         isSubmitted = uiState.isSubmitted,
-        onQuizFinishButtonClick = userQuestionViewModel::submitAnswers,
+        onQuizFinishButtonClick = viewModel::submitAnswers,
         blankQuestionContents = uiState.blankQuestionContents,
         blankWords = uiState.blankWords,
-        removeBlankContent = userQuestionViewModel.blankQuestionManager::removeBlankContent,
-        addBlankContent = userQuestionViewModel.blankQuestionManager::addBlankContent,
-        getBlankQuestionAnswer = userQuestionViewModel.blankQuestionManager::getAnswer,
-        onExitButtonClick = userQuestionViewModel::exitRealTimeQuiz,
+        removeBlankContent = viewModel.blankQuestionManager::removeBlankContent,
+        addBlankContent = viewModel.blankQuestionManager::addBlankContent,
+        getBlankQuestionAnswer = viewModel.blankQuestionManager::getAnswer,
+        onExitButtonClick = viewModel::exitRealTimeQuiz,
+        onShowErrorSnackbar = onShowErrorSnackbar,
         snackbarHostState = snackbarHostState,
     )
-
-    uiState.errorMessageId?.let { errorMessageId ->
-        val errorMessage = stringResource(errorMessageId)
-        LaunchedEffect(errorMessageId) {
-            onShowErrorSnackbar(Exception(errorMessage))
-            userQuestionViewModel.shownErrorMessage()
-        }
-    }
 
     uiState.userOmrId?.let { userOmrId ->
         LaunchedEffect(userOmrId) {
@@ -119,6 +117,7 @@ private fun UserQuestionScreen(
     addBlankContent: (Int) -> Unit,
     getBlankQuestionAnswer: () -> Map<String, String?>,
     onExitButtonClick: () -> Unit,
+    onShowErrorSnackbar: (Throwable) -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     var showExitDialog by rememberSaveable { mutableStateOf(false) }
@@ -173,13 +172,13 @@ private fun UserQuestionScreen(
                             selectedIndexList = selectedIndexList,
                             onOptionSelected = onOptionSelected,
                             questions = choiceQuestions,
-                            showErrorMessage = { /* no-op */ },
                             onBlanksSelected = onBlanksSelected,
                             blankQuestionContents = blankQuestionContents,
                             blankWords = blankWords,
                             removeBlankContent = removeBlankContent,
                             addBlankContent = addBlankContent,
                             getBlankQuestionAnswer = getBlankQuestionAnswer,
+                            onShowErrorSnackbar = onShowErrorSnackbar,
                         )
                     }
 
@@ -270,6 +269,7 @@ private fun UserQuestionScreenPreview(
             addBlankContent = {},
             getBlankQuestionAnswer = { emptyMap() },
             onExitButtonClick = {},
+            onShowErrorSnackbar = {},
         )
     }
 }

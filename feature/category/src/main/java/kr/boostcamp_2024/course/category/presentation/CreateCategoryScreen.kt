@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.category.R
 import kr.boostcamp_2024.course.category.viewModel.CreateCategoryViewModel
 import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
@@ -53,13 +54,13 @@ internal fun CreateCategoryScreen(
         viewModel.fetchCategoryInfo()
     }
 
-    LaunchedEffect(uiState) {
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
+
+    LaunchedEffect(uiState.creationSuccess) {
         if (uiState.creationSuccess) {
             onCreateCategorySuccess()
-        }
-        uiState.errorMessage?.let { message ->
-            onShowErrorSnackbar(Exception(message))
-            viewModel.setErrorMessage(null)
         }
     }
 

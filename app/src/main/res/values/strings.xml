@@ -3,4 +3,5 @@
     <string name="default_error_message">An Error occured.\nPlease try again.</string>
     <string name="network_dialog_title">The network environment you are using is unstable. Please check the wireless communication (5G/LTE or Wi-Fi) status and try again.</string>
     <string name="network_dialog_confirm_title">Retry</string>
+    <string name="permission_denied_error_message">Please sign up to use this feature.</string>
 </resources>

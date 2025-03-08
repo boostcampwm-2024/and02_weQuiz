@@ -1,15 +1,16 @@
 package kr.boostcamp_2024.course.quiz.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -25,11 +26,17 @@ import javax.inject.Inject
 data class QuizResultUiState(
     val questions: List<Question>? = null,
     val quizTitle: String? = null,
-    val quizResult: QuizResult? = null,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null,
     val isManager: Boolean = false,
-)
+    val userOmrAnswers: List<Any> = emptyList(),
+) {
+    val quizResult: QuizResult? =
+        if (questions?.isNotEmpty() == true && userOmrAnswers.size == questions.size) {
+            QuizResult(userOmrAnswers = userOmrAnswers, questions = questions)
+        } else {
+            null
+        }
+}
 
 @HiltViewModel
 class QuizResultViewModel @Inject constructor(
@@ -41,96 +48,61 @@ class QuizResultViewModel @Inject constructor(
     private val userOmrId: String? = savedStateHandle.toRoute<QuizResultRoute>().userOmrId
     private val quizId: String? = savedStateHandle.toRoute<QuizResultRoute>().quizId
 
-    private val userOmrAnswers = MutableStateFlow<List<Any>>(emptyList()) // 사용자 답지
-    private val questions = MutableStateFlow<List<Question>>(emptyList()) // 퀴즈 리스트
+    private val _errorFlow = MutableSharedFlow<Throwable>()
+    val errorFlow = _errorFlow.asSharedFlow()
+
     private val _uiState: MutableStateFlow<QuizResultUiState> = MutableStateFlow(QuizResultUiState())
 
-    val uiState: StateFlow<QuizResultUiState> = combine(userOmrAnswers, questions, _uiState) { userOmrAnswers, questions, uiState ->
-        if (quizId != null) {
-            uiState
-        } else {
-            if (userOmrAnswers.size == questions.size && questions.isNotEmpty()) {
-                try {
-                    val quizResult = QuizResult(userOmrAnswers = userOmrAnswers, questions = questions)
-                    uiState.copy(quizResult = quizResult)
-                } catch (exception: Exception) {
-                    Log.e("QuizResultViewModel", "Failed to create QuizResult", exception)
-                    uiState.copy(errorMessage = "퀴즈 결과 생성에 실패했습니다.")
-                }
-            } else {
-                uiState
-            }
-        }
-        val quizResult =
-            when (userOmrAnswers.size == questions.size && questions.isNotEmpty()) {
-                true -> QuizResult(userOmrAnswers = userOmrAnswers, questions = questions)
-                false -> null
-            }
-        uiState.copy(quizResult = quizResult)
-    }.onStart {
-        initViewModel()
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        QuizResultUiState(),
-    )
+    val uiState: StateFlow<QuizResultUiState> = _uiState.asStateFlow()
+        .onStart {
+            initViewModel()
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            QuizResultUiState(),
+        )
 
-    fun initViewModel() {
-        if (userOmrId != null) {
-            loadUserOmr()
-        } else if (quizId != null) {
-            loadQuestions(quizId)
-            _uiState.update { it.copy(isManager = true) }
-        }
-    }
-
-    private fun loadQuestions(quizId: String) {
+    private fun initViewModel() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            try {
+                _uiState.update { it.copy(isLoading = true) }
 
-            quizRepository.getQuiz(quizId)
-                .onSuccess { quiz ->
-                    _uiState.update { it.copy(quizTitle = quiz.title) }
-
-                    questionRepository.getQuestions(quiz.questions)
-                        .onSuccess { question ->
-                            _uiState.update { it.copy(isLoading = false, questions = question) }
-                            questions.value = question
-                        }
-                        .onFailure {
-                            Log.e("QuizResultViewModel", "Failed to load questions", it)
-                            _uiState.update { it.copy(isLoading = false, errorMessage = "문제 로드에 실패했습니다.") }
-                        }
+                if (userOmrId != null) {
+                    loadUserOmr(userOmrId)
+                } else if (quizId != null) {
+                    loadQuestions(quizId)
+                    _uiState.update { it.copy(isManager = true) }
                 }
-                .onFailure {
-                    Log.e("QuizResultViewModel", "Failed to load quiz", it)
-                    _uiState.update { it.copy(isLoading = false, errorMessage = "퀴즈 로드에 실패했습니다.") }
-                }
-        }
-    }
 
-    private fun loadUserOmr() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-
-            if (userOmrId != null) {
-                userOmrRepository.getUserOmr(userOmrId)
-                    .onSuccess { userOmr ->
-                        _uiState.update { it.copy(isLoading = false) }
-                        userOmrAnswers.value = userOmr.answers
-
-                        loadQuestions(userOmr.quizId)
-
-                    }
-                    .onFailure {
-                        Log.e("QuizResultViewModel", "Failed to load userOmr", it)
-                        _uiState.update { it.copy(isLoading = false, errorMessage = "답지 로드에 실패했습니다.") }
-                    }
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }
 
-    fun shownErrorMessage() {
-        _uiState.update { it.copy(errorMessage = null) }
+    private suspend fun loadQuestions(quizId: String) {
+        val quiz = quizRepository.getQuiz(quizId)
+        val question = questionRepository.getQuestions(quiz.questions)
+
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                questions = question,
+                quizTitle = quiz.title,
+            )
+        }
+    }
+
+    private suspend fun loadUserOmr(userOmrId: String) {
+        val userOmr = userOmrRepository.getUserOmr(userOmrId)
+
+        _uiState.update {
+            it.copy(
+                userOmrAnswers = userOmr.answers,
+            )
+        }
+
+        loadQuestions(userOmr.quizId)
     }
 }

@@ -22,21 +22,19 @@ class QuestionRepositoryImpl @Inject constructor(
 ) : QuestionRepository {
     private val questionCollectionRef = firestore.collection("Question")
 
-    override suspend fun getQuestions(questionIds: List<String>): Result<List<Question>> =
-        runCatching {
-            questionIds.map { questionId ->
-                val document = questionCollectionRef.document(questionId).get().await()
-                val questionType = document.getString("type")?.toQuestionType()
-                val response = when (questionType) {
-                    is QuestionType.Choice -> document.toObject(ChoiceQuestionDTO::class.java)
-                    is QuestionType.Blank -> document.toObject(BlankQuestionDTO::class.java)
-                    else -> throw Exception("잘못된 문제 타입입니다.")
-                }
-                requireNotNull(response).toVO(questionId)
+    override suspend fun getQuestions(questionIds: List<String>): List<Question> =
+        questionIds.map { questionId ->
+            val document = questionCollectionRef.document(questionId).get().await()
+            val questionType = document.getString("type")?.toQuestionType()
+            val response = when (questionType) {
+                is QuestionType.Choice -> document.toObject(ChoiceQuestionDTO::class.java)
+                is QuestionType.Blank -> document.toObject(BlankQuestionDTO::class.java)
+                else -> throw Exception("잘못된 문제 타입입니다.")
             }
+            requireNotNull(response).toVO(questionId)
         }
 
-    override suspend fun getQuestion(questionId: String): Result<Question> = runCatching {
+    override suspend fun getQuestion(questionId: String): Question {
         val document = questionCollectionRef.document(questionId).get().await()
         val questionType = document.getString("type")?.toQuestionType()
         val response = when (questionType) {
@@ -44,7 +42,7 @@ class QuestionRepositoryImpl @Inject constructor(
             is QuestionType.Blank -> document.toObject(BlankQuestionDTO::class.java)
             else -> throw Exception("잘못된 문제 타입입니다.")
         }
-        requireNotNull(response).toVO(questionId)
+        return requireNotNull(response).toVO(questionId)
     }
 
     override fun observeQuestion(questionId: String): Flow<Question> = callbackFlow {
@@ -56,8 +54,8 @@ class QuestionRepositoryImpl @Inject constructor(
 
             val questionType = value?.getString("type")?.toQuestionType()
             val response = when (questionType) {
-                is QuestionType.Choice -> value?.toObject(ChoiceQuestionDTO::class.java)
-                is QuestionType.Blank -> value?.toObject(BlankQuestionDTO::class.java)
+                is QuestionType.Choice -> value.toObject(ChoiceQuestionDTO::class.java)
+                is QuestionType.Blank -> value.toObject(BlankQuestionDTO::class.java)
                 else -> throw Exception("잘못된 문제 타입입니다.")
             }?.toVO(questionId)
 
@@ -69,58 +67,53 @@ class QuestionRepositoryImpl @Inject constructor(
         awaitClose { listener.remove() }
     }
 
-    override suspend fun getRealTimeQuestions(questionIds: List<String>): Result<List<Flow<Question>>> =
-        runCatching {
-            questionIds.map { questionId ->
-                observeQuestion(questionId)
-            }
+    override suspend fun getRealTimeQuestions(questionIds: List<String>): List<Flow<Question>> =
+        questionIds.map { questionId ->
+            observeQuestion(questionId)
         }
 
-    override suspend fun createQuestion(choiceQuestionCreationInfo: ChoiceQuestionCreationInfo): Result<String> =
-        runCatching {
-            val document = questionCollectionRef.add(choiceQuestionCreationInfo.toDTO()).await()
-            document.id
-        }
+    override suspend fun createQuestion(choiceQuestionCreationInfo: ChoiceQuestionCreationInfo): String {
+        val document = questionCollectionRef.add(choiceQuestionCreationInfo.toDTO()).await()
+        return document.id
+    }
 
-    override suspend fun deleteQuestions(questionIds: List<String>): Result<Unit> = runCatching {
+    override suspend fun deleteQuestions(questionIds: List<String>) {
         questionIds.forEach { questionId ->
             questionCollectionRef.document(questionId).delete().await()
         }
     }
 
-    override suspend fun updateCurrentSubmit(userId: String?, questionId: String, userAnswer: Any?): Result<Unit> =
-        runCatching {
-            val document = questionCollectionRef.document(questionId)
-            firestore.runTransaction { transaction ->
-                val snapshot = transaction.get(document)
+    override suspend fun updateCurrentSubmit(userId: String?, questionId: String, userAnswer: Any?) {
+        val document = questionCollectionRef.document(questionId)
+        firestore.runTransaction { transaction ->
+            val snapshot = transaction.get(document)
 
-                if (snapshot.exists()) {
-                    when (userAnswer) {
-                        is Int -> {
-                            val choices = snapshot.get("user_answers") as? MutableList<Int> ?: throw Exception("user_answers 배열이 존재하지 않거나 잘못되었습니다.")
-                            if (userAnswer in 0..4) {
-                                choices[userAnswer] += 1
-                                transaction.update(document, "user_answers", choices)
-                            } else {
-                                // no - op
-                            }
+            if (snapshot.exists()) {
+                when (userAnswer) {
+                    is Int -> {
+                        val choices = snapshot.get("user_answers") as? MutableList<Int> ?: throw Exception("user_answers 배열이 존재하지 않거나 잘못되었습니다.")
+                        if (userAnswer in 0..4) {
+                            choices[userAnswer] += 1
+                            transaction.update(document, "user_answers", choices)
+                        } else {
+                            // no - op
                         }
-
-                        is Map<*, *> -> {
-                            transaction.update(document, "user_answers", FieldValue.arrayUnion(userId))
-                        }
-
-                        else -> throw Exception("잘못된 유저 답변입니다.")
                     }
-                } else {
-                    throw Exception("문서가 존재하지 않습니다.")
-                }
-            }.await()
-        }
 
-    override suspend fun createBlankQuestion(blankQuestionCreationInfo: BlankQuestionCreationInfo): Result<String> =
-        runCatching {
-            val document = questionCollectionRef.add(blankQuestionCreationInfo.toDTO()).await()
-            document.id
-        }
+                    is Map<*, *> -> {
+                        transaction.update(document, "user_answers", FieldValue.arrayUnion(userId))
+                    }
+
+                    else -> throw Exception("잘못된 유저 답변입니다.")
+                }
+            } else {
+                throw Exception("문서가 존재하지 않습니다.")
+            }
+        }.await()
+    }
+
+    override suspend fun createBlankQuestion(blankQuestionCreationInfo: BlankQuestionCreationInfo): String {
+        val document = questionCollectionRef.add(blankQuestionCreationInfo.toDTO()).await()
+        return document.id
+    }
 }

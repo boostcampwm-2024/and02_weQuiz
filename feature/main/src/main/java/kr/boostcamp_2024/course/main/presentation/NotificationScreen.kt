@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.domain.model.Notification
@@ -36,16 +37,13 @@ internal fun NotificationScreen(
     onShowErrorSnackbar: (Throwable) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val notificationInfos = uiState.notificationWithGroupInfoList
-    LaunchedEffect(uiState) {
-        uiState.snackBarMessage?.let { message ->
-            onShowErrorSnackbar(Exception(message))
-            viewModel.onSnackBarShown()
-        }
+
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
     }
 
     NotificationScreen(
-        notificationInfos = notificationInfos,
+        notificationInfos = uiState.notificationWithGroupInfoList,
         onRejectClick = viewModel::deleteInvitation,
         onAcceptClick = viewModel::acceptInvitation,
         onNavigationButtonClick = onNavigationButtonClick,

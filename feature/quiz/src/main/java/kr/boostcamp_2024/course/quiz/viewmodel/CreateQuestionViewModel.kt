@@ -1,13 +1,14 @@
 package kr.boostcamp_2024.course.quiz.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,6 +32,7 @@ sealed class BlankQuestionItem {
 
 data class CreateQuestionUiState(
     val isLoading: Boolean = false,
+    val isAiLoading: Boolean = false,
     val showDialog: Boolean = false,
     val choiceQuestionCreationInfo: ChoiceQuestionCreationInfo = ChoiceQuestionCreationInfo(
         title = "",
@@ -39,7 +41,6 @@ data class CreateQuestionUiState(
         answer = 0,
         choices = List(4) { "" },
     ),
-    val snackBarMessage: String? = null,
     val creationSuccess: Boolean = false,
     val selectedQuestionTypeIndex: Int = 0,
     val items: List<BlankQuestionItem> = listOf(
@@ -78,8 +79,12 @@ class CreateQuestionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val quizId: String = savedStateHandle.toRoute<CreateQuestionRoute>().quizId
+
     private val _createQuestionUiState: MutableStateFlow<CreateQuestionUiState> = MutableStateFlow(CreateQuestionUiState())
     val createQuestionUiState: StateFlow<CreateQuestionUiState> = _createQuestionUiState.asStateFlow()
+
+    private val _errorFlow = MutableSharedFlow<Throwable>()
+    val errorFlow = _errorFlow.asSharedFlow()
 
     fun onTitleChanged(title: String) {
         _createQuestionUiState.update { currentState ->
@@ -132,38 +137,28 @@ class CreateQuestionViewModel @Inject constructor(
     }
 
     fun createQuestion() {
-        setLoadingState(true)
         viewModelScope.launch {
-            val currentQuestionCreationInfo = createQuestionUiState.value.choiceQuestionCreationInfo
-            val questionCreationInfo = currentQuestionCreationInfo.copy(
-                solution = if (currentQuestionCreationInfo.solution.isNullOrBlank()) null else currentQuestionCreationInfo.solution,
-            )
-            questionRepository.createQuestion(questionCreationInfo)
-                .onSuccess { questionId ->
-                    saveQuestionToQuiz(questionId)
-                }.onFailure { exception ->
-                    Log.e("CreateQuestionViewModel", exception.message, exception)
-                    setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
-                    _createQuestionUiState.update { it.copy(isLoading = false) }
-                }
-        }
-    }
+            try {
+                setLoadingState(true)
 
-    private suspend fun saveQuestionToQuiz(questionId: String) {
-        try {
-            quizRepository.addQuestionToQuiz(quizId, questionId).getOrThrow()
-
-            _createQuestionUiState.update { currentState ->
-                currentState.copy(
-                    isLoading = false,
-                    creationSuccess = true,
+                val currentQuestionCreationInfo = createQuestionUiState.value.choiceQuestionCreationInfo
+                val questionCreationInfo = currentQuestionCreationInfo.copy(
+                    solution = if (currentQuestionCreationInfo.solution.isNullOrBlank()) null else currentQuestionCreationInfo.solution,
                 )
+
+                val questionId = questionRepository.createQuestion(questionCreationInfo)
+                quizRepository.addQuestionToQuiz(quizId, questionId)
+
+                _createQuestionUiState.update { currentState ->
+                    currentState.copy(
+                        isLoading = false,
+                        creationSuccess = true,
+                    )
+                }
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+                setLoadingState(false)
             }
-        } catch (exception: Exception) {
-            // todo: 문제를 삭제해야 하지 않을까?
-            Log.e("CreateQuestionViewModel", exception.message, exception)
-            setNewSnackBarMessage("문제 저장에 실패했습니다. 다시 시도해주세요!")
-            _createQuestionUiState.update { it.copy(isLoading = false) }
         }
     }
 
@@ -171,14 +166,6 @@ class CreateQuestionViewModel @Inject constructor(
         _createQuestionUiState.update { currentState ->
             currentState.copy(
                 isLoading = isLoading,
-            )
-        }
-    }
-
-    fun setNewSnackBarMessage(message: String?) {
-        _createQuestionUiState.update { currentState ->
-            currentState.copy(
-                snackBarMessage = message,
             )
         }
     }
@@ -200,48 +187,39 @@ class CreateQuestionViewModel @Inject constructor(
     }
 
     fun getAiRecommendedQuestion(category: String) {
-        setLoadingState(true)
         viewModelScope.launch {
-            aiRepository.getAiQuestion(category).onSuccess {
-                val choiceCreationInfo = if (it.choices.size != 4) {
+            try {
+                _createQuestionUiState.update { it.copy(isAiLoading = true) }
+
+                val aiQuestion = aiRepository.getAiQuestion(category)
+                val choiceCreationInfo = if (aiQuestion.choices.size != 4) {
                     ChoiceQuestionCreationInfo(
-                        title = it.title,
-                        description = it.description,
-                        solution = it.solution,
-                        answer = getAnswerIndex(it.answer, it.choices),
+                        title = aiQuestion.title,
+                        description = aiQuestion.description,
+                        solution = aiQuestion.solution,
+                        answer = getAnswerIndex(aiQuestion.answer, aiQuestion.choices),
                         choices = List(4) { "AI could not generate choices." },
                     )
                 } else {
                     ChoiceQuestionCreationInfo(
-                        title = it.title,
-                        description = it.description,
-                        solution = it.solution,
-                        answer = getAnswerIndex(it.answer, it.choices),
-                        choices = it.choices,
+                        title = aiQuestion.title,
+                        description = aiQuestion.description,
+                        solution = aiQuestion.solution,
+                        answer = getAnswerIndex(aiQuestion.answer, aiQuestion.choices),
+                        choices = aiQuestion.choices,
                     )
                 }
-                setAiRecommendedQuestion(
-                    choiceCreationInfo,
-                )
                 _createQuestionUiState.update { currentState ->
                     currentState.copy(
-                        isLoading = false,
+                        isAiLoading = false,
+                        choiceQuestionCreationInfo = choiceCreationInfo,
                     )
                 }
-            }.onFailure {
-                _createQuestionUiState.update { it.copy(isLoading = false) }
-                setNewSnackBarMessage("AI 추천 문제 가져오기에 실패했습니다. 다시 시도해주세요!")
-                Log.e("CreateQuestionViewModel", "AI 추천 문제 가져오기 실패")
+            } catch (e: Exception) {
+                _createQuestionUiState.update { it.copy(isAiLoading = false) }
+                _errorFlow.emit(e)
+                setLoadingState(false)
             }
-
-        }
-    }
-
-    private fun setAiRecommendedQuestion(questionCreationInfo: ChoiceQuestionCreationInfo) {
-        _createQuestionUiState.update { currentState ->
-            currentState.copy(
-                choiceQuestionCreationInfo = questionCreationInfo,
-            )
         }
     }
 
@@ -297,33 +275,42 @@ class CreateQuestionViewModel @Inject constructor(
     }
 
     fun onCreateBlankQuestion() {
-        val blankQuestionList = mutableListOf<LinkedHashMap<String, String>>()
-        _createQuestionUiState.value.items.forEachIndexed { _, item ->
-            val blankQuestionMap = LinkedHashMap<String, String>()
-            if (item is BlankQuestionItem.Blank) {
-                blankQuestionMap["text"] = item.text
-                blankQuestionMap["type"] = "blank"
-            } else if (item is BlankQuestionItem.Text) {
-                blankQuestionMap["text"] = item.text
-                blankQuestionMap["type"] = "text"
-            }
-            blankQuestionList.add(blankQuestionMap)
-        }
-
         viewModelScope.launch {
-            questionRepository.createBlankQuestion(
-                BlankQuestionCreationInfo(
-                    title = _createQuestionUiState.value.choiceQuestionCreationInfo.title,
-                    solution = if (_createQuestionUiState.value.choiceQuestionCreationInfo.solution.isNullOrBlank()) null else _createQuestionUiState.value.choiceQuestionCreationInfo.solution,
-                    questionContent = blankQuestionList,
-                ),
-            ).onSuccess { questionId ->
-                saveQuestionToQuiz(questionId)
-            }.onFailure { exception ->
-                Log.e("CreateQuestionViewModel", exception.message, exception)
-                setNewSnackBarMessage("문제 생성에 실패했습니다. 다시 시도해주세요!")
-            }
+            try {
+                setLoadingState(true)
 
+                val blankQuestionList = mutableListOf<LinkedHashMap<String, String>>()
+                _createQuestionUiState.value.items.forEachIndexed { _, item ->
+                    val blankQuestionMap = LinkedHashMap<String, String>()
+                    if (item is BlankQuestionItem.Blank) {
+                        blankQuestionMap["text"] = item.text
+                        blankQuestionMap["type"] = "blank"
+                    } else if (item is BlankQuestionItem.Text) {
+                        blankQuestionMap["text"] = item.text
+                        blankQuestionMap["type"] = "text"
+                    }
+                    blankQuestionList.add(blankQuestionMap)
+                }
+
+                val questionId = questionRepository.createBlankQuestion(
+                    BlankQuestionCreationInfo(
+                        title = _createQuestionUiState.value.choiceQuestionCreationInfo.title,
+                        solution = if (_createQuestionUiState.value.choiceQuestionCreationInfo.solution.isNullOrBlank()) null else _createQuestionUiState.value.choiceQuestionCreationInfo.solution,
+                        questionContent = blankQuestionList,
+                    ),
+                )
+                quizRepository.addQuestionToQuiz(quizId, questionId)
+
+                _createQuestionUiState.update { currentState ->
+                    currentState.copy(
+                        isLoading = false,
+                        creationSuccess = true,
+                    )
+                }
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+                setLoadingState(false)
+            }
         }
     }
 

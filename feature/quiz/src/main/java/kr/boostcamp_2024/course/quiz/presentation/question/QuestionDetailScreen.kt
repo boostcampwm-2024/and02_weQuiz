@@ -27,8 +27,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.domain.model.BlankQuestion
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.domain.model.Question
@@ -52,26 +54,25 @@ internal fun QuestionDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
+
     QuestionDetailScreen(
         question = uiState.question,
-        userAnswer = uiState.userAnswer,
         onNavigationButtonClick = onNavigationButtonClick,
         snackbarHostState = snackbarHostState,
     )
 
-    uiState.errorMessage?.let { message ->
-        LaunchedEffect(message) {
-            onShowErrorSnackbar(Exception(message))
-            viewModel.shownErrorMessage()
-        }
+    if (uiState.isLoading) {
+        WeQuizCircularProgressIndicator()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun QuestionDetailScreen(
+internal fun QuestionDetailScreen(
     question: Question?,
-    userAnswer: List<Int>,
     onNavigationButtonClick: () -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
@@ -131,7 +132,7 @@ private fun QuestionDetailScreen(
                 QuizStatisticsDialog(
                     onConfirmButtonClick = { showDialog = false },
                     onDismissRequest = { showDialog = false },
-                    userAnswer = userAnswer,
+                    userAnswer = (question as ChoiceQuestion).userAnswers,
                 )
             }
         }
@@ -147,7 +148,6 @@ private fun QuestionDetailScreenPreview(
         QuestionDetailScreen(
             onNavigationButtonClick = {},
             question = question,
-            userAnswer = listOf(0, 0, 0, 0),
         )
     }
 }

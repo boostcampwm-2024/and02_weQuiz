@@ -1,12 +1,13 @@
 package kr.boostcamp_2024.course.main.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -22,7 +23,6 @@ import javax.inject.Inject
 data class NotificationUiState(
     val isLoading: Boolean = false,
     val notificationWithGroupInfoList: List<NotificationWithGroupInfo> = emptyList(),
-    val snackBarMessage: String? = null,
 )
 
 @HiltViewModel
@@ -42,100 +42,63 @@ class NotificationViewModel @Inject constructor(
             NotificationUiState(),
         )
 
+    private val _errorFlow = MutableSharedFlow<Throwable>()
+    val errorFlow = _errorFlow.asSharedFlow()
+
     private fun loadNotifications() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            authRepository.getUserKey().onSuccess { userKey ->
-                notificationRepository.getNotifications(userKey)
-                    .onSuccess { notifications ->
-                        val notificationWithStudyGroupNameList = notifications.map { notification ->
-                            val studyGroupResult = studyGroupRepository.getStudyGroup(notification.groupId)
-                            val notificationWithGroupInfo = studyGroupResult.fold(
-                                onSuccess = { studyGroup ->
-                                    NotificationWithGroupInfo(
-                                        notification = notification,
-                                        studyGroupName = studyGroup.name,
-                                        studyGroupImgUrl = studyGroup.studyGroupImageUrl,
-                                    )
-                                },
-                                onFailure = {
-                                    NotificationWithGroupInfo(
-                                        notification = notification,
-                                        studyGroupName = null,
-                                        studyGroupImgUrl = null,
-                                    )
-                                },
-                            )
-                            notificationWithGroupInfo
-                        }
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                notificationWithGroupInfoList = notificationWithStudyGroupNameList,
-                            )
-                        }
-                    }
-                    .onFailure {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                snackBarMessage = "알림을 불러오지 못하였습니다.",
-                            )
-                        }
-                    }
-            }
-                .onFailure {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            snackBarMessage = "유저키를 불러오지 못하였습니다.",
-                        )
-                    }
+            try {
+                _uiState.update { it.copy(isLoading = true) }
+
+                val userKey = authRepository.getUserKey()
+                val notifications = notificationRepository.getNotifications(userKey)
+                val notificationWithStudyGroupNameList = notifications.map { notification ->
+                    val studyGroup = studyGroupRepository.getStudyGroup(notification.groupId)
+                    NotificationWithGroupInfo(
+                        notification = notification,
+                        studyGroupName = studyGroup.name,
+                        studyGroupImgUrl = studyGroup.studyGroupImageUrl,
+                    )
                 }
+                _uiState.update { it.copy(isLoading = false, notificationWithGroupInfoList = notificationWithStudyGroupNameList) }
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+                _uiState.update { it.copy(isLoading = false) }
+            }
         }
     }
 
     fun deleteInvitation(studyId: String) {
         viewModelScope.launch {
-            notificationRepository.deleteNotification(studyId)
-                .onSuccess {
-                    _uiState.update { currentState ->
-                        val updatedList = currentState.notificationWithGroupInfoList.filterNot { it.notification.id == studyId }
-                        currentState.copy(notificationWithGroupInfoList = updatedList)
-                    }
+            try {
+                _uiState.update { it.copy(isLoading = true) }
+
+                notificationRepository.deleteNotification(studyId)
+                _uiState.update { currentState ->
+                    val updatedList = currentState.notificationWithGroupInfoList.filterNot { it.notification.id == studyId }
+                    currentState.copy(isLoading = false, notificationWithGroupInfoList = updatedList)
                 }
-                .onFailure { throwable ->
-                    Log.e("NotificationViewModel", "실패: $throwable")
-                    _uiState.update { it.copy(snackBarMessage = "알림 삭제를 실패하였습니다.") }
-                }
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+                _uiState.update { it.copy(isLoading = false) }
+            }
         }
     }
 
     fun acceptInvitation(notification: Notification) {
         viewModelScope.launch {
-            userRepository.addStudyGroupToUser(notification.userId, notification.groupId)
-                .onSuccess {
-                    deleteInvitation(notification.id)
-                    addGroupMember(notification.userId, notification.groupId)
-                }
-                .onFailure { throwable ->
-                    Log.e("NotificationViewModel", "실패: $throwable")
-                    _uiState.update { it.copy(snackBarMessage = "알림 수락을 실패하였습니다.") }
-                }
-        }
-    }
+            try {
+                _uiState.update { it.copy(isLoading = true) }
 
-    private fun addGroupMember(userId: String, groupId: String) {
-        viewModelScope.launch {
-            studyGroupRepository.addUser(groupId, userId).onFailure { throwable ->
-                Log.e("NotificationViewModel", "실패: $throwable")
-                _uiState.update { it.copy(snackBarMessage = "그룹원을 그룹에 추가하는데 실패하였습니다.") }
+                userRepository.addStudyGroupToUser(notification.userId, notification.groupId)
+                deleteInvitation(notification.id)
+                studyGroupRepository.addUser(notification.groupId, notification.userId)
+
+                _uiState.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }
-
-    fun onSnackBarShown() {
-        _uiState.update { it.copy(snackBarMessage = null) }
-    }
-
 }

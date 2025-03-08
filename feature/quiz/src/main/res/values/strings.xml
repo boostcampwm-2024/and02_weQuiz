@@ -127,4 +127,8 @@
     <string name="txt_question_title_error_message">Please enter 50 characters or less.</string>
     <string name="txt_question_description_error_message">Please enter 100 characters or less.</string>
     <string name="txt_question_solution_error_message">Please enter 200 characters or less.</string>
+    <string name="des_blank_item">%s blank item</string>
+    <string name="des_text_item">%s text item</string>
+    <string name="des_ai_loading">ai loading</string>
+    <string name="des_choice_item">choice item</string>
 </resources>

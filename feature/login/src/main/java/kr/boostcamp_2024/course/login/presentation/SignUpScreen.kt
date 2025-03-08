@@ -25,11 +25,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
@@ -48,14 +48,13 @@ internal fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.signUpUiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
-    LaunchedEffect(uiState) {
-        uiState.snackBarMessage?.let {
-            onShowErrorSnackbar(Exception(context.getString(it)))
-            viewModel.setNewSnackBarMessage(null)
-        }
-        if (uiState.isSignUpSuccess) {
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
+
+    LaunchedEffect(uiState.isSubmitSuccess) {
+        if (uiState.isSubmitSuccess) {
             onSignUpSuccess()
         }
     }
@@ -73,12 +72,6 @@ internal fun SignUpScreen(
         onProfileByteArrayChanged = viewModel::onProfileByteArrayChanged,
         snackbarHostState = snackbarHostState,
     )
-
-    LaunchedEffect(uiState.isSubmitSuccess) {
-        if (uiState.isSubmitSuccess) {
-            onSignUpSuccess()
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

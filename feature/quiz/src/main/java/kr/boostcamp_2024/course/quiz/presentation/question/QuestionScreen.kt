@@ -4,9 +4,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.domain.model.Quiz
 import kr.boostcamp_2024.course.domain.model.RealTimeQuiz
 import kr.boostcamp_2024.course.quiz.viewmodel.QuestionViewModel
@@ -17,9 +17,19 @@ internal fun QuestionScreen(
     onQuizFinished: (String?, String?) -> Unit,
     snackbarHostState: SnackbarHostState,
     onShowErrorSnackbar: (Throwable) -> Unit,
-    questionViewModel: QuestionViewModel = hiltViewModel(),
+    viewModel: QuestionViewModel = hiltViewModel(),
 ) {
-    val uiState by questionViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
+
+    uiState.userOmrId?.let { userOmrId ->
+        LaunchedEffect(userOmrId) {
+            onQuizFinished(userOmrId, null)
+        }
+    }
 
     if (uiState.quiz is RealTimeQuiz) {
         val quiz = uiState.quiz as RealTimeQuiz
@@ -50,35 +60,21 @@ internal fun QuestionScreen(
                 questions = uiState.questions,
                 countDownTime = currentCountDownTime,
                 selectedIndexList = uiState.selectedIndexList,
-                onOptionSelected = questionViewModel::selectOption,
-                onNextButtonClick = questionViewModel::nextPage,
-                onPreviousButtonClick = questionViewModel::previousPage,
-                onSubmitButtonClick = questionViewModel::submitAnswers,
+                onOptionSelected = viewModel::selectOption,
+                onNextButtonClick = viewModel::nextPage,
+                onPreviousButtonClick = viewModel::previousPage,
+                onSubmitButtonClick = viewModel::submitAnswers,
                 onNavigationButtonClick = onNavigationButtonClick,
-                showErrorMessage = questionViewModel::showErrorMessage,
-                onBlanksSelected = questionViewModel::selectBlanks,
+                onBlanksSelected = viewModel::selectBlanks,
                 blankQuestionContents = uiState.blankQuestionContents,
                 blankWords = uiState.blankWords,
-                removeBlankContent = questionViewModel.blankQuestionManager::removeBlankContent,
-                addBlankContent = questionViewModel.blankQuestionManager::addBlankContent,
-                getBlankQuestionAnswer = questionViewModel.blankQuestionManager::getAnswer,
+                removeBlankContent = viewModel.blankQuestionManager::removeBlankContent,
+                addBlankContent = viewModel.blankQuestionManager::addBlankContent,
+                getBlankQuestionAnswer = viewModel.blankQuestionManager::getAnswer,
                 isLoading = uiState.isLoading,
+                onShowErrorSnackbar = onShowErrorSnackbar,
                 snackbarHostState = snackbarHostState,
             )
-        }
-    }
-
-    uiState.errorMessageId?.let { errorMessageId ->
-        val errorMessage = stringResource(errorMessageId)
-        LaunchedEffect(errorMessageId) {
-            onShowErrorSnackbar(Exception(errorMessage))
-            questionViewModel.shownErrorMessage()
-        }
-    }
-
-    uiState.userOmrId?.let { userOmrId ->
-        LaunchedEffect(userOmrId) {
-            onQuizFinished(userOmrId, null)
         }
     }
 }

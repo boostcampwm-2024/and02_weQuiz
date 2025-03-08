@@ -7,7 +7,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import kr.boostcamp_2024.course.designsystem.R
 import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 
@@ -19,8 +23,10 @@ fun WeQuizCircularProgressIndicator(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
+        val indicatorContentDes = stringResource(R.string.des_loading_indicator)
         CircularProgressIndicator(
             modifier = modifier
+                .semantics { contentDescription = indicatorContentDes }
                 .size(64.dp),
         )
     }

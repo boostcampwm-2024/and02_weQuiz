@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizAsyncImage
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
@@ -55,9 +56,30 @@ internal fun QuizScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (uiState.isDeleteQuizSuccess) {
-        LaunchedEffect(Unit) {
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
+
+    LaunchedEffect(uiState.isDeleteQuizSuccess) {
+        if (uiState.isDeleteQuizSuccess) {
             onQuizDeleteSuccess()
+        }
+    }
+
+    LaunchedEffect(uiState.isCancelWaitingRealTimeQuizSuccess) {
+        if (uiState.isCancelWaitingRealTimeQuizSuccess) {
+            onNavigationButtonClick()
+        }
+    }
+
+    val quiz = uiState.quiz
+    if (quiz is RealTimeQuiz &&
+        quiz.isStarted &&
+        quiz.isFinished.not() &&
+        (quiz.waitingUsers.contains(uiState.currentUserId) || quiz.ownerId == uiState.currentUserId)
+    ) {
+        LaunchedEffect(Unit) {
+            onStartQuizButtonClick(quiz.id)
         }
     }
 
@@ -77,30 +99,6 @@ internal fun QuizScreen(
 
     if (uiState.isLoading) {
         WeQuizCircularProgressIndicator()
-    }
-
-    if (uiState.isCancelWaitingRealTimeQuizSuccess) {
-        LaunchedEffect(Unit) {
-            onNavigationButtonClick()
-        }
-    }
-
-    val quiz = uiState.quiz
-    if (quiz is RealTimeQuiz &&
-        quiz.isStarted &&
-        quiz.isFinished.not() &&
-        (quiz.waitingUsers.contains(uiState.currentUserId) || quiz.ownerId == uiState.currentUserId)
-    ) {
-        LaunchedEffect(Unit) {
-            onStartQuizButtonClick(quiz.id)
-        }
-    }
-
-    uiState.errorMessage?.let { errorMessage ->
-        LaunchedEffect(errorMessage) {
-            onShowErrorSnackbar(Exception(errorMessage))
-            viewModel.shownErrorMessage()
-        }
     }
 }
 

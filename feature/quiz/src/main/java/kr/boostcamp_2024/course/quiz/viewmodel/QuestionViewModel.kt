@@ -1,14 +1,15 @@
 package kr.boostcamp_2024.course.quiz.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -22,7 +23,6 @@ import kr.boostcamp_2024.course.domain.repository.AuthRepository
 import kr.boostcamp_2024.course.domain.repository.QuestionRepository
 import kr.boostcamp_2024.course.domain.repository.QuizRepository
 import kr.boostcamp_2024.course.domain.repository.UserOmrRepository
-import kr.boostcamp_2024.course.quiz.R
 import kr.boostcamp_2024.course.quiz.navigation.QuestionRoute
 import javax.inject.Inject
 
@@ -34,7 +34,6 @@ data class QuestionUiState(
     val selectedIndexList: List<Any> = emptyList(),
     val countDownTime: Int? = null,
     val isLoading: Boolean = false,
-    val errorMessageId: Int? = null,
     val currentUserId: String? = null,
     val userOmrId: String? = null,
     val blankQuestionContents: List<Map<String, Any>?> = emptyList(),
@@ -53,6 +52,10 @@ class QuestionViewModel @Inject constructor(
 
     private val _uiState: MutableStateFlow<QuestionUiState> = MutableStateFlow(QuestionUiState())
     val uiState: StateFlow<QuestionUiState> = _uiState.asStateFlow()
+
+    private val _errorFlow = MutableSharedFlow<Throwable>()
+    val errorFlow = _errorFlow.asSharedFlow()
+
     val blankQuestionManager = BlankQuestionManager(::setNewBlankContents)
 
     init {
@@ -61,24 +64,26 @@ class QuestionViewModel @Inject constructor(
 
     private fun initial() {
         viewModelScope.launch {
-            loadCurrentUserId()
-            _uiState.update { it.copy(isLoading = true) }
-            quizRepository.getQuiz(quizId)
-                .onSuccess { quiz ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            quiz = quiz,
-                        )
-                    }
-                    setTimer()
-                    loadQuestions(quiz.questions)
+            try {
+                _uiState.update { it.copy(isLoading = true) }
+
+                val userId = authRepository.getUserKey()
+                val quiz = quizRepository.getQuiz(quizId)
+
+                _uiState.update {
+                    it.copy(
+                        quiz = quiz,
+                        currentUserId = userId,
+                    )
                 }
-                .onFailure {
-                    Log.e("QuestionViewModel", "퀴즈 로드 실패", it)
-                    _uiState.update { it.copy(isLoading = false, errorMessageId = R.string.err_load_quiz) }
-                }
-            updateTimer()
+
+                setTimer()
+                loadQuestions(quiz.questions)
+                updateTimer()
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+                _uiState.update { it.copy(isLoading = false) }
+            }
         }
     }
 
@@ -89,64 +94,23 @@ class QuestionViewModel @Inject constructor(
         }
     }
 
-    private fun loadCurrentUserId() {
-        viewModelScope.launch {
-            authRepository.getUserKey()
-                .onSuccess { currentUser ->
-                    _uiState.update { it.copy(currentUserId = currentUser) }
-                }
-                .onFailure {
-                    Log.e("MainViewModel", "Failed to load current user", it)
-                    _uiState.update { it.copy(errorMessageId = R.string.err_load_current_user) }
-                }
-        }
-    }
-
-    private fun loadQuestions(questionIds: List<String>) {
-        viewModelScope.launch {
-            _uiState.update { currentState ->
-                currentState.copy(isLoading = true)
+    private suspend fun loadQuestions(questionIds: List<String>) {
+        val questions = questionRepository.getQuestions(questionIds)
+        val baseSelectedList = questions.map {
+            if (it is BlankQuestion) {
+                mapOf<Int, String?>()
+            } else {
+                4
             }
-            questionRepository.getQuestions(questionIds)
-                .onSuccess { questions ->
-                    val baseSelectedList = questions.map {
-                        if (it is BlankQuestion) {
-                            mapOf<Int, String?>()
-                        } else {
-                            4
-                        }
-                    }
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            questions = questions,
-                            selectedIndexList = baseSelectedList,
-                            isLoading = false,
-                        )
-                    }
-                    setNewBlankQuestionManager(0)
-                }
-                .onFailure {
-                    Log.e("QuestionViewModel", "문제 로드 실패", it)
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessageId = R.string.err_load_questions,
-                        )
-                    }
-                }
         }
-    }
-
-    fun showErrorMessage(errorMessageId: Int) {
         _uiState.update { currentState ->
-            currentState.copy(errorMessageId = errorMessageId)
+            currentState.copy(
+                questions = questions,
+                selectedIndexList = baseSelectedList,
+                isLoading = false,
+            )
         }
-    }
-
-    fun shownErrorMessage() {
-        _uiState.update { currentState ->
-            currentState.copy(errorMessageId = null)
-        }
+        setNewBlankQuestionManager(0)
     }
 
     fun selectOption(pageIndex: Int, optionIndex: Int) {
@@ -208,11 +172,10 @@ class QuestionViewModel @Inject constructor(
         _uiState.value.countDownTime?.let { defaultCountDownTime ->
             viewModelScope.launch {
                 var currentCountDownTime: Int = defaultCountDownTime
-                while (currentCountDownTime > 1) {
-                    currentCountDownTime = requireNotNull(_uiState.value.countDownTime)
+                while (currentCountDownTime > 0) {
                     delay(1000L)
                     _uiState.update { currentState ->
-                        currentState.copy(countDownTime = currentCountDownTime - 1)
+                        currentState.copy(countDownTime = --currentCountDownTime)
                     }
                 }
                 submitAnswers()
@@ -222,43 +185,38 @@ class QuestionViewModel @Inject constructor(
 
     fun submitAnswers() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isSubmitting = true) }
+            try {
+                _uiState.value.currentUserId?.let { userId ->
+                    _uiState.update { it.copy(isSubmitting = true) }
 
-            _uiState.value.currentUserId?.let { userId ->
-                val userOmrCreationInfo = UserOmrCreationInfo(
-                    userId = userId,
-                    quizId = quizId,
-                    answers = _uiState.value.selectedIndexList,
-                )
-                userOmrRepository.submitQuiz(userOmrCreationInfo)
-                    .onSuccess { userOmrId ->
-                        quizRepository.addUserOmrToQuiz(quizId, userOmrId)
-                            .onSuccess {
-                                _uiState.update { it.copy(isSubmitting = true, userOmrId = userOmrId) }
-                                _uiState.value.questions.forEachIndexed { index, question ->
-                                    questionRepository.updateCurrentSubmit(
-                                        uiState.value.currentUserId,
-                                        question.id,
-                                        uiState.value.selectedIndexList[index],
-                                    )
-                                        .onSuccess {
-                                            _uiState.update { it.copy(isSubmitting = true) }
-                                        }
-                                        .onFailure {
-                                            Log.e("QuestionViewModel", "user_answers 업데이트 실패")
-                                            _uiState.update { it.copy(isSubmitting = false, errorMessageId = R.string.err_add_user_answers) }
-                                        }
-                                }
-                            }
-                            .onFailure {
-                                Log.e("QuestionViewModel", "userOmrId 업데이트 실패", it)
-                                _uiState.update { it.copy(isSubmitting = false, errorMessageId = R.string.err_answer_add) }
-                            }
+                    val userOmrCreationInfo = UserOmrCreationInfo(
+                        userId = userId,
+                        quizId = quizId,
+                        answers = _uiState.value.selectedIndexList,
+                    )
+
+                    val userOmrId = userOmrRepository.submitQuiz(userOmrCreationInfo)
+                    quizRepository.addUserOmrToQuiz(quizId, userOmrId)
+
+                    _uiState.value.questions.forEachIndexed { index, question ->
+                        questionRepository.updateCurrentSubmit(
+                            uiState.value.currentUserId,
+                            question.id,
+                            uiState.value.selectedIndexList[index],
+                        )
                     }
-                    .onFailure {
-                        Log.e("QuestionViewModel", "퀴즈 정답 제출 실패", it)
-                        _uiState.update { it.copy(isSubmitting = false, errorMessageId = R.string.err_answer_add_quiz) }
+
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isSubmitting = true,
+                            userOmrId = userOmrId,
+                        )
                     }
+                }
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }

@@ -1,13 +1,15 @@
 package kr.boostcamp_2024.course.category.viewModel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kr.boostcamp_2024.course.category.navigation.CategoryRoute
@@ -21,7 +23,6 @@ import javax.inject.Inject
 data class CategoryUiState(
     val category: Category? = null,
     val quizList: List<BaseQuiz>? = null,
-    val snackBarMessage: String? = null,
     val isDeleteCategorySuccess: Boolean = false,
 )
 
@@ -34,9 +35,12 @@ class CategoryViewModel @Inject constructor(
 ) : ViewModel() {
     private val studyGroupId: String = savedStateHandle.toRoute<CategoryRoute>().studyGroupId
     private val categoryId: String = savedStateHandle.toRoute<CategoryRoute>().categoryId
-    private val _categoryUiState: MutableStateFlow<CategoryUiState> =
-        MutableStateFlow(CategoryUiState())
-    val categoryUiState: StateFlow<CategoryUiState> = _categoryUiState
+
+    private val _categoryUiState: MutableStateFlow<CategoryUiState> = MutableStateFlow(CategoryUiState())
+    val categoryUiState: StateFlow<CategoryUiState> = _categoryUiState.asStateFlow()
+
+    private val _errorFlow = MutableSharedFlow<Throwable>()
+    val errorFlow = _errorFlow.asSharedFlow()
 
     fun initViewmodel() {
         loadCategory(categoryId)
@@ -44,55 +48,36 @@ class CategoryViewModel @Inject constructor(
 
     private fun loadCategory(categoryId: String) {
         viewModelScope.launch {
-            categoryRepository.getCategory(categoryId).onSuccess { category ->
-                _categoryUiState.update {
-                    it.copy(
-                        category = category,
-                    )
-                }
+            try {
+                val category = categoryRepository.getCategory(categoryId)
+                _categoryUiState.update { it.copy(category = category) }
                 loadQuizList(category.quizzes)
-            }.onFailure {
-                Log.e("CategoryViewModel", "Failed to load category", it)
-                setNewSnackBarMessage("카테고리 데이터 로딩에 실패했습니다. 다시 시도해주세요!")
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
             }
         }
     }
 
     private fun loadQuizList(quizIdList: List<String>) {
         viewModelScope.launch {
-            quizRepository.getQuizList(quizIdList).onSuccess { quizList ->
-                _categoryUiState.update {
-                    it.copy(quizList = quizList)
-                }
-            }.onFailure {
-                Log.e("CategoryViewModel", "Failed to load quiz list", it)
-                setNewSnackBarMessage("퀴즈 데이터 로딩에 실패했습니다. 다시 시도해주세요!")
+            try {
+                val quizList = quizRepository.getQuizList(quizIdList)
+                _categoryUiState.update { it.copy(quizList = quizList) }
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
             }
-        }
-    }
-
-    fun setNewSnackBarMessage(message: String?) {
-        _categoryUiState.update {
-            it.copy(snackBarMessage = message)
         }
     }
 
     fun onCategoryDeleteClick() {
         viewModelScope.launch {
-            categoryRepository.deleteCategory(categoryId)
-                .onSuccess {
-                    setNewSnackBarMessage("카테고리 삭제에 성공했습니다.")
-                    studyGroupRepository.deleteCategory(studyGroupId, categoryId)
-                        .onSuccess {
-                            _categoryUiState.update { it.copy(isDeleteCategorySuccess = true) }
-                        }.onFailure {
-                            Log.e("CategoryViewModel", "Failed to delete category from study group", it)
-                            setNewSnackBarMessage("카테고리 삭제에 실패했습니다. 다시 시도해주세요")
-                        }
-                }.onFailure {
-                    Log.e("CategoryViewModel", "Failed to delete category", it)
-                    setNewSnackBarMessage("카테고리 삭제에 실패했습니다. 다시 시도해주세요!")
-                }
+            try {
+                categoryRepository.deleteCategory(categoryId)
+                studyGroupRepository.deleteCategory(studyGroupId, categoryId)
+                _categoryUiState.update { it.copy(isDeleteCategorySuccess = true) }
+            } catch (e: Exception) {
+                _errorFlow.emit(e)
+            }
         }
     }
 }

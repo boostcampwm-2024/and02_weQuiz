@@ -1,17 +1,13 @@
 package kr.boostcamp_2024.course.quiz.presentation.quiz
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
+import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
 import kr.boostcamp_2024.course.domain.model.BlankQuestion
 import kr.boostcamp_2024.course.domain.model.ChoiceQuestion
 import kr.boostcamp_2024.course.quiz.viewmodel.QuizResultViewModel
@@ -22,9 +18,13 @@ internal fun QuizResultScreen(
     onQuestionClick: (String) -> Unit,
     snackbarHostState: SnackbarHostState,
     onShowErrorSnackbar: (Throwable) -> Unit,
-    quizResultViewModel: QuizResultViewModel = hiltViewModel(),
+    viewModel: QuizResultViewModel = hiltViewModel(),
 ) {
-    val uiState by quizResultViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
 
     if (uiState.isManager) {
         OwnerQuizResultScreen(
@@ -45,20 +45,7 @@ internal fun QuizResultScreen(
     }
 
     if (uiState.isLoading) {
-        Box {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Center),
-            )
-        }
-    }
-
-    uiState.errorMessage?.let { errorMessage ->
-        LaunchedEffect(errorMessage) {
-            onShowErrorSnackbar(Exception(errorMessage))
-            quizResultViewModel.shownErrorMessage()
-        }
+        WeQuizCircularProgressIndicator()
     }
 }
 

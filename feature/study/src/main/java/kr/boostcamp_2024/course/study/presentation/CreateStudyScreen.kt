@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.designsystem.ui.annotation.PreviewKoLightDark
 import kr.boostcamp_2024.course.designsystem.ui.theme.WeQuizTheme
 import kr.boostcamp_2024.course.designsystem.ui.theme.component.WeQuizCircularProgressIndicator
@@ -41,9 +42,19 @@ internal fun CreateStudyScreen(
     onSubmitStudySuccess: () -> Unit,
     snackbarHostState: SnackbarHostState,
     onShowErrorSnackbar: (Throwable) -> Unit,
-    viewmodel: CreateStudyViewModel = hiltViewModel<CreateStudyViewModel>(),
+    viewModel: CreateStudyViewModel = hiltViewModel<CreateStudyViewModel>(),
 ) {
-    val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
+    }
+
+    LaunchedEffect(uiState.isSubmitStudySuccess) {
+        if (uiState.isSubmitStudySuccess) {
+            onSubmitStudySuccess()
+        }
+    }
 
     CreateStudyScreen(
         isEditMode = uiState.isEditMode,
@@ -54,30 +65,17 @@ internal fun CreateStudyScreen(
         groupMemberNumber = uiState.maxUserNum,
         canSubmitStudy = uiState.canSubmitStudy && !uiState.isLoading,
         onNavigationButtonClick = onNavigationButtonClick,
-        onTitleTextChange = viewmodel::onNameChanged,
-        onDescriptionTextChange = viewmodel::onDescriptionChanged,
-        onMaxUserNumChange = viewmodel::onMaxUserNumChange,
-        onStudyEditButtonClick = viewmodel::updateStudyGroup,
-        onCreationButtonClick = viewmodel::createStudyGroupClick,
-        onCurrentStudyImageChanged = viewmodel::onImageByteArrayChanged,
+        onTitleTextChange = viewModel::onNameChanged,
+        onDescriptionTextChange = viewModel::onDescriptionChanged,
+        onMaxUserNumChange = viewModel::onMaxUserNumChange,
+        onStudyEditButtonClick = viewModel::updateStudyGroup,
+        onCreationButtonClick = viewModel::createStudyGroupClick,
+        onCurrentStudyImageChanged = viewModel::onImageByteArrayChanged,
         snackbarHostState = snackbarHostState,
     )
 
     if (uiState.isLoading) {
         WeQuizCircularProgressIndicator()
-    }
-
-    if (uiState.isSubmitStudySuccess) {
-        LaunchedEffect(Unit) {
-            onSubmitStudySuccess()
-        }
-    }
-
-    uiState.snackBarMessage?.let { message ->
-        LaunchedEffect(message) {
-            onShowErrorSnackbar(Exception(message))
-            viewmodel.onSnackBarShown()
-        }
     }
 }
 

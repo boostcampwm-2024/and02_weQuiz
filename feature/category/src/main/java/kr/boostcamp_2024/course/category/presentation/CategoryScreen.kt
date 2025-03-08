@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kr.boostcamp_2024.course.category.R
 import kr.boostcamp_2024.course.category.component.CategorySettingMenu
 import kr.boostcamp_2024.course.category.viewModel.CategoryViewModel
@@ -55,19 +56,16 @@ internal fun CategoryScreen(
     onCreateCategoryButtonClick: (String?, String?) -> Unit,
     snackbarHostState: SnackbarHostState,
     onShowErrorSnackbar: (Throwable) -> Unit,
-    categoryViewModel: CategoryViewModel = hiltViewModel(),
+    viewModel: CategoryViewModel = hiltViewModel(),
 ) {
-    val categoryUiState = categoryViewModel.categoryUiState.collectAsStateWithLifecycle()
+    val categoryUiState = viewModel.categoryUiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        categoryViewModel.initViewmodel()
+        viewModel.initViewmodel()
     }
 
-    LaunchedEffect(categoryUiState.value.snackBarMessage) {
-        categoryUiState.value.snackBarMessage?.let { message ->
-            onShowErrorSnackbar(Exception(message))
-            categoryViewModel.setNewSnackBarMessage(null)
-        }
+    LaunchedEffect(Unit) {
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackbar(throwable) }
     }
 
     LaunchedEffect(categoryUiState.value.isDeleteCategorySuccess) {
@@ -82,7 +80,7 @@ internal fun CategoryScreen(
         onNavigationButtonClick = onNavigationButtonClick,
         onCreateQuizButtonClick = onCreateQuizButtonClick,
         onQuizClick = onQuizClick,
-        onCategoryDeleteClick = categoryViewModel::onCategoryDeleteClick,
+        onCategoryDeleteClick = viewModel::onCategoryDeleteClick,
         onCreateCategoryButtonClick = onCreateCategoryButtonClick,
         snackbarHostState = snackbarHostState,
     )
