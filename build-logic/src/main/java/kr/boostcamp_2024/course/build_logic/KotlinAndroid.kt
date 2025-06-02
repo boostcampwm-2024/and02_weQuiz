@@ -21,21 +21,23 @@ internal fun Project.configureKotlinAndroid() {
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
 
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
-            isCoreLibraryDesugaringEnabled = true
-        }
-
         buildTypes {
             getByName("release") {
                 isMinifyEnabled = false
+
                 proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro",
                 )
             }
         }
+
+        compileOptions {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+            isCoreLibraryDesugaringEnabled = true
+        }
+
         testOptions {
             unitTests {
                 isIncludeAndroidResources = true

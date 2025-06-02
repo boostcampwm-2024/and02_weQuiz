@@ -8,8 +8,16 @@ android {
     defaultConfig {
         applicationId = "kr.boostcamp_2024.course.wequiz"
         targetSdk = 35
-        versionCode = 6
+        versionCode = 1
         versionName = "1.2.1"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            ndk.debugSymbolLevel = "FULL"
+        }
     }
 }
 
