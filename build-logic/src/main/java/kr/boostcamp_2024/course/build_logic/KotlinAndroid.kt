@@ -27,15 +27,6 @@ internal fun Project.configureKotlinAndroid() {
             isCoreLibraryDesugaringEnabled = true
         }
 
-        buildTypes {
-            getByName("release") {
-                isMinifyEnabled = false
-                proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro",
-                )
-            }
-        }
         testOptions {
             unitTests {
                 isIncludeAndroidResources = true
